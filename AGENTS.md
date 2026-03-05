@@ -41,6 +41,7 @@ This document provides essential guidelines for agents working on this repositor
 ## Code Style Guidelines
 
 ### Component Architecture (Feature-Driven)
+
 - **Folder Structure**: Always use Feature-Driven Development. Components belong in `src/features/<featureName>/components/`.
 - **Component Isolation**: Every component must have its own dedicated directory containing:
   - `ComponentName.tsx`: The actual React component (using named exports, e.g., `export const ComponentName`).
@@ -49,17 +50,20 @@ This document provides essential guidelines for agents working on this repositor
 - **Pages**: `src/pages` should only contain high-level layout containers that import feature components. They should NOT contain complex logic or hardcoded content.
 
 ### Styling (Ant Design + SCSS Modules)
+
 - **Ant Design First**: Rely on Ant Design components (`Typography`, `Layout`, `Row`, `Col`, `Button`, `Skeleton`, etc.) for UI elements.
 - **SCSS Modules**: Use `.module.scss` for custom styling. Apply classes using `className={styles["class-name"]}`.
 - **Responsive Design**: Ensure responsive designs using Ant Design's grid system (`xs`, `sm`, `md`, `lg`) combined with media queries inside the SCSS modules.
 
 ### State Management & Data Fetching (RTK Query)
+
 - **Mock APIs First**: When building new features, simulate backend data using a Mock API pattern inside `src/features/<featureName>/api/mockData.ts` with a `simulateNetworkDelay` wrapper.
 - **RTK Query Slices**: Define endpoints using `createApi` and `fakeBaseQuery()` inside `src/features/<featureName>/api/<featureName>Api.ts`.
 - **Component-Level Fetching**: Favor granular component-level data fetching. Each component should call its own RTK Query hook (e.g., `useGetWhatWeDoQuery()`).
 - **Loading & Error States**: Always handle `isLoading` (using Ant Design `<Skeleton>` or `<Spin>`) and `isError` (using Ant Design `<Alert>`) gracefully.
 
 ### Imports
+
 - Use **absolute imports** where applicable, and **relative imports** for files within the same module or subdirectory.
 - Group external library imports at the top, followed by internal modules.
 - Order imports alphabetically where possible for consistency.
