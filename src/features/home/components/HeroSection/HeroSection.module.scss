@@ -1,32 +1,142 @@
-.heroLayout {
+.pageContainer {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.mainContent {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.topIconWrapper {
+  width: 64px;
+  height: 64px;
+  background-color: #e6f4ff;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
-}
-
-.heroContent {
-  max-width: 800px;
-  padding: 50px;
-  text-align: center;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 0 auto 24px auto;
+  font-size: 28px;
+  color: #1677ff;
 }
 
 .title {
-  margin: 0;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+  color: #0f172a !important;
 }
 
 .subtitle {
-  margin-top: 0 !important;
-  color: #1677ff !important;
-  font-weight: normal !important;
+  font-size: 15px;
+  color: #64748b;
+  max-width: 480px;
+  margin: 0 auto 48px auto;
+  line-height: 1.6;
 }
 
-.description {
-  font-size: 18px;
-  line-height: 1.8;
-  color: #555;
+.cardContainer {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 64px;
+}
+
+.roleCard {
+  flex: 1;
+  text-align: left;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid #f1f5f9 !important;
+  transition: all 0.3s ease;
+  padding: 10px;
+}
+
+.roleCard:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+  transform: translateY(-2px);
+}
+
+.cardIconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 20px;
+}
+
+.adminIcon {
+  background-color: #e6f4ff;
+  color: #1677ff;
+}
+
+.viewerIcon {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.cardTitle {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  margin-bottom: 12px !important;
+  color: #0f172a !important;
+}
+
+.cardDescription {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 32px;
+  line-height: 1.5;
+  min-height: 42px; /* aligns both cards if text varies slightly */
+}
+
+.cardButton {
+  width: 100%;
+  height: 40px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+}
+
+.footer {
+  margin-top: 40px;
+  color: #94a3b8;
+  font-size: 13px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.footerLink {
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: #1677ff;
+}
+
+.footerDot {
+  color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    flex-direction: column;
+  }
 }
