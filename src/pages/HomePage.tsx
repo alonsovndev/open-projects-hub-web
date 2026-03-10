@@ -1,6 +1,17 @@
 import React from "react";
 import { HeroSection } from "../features/home/components/HeroSection";
+import { RoleSelection } from "../features/home/components/RoleSelection";
+import { Footer } from "../shared/components/Footer";
+import styles from "./HomePage.module.scss";
 
 export const HomePage: React.FC = () => {
-  return <HeroSection />;
+  return (
+    <main className={styles.pageContainer}>
+      <div className={styles.mainContent}>
+        <HeroSection />
+        <RoleSelection />
+      </div>
+      <Footer />
+    </main>
+  );
 };
