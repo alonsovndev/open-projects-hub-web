@@ -1,0 +1,6 @@
+{
+  "contextProviders": {
+    "jira": "http://localhost:8080/jira/issues/:issueId",
+    "confluence": "http://localhost:8080/confluence/pages/:pageId"
+  }
+}
