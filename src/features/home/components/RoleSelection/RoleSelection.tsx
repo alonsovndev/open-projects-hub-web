@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { RoleCard } from "../RoleCard";
 import styles from "./RoleSelection.module.scss";
 import { rolesConfig } from "./rolesConfig";
 
 export const RoleSelection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className={styles.cardContainer}>
       {rolesConfig.map((role) => (
@@ -15,7 +18,7 @@ export const RoleSelection: React.FC = () => {
           iconType={role.iconType}
           buttonText={role.buttonText}
           buttonType={role.buttonType}
-          onClick={role.onClick}
+          onClick={() => navigate(role.path)}
         />
       ))}
     </div>

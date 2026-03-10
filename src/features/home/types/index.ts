@@ -8,5 +8,5 @@ export interface RoleConfig {
   iconType: "admin" | "viewer";
   buttonText: string;
   buttonType: "primary" | "default";
-  onClick: () => void;
+  path: string;
 }

@@ -10,7 +10,7 @@ export const rolesConfig: RoleConfig[] = [
     iconType: "admin",
     buttonText: "Sign In as Admin",
     buttonType: "primary",
-    onClick: () => console.log("Navigate to Admin"),
+    path: "/admin",
   },
   {
     id: "viewer",
@@ -20,6 +20,6 @@ export const rolesConfig: RoleConfig[] = [
     iconType: "viewer",
     buttonText: "Access as Viewer",
     buttonType: "default",
-    onClick: () => console.log("Navigate to Viewer"),
+    path: "/viewer",
   },
 ];
