@@ -2,86 +2,82 @@
 
 ## Description
 
-This agent is responsible for creating UI components and implementing features effectively while adhering to best practices for the following technologies:
+This agent builds React features for this repository using TypeScript, Ant Design, SCSS Modules, and the project's feature-driven conventions.
 
-### Technologies:
+## Primary Responsibilities
 
-- **Node.js**
-- **React**
-- **Redux Toolkit**
-- **RTK Query**
-- **Ant Design**
-- **ESLint**
-- **Prettier**
+1. Create route pages using the page-folder pattern.
+2. Build feature UI inside `src/features/<feature>/components/`.
+3. Keep pages thin and focused on composition.
+4. Separate UI structure from static config/data when components start growing.
+5. Use current Ant Design APIs and avoid deprecated props.
 
-## Responsibilities
+## Required Conventions
 
-1. **UI Development & Component Architecture**:
-   - Build reusable and accessible components using **React** and **Ant Design**.
-   - Create components strictly inside `src/features/<featureName>/components/`.
-   - Each component must have its own isolated folder containing: `ComponentName.tsx`, `ComponentName.module.scss`, and `index.ts`.
-   - Use SCSS Modules (`className={styles["class-name"]}`) and named exports (`export const ComponentName`).
+### Pages
 
-2. **State Management**:
-   - Implement application state management using **Redux Toolkit (RTK)**.
-   - Define reusable **slices** (`createSlice`) for application logic.
+Every route page must follow this structure:
 
-3. **Data Querying & Mocking**:
-   - Use **RTK Query** with `fakeBaseQuery()` and Mock Data (`mockData.ts`) to simulate API delays before the backend is built.
-   - Use Component-Level Fetching: Call generated RTK Query hooks directly inside the specific feature component.
-   - Always implement loading states (e.g., `<Skeleton>`) and error states (e.g., `<Alert>`).
+```text
+src/pages/<Name>/
+  <Name>.tsx
+  <Name>.module.scss
+  index.ts
+```
 
-4. **Code Quality**:
-   - Enforce **ESLint** rules for code standards.
-   - Apply **Prettier** to maintain consistent formatting.
+Rules:
 
-5. **Collaboration**:
-   - Follow the repository’s development guidelines outlined in `AGENTS.md`.
-   - Ensure all features are compatible with existing code and modular. Refer to specific skills detailed in `/skills/` such as `react-ui-development.md`, `redux-logic.md`, and `rtk-query-api.md` for guidance.
+1. Do not use the `Page` suffix.
+2. Each page must have its own SCSS module.
+3. Pages should not hold feature logic or repeated UI blocks.
 
-## Commands to Run
+### Feature Components
 
-### Development
+Every feature component must follow this structure:
 
-- Start development server:
-  ```bash
-  npm run dev
-  ```
+```text
+src/features/<feature>/components/<ComponentName>/
+  <ComponentName>.tsx
+  <ComponentName>.module.scss
+  index.ts
+```
 
-### Code Quality
+### Data Separation
 
-- Lint code:
-  ```bash
-  npm run lint
-  ```
-- Fix lint issues:
-  ```bash
-  npm run lint -- --fix
-  ```
+When a component renders repeated options, cards, or CTA definitions:
 
-### Building Features
+1. Create a typed interface in `src/features/<feature>/types/index.ts`
+2. Move static config to a dedicated file near the consuming component
+3. Keep the component focused on rendering and interaction
 
-- Build production bundle with:
-  ```bash
-  npm run build
-  ```
+## Preferred Workflow
 
-## Usage Instructions
+1. Scaffold route page folders first.
+2. Add placeholder pages when routes are newly introduced.
+3. Extract feature UI into dedicated feature components.
+4. Split large components by responsibility.
+5. Keep styling in SCSS modules only.
+6. Run build/lint verification after meaningful changes when possible.
 
-To use this agent for feature creation or UI updates:
+## Ant Design Guidance
 
-1. **Plan Tasks Thoroughly**:
-   Break the work into manageable parts (e.g., create components, add slice logic, integrate APIs).
-2. **Follow Code Guidelines**:
-   - Use TypeScript with strict types.
-   - Maintain consistent naming conventions for components, variables, and API endpoints.
-   - Use functional components with `React.FC` syntax.
-3. **Run Tests and Verify**:
-   - Ensure features are functional by running the development server.
-   - Resolve any linting or formatting errors before committing changes.
-4. **Document Features**:
-   Add clear documentation or update existing markdown files to explain new features or changes.
+1. Use modern Ant Design APIs.
+2. Do not introduce deprecated props or patterns.
+3. Prefer semantic wrappers around Ant Design controls.
 
----
+## State and Data Guidance
 
-This structured workflow ensures high-quality code and seamless integration into the codebase.
+1. Prefer RTK Query for async data.
+2. Use `createSlice` only for client-side app state.
+3. Keep mock API data in feature `api/` files.
+4. Keep UI configuration separate from backend mock data.
+
+## Validation Checklist
+
+Before considering a feature done, verify:
+
+1. Page names and folders follow repo convention
+2. No inline CSS was added unnecessarily
+3. No oversized component responsibilities remain
+4. Repeated data is typed and extracted
+5. No deprecated Ant Design APIs were introduced

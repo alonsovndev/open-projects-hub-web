@@ -2,95 +2,130 @@
 
 ## Folder Structure
 
-The project follows a modular, feature-driven folder structure designed to promote scalability and maintainability:
+The project follows a feature-driven structure designed for long-term maintainability.
 
-```
+```text
 /src
-  /app         # Application root setup (App.tsx, store providers, routing root)
-  /features    # Feature-specific modules (follows strict feature module pattern)
-  /pages       # Route-specific layout wrappers and page entry points
-  /shared      # Global code shared across features (components, hooks, utils, types)
-  /store       # Global Redux store setup (`configureStore`)
+  /app         # App root setup, providers, and router shell
+  /features    # Feature-specific UI, types, APIs, and hooks
+  /pages       # Route-level layout containers only
+  /routes      # Application route definitions
+  /shared      # Shared components and cross-feature utilities
+  /store       # Redux store setup when needed
+```
+
+## Page Structure
+
+Each route page lives in its own folder.
+
+```text
+/src/pages/<PageName>
+  <PageName>.tsx
+  <PageName>.module.scss
+  index.ts
+```
+
+Rules:
+
+1. Do not use the `Page` suffix in names.
+2. Pages are layout and composition layers only.
+3. Pages should not contain business logic, repeated card markup, or feature-specific data.
+4. If a page grows, split UI into `src/features/<feature>/components/`.
+
+Example:
+
+```text
+/src/pages/Home
+  Home.tsx
+  Home.module.scss
+  index.ts
 ```
 
 ## Feature Module Pattern
 
-Each feature is self-contained. The feature module structure typically includes:
+Each feature is self-contained.
 
-```
-/features/<FeatureName>
-  /api         # RTK Query API slice (`<featureName>Api.ts`) and mock data (`mockData.ts`)
-  /components  # Isolated feature components
+```text
+/features/<featureName>
+  /api
+    <featureName>Api.ts
+    mockData.ts
+  /components
     /<ComponentName>
       ComponentName.tsx
       ComponentName.module.scss
       index.ts
-  /hooks       # Feature-specific hooks
-  /types       # TypeScript interfaces for the feature
-```
-
-Example: `features/home`
-
-```
-/features/home
-  /api
-    homeApi.ts
-    mockData.ts
-  /components
-    /HeroSection
-      HeroSection.tsx
-      HeroSection.module.scss
-      index.ts
+  /hooks
   /types
     index.ts
 ```
 
-## Flow: UI → RTK Query Hook → API Slice → Backend (or Mock)
+## Component Boundaries
 
-The data flow is structured to ensure separation of concerns and reduce prop-drilling:
+Keep components small and focused.
 
-1. **UI (React components)**: Consumes auto-generated hooks from the RTK Query API Slice.
-2. **RTK Query Hook**: Handles caching, loading (`isLoading`), and error states automatically.
-3. **API Slice**: Defines endpoints (`createApi`) using `fetchBaseQuery()` (or `fakeBaseQuery()` for mock APIs).
-4. **Backend/Mock Layer**: The endpoint resolves the request, and the UI immediately updates based on cache logic.
+1. One component should solve one UI responsibility.
+2. Repeated UI patterns should become dedicated components.
+3. Static configuration or option arrays should be extracted from JSX.
+4. Data definitions should be typed in `src/features/<feature>/types`.
 
-This ensures maintainability and testability by completely decoupling UI and backend logic while enabling granular component-level fetching.
+Example split:
 
-## Routing Separation
+- `HeroSection` for header content
+- `RoleSelection` for mapping role options
+- `RoleCard` for card presentation
 
-Routing is divided into public and admin routes to ensure proper access control. `src/pages` acts as the orchestrator.
+## Data and UI Separation
 
-- **Public Routes**:
-  Defined under `src/routes/PublicRoutes`.
+Prefer this structure when rendering repeatable options or cards:
 
-- **Admin Routes**:
-  Defined under `src/routes/AdminRoutes`.
-  - Validate JWT token for authentication.
-  - Check for `admin` role before granting access.
+```text
+/features/home/components/RoleSelection
+  RoleSelection.tsx
+  RoleSelection.module.scss
+  rolesConfig.tsx
+  index.ts
 
-## JWT Authentication Model
+/features/home/types
+  index.ts
+```
 
-The authentication model is based on JWT tokens:
+Guidelines:
 
-- Token is stored securely (e.g., `HttpOnly` cookies or memory).
-- Middleware validates the JWT on every request.
-- Decoded token contains user roles and permissions.
+1. Put interfaces and shared feature types in `types/index.ts`.
+2. Keep UI configuration out of the render component when possible.
+3. Use `mockData.ts` only for backend-like data simulation, not for React nodes or UI handlers.
 
-## Admin Role Validation
+## Routing
 
-- Admin routes validate user roles before rendering components.
-- Use a higher-order component (HOC) or custom hook like `useRoleValidation()` to manage role-based access.
+The project currently uses a centralized router entry:
+
+```text
+/src/routes/AppRouter.tsx
+```
+
+Use `src/pages` for route elements and `src/features` for route content.
+
+As the app grows, route groups can later be split into dedicated public/admin route modules.
+
+## Styling Rules
+
+1. Use SCSS Modules only.
+2. Do not use inline styles except for truly dynamic values that cannot live in SCSS.
+3. Keep page styles in the page folder and component styles in the component folder.
+4. Prefer semantic HTML structure in JSX.
+
+## State and Async Data
+
+1. Prefer RTK Query for async server state.
+2. Use feature `mockData.ts` plus `fakeBaseQuery()` before the backend exists.
+3. Keep loading and error handling close to the consuming component.
+4. Avoid pushing fetched data from pages into deep children.
 
 ## Forbidden Patterns
 
-1. **Prop-Drilling Large Data Objects**:
-   - Do not fetch all data at the Page level and pass it down manually. Always delegate data fetching to RTK Query and use **Component-Level Fetching**.
-
-2. **Standard CSS or Inline Styles**:
-   - Use SCSS Modules (`.module.scss`) for isolation. Avoid `style={{...}}` unless calculating dynamic layout dimensions.
-
-3. **Axios / Thunks for standard fetching**:
-   - Always use **RTK Query** (`createApi`) for caching and data fetching instead of manual Axios wrappers or Redux Thunks.
-
-4. **Logic inside Pages**:
-   - `src/pages` should only contain high-level structural layouts. All business logic and feature UI must reside inside `src/features/`.
+1. Large page components with embedded feature markup
+2. Inline CSS for standard styling
+3. Deprecated Ant Design props or APIs when modern alternatives exist
+4. Untyped configuration arrays
+5. Flat page files directly under `src/pages` for route screens
