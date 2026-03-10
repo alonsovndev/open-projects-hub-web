@@ -26,7 +26,7 @@ export const RoleCard: React.FC<RoleCardProps> = ({
   const iconWrapperClass = iconType === "admin" ? styles.adminIcon : styles.viewerIcon;
 
   return (
-    <Card bordered={true} className={styles.roleCard}>
+    <Card variant="outlined" className={styles.roleCard}>
       <div className={`${styles.cardIconWrapper} ${iconWrapperClass}`}>{icon}</div>
       <Title level={4} className={styles.cardTitle}>
         {title}
