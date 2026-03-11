@@ -1,16 +1,5 @@
 .pageContainer {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  padding: 40px 20px;
-}
-
-.mainContent {
   width: 100%;
-  max-width: 500px;
-  margin-top: auto;
-  margin-bottom: auto;
+  background: #f8fafc;
 }

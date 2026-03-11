@@ -1,15 +1,47 @@
-.pageLayout {
+.pageContainer {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background-color: #f5f5f5;
+  background: #f8fafc;
 }
 
-.pageContent {
+.contentWrapper {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 24px 24px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholderCard {
+  width: 100%;
+  max-width: 560px;
   text-align: center;
   padding: 40px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  border: 1px solid #dbe4f0;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.roleTag {
+  margin-inline-end: 0;
+  border-radius: 6px;
+  border-color: #dbe4f0;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 4px 12px;
+}
+
+.headerAction {
+  color: #334155;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 32px 16px 24px;
+  }
 }

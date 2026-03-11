@@ -10,12 +10,31 @@ interface ProjectCodeFormValues {
   projectCode: string;
 }
 
-export const ProjectCodeSearch: React.FC = () => {
+interface ProjectCodeSearchProps {
+  onSearch: (projectCode: string) => boolean;
+}
+
+export const ProjectCodeSearch: React.FC<ProjectCodeSearchProps> = ({ onSearch }) => {
   const navigate = useNavigate();
-  const [submittedCode, setSubmittedCode] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleFinish = ({ projectCode }: ProjectCodeFormValues) => {
-    setSubmittedCode(projectCode.trim().toUpperCase());
+    const normalizedCode = projectCode.trim().toUpperCase();
+    const wasFound = onSearch(normalizedCode);
+
+    if (!wasFound) {
+      setErrorMessage("We couldn't find a project with that access code.");
+
+      return;
+    }
+
+    setErrorMessage("");
+  };
+
+  const handleValuesChange = () => {
+    if (errorMessage) {
+      setErrorMessage("");
+    }
   };
 
   return (
@@ -24,10 +43,16 @@ export const ProjectCodeSearch: React.FC = () => {
         View Project Requirements
       </Title>
 
-      <Form<ProjectCodeFormValues> layout="vertical" className={styles.form} onFinish={handleFinish}>
+      <Form<ProjectCodeFormValues>
+        layout="vertical"
+        className={styles.form}
+        onFinish={handleFinish}
+        onValuesChange={handleValuesChange}
+      >
         <Form.Item
           label="Project Access Code"
           name="projectCode"
+          initialValue="PRJ-123456" // Default value added
           extra="Enter the 6-digit access code shared by your freelancer."
           rules={[
             {
@@ -53,9 +78,7 @@ export const ProjectCodeSearch: React.FC = () => {
         </Button>
       </Form>
 
-      {submittedCode ? (
-        <Alert className={styles.feedback} type="info" showIcon message={`Searching for project ${submittedCode}`} />
-      ) : null}
+      {errorMessage ? <Alert className={styles.feedback} type="error" showIcon description={errorMessage} /> : null}
 
       <Divider className={styles.divider} />
 

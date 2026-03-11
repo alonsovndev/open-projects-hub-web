@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+  <defs>
+    <linearGradient id="ai-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <linearGradient id="ring-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="75" cy="75" r="50" fill="none" stroke="url(#ring-gradient)" stroke-width="12" stroke-dasharray="230 60" stroke-dashoffset="145" stroke-linecap="round" />
+  
+  <circle cx="125" cy="30" r="11" fill="#06B6D4" />
+  <path d="M 90 55 L 120 35" stroke="#06B6D4" stroke-width="5" stroke-linecap="round" opacity="0.8" />
+  
+  <circle cx="25" cy="120" r="9" fill="#8B5CF6" />
+  <path d="M 60 95 L 30 115" stroke="#8B5CF6" stroke-width="5" stroke-linecap="round" opacity="0.8" />
+
+  <path d="M 75 35 Q 75 75 35 75 Q 75 75 75 115 Q 75 75 115 75 Q 75 75 75 35 Z" fill="url(#ai-gradient)" />
+</svg>
