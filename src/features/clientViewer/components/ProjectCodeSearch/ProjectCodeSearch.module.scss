@@ -1,0 +1,47 @@
+.card {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  border: 1px solid #dbe4f0;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  margin-bottom: 32px !important;
+  text-align: center;
+  font-size: 2rem !important;
+}
+
+.form {
+  width: 100%;
+}
+
+.inputIcon {
+  color: #94a3b8;
+}
+
+.feedback {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.divider {
+  margin: 32px 0 20px;
+}
+
+.backButton {
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  color: #64748b;
+}
+
+.backButton:hover {
+  color: #1677ff;
+}
+
+@media (max-width: 576px) {
+  .title {
+    font-size: 1.75rem !important;
+  }
+}

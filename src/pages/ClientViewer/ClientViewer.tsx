@@ -1,19 +1,15 @@
 import { FC } from "react";
-import { Typography, Layout, Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { ProjectCodeSearch } from "../../features/clientViewer/components/ProjectCodeSearch";
+import { Footer } from "../../shared/components/Footer";
 import styles from "./ClientViewer.module.scss";
 
-const { Title } = Typography;
-const { Content } = Layout;
-
 export const ClientViewer: FC = () => {
-  const navigate = useNavigate();
   return (
-    <Layout className={styles.pageLayout}>
-      <Content className={styles.pageContent}>
-        <Title level={2}>Client Viewer Placeholder</Title>
-        <Button onClick={() => navigate("/")}>Back to Home</Button>
-      </Content>
-    </Layout>
+    <main className={styles.pageContainer}>
+      <div className={styles.mainContent}>
+        <ProjectCodeSearch />
+      </div>
+      <Footer />
+    </main>
   );
 };
