@@ -62,3 +62,28 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 6. Extract repeated UI into focused subcomponents.
 7. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
 8. Verify imports, styling, and route composition stay clean.
+
+## Test-Driven Development
+
+1. When tests exist or are being added, write the test before implementation.
+2. Run the test and confirm it fails first.
+3. Implement only the minimum code needed to make the test pass.
+4. Refactor after the test is green.
+5. Keep UI code testable by separating rendering, config, and logic cleanly.
+
+## Continuous Verification
+
+1. After each feature increment, run the available test and build commands for the repository.
+2. If the repository supports it, prefer this sequence after each feature:
+
+```bash
+npm run test && npm run build
+```
+
+3. At the end of a development cycle, run the repository verification command when available:
+
+```bash
+npm run verify
+```
+
+4. If `test`, `lint`, or `verify` scripts are not configured yet, document that limitation clearly and run the available checks instead.

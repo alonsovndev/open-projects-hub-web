@@ -32,6 +32,17 @@ Runs ESLint when configured.
 
 Testing scripts are not currently configured.
 
+### Repository Script Status
+
+Current repository status:
+
+1. `npm run build` is available.
+2. `npm run test` is present but currently a placeholder that fails.
+3. `npm run lint` is referenced in guidance but is not currently configured in `package.json`.
+4. `npm run verify` is not currently configured.
+
+Agents should follow the preferred verification workflow when these scripts exist, and clearly state when a requested verification step cannot run because the repository does not yet provide the script.
+
 ## Project Structure
 
 Use this structure by default:
@@ -199,6 +210,38 @@ Rules:
 1. Wrap Ant Design, do not reimplement it.
 2. Centralize shared props and styling in the wrapper.
 3. Reuse wrappers across admin and internal tools when it improves consistency.
+
+## Work Methodology
+
+### Test-Driven Development (TDD)
+
+Use TDD whenever tests exist or are being added for the area under change.
+
+Rules:
+
+1. Write the test first.
+2. Confirm the test fails before implementing the behavior.
+3. Implement only the minimum code required to make the test pass.
+4. Refactor after the test is green.
+5. Keep code structured so it remains easy to test.
+
+### Continuous Verification
+
+Use progressive verification during development instead of waiting until the very end.
+
+After each feature increment, prefer:
+
+```bash
+npm run test && npm run build
+```
+
+At the end of a development cycle, prefer:
+
+```bash
+npm run verify
+```
+
+If `test`, `lint`, or `verify` are not configured in the repository, explicitly say so and run the checks that are available instead.
 
 ## Naming Conventions
 

@@ -60,12 +60,14 @@ When a component renders repeated options, cards, or CTA definitions:
 
 1. Scaffold route page folders first.
 2. Add placeholder pages when routes are newly introduced.
-3. Extract page UI into dedicated components under `src/components/`.
-4. Decide whether the page is content-first or interaction-first before choosing UI primitives.
-5. Use Ant Design where it reduces logic, validation work, accessibility effort, or CRUD complexity.
-6. Split large components by responsibility.
-7. Keep styling in SCSS Modules only.
-8. Run build/lint verification after meaningful changes when possible.
+3. Write or update the relevant test before implementation when tests are available for the area.
+4. Confirm the test fails before implementing the feature.
+5. Extract page UI into dedicated components under `src/components/`.
+6. Decide whether the page is content-first or interaction-first before choosing UI primitives.
+7. Use Ant Design where it reduces logic, validation work, accessibility effort, or CRUD complexity.
+8. Split large components by responsibility.
+9. Keep styling in SCSS Modules only.
+10. Run progressive verification after meaningful changes when possible.
 
 ## UI Library Guidance
 
@@ -82,6 +84,27 @@ When a component renders repeated options, cards, or CTA definitions:
 2. Keep mock data separate from UI configuration.
 3. Prefer small, typed helpers and hooks over large mixed-responsibility files.
 
+## TDD and Verification Guidance
+
+1. Use Test-Driven Development whenever tests exist or are being introduced.
+2. Write the test first and make sure it fails before implementing the behavior.
+3. Implement the minimum code required to make the test pass.
+4. Refactor after the test is green.
+5. After each feature increment, run the available verification steps.
+6. Prefer this feature-level verification sequence when scripts exist:
+
+```bash
+npm run test && npm run build
+```
+
+7. At the end of a development cycle, run the repository verification command when available:
+
+```bash
+npm run verify
+```
+
+8. If the repository does not yet provide `test`, `lint`, or `verify` scripts, state that clearly and run the available checks instead.
+
 ## Validation Checklist
 
 Before considering a feature done, verify:
@@ -93,3 +116,5 @@ Before considering a feature done, verify:
 5. Component and stylesheet names follow the required conventions
 6. Ant Design was used only where it adds structural or behavioral value
 7. Marketing or content sections were not overbuilt with Ant Design
+8. Relevant tests were written first when the area supports tests
+9. Available verification commands were run before considering the work complete

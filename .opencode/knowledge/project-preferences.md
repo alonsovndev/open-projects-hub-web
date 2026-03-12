@@ -51,3 +51,13 @@ This file captures the preferred project structure and naming conventions.
 1. Follow the existing UI library patterns already used in the repository.
 2. Avoid deprecated APIs.
 3. Keep markup semantic and maintainable.
+
+## Work Methodology
+
+1. Follow Test-Driven Development when tests are available for the area being changed.
+2. Write the test first.
+3. Confirm the new test fails before implementing the feature.
+4. Implement the minimum code required to make the test pass.
+5. Refactor only after the test is passing.
+6. After each meaningful feature increment, run the available verification commands for the repository.
+7. Prefer progressive verification during development instead of waiting until the very end.
