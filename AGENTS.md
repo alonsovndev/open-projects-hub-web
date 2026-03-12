@@ -118,6 +118,88 @@ Rules:
 3. Keep global styles in `src/styles/`.
 4. Avoid inline styles unless the value is truly dynamic.
 
+## UI Library Guidelines
+
+Core principle:
+
+- Use Ant Design for behavior and structure.
+- Use semantic HTML and SCSS Modules for branding, storytelling, and custom visual identity.
+
+### Use Ant Design For
+
+1. Forms and validation
+   - `Form`
+   - `Input`, `Select`, `DatePicker`
+   - `Form.Item` validation
+2. Data display and CRUD flows
+   - `Table`
+   - `Pagination`
+   - `Tag`
+   - `Badge`
+3. Overlays and state-driven interactions
+   - `Modal`
+   - `Drawer`
+   - `Popconfirm`
+   - `notification`, `message`
+4. Admin and internal layouts
+   - `Layout`
+   - `Menu`
+   - `Breadcrumb`
+   - `Tabs`
+
+### Prefer Semantic HTML and SCSS For
+
+1. Marketing and content sections
+2. Static informational pages
+3. Highly custom branded layouts or UI elements
+
+### Mixed Approach
+
+Mixing Ant Design with semantic HTML is encouraged.
+
+Recommended default:
+
+1. Use semantic sectioning and custom layout for page composition.
+2. Use Ant Design where it reduces interaction, validation, accessibility, or CRUD complexity.
+3. Use SCSS Modules for spacing, branding, and custom visual styling.
+
+### Anti-Patterns
+
+1. Do not use Ant Design for purely static content by default.
+2. Do not wrap every section in `Card` automatically.
+3. Do not recreate Ant Design form validation manually for standard forms.
+4. Do not deeply override Ant Design internal CSS classes unless absolutely necessary.
+5. Do not use Ant Design only to make marketing pages feel superficially consistent.
+
+### Decision Checklist
+
+Before choosing Ant Design, ask:
+
+1. Is this data-driven or CRUD-related?
+2. Does it need validation, state handling, or accessibility behavior?
+3. Would Ant Design reduce custom logic or styling effort?
+
+If two or more answers are yes, prefer Ant Design.
+Otherwise, prefer semantic HTML and SCSS Modules.
+
+### Wrapper Components Strategy
+
+When the same Ant Design patterns repeat, prefer thin shared wrappers such as:
+
+```text
+src/components/ui/
+  AppButton.tsx
+  AppForm.tsx
+  AppModal.tsx
+  AppTable.tsx
+```
+
+Rules:
+
+1. Wrap Ant Design, do not reimplement it.
+2. Centralize shared props and styling in the wrapper.
+3. Reuse wrappers across admin and internal tools when it improves consistency.
+
 ## Naming Conventions
 
 | File Type | Convention | Example |

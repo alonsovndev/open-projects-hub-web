@@ -10,7 +10,8 @@ This agent builds React features for this repository using TypeScript and the pr
 2. Build shared and page-specific UI inside `src/components/`.
 3. Keep pages thin and focused on composition.
 4. Separate UI structure from static config and mock data when components start growing.
-5. Follow existing project UI-library patterns without introducing deprecated APIs.
+5. Use Ant Design intentionally for interactive, data-heavy, admin, and validated UI.
+6. Prefer semantic HTML and SCSS Modules for marketing, content, and highly branded sections.
 
 ## Required Conventions
 
@@ -60,9 +61,20 @@ When a component renders repeated options, cards, or CTA definitions:
 1. Scaffold route page folders first.
 2. Add placeholder pages when routes are newly introduced.
 3. Extract page UI into dedicated components under `src/components/`.
-4. Split large components by responsibility.
-5. Keep styling in SCSS Modules only.
-6. Run build/lint verification after meaningful changes when possible.
+4. Decide whether the page is content-first or interaction-first before choosing UI primitives.
+5. Use Ant Design where it reduces logic, validation work, accessibility effort, or CRUD complexity.
+6. Split large components by responsibility.
+7. Keep styling in SCSS Modules only.
+8. Run build/lint verification after meaningful changes when possible.
+
+## UI Library Guidance
+
+1. Always use Ant Design for forms, validation, tables, pagination, overlays, notifications, and admin layouts.
+2. Prefer semantic HTML and SCSS Modules for home pages, about sections, testimonials, static content, and branded layouts.
+3. Do not default to Ant Design `Card` for every section.
+4. Do not use Ant Design for purely static content unless a specific primitive clearly adds value.
+5. Mix Ant Design and custom markup intentionally when that produces the cleanest implementation.
+6. Prefer thin shared wrappers in `src/components/ui/` when the same Ant Design patterns repeat across the app.
 
 ## State and Data Guidance
 
@@ -79,3 +91,5 @@ Before considering a feature done, verify:
 3. No oversized component responsibilities remain
 4. Repeated data is extracted into config or mock-data files
 5. Component and stylesheet names follow the required conventions
+6. Ant Design was used only where it adds structural or behavioral value
+7. Marketing or content sections were not overbuilt with Ant Design

@@ -101,6 +101,31 @@ Rules:
 4. Avoid inline styles except for truly dynamic values.
 5. Prefer semantic HTML structure in JSX.
 
+## UI Library Usage
+
+Use Ant Design for behavior-heavy, validated, or data-driven UI.
+Use semantic HTML and SCSS Modules for marketing, content, and branded layout sections.
+
+Use Ant Design by default for:
+
+1. Forms and validation
+2. Data tables and CRUD screens
+3. Modals, drawers, confirmations, and notifications
+4. Admin shells, menus, tabs, breadcrumbs, and internal layouts
+
+Prefer semantic HTML and SCSS Modules for:
+
+1. Home page sections and hero blocks
+2. About, testimonials, and branded informational sections
+3. Privacy policy, terms, and similar static content
+4. Highly custom visual compositions where Ant Design would require brittle overrides
+
+Mixed usage is encouraged when intentional.
+
+1. Use semantic sections for layout and storytelling.
+2. Use Ant Design controls where they provide accessibility, validation, or interaction value.
+3. Avoid using Ant Design just to make static content feel uniform.
+
 ## Hooks and Utilities
 
 Use these locations consistently:

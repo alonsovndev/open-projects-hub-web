@@ -12,6 +12,8 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 4. Use SCSS Modules with `.module.scss` for page and component styles.
 5. Do not use inline CSS for standard styling.
 6. Use semantic HTML where appropriate.
+7. Use Ant Design primarily for interactive, data-heavy, validated, or admin-oriented UI.
+8. Prefer semantic HTML and SCSS for marketing, storytelling, and static content sections.
 
 ## Component Design
 
@@ -20,6 +22,7 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 3. Keep render functions small and readable.
 4. Move static option arrays and content definitions outside the rendering component.
 5. Keep config in `src/resources/config` and mock data in `src/resources/mock-data`.
+6. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
 
 ## Styling
 
@@ -28,6 +31,14 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 3. Apply classes through the imported module object.
 4. Prefer module classes over inline overrides.
 5. Keep global styles in `src/styles`.
+
+## Ant Design Usage
+
+1. Use Ant Design for forms, validation, tables, pagination, tags, badges, overlays, and admin layouts.
+2. Prefer semantic HTML and SCSS Modules for hero sections, testimonials, informational sections, and policy pages.
+3. Mix Ant Design and custom markup intentionally when it improves both UX consistency and design flexibility.
+4. Avoid using Ant Design just to wrap static content.
+5. Prefer thin wrapper components under `src/components/ui/` when the same Ant Design patterns repeat.
 
 ## Accessibility
 
@@ -46,6 +57,8 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 1. Create the page folder if a route is needed.
 2. Add `index.tsx` and the page SCSS Module first.
 3. Create the components required by that page inside `src/components/<page>/` or a shared component folder.
-4. Extract repeated UI into focused subcomponents.
-5. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
-6. Verify imports, styling, and route composition stay clean.
+4. Decide early whether the UI is marketing/content-driven or interaction/data-driven.
+5. Use semantic HTML for content-first sections and Ant Design for behavior-heavy sections.
+6. Extract repeated UI into focused subcomponents.
+7. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
+8. Verify imports, styling, and route composition stay clean.
