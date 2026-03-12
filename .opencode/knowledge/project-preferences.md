@@ -27,18 +27,20 @@ This file captures the preferred project structure and naming conventions.
 ## Directory Preferences
 
 1. `src/pages` is for route-level composition only.
-2. `src/components` is for shared and page-specific UI.
-3. `src/resources/config` is for static configuration and constants.
-4. `src/resources/mock-data` is for sample data and development fixtures.
-5. `src/hooks` is for reusable React hooks.
-6. `src/utils` is for reusable helpers.
+2. `src/features` is for domain-owned UI, API logic, state, tests, and types.
+3. `src/components` is for shared cross-feature UI and layout building blocks.
+4. `src/resources/config` is for static configuration and constants.
+5. `src/resources/mock-data` is for sample data and development fixtures.
+6. `src/hooks` is for reusable cross-feature React hooks.
+7. `src/utils` is for reusable helpers.
 
 ## Routing Workflow
 
 1. Create the page folder first.
 2. Use `index.tsx` as the page entry point.
 3. Add a colocated `<page>.module.scss` file for page styling.
-4. Move repeated UI into `src/components/<page>/` or shared component folders.
+4. Compose feature entry components from the page whenever the route belongs to a domain.
+5. Move shared cross-feature UI into `src/components/`.
 
 ## Imports
 

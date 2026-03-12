@@ -23,7 +23,8 @@ Good:
 - page in `src/pages/home/index.tsx` composes `HeroSection`
 - page composes `RoleSelection`
 - `RoleSelection` renders `RoleCard`
-- reusable UI lives in `src/components/`
+- feature-owned UI lives in `src/features/<feature>/components/`
+- reusable cross-feature UI lives in `src/components/`
 
 ## Data Separation
 
@@ -37,10 +38,11 @@ Good:
 Use these defaults:
 
 1. `src/components/` for reusable or page-specific UI
-2. `src/hooks/` for reusable React hooks
-3. `src/utils/` for framework-agnostic helpers
-4. `src/resources/config/` for static configuration
-5. `src/resources/mock-data/` for sample and mock data
+2. `src/features/<feature>/components/` for domain-owned UI
+3. `src/hooks/` for reusable React hooks
+4. `src/utils/` for framework-agnostic helpers
+5. `src/resources/config/` for static configuration
+6. `src/resources/mock-data/` for sample and mock data
 
 ## Review Checklist
 

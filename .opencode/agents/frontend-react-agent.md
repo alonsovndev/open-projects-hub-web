@@ -12,10 +12,11 @@ This agent builds React features for this repository using TypeScript and the re
 ## What This Agent Owns
 
 1. Build route pages using the `src/pages/<page>/index.tsx` pattern.
-2. Build shared and page-specific UI inside `src/components/`.
-3. Keep pages thin and focused on composition.
-4. Separate UI from static config, mock data, and reusable logic.
-5. Apply the repository's UI-library, styling, and verification standards consistently.
+2. Build domain-owned UI inside `src/features/<feature>/components/`.
+3. Build shared cross-feature UI inside `src/components/`.
+4. Keep pages thin and focused on composition.
+5. Separate UI from static config, mock data, and reusable logic.
+6. Apply the repository's UI-library, styling, and verification standards consistently.
 
 ## Required References
 

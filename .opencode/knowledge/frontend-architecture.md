@@ -6,6 +6,19 @@ The project should follow this structure:
 
 ```text
 /src
+  /app
+    /layouts
+    /providers
+    /router
+    /store
+  /features
+    /<feature>
+      /api
+      /components
+      /hooks
+      /model
+      /tests
+      /types
   /components
   /pages
   /resources
@@ -18,13 +31,15 @@ The project should follow this structure:
 
 ### Responsibilities
 
-1. `src/pages` contains route-level pages only.
-2. `src/components` contains shared and page-specific UI.
-3. `src/resources/config` contains static configuration and constants.
-4. `src/resources/mock-data` contains development mock data.
-5. `src/styles` contains global styles.
-6. `src/hooks` contains custom React hooks.
-7. `src/utils` contains generic utilities.
+1. `src/app` contains app bootstrap, providers, router, layouts, and store wiring.
+2. `src/pages` contains route-level pages only.
+3. `src/features` contains domain-owned UI, API logic, state, tests, and feature types.
+4. `src/components` contains shared cross-feature UI and layout primitives.
+5. `src/resources/config` contains static configuration and constants.
+6. `src/resources/mock-data` contains development mock data.
+7. `src/styles` contains global styles.
+8. `src/hooks` contains truly cross-feature custom React hooks.
+9. `src/utils` contains generic utilities.
 
 ## Page Structure
 
@@ -53,17 +68,22 @@ Example:
 
 ## Component Structure
 
-Place UI in `src/components`.
+Use `src/components` for shared cross-feature UI. Use `src/features/<feature>/components` for feature-owned UI.
 
 Examples:
 
 ```text
-/src/components/home
-  HomePageCarousel.tsx
-  home-page-carousel.module.scss
+/src/features/users/components/UserTable
+  UserTable.tsx
+  user-table.module.scss
   index.ts
 
-/src/components/common
+/src/components/ui
+  AppButton.tsx
+  app-button.module.scss
+  index.ts
+
+/src/components/layout
   AppHeader.tsx
   app-header.module.scss
   index.ts
@@ -74,7 +94,29 @@ Rules:
 1. Use PascalCase for component file names and component names.
 2. Use kebab-case for component stylesheet files.
 3. Use `index.ts` barrel exports when a folder contains multiple related files.
-4. Colocate page-specific components under a page-oriented folder when they are not reused.
+4. Keep shared UI in `src/components`.
+5. Keep domain-owned UI in the owning feature folder.
+
+## Feature Structure
+
+Use this structure for feature-owned code:
+
+```text
+/src/features/<feature>
+  /api
+  /components
+  /hooks
+  /model
+  /tests
+  /types
+```
+
+Rules:
+
+1. Keep API integration close to the owning feature.
+2. Keep feature state in `model` when needed.
+3. Keep feature tests near the feature.
+4. Promote code out of a feature only when it becomes genuinely shared.
 
 ## Data and Configuration Separation
 
@@ -92,6 +134,7 @@ Rules:
 1. Static config belongs in `src/resources/config`.
 2. Mock or sample data belongs in `src/resources/mock-data`.
 3. Components should consume data, not define large config blobs inline.
+4. Feature-specific backend-like data should stay near the feature unless it is truly global mock data.
 
 ## Styling Rules
 
@@ -148,8 +191,9 @@ Pages in `src/pages` should be the route targets.
 Rules:
 
 1. Route pages should import components rather than embed complex UI directly.
-2. Keep routing concerns separate from reusable presentation components.
-3. Use clean page folder structure from the start.
+2. Pages should usually compose feature entry components.
+3. Keep routing concerns separate from feature and shared presentation components.
+4. Use clean page folder structure from the start.
 
 ## Forbidden Patterns
 

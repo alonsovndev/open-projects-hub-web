@@ -2,18 +2,19 @@
 
 ## Description
 
-This skill focuses on building reusable, typed, and maintainable React UI using the project's page, component, and naming conventions.
+This skill focuses on building reusable, typed, and maintainable React UI using the repository's hybrid enterprise architecture.
 
 ## Core Rules
 
 1. Build route pages in `src/pages/<page>/`.
-2. Build shared and page-specific UI in `src/components/`.
-3. Use `index.tsx` as the page entry file.
-4. Use SCSS Modules with `.module.scss` for page and component styles.
-5. Do not use inline CSS for standard styling.
-6. Use semantic HTML where appropriate.
-7. Use Ant Design primarily for interactive, data-heavy, validated, or admin-oriented UI.
-8. Prefer semantic HTML and SCSS for marketing, storytelling, and static content sections.
+2. Build domain-owned UI in `src/features/<feature>/components/`.
+3. Build shared cross-feature UI in `src/components/`.
+4. Use `index.tsx` as the page entry file.
+5. Use SCSS Modules with `.module.scss` for page and component styles.
+6. Do not use inline CSS for standard styling.
+7. Use semantic HTML where appropriate.
+8. Use Ant Design primarily for interactive, data-heavy, validated, or admin-oriented UI.
+9. Prefer semantic HTML and SCSS for marketing, storytelling, and static content sections.
 
 ## Component Design
 
@@ -22,7 +23,8 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 3. Keep render functions small and readable.
 4. Move static option arrays and content definitions outside the rendering component.
 5. Keep config in `src/resources/config` and mock data in `src/resources/mock-data`.
-6. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
+6. Keep business-domain components inside the owning feature.
+7. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
 
 ## Styling
 
@@ -51,17 +53,19 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 1. Keep async state concerns out of route pages when possible.
 2. Show clear loading and error states in the consuming UI.
 3. Keep mock data and API simulation separate from presentation code.
+4. Keep async logic and feature state close to the owning feature.
 
 ## Preferred Workflow
 
 1. Create the page folder if a route is needed.
 2. Add `index.tsx` and the page SCSS Module first.
-3. Create the components required by that page inside `src/components/<page>/` or a shared component folder.
-4. Decide early whether the UI is marketing/content-driven or interaction/data-driven.
-5. Use semantic HTML for content-first sections and Ant Design for behavior-heavy sections.
-6. Extract repeated UI into focused subcomponents.
-7. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
-8. Verify imports, styling, and route composition stay clean.
+3. Create or use a feature entry component when the route belongs to a business domain.
+4. Put shared reusable UI in `src/components/` and keep feature-owned UI in `src/features/`.
+5. Decide early whether the UI is marketing/content-driven or interaction/data-driven.
+6. Use semantic HTML for content-first sections and Ant Design for behavior-heavy sections.
+7. Extract repeated UI into focused subcomponents.
+8. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
+9. Verify imports, styling, and route composition stay clean.
 
 ## Test-Driven Development
 

@@ -25,7 +25,7 @@ src/pages/home/
 1. Use lowercase or kebab-case page folder names.
 2. Use `index.tsx` as the route page entry point.
 3. Each page must own its colocated SCSS Module file.
-4. Pages should compose components, not hold large repeated UI blocks.
+4. Pages should compose feature entry components or shared layout pieces, not hold large repeated UI blocks.
 5. Keep static config and mock data out of page files.
 
 ## Routing Workflow
@@ -33,7 +33,8 @@ src/pages/home/
 1. Create the page folder first.
 2. Add `index.tsx` and `<page>.module.scss` immediately.
 3. Register the route in the router.
-4. Move repeated or page-specific UI into `src/components/<page>/` when needed.
+4. If the route belongs to a business domain, compose a feature entry component from `src/features/<feature>/components/`.
+5. Move only genuinely shared UI into `src/components/`.
 
 ## Placeholder Guidance
 

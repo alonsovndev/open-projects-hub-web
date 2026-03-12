@@ -49,15 +49,39 @@ Use this structure by default:
 
 ```text
 src/
-  components/
-    home/
-      HomePageCarousel.tsx
-      home-page-carousel.module.scss
-      index.ts
+  app/
+    layouts/
+    providers/
+    router/
+    store/
   pages/
     home/
       index.tsx
       home.module.scss
+  features/
+    auth/
+      api/
+      components/
+      hooks/
+      model/
+      tests/
+      types/
+    users/
+      api/
+      components/
+      hooks/
+      model/
+      tests/
+      types/
+  components/
+    ui/
+      AppButton.tsx
+      app-button.module.scss
+      index.ts
+    layout/
+      AppHeader.tsx
+      app-header.module.scss
+      index.ts
   resources/
     mock-data/
       all-clinic-services.ts
@@ -73,8 +97,10 @@ src/
 
 ### Folder Responsibilities
 
+- `src/app/`: Application bootstrap, providers, router, layouts, and store setup.
 - `src/pages/`: Route-level page entry points only.
-- `src/components/`: Shared and page-specific UI components.
+- `src/features/`: Domain-owned UI, API logic, state, tests, and feature types.
+- `src/components/`: Shared cross-feature UI, layout components, and UI wrappers.
 - `src/styles/`: Global styles.
 - `src/resources/mock-data/`: Development mock data and sample payloads.
 - `src/resources/config/`: Static configuration and constants.
@@ -96,7 +122,33 @@ Rules:
 1. Use lowercase page folder names such as `home` or `admin-dashboard`.
 2. Use `index.tsx` as the page entry file.
 3. Keep pages thin and focused on route composition.
-4. Do not place repeated UI blocks, static config, or heavy logic in page files.
+4. Pages should compose feature components and shared layout pieces.
+5. Do not place repeated UI blocks, feature logic, static config, or heavy state logic in page files.
+
+## Features
+
+Use `src/features/` for business-domain-owned code.
+
+Recommended structure:
+
+```text
+src/features/<feature>/
+  api/
+  components/
+  hooks/
+  model/
+  tests/
+  types/
+```
+
+Rules:
+
+1. Put business-domain UI, async logic, and state close to the owning feature.
+2. Keep feature components inside `src/features/<feature>/components/`.
+3. Put feature API integration and mock-facing logic in `api/`.
+4. Put feature-specific state and selectors in `model/` when needed.
+5. Put feature tests inside the owning feature.
+6. Promote code to `src/components`, `src/hooks`, or `src/utils` only when it is truly cross-feature.
 
 ## Components
 
@@ -105,16 +157,17 @@ Place components in `src/components/`.
 Rules:
 
 1. Use PascalCase for component file names and component names.
-2. Page-specific components should live in `src/components/<page>/`.
-3. Shared components should live in a clearly named shared location under `src/components/`.
-4. Use `index.ts` barrel exports when a folder contains multiple related files.
+2. Reserve `src/components/` for shared cross-feature UI, layout components, and UI wrappers.
+3. Prefer `src/components/ui/` for reusable wrapped primitives and `src/components/layout/` for shared shells.
+4. Do not place feature-owned business components in `src/components/` when they belong inside `src/features/`.
+5. Use `index.ts` barrel exports when a folder contains multiple related files.
 
 Example:
 
 ```text
-src/components/home/
-  HomePageCarousel.tsx
-  home-page-carousel.module.scss
+src/components/ui/
+  AppButton.tsx
+  app-button.module.scss
   index.ts
 ```
 
@@ -258,9 +311,10 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 
 1. Colocate files with the page or component they belong to when they are not shared.
 2. Keep mock data and static config out of components.
-3. Keep components focused and easy to understand.
-4. Prefer clean imports through `index.ts` barrels when helpful.
-5. Use absolute imports where supported by the project setup.
+3. Keep pages thin, features cohesive, and shared UI generic.
+4. Keep components focused and easy to understand.
+5. Prefer clean imports through `index.ts` barrels when helpful.
+6. Use absolute imports where supported by the project setup.
 
 ## TypeScript Rules
 
