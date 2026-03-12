@@ -2,39 +2,32 @@
 
 ## Description
 
-This skill focuses on building reusable, typed, and maintainable React UI using Ant Design and SCSS Modules.
+This skill focuses on building reusable, typed, and maintainable React UI using the project's page, component, and naming conventions.
 
 ## Core Rules
 
-1. Build feature UI inside `src/features/<feature>/components/<ComponentName>/`.
-2. Give every component its own folder with:
-   - `ComponentName.tsx`
-   - `ComponentName.module.scss`
-   - `index.ts`
-3. Keep pages in `src/pages/<PageName>/` and use them only as route-level composition shells.
-4. Do not use inline CSS for standard styling.
-5. Use semantic HTML where appropriate.
+1. Build route pages in `src/pages/<page>/`.
+2. Build shared and page-specific UI in `src/components/`.
+3. Use `index.tsx` as the page entry file.
+4. Use SCSS Modules with `.module.scss` for page and component styles.
+5. Do not use inline CSS for standard styling.
+6. Use semantic HTML where appropriate.
 
 ## Component Design
 
 1. Split oversized components early.
 2. Extract repeated UI into dedicated components.
 3. Keep render functions small and readable.
-4. Move static option arrays and card definitions outside the rendering component.
-5. Type configuration objects with interfaces from the feature `types` folder.
+4. Move static option arrays and content definitions outside the rendering component.
+5. Keep config in `src/resources/config` and mock data in `src/resources/mock-data`.
 
 ## Styling
 
-1. Use SCSS Modules only.
-2. Apply classes with `className={styles["class-name"]}` or equivalent module access.
-3. Prefer module classes over inline overrides.
-4. Use responsive layout rules in SCSS and Ant Design layout primitives where useful.
-
-## Ant Design Usage
-
-1. Use current Ant Design APIs only.
-2. Avoid deprecated props such as `bordered` when a modern replacement exists.
-3. Prefer Ant Design building blocks for layout and controls, but keep marketing/page composition semantic.
+1. Use SCSS Modules only for local styles.
+2. Use kebab-case file names for stylesheets.
+3. Apply classes through the imported module object.
+4. Prefer module classes over inline overrides.
+5. Keep global styles in `src/styles`.
 
 ## Accessibility
 
@@ -44,14 +37,15 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 
 ## Async UI
 
-1. Use RTK Query hooks inside feature components.
-2. Always handle `isLoading` and `isError` with Ant Design feedback components.
-3. Keep async data concerns out of page containers.
+1. Keep async state concerns out of route pages when possible.
+2. Show clear loading and error states in the consuming UI.
+3. Keep mock data and API simulation separate from presentation code.
 
 ## Preferred Workflow
 
 1. Create the page folder if a route is needed.
-2. Create the feature components required by that page.
-3. Extract repeated UI into focused subcomponents.
-4. Extract UI config into typed config files when arrays become non-trivial.
-5. Verify imports, styling, and route composition stay clean.
+2. Add `index.tsx` and the page SCSS Module first.
+3. Create the components required by that page inside `src/components/<page>/` or a shared component folder.
+4. Extract repeated UI into focused subcomponents.
+5. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
+6. Verify imports, styling, and route composition stay clean.

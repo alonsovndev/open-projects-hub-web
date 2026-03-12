@@ -20,17 +20,27 @@ Bad:
 
 Good:
 
-- page composes `HeroSection`
+- page in `src/pages/home/index.tsx` composes `HeroSection`
 - page composes `RoleSelection`
 - `RoleSelection` renders `RoleCard`
-- shared footer lives in `src/shared` when reuse is justified
+- reusable UI lives in `src/components/`
 
 ## Data Separation
 
-1. Define feature interfaces in `src/features/<feature>/types/index.ts`
-2. Move non-trivial option arrays to config files
-3. Keep config files typed
-4. Keep backend-like mock data separate from UI config
+1. Move non-trivial option arrays to `src/resources/config`
+2. Keep config files typed
+3. Keep backend-like or sample data in `src/resources/mock-data`
+4. Keep render components focused on UI and interaction
+
+## Placement Guidance
+
+Use these defaults:
+
+1. `src/components/` for reusable or page-specific UI
+2. `src/hooks/` for reusable React hooks
+3. `src/utils/` for framework-agnostic helpers
+4. `src/resources/config/` for static configuration
+5. `src/resources/mock-data/` for sample and mock data
 
 ## Review Checklist
 

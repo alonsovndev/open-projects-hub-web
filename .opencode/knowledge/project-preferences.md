@@ -1,39 +1,53 @@
 # Project Preferences
 
-This file captures repository-specific working preferences inferred from current implementation decisions.
+This file captures the preferred project structure and naming conventions.
 
 ## Naming
 
-1. Route pages live in their own folder under `src/pages`.
-2. Page components do not use the `Page` suffix.
-3. Feature components use PascalCase names and dedicated folders.
+1. Route pages live under `src/pages/<page>/index.tsx`.
+2. Page folder names should be lowercase or kebab-case.
+3. Components use PascalCase file names and PascalCase component names.
+4. Utilities, hooks, config, mock data, and non-component support files use kebab-case.
+5. Stylesheet files use kebab-case, including CSS Module files.
 
 ## Styling
 
-1. Do not use inline CSS for regular styling.
-2. Use SCSS Modules for pages and components.
-3. Keep styles colocated with the page or component that owns them.
+1. Use SCSS Modules with `.module.scss` for page and component styles.
+2. Keep styles colocated with the page or component that owns them.
+3. Keep global styles in `src/styles`.
+4. Do not use inline CSS for standard styling.
 
 ## Component Design
 
-1. Split components when they start handling multiple concerns.
-2. Separate data/config from presentation when rendering repeated options.
-3. Create focused components rather than one large section component.
+1. Keep components small and focused.
+2. Split components when they start handling multiple concerns.
+3. Separate static config and mock data from presentation code.
+4. Use barrel exports when a folder contains multiple related files.
 
-## Pages vs Features
+## Directory Preferences
 
 1. `src/pages` is for route-level composition only.
-2. `src/features` is for actual feature UI and logic.
-3. Shared layout elements move to `src/shared` only after reuse is clear.
+2. `src/components` is for shared and page-specific UI.
+3. `src/resources/config` is for static configuration and constants.
+4. `src/resources/mock-data` is for sample data and development fixtures.
+5. `src/hooks` is for reusable React hooks.
+6. `src/utils` is for reusable helpers.
 
 ## Routing Workflow
 
-1. Add placeholder pages early when new routes are introduced.
-2. Keep the final folder structure from the beginning.
-3. Route buttons should navigate via router paths, not hardcoded UI handlers embedded in config unless intentional.
+1. Create the page folder first.
+2. Use `index.tsx` as the page entry point.
+3. Add a colocated `<page>.module.scss` file for page styling.
+4. Move repeated UI into `src/components/<page>/` or shared component folders.
 
-## Ant Design Preferences
+## Imports
 
-1. Use current APIs only.
-2. Avoid deprecated props and replace them with modern equivalents.
-3. Prefer simple, maintainable Ant Design composition over over-customized markup.
+1. Prefer absolute imports where supported.
+2. Keep imports grouped by external first, internal second.
+3. Prefer clean barrel imports when they improve readability.
+
+## UI Library Preference
+
+1. Follow the existing UI library patterns already used in the repository.
+2. Avoid deprecated APIs.
+3. Keep markup semantic and maintainable.

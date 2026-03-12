@@ -14,7 +14,7 @@ Keep generated UI aligned with modern Ant Design APIs and avoid deprecated usage
 
 1. Use `variant="outlined"` instead of deprecated `bordered` where applicable.
 2. Avoid old layout or spacing APIs when the current component set offers a better alternative.
-3. Keep styling in SCSS modules instead of pushing visual decisions into component props unless it is truly component state.
+3. Keep styling in SCSS Modules instead of pushing visual decisions into component props unless it is truly component state.
 
 ## Workflow
 

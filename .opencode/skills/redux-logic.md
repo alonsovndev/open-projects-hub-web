@@ -33,10 +33,10 @@ Use RTK Query for:
 
 When backend APIs are not ready:
 
-1. Create `src/features/<feature>/api/mockData.ts`
+1. Create typed mock data files in `src/resources/mock-data/`
 2. Use `createApi` with `fakeBaseQuery()`
 3. Simulate latency in the mock layer
-4. Consume the generated hook directly in the feature component
+4. Consume the generated hook directly in the relevant component
 
 ## Avoid
 

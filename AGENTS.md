@@ -1,116 +1,159 @@
 # AGENTS.md
 
-This document provides essential guidelines for agents working on this repository, including build commands, test commands, code style guidelines, and error-handling practices.
+This document defines the working standards for agents in this repository.
 
 ## Build, Lint, and Test Commands
 
 ### Development Server
 
-- **Command:**
+```bash
+npm run dev
+```
 
-  ```bash
-  npm run dev
-  ```
-
-  - Starts the Vite development server on a local port.
+Starts the Vite development server.
 
 ### Build Application
 
-- **Command:**
+```bash
+npm run build
+```
 
-  ```bash
-  npm run build
-  ```
-
-  - Executes TypeScript checks and bundles the application for production.
+Builds the application for production.
 
 ### Lint Code
 
-- **Command:**
+```bash
+npm run lint
+```
 
-  ```bash
-  npm run lint
-  ```
-
-  - Runs ESLint against all files in the project.
+Runs ESLint when configured.
 
 ### Run Tests
 
-> **Note:** Testing scripts are currently unavailable. Add tests to the repository to enable testing automation.
+Testing scripts are not currently configured.
 
-## Code Style Guidelines
+## Project Structure
 
-### Component Architecture (Feature-Driven)
+Use this structure by default:
 
-- **Folder Structure**: Always use Feature-Driven Development. Components belong in `src/features/<featureName>/components/`.
-- **Component Isolation**: Every component must have its own dedicated directory containing:
-  - `ComponentName.tsx`: The actual React component (using named exports, e.g., `export const ComponentName`).
-  - `ComponentName.module.scss`: Isolated SCSS modules for styling (NEVER use standard `.css` or global class names).
-  - `index.ts`: A clean barrel export (e.g., `export { ComponentName } from "./ComponentName";`).
-- **Pages**: `src/pages` should only contain high-level layout containers that import feature components. They should NOT contain complex logic or hardcoded content.
+```text
+src/
+  components/
+    home/
+      HomePageCarousel.tsx
+      home-page-carousel.module.scss
+      index.ts
+  pages/
+    home/
+      index.tsx
+      home.module.scss
+  resources/
+    mock-data/
+      all-clinic-services.ts
+    config/
+      clinic-information.ts
+  styles/
+    global.scss
+  hooks/
+    use-fetch.ts
+  utils/
+    format-date.ts
+```
 
-### Styling (Ant Design + SCSS Modules)
+### Folder Responsibilities
 
-- **Ant Design First**: Rely on Ant Design components (`Typography`, `Layout`, `Row`, `Col`, `Button`, `Skeleton`, etc.) for UI elements.
-- **SCSS Modules**: Use `.module.scss` for custom styling. Apply classes using `className={styles["class-name"]}`.
-- **Responsive Design**: Ensure responsive designs using Ant Design's grid system (`xs`, `sm`, `md`, `lg`) combined with media queries inside the SCSS modules.
+- `src/pages/`: Route-level page entry points only.
+- `src/components/`: Shared and page-specific UI components.
+- `src/styles/`: Global styles.
+- `src/resources/mock-data/`: Development mock data and sample payloads.
+- `src/resources/config/`: Static configuration and constants.
+- `src/hooks/`: Custom React hooks.
+- `src/utils/`: General utility functions.
 
-### State Management & Data Fetching (RTK Query)
+## Pages
 
-- **Mock APIs First**: When building new features, simulate backend data using a Mock API pattern inside `src/features/<featureName>/api/mockData.ts` with a `simulateNetworkDelay` wrapper.
-- **RTK Query Slices**: Define endpoints using `createApi` and `fakeBaseQuery()` inside `src/features/<featureName>/api/<featureName>Api.ts`.
-- **Component-Level Fetching**: Favor granular component-level data fetching. Each component should call its own RTK Query hook (e.g., `useGetWhatWeDoQuery()`).
-- **Loading & Error States**: Always handle `isLoading` (using Ant Design `<Skeleton>` or `<Spin>`) and `isError` (using Ant Design `<Alert>`) gracefully.
+Each route page must follow this pattern:
 
-### Imports
+```text
+src/pages/<page>/
+  index.tsx
+  <page>.module.scss
+```
 
-- Use **absolute imports** where applicable, and **relative imports** for files within the same module or subdirectory.
-- Group external library imports at the top, followed by internal modules.
-- Order imports alphabetically where possible for consistency.
+Rules:
 
-### Formatting
+1. Use lowercase page folder names such as `home` or `admin-dashboard`.
+2. Use `index.tsx` as the page entry file.
+3. Keep pages thin and focused on route composition.
+4. Do not place repeated UI blocks, static config, or heavy logic in page files.
 
-- Maintain consistent spacing and indentation:
-  - Use **2 spaces** for indentation.
-  - Limit line length to **100 characters**.
-  - No trailing spaces at the end of lines.
-- Use Prettier (if integrated) for automatic formatting.
+## Components
 
-### TypeScript Rules
+Place components in `src/components/`.
 
-- All files must use the `.tsx` or `.ts` extensions.
-- Always prefer **strict types** over `any`.
-- Use TypeScript's utility types like `Partial<T>`, `Readonly<T>`, or `Pick<T>` where relevant.
-- Define props and state as interfaces when working with React components.
+Rules:
 
-### Naming Conventions
+1. Use PascalCase for component file names and component names.
+2. Page-specific components should live in `src/components/<page>/`.
+3. Shared components should live in a clearly named shared location under `src/components/`.
+4. Use `index.ts` barrel exports when a folder contains multiple related files.
 
-- File and directory names:
-  - Use **PascalCase** for React components.
-  - Use **camelCase** for utility functions, variables, and constants.
-  - Use **SCREAMING_SNAKE_CASE** for environment variables and constants.
-- React components:
-  - Function components should be named as `ComponentName: React.FC<Props> = () => {}`
+Example:
 
-### Error Handling
+```text
+src/components/home/
+  HomePageCarousel.tsx
+  home-page-carousel.module.scss
+  index.ts
+```
 
-- Wrap asynchronous logic in `try-catch` blocks to handle runtime errors.
-- For frontend UI, handle errors gracefully by showing user-friendly messages.
-- Always use `console.error` for logging errors in development, but ensure logs do not expose sensitive data.
+## Styling
+
+Use SCSS Modules for component- and page-level styles.
+
+Rules:
+
+1. Use `.module.scss` for colocated styles.
+2. Use kebab-case for stylesheet names.
+3. Keep global styles in `src/styles/`.
+4. Avoid inline styles unless the value is truly dynamic.
+
+## Naming Conventions
+
+| File Type | Convention | Example |
+| --- | --- | --- |
+| Components | PascalCase | `HomePageCarousel.tsx` |
+| Pages | `index.tsx` in lowercase folder | `src/pages/home/index.tsx` |
+| Utilities | kebab-case | `format-date.ts` |
+| Config | kebab-case | `clinic-information.ts` |
+| Mock data | kebab-case | `all-clinic-services.ts` |
+| Stylesheets | kebab-case | `home-page-carousel.module.scss` |
+
+## Code Organization Best Practices
+
+1. Colocate files with the page or component they belong to when they are not shared.
+2. Keep mock data and static config out of components.
+3. Keep components focused and easy to understand.
+4. Prefer clean imports through `index.ts` barrels when helpful.
+5. Use absolute imports where supported by the project setup.
+
+## TypeScript Rules
+
+1. Use `.ts` and `.tsx` only.
+2. Prefer strict types over `any`.
+3. Define props with interfaces.
+4. Keep utility and config files typed.
+
+## Error Handling
+
+1. Wrap asynchronous logic in `try-catch` blocks when needed.
+2. Show user-friendly UI feedback for loading and error states.
+3. Use `console.error` only for safe development diagnostics.
 
 ## General Agent Guidelines
 
-1. Review and understand the current project structure before making changes.
-2. Test changes locally using `npm run dev` and ensure there are no build errors before committing.
-3. Follow provided naming conventions and formatting guidelines strictly to maintain consistency in the codebase.
-4. If any dependencies are added, ensure they are relevant and do not bloat the project unnecessarily.
-5. In case of ambiguity or conflicts in code style, prioritize consistency with the existing codebase.
-
-## Suggestions for Agents
-
-Agents are encouraged to:
-
-- Add test cases to improve test coverage whenever functionality is updated.
-- Automate repetitive tasks with scripts when feasible to enhance project maintainability.
-
-**End of Guidelines**
+1. Review the existing structure before making changes.
+2. Follow these conventions consistently.
+3. Avoid adding unnecessary dependencies.
+4. Validate changes with build, lint, or type-check commands when possible.
+5. If guidance conflicts, prefer this file and the `.opencode` setup.

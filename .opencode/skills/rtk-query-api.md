@@ -8,7 +8,7 @@ This skill focuses on integrating REST APIs using Redux Toolkit’s RTK Query to
 
 1. **API Endpoint Management & Mocking**:
    - Define endpoints using `createApi` and `fakeBaseQuery()` initially to decouple from the backend.
-   - Use `mockData.ts` files and `simulateNetworkDelay` functions within `src/features/<feature>/api/` to simulate backend responses.
+   - Use typed mock-data files and `simulateNetworkDelay` helpers while keeping sample data separate from UI components.
    - Transition to `fetchBaseQuery` when real endpoints are ready.
 
 2. **Component-Level Fetching**:

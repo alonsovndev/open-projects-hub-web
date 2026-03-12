@@ -2,44 +2,43 @@
 
 ## Goal
 
-Create route pages that are easy to scale and consistent with the repository structure.
+Create route pages that are simple, scalable, and aligned with the project standards.
 
 ## Page Template
 
 ```text
-src/pages/<Name>/
-  <Name>.tsx
-  <Name>.module.scss
-  index.ts
+src/pages/<page>/
+  index.tsx
+  <page>.module.scss
 ```
 
 Example:
 
 ```text
-src/pages/AdminDashboard/
-  AdminDashboard.tsx
-  AdminDashboard.module.scss
-  index.ts
+src/pages/home/
+  index.tsx
+  home.module.scss
 ```
 
 ## Rules
 
-1. Do not use `Page` in the component or folder name.
-2. Each page must own its SCSS module.
-3. Pages should compose feature components and shared layout pieces.
-4. Pages should not contain large repeated UI structures.
+1. Use lowercase or kebab-case page folder names.
+2. Use `index.tsx` as the route page entry point.
+3. Each page must own its colocated SCSS Module file.
+4. Pages should compose components, not hold large repeated UI blocks.
+5. Keep static config and mock data out of page files.
 
 ## Routing Workflow
 
-1. Create the page folder and placeholder component first.
-2. Export the page through `index.ts`.
+1. Create the page folder first.
+2. Add `index.tsx` and `<page>.module.scss` immediately.
 3. Register the route in the router.
-4. Move feature-specific UI into `src/features` as soon as the page grows.
+4. Move repeated or page-specific UI into `src/components/<page>/` when needed.
 
 ## Placeholder Guidance
 
 When a route is not built yet:
 
 1. Still create the real page folder structure.
-2. Add minimal module styles instead of inline styles.
+2. Use SCSS Modules instead of inline styles.
 3. Include a clear placeholder heading and a safe way back home if needed.

@@ -2,130 +2,134 @@
 
 ## Folder Structure
 
-The project follows a feature-driven structure designed for long-term maintainability.
+The project should follow this structure:
 
 ```text
 /src
-  /app         # App root setup, providers, and router shell
-  /features    # Feature-specific UI, types, APIs, and hooks
-  /pages       # Route-level layout containers only
-  /routes      # Application route definitions
-  /shared      # Shared components and cross-feature utilities
-  /store       # Redux store setup when needed
+  /components
+  /pages
+  /resources
+    /config
+    /mock-data
+  /styles
+  /hooks
+  /utils
 ```
+
+### Responsibilities
+
+1. `src/pages` contains route-level pages only.
+2. `src/components` contains shared and page-specific UI.
+3. `src/resources/config` contains static configuration and constants.
+4. `src/resources/mock-data` contains development mock data.
+5. `src/styles` contains global styles.
+6. `src/hooks` contains custom React hooks.
+7. `src/utils` contains generic utilities.
 
 ## Page Structure
 
-Each route page lives in its own folder.
+Each route page lives in its own lowercase folder.
 
 ```text
-/src/pages/<PageName>
-  <PageName>.tsx
-  <PageName>.module.scss
+/src/pages/<page>
+  index.tsx
+  <page>.module.scss
+```
+
+Rules:
+
+1. Use lowercase or kebab-case page folder names.
+2. Use `index.tsx` as the page entry.
+3. Pages are route composition layers only.
+4. Pages should not contain repeated card markup, mock data, or heavy business logic.
+
+Example:
+
+```text
+/src/pages/home
+  index.tsx
+  home.module.scss
+```
+
+## Component Structure
+
+Place UI in `src/components`.
+
+Examples:
+
+```text
+/src/components/home
+  HomePageCarousel.tsx
+  home-page-carousel.module.scss
+  index.ts
+
+/src/components/common
+  AppHeader.tsx
+  app-header.module.scss
   index.ts
 ```
 
 Rules:
 
-1. Do not use the `Page` suffix in names.
-2. Pages are layout and composition layers only.
-3. Pages should not contain business logic, repeated card markup, or feature-specific data.
-4. If a page grows, split UI into `src/features/<feature>/components/`.
+1. Use PascalCase for component file names and component names.
+2. Use kebab-case for component stylesheet files.
+3. Use `index.ts` barrel exports when a folder contains multiple related files.
+4. Colocate page-specific components under a page-oriented folder when they are not reused.
 
-Example:
+## Data and Configuration Separation
 
-```text
-/src/pages/Home
-  Home.tsx
-  Home.module.scss
-  index.ts
-```
+Keep non-UI data out of components.
 
-## Feature Module Pattern
-
-Each feature is self-contained.
+Preferred locations:
 
 ```text
-/features/<featureName>
-  /api
-    <featureName>Api.ts
-    mockData.ts
-  /components
-    /<ComponentName>
-      ComponentName.tsx
-      ComponentName.module.scss
-      index.ts
-  /hooks
-  /types
-    index.ts
+/src/resources/config/clinic-information.ts
+/src/resources/mock-data/all-clinic-services.ts
 ```
 
-## Component Boundaries
+Rules:
 
-Keep components small and focused.
-
-1. One component should solve one UI responsibility.
-2. Repeated UI patterns should become dedicated components.
-3. Static configuration or option arrays should be extracted from JSX.
-4. Data definitions should be typed in `src/features/<feature>/types`.
-
-Example split:
-
-- `HeroSection` for header content
-- `RoleSelection` for mapping role options
-- `RoleCard` for card presentation
-
-## Data and UI Separation
-
-Prefer this structure when rendering repeatable options or cards:
-
-```text
-/features/home/components/RoleSelection
-  RoleSelection.tsx
-  RoleSelection.module.scss
-  rolesConfig.tsx
-  index.ts
-
-/features/home/types
-  index.ts
-```
-
-Guidelines:
-
-1. Put interfaces and shared feature types in `types/index.ts`.
-2. Keep UI configuration out of the render component when possible.
-3. Use `mockData.ts` only for backend-like data simulation, not for React nodes or UI handlers.
-
-## Routing
-
-The project currently uses a centralized router entry:
-
-```text
-/src/routes/AppRouter.tsx
-```
-
-Use `src/pages` for route elements and `src/features` for route content.
-
-As the app grows, route groups can later be split into dedicated public/admin route modules.
+1. Static config belongs in `src/resources/config`.
+2. Mock or sample data belongs in `src/resources/mock-data`.
+3. Components should consume data, not define large config blobs inline.
 
 ## Styling Rules
 
-1. Use SCSS Modules only.
-2. Do not use inline styles except for truly dynamic values that cannot live in SCSS.
-3. Keep page styles in the page folder and component styles in the component folder.
-4. Prefer semantic HTML structure in JSX.
+1. Use SCSS Modules with `.module.scss` for page and component styles.
+2. Use kebab-case for stylesheet names.
+3. Keep global styles in `src/styles`.
+4. Avoid inline styles except for truly dynamic values.
+5. Prefer semantic HTML structure in JSX.
 
-## State and Async Data
+## Hooks and Utilities
 
-1. Prefer RTK Query for async server state.
-2. Use feature `mockData.ts` plus `fakeBaseQuery()` before the backend exists.
-3. Keep loading and error handling close to the consuming component.
-4. Avoid pushing fetched data from pages into deep children.
+Use these locations consistently:
+
+```text
+/src/hooks/use-fetch.ts
+/src/utils/format-date.ts
+```
+
+Rules:
+
+1. Custom hooks belong in `src/hooks` and should be named with the `use-` prefix in kebab-case filenames.
+2. General-purpose helpers belong in `src/utils`.
+3. Keep hooks and utilities framework-appropriate and focused.
+
+## Routing
+
+Pages in `src/pages` should be the route targets.
+
+Rules:
+
+1. Route pages should import components rather than embed complex UI directly.
+2. Keep routing concerns separate from reusable presentation components.
+3. Use clean page folder structure from the start.
 
 ## Forbidden Patterns
 
-1. Large page components with embedded feature markup
+1. Large page files with embedded feature markup
 2. Inline CSS for standard styling
-3. Deprecated Ant Design props or APIs when modern alternatives exist
-4. Untyped configuration arrays
-5. Flat page files directly under `src/pages` for route screens
+3. Untyped config or mock-data objects when typing is practical
+4. Putting mock data inside components
+5. Flat route screen files directly under `src/pages`
