@@ -282,3 +282,20 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 3. Avoid adding unnecessary dependencies.
 4. Validate changes with build, lint, or type-check commands when possible.
 5. If guidance conflicts, prefer this file and the `.opencode` setup.
+
+## Non-Negotiable Rules
+
+1. Do not commit changes unless the user explicitly asks for a commit.
+2. Do not commit directly to `main` or `master`.
+3. Do not push or force-push unless the user explicitly asks.
+4. Never force-push to protected branches such as `main` or `master`.
+5. Do not remove, weaken, skip, or rewrite tests just to make builds or checks pass.
+6. Do not disable linting, type-checking, verification steps, CI checks, or git hooks just to get a green result.
+7. Do not change scripts, CI configuration, or test configuration merely to hide failures.
+8. Do not use bypass flags such as `--no-verify` unless the user explicitly requests it.
+9. Do not use destructive git or filesystem commands unless the user explicitly requests them.
+10. Do not overwrite, discard, or revert user changes you did not make unless the user explicitly requests it.
+11. Do not commit secrets, credentials, `.env` files, or sensitive configuration.
+12. Do not claim a test, build, or verification step passed unless it was actually run.
+13. Do not present mock, stub, or placeholder behavior as production-complete without clearly saying so.
+14. If a non-negotiable rule conflicts with task completion, stop and report the constraint instead of silently working around it.

@@ -7,6 +7,7 @@ This agent builds React features for this repository using TypeScript and the re
 ## Canonical Source of Truth
 
 1. `AGENTS.md` is the canonical conflict resolver for this repository.
+2. Follow the `AGENTS.md` non-negotiable rules without exception.
 
 ## What This Agent Owns
 
