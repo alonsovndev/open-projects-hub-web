@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { projectRequirementsData } from "../RequirementsViewer/projectRequirementsData";
-import { ProjectCodeSearch } from "../ProjectCodeSearch";
-import { RequirementsViewer } from "../RequirementsViewer";
-import { ProjectRequirementsRecord } from "../../types";
+import { ProjectRequirementsRecord } from "@/features/clientViewer/types";
+import { ProjectCodeSearch } from "@/features/clientViewer/components/ProjectCodeSearch";
+import { RequirementsViewer } from "@/features/clientViewer/components/RequirementsViewer";
+import { projectRequirementsData } from "@/features/clientViewer/components/RequirementsViewer/projectRequirementsData";
 
 const normalizeProjectCode = (projectCode: string) => {
   return projectCode.trim().toUpperCase().replace(/[^A-Z0-9-]+$/g, "");

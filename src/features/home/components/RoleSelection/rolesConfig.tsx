@@ -1,5 +1,5 @@
 import { UsergroupAddOutlined, EyeOutlined } from "@ant-design/icons";
-import { RoleConfig } from "../../types";
+import { RoleConfig } from "@/features/home/types";
 
 export const rolesConfig: RoleConfig[] = [
   {

@@ -1,9 +1,9 @@
 import React from "react";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Button, Card, Layout, Tag, Typography } from "antd";
-import { AppHeader } from "../../../../shared/components/AppHeader";
-import { Footer } from "../../../../shared/components/Footer";
-import { ProjectRequirementsRecord } from "../../types";
+import { ProjectRequirementsRecord } from "@/features/clientViewer/types";
+import { AppHeader } from "@/shared/components/AppHeader";
+import { Footer } from "@/shared/components/Footer";
 import styles from "./RequirementsViewer.module.scss";
 
 const { Text } = Typography;

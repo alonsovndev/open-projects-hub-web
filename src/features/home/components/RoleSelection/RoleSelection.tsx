@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { RoleCard } from "../RoleCard";
+import { RoleCard } from "@/features/home/components/RoleCard";
 import styles from "./RoleSelection.module.scss";
 import { rolesConfig } from "./rolesConfig";
 

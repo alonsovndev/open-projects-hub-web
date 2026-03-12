@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Home } from "../pages/Home";
-import { AdminDashboard } from "../pages/AdminDashboard";
-import { ClientViewer } from "../pages/ClientViewer";
+import { AdminDashboard } from "@/pages/AdminDashboard";
+import { ClientViewer } from "@/pages/ClientViewer";
+import { Home } from "@/pages/Home";
 
 export const AppRouter: FC = () => {
   return (

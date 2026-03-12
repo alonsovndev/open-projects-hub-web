@@ -2,8 +2,8 @@ import { FC } from "react";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Button, Card, Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
-import { AppHeader } from "../../shared/components/AppHeader";
-import { Footer } from "../../shared/components/Footer";
+import { AppHeader } from "@/shared/components/AppHeader";
+import { Footer } from "@/shared/components/Footer";
 import styles from "./AdminDashboard.module.scss";
 
 const { Paragraph, Title } = Typography;

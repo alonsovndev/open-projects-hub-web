@@ -1,4 +1,4 @@
-import { ProjectRequirementsRecord } from "../../types";
+import { ProjectRequirementsRecord } from "@/features/clientViewer/types";
 
 export const projectRequirementsData: ProjectRequirementsRecord = {
   code: "PRJ-123456.",
