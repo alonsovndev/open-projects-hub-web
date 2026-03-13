@@ -4,26 +4,16 @@ import { CheckCircleFilled, LockOutlined, MailOutlined } from "@ant-design/icons
 import { Button, Form, Input, message, Progress, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
+import type {
+  AdminLoginValues,
+  PasswordRule,
+  PasswordRuleStatus,
+  PasswordStrengthState,
+} from "@/features/admin-auth/types";
+
 import styles from "./admin-login-form.module.scss";
 
 const { Text, Title } = Typography;
-
-interface AdminLoginValues {
-  email: string;
-  password: string;
-}
-
-interface PasswordStrengthState {
-  label: string;
-  tone: "weak" | "medium" | "strong";
-  percent: number;
-}
-
-interface PasswordRule {
-  id: string;
-  label: string;
-  test: (password: string) => boolean;
-}
 
 const passwordRules: PasswordRule[] = [
   {
@@ -83,7 +73,7 @@ export const AdminLoginForm: FC = () => {
   const passwordValue = Form.useWatch("password", form) ?? "";
 
   const passwordRuleStatuses = useMemo(() => {
-    return passwordRules.map((rule) => ({
+    return passwordRules.map<PasswordRuleStatus>((rule) => ({
       ...rule,
       isMet: rule.test(passwordValue),
     }));
