@@ -1,8 +1,8 @@
 import type { FC } from "react";
 
-import { HomeHero } from "@/features/home/components/HomeHero";
-import { RoleSelection } from "@/features/home/components/RoleSelection";
-import { Footer } from "@/components/layout/Footer";
+import { Footer } from "@/components/layout/footer";
+import { HomeHero } from "@/features/home/components/home-hero";
+import { RoleSelection } from "@/features/home/components/role-selection";
 
 import styles from "./home.module.scss";
 

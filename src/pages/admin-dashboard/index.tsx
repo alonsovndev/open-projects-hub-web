@@ -4,8 +4,8 @@ import { LogoutOutlined } from "@ant-design/icons";
 import { Button, Card, Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import { AppHeader } from "@/components/layout/AppHeader";
-import { Footer } from "@/components/layout/Footer";
+import { AppHeader } from "@/components/layout/app-header";
+import { Footer } from "@/components/layout/footer";
 
 import styles from "./admin-dashboard.module.scss";
 

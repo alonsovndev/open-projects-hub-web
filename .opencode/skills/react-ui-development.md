@@ -15,6 +15,7 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 7. Use semantic HTML where appropriate.
 8. Use Ant Design primarily for interactive, data-heavy, validated, or admin-oriented UI.
 9. Prefer semantic HTML and SCSS for marketing, storytelling, and static content sections.
+10. Use kebab-case for component folder names and PascalCase for component files.
 
 ## Component Design
 

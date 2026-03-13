@@ -4,7 +4,7 @@ import { KeyOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Divider, Form, Input, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import styles from "./ProjectCodeSearch.module.scss";
+import styles from "./project-code-search.module.scss";
 
 const { Title } = Typography;
 

@@ -79,23 +79,26 @@ Examples:
   index.ts
 
 /src/components/ui
-  AppButton.tsx
-  app-button.module.scss
-  index.ts
+  /app-button
+    AppButton.tsx
+    app-button.module.scss
+    index.ts
 
 /src/components/layout
-  AppHeader.tsx
-  app-header.module.scss
-  index.ts
+  /app-header
+    AppHeader.tsx
+    app-header.module.scss
+    index.ts
 ```
 
 Rules:
 
 1. Use PascalCase for component file names and component names.
-2. Use kebab-case for component stylesheet files.
-3. Use `index.ts` barrel exports when a folder contains multiple related files.
-4. Keep shared UI in `src/components`.
-5. Keep domain-owned UI in the owning feature folder.
+2. Use kebab-case for component folder names when a component has its own folder.
+3. Use kebab-case for component stylesheet files.
+4. Use `index.ts` barrel exports when a folder contains multiple related files.
+5. Keep shared UI in `src/components`.
+6. Keep domain-owned UI in the owning feature folder.
 
 ## Feature Structure
 

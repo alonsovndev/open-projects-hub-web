@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { ClientViewerPortal } from "@/features/client-viewer/components/ClientViewerPortal";
+import { ClientViewerPortal } from "@/features/client-viewer/components/client-viewer-portal";
 
 import styles from "./client-viewer.module.scss";
 

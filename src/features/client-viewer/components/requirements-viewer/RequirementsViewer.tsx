@@ -3,11 +3,11 @@ import type { FC } from "react";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Button, Card, Layout, Tag, Typography } from "antd";
 
-import { AppHeader } from "@/components/layout/AppHeader";
-import { Footer } from "@/components/layout/Footer";
+import { AppHeader } from "@/components/layout/app-header";
+import { Footer } from "@/components/layout/footer";
 import type { ProjectRequirementsRecord } from "@/features/client-viewer/types";
 
-import styles from "./RequirementsViewer.module.scss";
+import styles from "./requirements-viewer.module.scss";
 
 interface RequirementsViewerProps {
   project: ProjectRequirementsRecord;

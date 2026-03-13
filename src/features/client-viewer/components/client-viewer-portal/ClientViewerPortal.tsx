@@ -1,7 +1,7 @@
 import { useState, type FC } from "react";
 
-import { ProjectCodeSearch } from "@/features/client-viewer/components/ProjectCodeSearch";
-import { RequirementsViewer } from "@/features/client-viewer/components/RequirementsViewer";
+import { ProjectCodeSearch } from "@/features/client-viewer/components/project-code-search";
+import { RequirementsViewer } from "@/features/client-viewer/components/requirements-viewer";
 import { projectRequirementsData } from "@/features/client-viewer/api/project-requirements-data";
 import type { ProjectRequirementsRecord } from "@/features/client-viewer/types";
 

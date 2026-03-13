@@ -75,13 +75,15 @@ src/
       types/
   components/
     ui/
-      AppButton.tsx
-      app-button.module.scss
-      index.ts
+      app-button/
+        AppButton.tsx
+        app-button.module.scss
+        index.ts
     layout/
-      AppHeader.tsx
-      app-header.module.scss
-      index.ts
+      app-header/
+        AppHeader.tsx
+        app-header.module.scss
+        index.ts
   resources/
     mock-data/
       all-clinic-services.ts
@@ -135,6 +137,10 @@ Recommended structure:
 src/features/<feature>/
   api/
   components/
+    <component-folder>/
+      <ComponentName>.tsx
+      <component-name>.module.scss
+      index.ts
   hooks/
   model/
   tests/
@@ -145,10 +151,11 @@ Rules:
 
 1. Put business-domain UI, async logic, and state close to the owning feature.
 2. Keep feature components inside `src/features/<feature>/components/`.
-3. Put feature API integration and mock-facing logic in `api/`.
-4. Put feature-specific state and selectors in `model/` when needed.
-5. Put feature tests inside the owning feature.
-6. Promote code to `src/components`, `src/hooks`, or `src/utils` only when it is truly cross-feature.
+3. Use kebab-case for component folder names.
+4. Put feature API integration and mock-facing logic in `api/`.
+5. Put feature-specific state and selectors in `model/` when needed.
+6. Put feature tests inside the owning feature.
+7. Promote code to `src/components`, `src/hooks`, or `src/utils` only when it is truly cross-feature.
 
 ## Components
 
@@ -157,18 +164,20 @@ Place components in `src/components/`.
 Rules:
 
 1. Use PascalCase for component file names and component names.
-2. Reserve `src/components/` for shared cross-feature UI, layout components, and UI wrappers.
-3. Prefer `src/components/ui/` for reusable wrapped primitives and `src/components/layout/` for shared shells.
-4. Do not place feature-owned business components in `src/components/` when they belong inside `src/features/`.
-5. Use `index.ts` barrel exports when a folder contains multiple related files.
+2. Use kebab-case for component folder names when a component has its own folder.
+3. Reserve `src/components/` for shared cross-feature UI, layout components, and UI wrappers.
+4. Prefer `src/components/ui/` for reusable wrapped primitives and `src/components/layout/` for shared shells.
+5. Do not place feature-owned business components in `src/components/` when they belong inside `src/features/`.
+6. Use `index.ts` barrel exports when a folder contains multiple related files.
 
 Example:
 
 ```text
 src/components/ui/
-  AppButton.tsx
-  app-button.module.scss
-  index.ts
+  app-button/
+    AppButton.tsx
+    app-button.module.scss
+    index.ts
 ```
 
 ## Styling
@@ -301,6 +310,7 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 | File Type | Convention | Example |
 | --- | --- | --- |
 | Components | PascalCase | `HomePageCarousel.tsx` |
+| Component folders | kebab-case | `requirements-viewer/` |
 | Pages | `index.tsx` in lowercase folder | `src/pages/home/index.tsx` |
 | Utilities | kebab-case | `format-date.ts` |
 | Config | kebab-case | `clinic-information.ts` |

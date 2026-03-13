@@ -47,3 +47,4 @@ Before considering work complete, verify:
 3. Ant Design is used only where it adds structural or behavioral value.
 4. Repeated data and configuration are extracted to the proper locations.
 5. Relevant tests and verification steps were handled according to repository support.
+6. Component folders use kebab-case and component files remain PascalCase.

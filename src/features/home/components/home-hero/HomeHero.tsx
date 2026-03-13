@@ -3,7 +3,7 @@ import type { FC } from "react";
 import { ProjectOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 
-import styles from "./HomeHero.module.scss";
+import styles from "./home-hero.module.scss";
 
 const { Paragraph, Title } = Typography;
 

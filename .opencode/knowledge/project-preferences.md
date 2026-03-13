@@ -7,8 +7,9 @@ This file captures the preferred project structure and naming conventions.
 1. Route pages live under `src/pages/<page>/index.tsx`.
 2. Page folder names should be lowercase or kebab-case.
 3. Components use PascalCase file names and PascalCase component names.
-4. Utilities, hooks, config, mock data, and non-component support files use kebab-case.
-5. Stylesheet files use kebab-case, including CSS Module files.
+4. Component folder names use kebab-case when a component has its own folder.
+5. Utilities, hooks, config, mock data, and non-component support files use kebab-case.
+6. Stylesheet files use kebab-case, including CSS Module files.
 
 ## Styling
 

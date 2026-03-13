@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react";
 
 import { Typography } from "antd";
 
-import styles from "./AppHeader.module.scss";
+import styles from "./app-header.module.scss";
 
 interface AppHeaderProps {
   children?: ReactNode;

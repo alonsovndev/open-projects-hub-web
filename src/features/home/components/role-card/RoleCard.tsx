@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Card, Button } from "antd";
-import styles from "./RoleCard.module.scss";
+import styles from "./role-card.module.scss";
 
 const { Title, Paragraph } = Typography;
 
