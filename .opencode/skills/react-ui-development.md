@@ -25,7 +25,8 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 4. Move static option arrays and content definitions outside the rendering component.
 5. Keep config in `src/resources/config` and mock data in `src/resources/mock-data`.
 6. Keep business-domain components inside the owning feature.
-7. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
+7. Keep feature-owned interfaces and type aliases in `src/features/<feature>/types/` instead of colocating them inside components when they support feature behavior or are reused.
+8. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
 
 ## Styling
 

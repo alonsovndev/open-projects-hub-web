@@ -34,6 +34,7 @@ This file captures the preferred project structure and naming conventions.
 5. `src/resources/mock-data` is for sample data and development fixtures.
 6. `src/hooks` is for reusable cross-feature React hooks.
 7. `src/utils` is for reusable helpers.
+8. Feature-owned interfaces and type aliases should live in `src/features/<feature>/types/index.ts` when they are consumed beyond a tiny local-only scope.
 
 ## Routing Workflow
 
