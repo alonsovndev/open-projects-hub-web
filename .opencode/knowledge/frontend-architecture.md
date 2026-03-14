@@ -110,6 +110,7 @@ Use this structure for feature-owned code:
   /components
   /hooks
   /model
+  /state
   /tests
   /types
 ```
@@ -117,7 +118,7 @@ Use this structure for feature-owned code:
 Rules:
 
 1. Keep API integration close to the owning feature.
-2. Keep feature state in `model` when needed.
+2. Keep feature Redux slices, selectors, and reducers in a top-level feature `state/` folder.
 3. Keep feature tests near the feature.
 4. Keep feature-owned interfaces and type aliases in the feature `types/` folder instead of inside components whenever they are reusable or support feature logic.
 5. Import feature types from the feature `types/index.ts` barrel when available.
@@ -135,6 +136,7 @@ Recommended shape:
   /hooks
     use-<feature>-flow.ts
   /model
+  /state
   /api
   /types
 ```
@@ -144,10 +146,11 @@ Rules:
 1. Keep presentational components focused on JSX, class names, and simple display mapping.
 2. Put feature orchestration in a descriptive hook under `hooks/`.
 3. Put pure business rules, normalizers, selectors, and calculators in `model/`.
-4. Put API access, mock-backed queries, and data retrieval helpers in `api/`.
-5. Hooks should expose the minimum UI-ready contract needed by the component, such as state, derived state, handlers, field rules, and loading or error flags.
-6. Prefer descriptive hook names based on the feature purpose instead of pattern-heavy naming.
-7. Do not create extra orchestration hooks for tiny presentational-only components.
+4. Put feature state containers such as Redux slices, selectors, and reducers in `state/` at the feature root instead of nesting them under `model/`.
+5. Put API access, mock-backed queries, and data retrieval helpers in `api/`.
+6. Hooks should expose the minimum UI-ready contract needed by the component, such as state, derived state, handlers, field rules, and loading or error flags.
+7. Prefer descriptive hook names based on the feature purpose instead of pattern-heavy naming.
+8. Do not create extra orchestration hooks for tiny presentational-only components.
 
 ## Data and Configuration Separation
 

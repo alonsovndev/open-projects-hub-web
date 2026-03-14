@@ -45,7 +45,8 @@ Recommended split:
 1. `components/`: presentational React components only
 2. `hooks/use-<descriptive-feature-name>.ts`: state, derived state, handlers, form orchestration, navigation coordination
 3. `model/`: pure logic such as validators, mappers, formatters, and calculators
-4. `api/`: feature-owned data access and mock-backed services
+4. `state/`: feature-owned Redux slices, selectors, reducers, and state-specific helpers
+5. `api/`: feature-owned data access and mock-backed services
 
 Review checklist:
 
@@ -53,6 +54,7 @@ Review checklist:
 2. The hook returns a small, UI-ready contract rather than leaking unrelated implementation details.
 3. Pure logic remains outside the hook when it does not need React.
 4. Reusable data rules are not duplicated between the UI and the hook.
+5. Redux slices should live in feature `state/` folders, not under `model/` or `components/`.
 
 ## Styling
 
