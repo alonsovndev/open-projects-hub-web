@@ -3,19 +3,22 @@ import { useMemo, useState } from "react";
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import { useAppDispatch } from "@/app/store/hooks";
 import { authenticateAdmin } from "@/features/admin-auth/api/authenticate-admin";
+import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
+import { setAdminSession } from "@/features/admin-auth/model/admin-auth-slice";
 import {
   getPasswordRuleStatuses,
   isValidEmail,
   validatePasswordRequirements,
 } from "@/features/admin-auth/model/password-policy";
-import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
 import { getPasswordStrength } from "@/features/admin-auth/model/password-strength";
 import type { AdminLoginValues } from "@/features/admin-auth/types";
 
 export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [authError, setAuthError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const emailValue = Form.useWatch("email", form) ?? "";
@@ -49,6 +52,7 @@ export const useAdminLoginForm = () => {
       const response = await authenticateAdmin(values);
 
       saveAdminSession(response.session);
+      dispatch(setAdminSession(response.session));
       message.success("Demo authentication succeeded. Redirecting to the admin dashboard.");
       navigate("/admin/welcome");
     } catch (error) {

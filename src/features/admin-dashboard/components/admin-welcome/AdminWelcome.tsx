@@ -16,6 +16,7 @@ export const AdminWelcome: FC = () => {
   return (
     <section className={styles.dashboard} aria-labelledby="admin-welcome-title">
       <AppHeader
+        identity={adminWelcome.session ? <span className={styles.userEmail}>{adminWelcome.session.email}</span> : null}
         actions={
           <Button type="text" className={styles.headerAction} onClick={adminWelcome.handleSignOut}>
             Sign Out

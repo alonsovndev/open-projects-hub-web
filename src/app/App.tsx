@@ -1,13 +1,17 @@
 import type { FC } from "react";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import { AppRouter } from "@/app/router/AppRouter";
+import { store } from "@/app/store/store";
 
 const App: FC = () => {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </Provider>
   );
 };
 

@@ -1,16 +1,16 @@
 import type { FC } from "react";
 import { Navigate } from "react-router-dom";
 
+import { useAppSelector } from "@/app/store/hooks";
 import { Footer } from "@/components/layout/footer";
-import { useAdminSession } from "@/features/admin-auth/hooks/use-admin-session";
 import { AdminWelcome } from "@/features/admin-dashboard/components/admin-welcome";
 
 import styles from "./admin-welcome.module.scss";
 
 export const AdminWelcomePage: FC = () => {
-  const adminSession = useAdminSession();
+  const adminSession = useAppSelector((state) => state.adminAuth.session);
 
-  if (!adminSession.isAuthenticated) {
+  if (!adminSession) {
     return <Navigate to="/admin" replace />;
   }
 
