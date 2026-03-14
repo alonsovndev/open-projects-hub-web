@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "@/app/store/hooks";
-import { authenticateAdmin } from "@/features/admin-auth/api/authenticate-admin";
+import { useLoginMutation } from "@/features/admin-auth/api/admin-auth-api";
 import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
 import { setAdminSession } from "@/features/admin-auth/state/admin-auth-slice";
 import {
@@ -19,8 +19,7 @@ export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [authError, setAuthError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [login, { isLoading, error }] = useLoginMutation();
   const emailValue = Form.useWatch("email", form) ?? "";
   const passwordValue = Form.useWatch("password", form) ?? "";
 
@@ -42,25 +41,26 @@ export const useAdminLoginForm = () => {
     return validatePasswordRequirements(passwordValue);
   }, [passwordValue]);
 
-  const isSubmitEnabled = isEmailValid && isPasswordValid && !isSubmitting;
+  const isSubmitEnabled = isEmailValid && isPasswordValid && !isLoading;
+
+  const authError = useMemo(() => {
+    const errorData = error as { data?: { message?: string } } | undefined;
+
+    return errorData?.data?.message ?? "";
+  }, [error]);
 
   const handleSubmit = async (values: AdminLoginValues) => {
-    setAuthError("");
-    setIsSubmitting(true);
-
     try {
-      const response = await authenticateAdmin(values);
+      const response = await login(values).unwrap();
 
       saveAdminSession(response.session);
       dispatch(setAdminSession(response.session));
       message.success("Demo authentication succeeded. Redirecting to the admin dashboard.");
       navigate("/admin/welcome");
     } catch (error) {
-      const nextError = error instanceof Error ? error.message : "Unable to sign in right now. Please try again.";
+      const nextError = error as { data?: { message?: string } } | undefined;
 
-      setAuthError(nextError);
-    } finally {
-      setIsSubmitting(false);
+      message.error(nextError?.data?.message ?? "Unable to sign in right now. Please try again.");
     }
   };
 
@@ -104,7 +104,7 @@ export const useAdminLoginForm = () => {
   return {
     form,
     authError,
-    isSubmitting,
+    isSubmitting: isLoading,
     passwordRuleStatuses,
     passwordStrength,
     hasPasswordInput,
