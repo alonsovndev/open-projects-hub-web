@@ -1,19 +1,23 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import { authenticateAdmin } from "@/features/admin-auth/api/authenticate-admin";
 import {
   getPasswordRuleStatuses,
   isValidEmail,
   validatePasswordRequirements,
 } from "@/features/admin-auth/model/password-policy";
+import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
 import { getPasswordStrength } from "@/features/admin-auth/model/password-strength";
 import type { AdminLoginValues } from "@/features/admin-auth/types";
 
 export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
   const navigate = useNavigate();
+  const [authError, setAuthError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const emailValue = Form.useWatch("email", form) ?? "";
   const passwordValue = Form.useWatch("password", form) ?? "";
 
@@ -35,11 +39,25 @@ export const useAdminLoginForm = () => {
     return validatePasswordRequirements(passwordValue);
   }, [passwordValue]);
 
-  const isSubmitEnabled = isEmailValid && isPasswordValid;
+  const isSubmitEnabled = isEmailValid && isPasswordValid && !isSubmitting;
 
-  const handleSubmit = async () => {
-    message.success("Demo login submitted. Redirecting to the placeholder admin dashboard.");
-    navigate("/admin/welcome");
+  const handleSubmit = async (values: AdminLoginValues) => {
+    setAuthError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await authenticateAdmin(values);
+
+      saveAdminSession(response.session);
+      message.success("Demo authentication succeeded. Redirecting to the admin dashboard.");
+      navigate("/admin/welcome");
+    } catch (error) {
+      const nextError = error instanceof Error ? error.message : "Unable to sign in right now. Please try again.";
+
+      setAuthError(nextError);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -81,6 +99,8 @@ export const useAdminLoginForm = () => {
 
   return {
     form,
+    authError,
+    isSubmitting,
     passwordRuleStatuses,
     passwordStrength,
     hasPasswordInput,

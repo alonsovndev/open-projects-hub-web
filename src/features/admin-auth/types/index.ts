@@ -3,6 +3,17 @@ export interface AdminLoginValues {
   password: string;
 }
 
+export interface AdminSession {
+  token: string;
+  email: string;
+  displayName: string;
+  loggedInAt: string;
+}
+
+export interface AdminAuthResponse {
+  session: AdminSession;
+}
+
 export interface PasswordStrengthState {
   label: string;
   tone: "weak" | "medium" | "strong";

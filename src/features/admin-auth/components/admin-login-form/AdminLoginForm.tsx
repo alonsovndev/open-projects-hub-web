@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 import { CheckCircleFilled, LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Progress, Typography } from "antd";
+import { Alert, Button, Form, Input, Progress, Typography } from "antd";
 import { Link } from "react-router-dom";
 
 import { useAdminLoginForm } from "@/features/admin-auth/hooks/use-admin-login-form";
@@ -80,12 +80,17 @@ export const AdminLoginForm: FC = () => {
             </Link>
           </div>
 
+          {adminLoginForm.authError ? (
+            <Alert className={styles.errorAlert} type="error" showIcon message={adminLoginForm.authError} />
+          ) : null}
+
           <Button
             type="primary"
             htmlType="submit"
             size="large"
             block
             className={styles.submitButton}
+            loading={adminLoginForm.isSubmitting}
             disabled={!adminLoginForm.isSubmitEnabled}
           >
             Sign In

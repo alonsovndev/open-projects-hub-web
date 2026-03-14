@@ -33,6 +33,10 @@ export const AdminWelcome: FC = () => {
             Welcome back, Admin
           </Title>
 
+          {adminWelcome.session ? (
+            <Paragraph className={styles.sessionMeta}>Signed in as {adminWelcome.session.email}</Paragraph>
+          ) : null}
+
           <Paragraph className={styles.description}>
             You are now inside the admin area. This screen is a simple placeholder while the project workspace,
             AI refinement flow, and team tools are still being built.
