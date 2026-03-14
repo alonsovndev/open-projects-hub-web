@@ -38,7 +38,8 @@ export const useAdminLoginForm = () => {
   const isSubmitEnabled = isEmailValid && isPasswordValid;
 
   const handleSubmit = async () => {
-    await message.success("Demo login submitted. Admin authentication is not connected yet.");
+    message.success("Demo login submitted. Redirecting to the placeholder admin dashboard.");
+    navigate("/admin/welcome");
   };
 
   const handleBack = () => {
