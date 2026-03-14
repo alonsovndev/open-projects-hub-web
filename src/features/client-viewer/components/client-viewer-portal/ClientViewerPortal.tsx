@@ -1,36 +1,15 @@
-import { useState, type FC } from "react";
+import type { FC } from "react";
 
 import { ProjectCodeSearch } from "@/features/client-viewer/components/project-code-search";
 import { RequirementsViewer } from "@/features/client-viewer/components/requirements-viewer";
-import { projectRequirementsData } from "@/features/client-viewer/api/project-requirements-data";
-import type { ProjectRequirementsRecord } from "@/features/client-viewer/types";
-
-const normalizeProjectCode = (projectCode: string) => {
-  return projectCode.trim().toUpperCase().replace(/[^A-Z0-9-]+$/g, "");
-};
+import { useClientViewerPortal } from "@/features/client-viewer/hooks/use-client-viewer-portal";
 
 export const ClientViewerPortal: FC = () => {
-  const [activeProject, setActiveProject] = useState<ProjectRequirementsRecord | null>(null);
+  const clientViewerPortal = useClientViewerPortal();
 
-  const handleSearch = (projectCode: string) => {
-    const normalizedInput = normalizeProjectCode(projectCode);
-    const normalizedProjectCode = normalizeProjectCode(projectRequirementsData.code);
-
-    if (normalizedInput === normalizedProjectCode) {
-      setActiveProject(projectRequirementsData);
-      return true;
-    }
-
-    return false;
-  };
-
-  const handleSignOut = () => {
-    setActiveProject(null);
-  };
-
-  if (activeProject) {
-    return <RequirementsViewer project={activeProject} onSignOut={handleSignOut} />;
+  if (clientViewerPortal.activeProject) {
+    return <RequirementsViewer project={clientViewerPortal.activeProject} onSignOut={clientViewerPortal.clearActiveProject} />;
   }
 
-  return <ProjectCodeSearch onSearch={handleSearch} />;
+  return <ProjectCodeSearch onSearch={clientViewerPortal.searchProject} />;
 };

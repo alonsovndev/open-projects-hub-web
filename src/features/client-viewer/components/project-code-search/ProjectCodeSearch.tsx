@@ -1,42 +1,21 @@
-import { useState, type FC } from "react";
+import type { FC } from "react";
 
 import { KeyOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Divider, Form, Input, Typography } from "antd";
-import { useNavigate } from "react-router-dom";
+
+import { useProjectCodeSearch } from "@/features/client-viewer/hooks/use-project-code-search";
+import type { ProjectCodeFormValues } from "@/features/client-viewer/types";
 
 import styles from "./project-code-search.module.scss";
 
 const { Title } = Typography;
-
-interface ProjectCodeFormValues {
-  projectCode: string;
-}
 
 interface ProjectCodeSearchProps {
   onSearch: (projectCode: string) => boolean;
 }
 
 export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({ onSearch }) => {
-  const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const handleFinish = ({ projectCode }: ProjectCodeFormValues) => {
-    const normalizedCode = projectCode.trim().toUpperCase();
-    const wasFound = onSearch(normalizedCode);
-
-    if (!wasFound) {
-      setErrorMessage("We couldn't find a project with that access code.");
-      return;
-    }
-
-    setErrorMessage("");
-  };
-
-  const handleValuesChange = () => {
-    if (errorMessage) {
-      setErrorMessage("");
-    }
-  };
+  const projectCodeSearch = useProjectCodeSearch({ onSearch });
 
   return (
     <Card className={styles.card}>
@@ -47,24 +26,15 @@ export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({ onSearch }) => {
       <Form<ProjectCodeFormValues>
         layout="vertical"
         className={styles.form}
-        onFinish={handleFinish}
-        onValuesChange={handleValuesChange}
+        onFinish={projectCodeSearch.handleSubmit}
+        onValuesChange={projectCodeSearch.handleValuesChange}
       >
         <Form.Item
           label="Project Access Code"
           name="projectCode"
           initialValue="PRJ-123456"
           extra="Enter the 6-digit access code shared by your freelancer."
-          rules={[
-            {
-              required: true,
-              message: "Please enter the project access code.",
-            },
-            {
-              pattern: /^PRJ-\d{6}$/i,
-              message: "Use the format PRJ-123456.",
-            },
-          ]}
+          rules={projectCodeSearch.projectCodeRules}
         >
           <Input
             size="large"
@@ -79,13 +49,13 @@ export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({ onSearch }) => {
         </Button>
       </Form>
 
-      {errorMessage ? (
-        <Alert className={styles.feedback} type="error" showIcon description={errorMessage} />
+      {projectCodeSearch.errorMessage ? (
+        <Alert className={styles.feedback} type="error" showIcon description={projectCodeSearch.errorMessage} />
       ) : null}
 
       <Divider className={styles.divider} />
 
-      <Button type="link" className={styles.backButton} onClick={() => navigate("/")}>Back to role selection</Button>
+      <Button type="link" className={styles.backButton} onClick={projectCodeSearch.handleBack}>Back to role selection</Button>
     </Card>
   );
 };

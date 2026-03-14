@@ -23,3 +23,7 @@ export interface ProjectRequirementsRecord {
   projectTitle: string;
   stories: ProjectRequirementStory[];
 }
+
+export interface ProjectCodeFormValues {
+  projectCode: string;
+}
