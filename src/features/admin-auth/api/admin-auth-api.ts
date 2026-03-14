@@ -1,3 +1,5 @@
+import { adminAuthConfig } from "@/resources/config/admin-auth";
+
 import { baseApi } from "@/app/api/base-api";
 import type { AdminAuthResponse, AdminLoginValues, AdminSession } from "@/features/admin-auth/types";
 
@@ -44,7 +46,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<AdminAuthResponse, AdminLoginValues>({
       query: (credentials) => ({
-        url: "/api/admin/login",
+        url: adminAuthConfig.loginEndpoint,
         method: "POST",
         body: credentials,
       }),

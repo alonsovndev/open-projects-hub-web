@@ -16,7 +16,7 @@ export const AdminWelcome: FC = () => {
   return (
     <section className={styles.dashboard} aria-labelledby="admin-welcome-title">
       <AppHeader
-        identity={adminWelcome.session ? <span className={styles.userEmail}>{adminWelcome.session.email}</span> : null}
+        identity={adminWelcome.session ? <span className={styles.userEmail}>{adminWelcome.session.displayName}</span> : null}
         actions={
           <Button type="text" className={styles.headerAction} onClick={adminWelcome.handleSignOut}>
             Sign Out
@@ -35,7 +35,7 @@ export const AdminWelcome: FC = () => {
           </Title>
 
           {adminWelcome.session ? (
-            <Paragraph className={styles.sessionMeta}>Signed in as {adminWelcome.session.email}</Paragraph>
+            <Paragraph className={styles.sessionMeta}>Signed in as {adminWelcome.session.displayName}</Paragraph>
           ) : null}
 
           <Paragraph className={styles.description}>
