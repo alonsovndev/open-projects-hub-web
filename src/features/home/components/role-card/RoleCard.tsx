@@ -1,5 +1,8 @@
 import React from "react";
 import { Typography, Card, Button } from "antd";
+
+import type { RoleButtonType, RoleIconType } from "@/features/home/types";
+
 import styles from "./role-card.module.scss";
 
 const { Title, Paragraph } = Typography;
@@ -8,9 +11,9 @@ export interface RoleCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
-  iconType: "admin" | "viewer";
+  iconType: RoleIconType;
   buttonText: string;
-  buttonType?: "primary" | "default";
+  buttonType?: RoleButtonType;
   onClick?: () => void;
 }
 

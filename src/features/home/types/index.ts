@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
+export type RoleIconType = "admin" | "viewer";
+
+export type RoleButtonType = "primary" | "default";
 
 export interface RoleConfig {
   id: string;
   title: string;
   description: string;
-  icon: ReactNode;
-  iconType: "admin" | "viewer";
+  iconType: RoleIconType;
   buttonText: string;
-  buttonType: "primary" | "default";
+  buttonType: RoleButtonType;
   path: string;
 }
