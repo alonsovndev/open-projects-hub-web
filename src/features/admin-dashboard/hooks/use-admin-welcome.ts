@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { clearAdminSession } from "@/features/admin-auth/model/admin-session";
-import { clearAdminSessionState } from "@/features/admin-auth/model/admin-auth-slice";
+import { clearAdminSessionState } from "@/features/admin-auth/state/admin-auth-slice";
 
 export const useAdminWelcome = () => {
   const navigate = useNavigate();

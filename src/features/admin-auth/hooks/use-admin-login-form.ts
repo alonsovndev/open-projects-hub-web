@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/app/store/hooks";
 import { authenticateAdmin } from "@/features/admin-auth/api/authenticate-admin";
 import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
-import { setAdminSession } from "@/features/admin-auth/model/admin-auth-slice";
+import { setAdminSession } from "@/features/admin-auth/state/admin-auth-slice";
 import {
   getPasswordRuleStatuses,
   isValidEmail,
