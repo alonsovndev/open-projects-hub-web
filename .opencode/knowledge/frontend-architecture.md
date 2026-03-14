@@ -123,6 +123,32 @@ Rules:
 5. Import feature types from the feature `types/index.ts` barrel when available.
 6. Promote code out of a feature only when it becomes genuinely shared.
 
+## Feature Logic and UI Separation
+
+When a feature component starts mixing rendering with validation, navigation, derived state, orchestration, or data lookup, split the responsibilities into descriptive feature files.
+
+Recommended shape:
+
+```text
+/src/features/<feature>
+  /components
+  /hooks
+    use-<feature>-flow.ts
+  /model
+  /api
+  /types
+```
+
+Rules:
+
+1. Keep presentational components focused on JSX, class names, and simple display mapping.
+2. Put feature orchestration in a descriptive hook under `hooks/`.
+3. Put pure business rules, normalizers, selectors, and calculators in `model/`.
+4. Put API access, mock-backed queries, and data retrieval helpers in `api/`.
+5. Hooks should expose the minimum UI-ready contract needed by the component, such as state, derived state, handlers, field rules, and loading or error flags.
+6. Prefer descriptive hook names based on the feature purpose instead of pattern-heavy naming.
+7. Do not create extra orchestration hooks for tiny presentational-only components.
+
 ## Data and Configuration Separation
 
 Keep non-UI data out of components.

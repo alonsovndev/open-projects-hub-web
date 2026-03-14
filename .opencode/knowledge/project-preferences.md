@@ -24,6 +24,8 @@ This file captures the preferred project structure and naming conventions.
 2. Split components when they start handling multiple concerns.
 3. Separate static config and mock data from presentation code.
 4. Use barrel exports when a folder contains multiple related files.
+5. Prefer descriptive feature hooks to separate UI rendering from feature orchestration when components become state-heavy.
+6. Keep pure logic in feature `model/` files instead of embedding it in JSX components.
 
 ## Directory Preferences
 

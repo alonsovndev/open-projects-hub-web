@@ -27,6 +27,32 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 6. Keep business-domain components inside the owning feature.
 7. Keep feature-owned interfaces and type aliases in `src/features/<feature>/types/` instead of colocating them inside components when they support feature behavior or are reused.
 8. Do not introduce Ant Design abstractions where semantic markup and SCSS are simpler and clearer.
+9. When components grow in responsibility, separate UI from logic with a descriptive feature hook.
+
+## UI and Logic Separation Workflow
+
+Use a feature hook when a feature UI starts owning multiple non-visual concerns.
+
+Good candidates:
+
+1. Forms with validation and derived submit state
+2. Search and filter flows
+3. Multi-step interactions
+4. View switching, navigation coordination, or async orchestration
+
+Recommended split:
+
+1. `components/`: presentational React components only
+2. `hooks/use-<descriptive-feature-name>.ts`: state, derived state, handlers, form orchestration, navigation coordination
+3. `model/`: pure logic such as validators, mappers, formatters, and calculators
+4. `api/`: feature-owned data access and mock-backed services
+
+Review checklist:
+
+1. The UI component can stay focused on rendering.
+2. The hook returns a small, UI-ready contract rather than leaking unrelated implementation details.
+3. Pure logic remains outside the hook when it does not need React.
+4. Reusable data rules are not duplicated between the UI and the hook.
 
 ## Styling
 
