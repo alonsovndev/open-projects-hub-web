@@ -1,19 +1,11 @@
 import type { FC } from "react";
-import { Navigate } from "react-router-dom";
 
-import { useAppSelector } from "@/app/store/hooks";
 import { Footer } from "@/components/layout/footer";
 import { AdminLoginForm } from "@/features/admin-auth/components/admin-login-form";
 
-import styles from "./admin-dashboard.module.scss";
+import styles from "./login.module.scss";
 
-export const AdminDashboard: FC = () => {
-  const adminSession = useAppSelector((state) => state.adminAuth.session);
-
-  if (adminSession) {
-    return <Navigate to="/admin/welcome" replace />;
-  }
-
+export const LoginPage: FC = () => {
   return (
     <main className={styles.pageContainer}>
       <div className={styles.contentWrapper}>

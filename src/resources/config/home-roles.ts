@@ -8,7 +8,7 @@ export const homeRoles: RoleConfig[] = [
     iconType: "admin",
     buttonText: "Sign In as Admin",
     buttonType: "primary",
-    path: "/admin",
+    path: "/login",
   },
   {
     id: "viewer",

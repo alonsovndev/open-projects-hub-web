@@ -75,7 +75,7 @@ export const AdminLoginForm: FC = () => {
               </>
             ) : null}
 
-            <Link to="/admin/forgot-password" className={styles.forgotLink}>
+            <Link to="/forgot-password" className={styles.forgotLink}>
               Forgot password?
             </Link>
           </div>

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "@/app/store/hooks";
 import { useLoginMutation } from "@/features/admin-auth/api/admin-auth-api";
-import { saveAdminSession } from "@/features/admin-auth/model/admin-session";
 import { setAdminSession } from "@/features/admin-auth/state/admin-auth-slice";
 import {
   getPasswordRuleStatuses,
@@ -55,10 +54,9 @@ export const useAdminLoginForm = () => {
     try {
       const response = await login(values).unwrap();
 
-      saveAdminSession(response.session);
       dispatch(setAdminSession(response.session));
-      message.success("Demo authentication succeeded. Redirecting to the admin dashboard.");
-      navigate("/admin/welcome");
+      message.success("Demo authentication succeeded. Redirecting to the dashboard.");
+      navigate("/dashboard");
     } catch (error) {
       const nextError = error as { data?: { message?: string } } | undefined;
 

@@ -1,7 +1,7 @@
 import { adminAuthConfig } from "@/resources/config/admin-auth";
 
 import { baseApi } from "@/app/api/base-api";
-import type { AdminAuthResponse, AdminLoginValues, AdminSession } from "@/features/admin-auth/types";
+import type { AdminAuthResponse, AdminLoginValues, AdminSession, UserRole } from "@/features/admin-auth/types";
 
 interface AdminLoginApiResponse {
   token?: string;
@@ -9,10 +9,12 @@ interface AdminLoginApiResponse {
   email?: string;
   displayName?: string;
   loggedInAt?: string;
+  role?: UserRole;
   user?: {
     email?: string;
     displayName?: string;
     name?: string;
+    role?: UserRole;
   };
 }
 
@@ -39,6 +41,7 @@ const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string)
       response.displayName ??
       getDisplayNameFromEmail(normalizedEmail),
     loggedInAt: response.loggedInAt ?? new Date().toISOString(),
+    role: response.user?.role ?? response.role ?? "admin",
   };
 };
 

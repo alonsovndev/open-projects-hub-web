@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import { getAdminSession } from "@/features/admin-auth/model/admin-session";
 import type { AdminSession } from "@/features/admin-auth/types";
 
 interface AdminAuthState {
@@ -8,7 +7,7 @@ interface AdminAuthState {
 }
 
 const initialState: AdminAuthState = {
-  session: getAdminSession(),
+  session: null,
 };
 
 const adminAuthSlice = createSlice({

@@ -3,11 +3,14 @@ export interface AdminLoginValues {
   password: string;
 }
 
+export type UserRole = "admin" | "user" | "viewer";
+
 export interface AdminSession {
   token: string;
   email: string;
   displayName: string;
   loggedInAt: string;
+  role: UserRole;
 }
 
 export interface AdminAuthResponse {
