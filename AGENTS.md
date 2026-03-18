@@ -50,64 +50,73 @@ Use this structure by default:
 ```text
 src/
   app/
+    api/
+      base-api.ts
     layouts/
+      PublicLayout.tsx
+      PrivateLayout.tsx
+      index.ts
+    routing/
+      AppRouter.tsx
+      GuardResolver.tsx
+      routes.tsx
+      types.ts
     providers/
-    router/
     store/
-  pages/
-    home/
-      index.tsx
-      home.module.scss
+      store.ts
+      hooks.ts
+  shared/
+    components/
+      layout/
+        app-header/
+        footer/
+      ui/
+        app-button/
+    hooks/
+    utils/
+    types/
   features/
     auth/
       api/
       components/
       hooks/
       model/
+      state/
       tests/
       types/
-    users/
-      api/
+      routes.tsx
+      index.ts
+    dashboard/
       components/
       hooks/
-      model/
-      tests/
       types/
-  components/
-    ui/
-      app-button/
-        AppButton.tsx
-        app-button.module.scss
-        index.ts
-    layout/
-      app-header/
-        AppHeader.tsx
-        app-header.module.scss
-        index.ts
+      routes.tsx
+      index.ts
+  pages/
+    home/
+      index.tsx
+      home.module.scss
+    login/
+      index.tsx
+      login.module.scss
   resources/
     mock-data/
       all-clinic-services.ts
     config/
+      auth.ts
       clinic-information.ts
   styles/
     global.scss
-  hooks/
-    use-fetch.ts
-  utils/
-    format-date.ts
 ```
 
 ### Folder Responsibilities
 
-- `src/app/`: Application bootstrap, providers, router, layouts, and store setup.
-- `src/pages/`: Route-level page entry points only.
-- `src/features/`: Domain-owned UI, API logic, state, tests, and feature types.
-- `src/components/`: Shared cross-feature UI, layout components, and UI wrappers.
-- `src/styles/`: Global styles.
-- `src/resources/mock-data/`: Development mock data and sample payloads.
-- `src/resources/config/`: Static configuration and constants.
-- `src/hooks/`: Custom React hooks.
-- `src/utils/`: General utility functions.
+- `src/app/`: Application bootstrap, providers, routing system, layouts, store setup, and base API configuration.
+- `src/shared/`: Cross-feature reusable code including UI components, hooks, utilities, and shared types.
+- `src/features/`: Self-contained business domains with their own routes, components, API logic, state, tests, and types. Each feature exports a public API via `index.ts`.
+- `src/pages/`: Route-level page entry points only. Pages compose feature components and remain thin.
+- `src/resources/`: Static configuration and mock data separate from UI logic.
+- `src/styles/`: Global styles and theme configuration.
 
 ## Pages
 
@@ -143,8 +152,11 @@ src/features/<feature>/
       index.ts
   hooks/
   model/
+  state/
   tests/
   types/
+  routes.tsx
+  index.ts
 ```
 
 Rules:
@@ -153,27 +165,29 @@ Rules:
 2. Keep feature components inside `src/features/<feature>/components/`.
 3. Use kebab-case for component folder names.
 4. Put feature API integration and mock-facing logic in `api/`.
-5. Put feature-specific state and selectors in `model/` when needed.
+5. Put feature-specific Redux state in `state/` when needed.
 6. Put feature tests inside the owning feature.
-7. Promote code to `src/components`, `src/hooks`, or `src/utils` only when it is truly cross-feature.
+7. Each feature exports a public API via `index.ts` - do not use deep imports.
+8. Each feature can define its own routes in `routes.tsx`.
+9. Promote code to `src/shared/` only when it is truly cross-feature.
 
 ## Components
 
-Place components in `src/components/`.
+Place shared components in `src/shared/components/`.
 
 Rules:
 
 1. Use PascalCase for component file names and component names.
 2. Use kebab-case for component folder names when a component has its own folder.
-3. Reserve `src/components/` for shared cross-feature UI, layout components, and UI wrappers.
-4. Prefer `src/components/ui/` for reusable wrapped primitives and `src/components/layout/` for shared shells.
-5. Do not place feature-owned business components in `src/components/` when they belong inside `src/features/`.
+3. Reserve `src/shared/components/` for shared cross-feature UI, layout components, and UI wrappers.
+4. Prefer `src/shared/components/ui/` for reusable wrapped primitives and `src/shared/components/layout/` for shared shells.
+5. Do not place feature-owned business components in `src/shared/` when they belong inside `src/features/`.
 6. Use `index.ts` barrel exports when a folder contains multiple related files.
 
 Example:
 
 ```text
-src/components/ui/
+src/shared/components/ui/
   app-button/
     AppButton.tsx
     app-button.module.scss
@@ -260,7 +274,7 @@ Otherwise, prefer semantic HTML and SCSS Modules.
 When the same Ant Design patterns repeat, prefer thin shared wrappers such as:
 
 ```text
-src/components/ui/
+src/shared/components/ui/
   AppButton.tsx
   AppForm.tsx
   AppModal.tsx

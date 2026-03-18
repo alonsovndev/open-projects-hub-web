@@ -8,7 +8,7 @@ This skill focuses on building reusable, typed, and maintainable React UI using 
 
 1. Build route pages in `src/pages/<page>/`.
 2. Build domain-owned UI in `src/features/<feature>/components/`.
-3. Build shared cross-feature UI in `src/components/`.
+3. Build shared cross-feature UI in `src/shared/components/`.
 4. Use `index.tsx` as the page entry file.
 5. Use SCSS Modules with `.module.scss` for page and component styles.
 6. Do not use inline CSS for standard styling.
@@ -70,7 +70,7 @@ Review checklist:
 2. Prefer semantic HTML and SCSS Modules for hero sections, testimonials, informational sections, and policy pages.
 3. Mix Ant Design and custom markup intentionally when it improves both UX consistency and design flexibility.
 4. Avoid using Ant Design just to wrap static content.
-5. Prefer thin wrapper components under `src/components/ui/` when the same Ant Design patterns repeat.
+5. Prefer thin wrapper components under `src/shared/components/ui/` when the same Ant Design patterns repeat.
 
 ## Accessibility
 
@@ -90,11 +90,11 @@ Review checklist:
 1. Create the page folder if a route is needed.
 2. Add `index.tsx` and the page SCSS Module first.
 3. Create or use a feature entry component when the route belongs to a business domain.
-4. Put shared reusable UI in `src/components/` and keep feature-owned UI in `src/features/`.
+4. Put shared reusable UI in `src/shared/components/` and keep feature-owned UI in `src/features/<feature>/components/`.
 5. Decide early whether the UI is marketing/content-driven or interaction/data-driven.
 6. Use semantic HTML for content-first sections and Ant Design for behavior-heavy sections.
 7. Extract repeated UI into focused subcomponents.
-8. Extract config and mock data into `src/resources` when arrays or content become non-trivial.
+8. Extract config and mock data into `src/resources/` when arrays or content become non-trivial.
 9. Verify imports, styling, and route composition stay clean.
 
 ## Test-Driven Development
