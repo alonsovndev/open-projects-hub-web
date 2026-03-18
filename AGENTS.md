@@ -2,6 +2,40 @@
 
 This document defines the working standards for agents in this repository.
 
+## Agent Communication Guidelines
+
+### Response Efficiency
+
+- Be concise and direct
+- Use bullet points over paragraphs
+- Skip unnecessary preambles ("Here's what I did...", "I've updated...")
+- Provide explanations only when:
+  - Explicitly requested
+  - Complex tradeoffs need discussion
+  - Clarification required before proceeding
+  - In Plan mode reviewing major changes
+
+### Code Output
+
+- Output code directly without surrounding explanation for simple tasks
+- Include only essential inline comments
+- For complex changes: brief summary + code
+
+### Token Budget Guidelines
+
+- Simple tasks (file reads, small edits): ~150 tokens
+- Medium tasks (feature additions, refactors): ~300 tokens
+- Complex/planning tasks: No limit when detail adds value
+- Always prioritize clarity over strict limits
+
+### When to Be Detailed
+
+- Explaining architectural decisions
+- Discussing multiple implementation approaches
+- Plan mode reviews
+- Error diagnosis and debugging
+- User explicitly requests explanation
+
 ## Build, Lint, and Test Commands
 
 ### Development Server
