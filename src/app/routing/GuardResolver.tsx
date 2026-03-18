@@ -12,8 +12,7 @@ interface GuardResolverProps {
 /**
  * GuardResolver - Unified guard component that handles all authentication and authorization logic
  * 
- * Replaces individual AuthGuard, GuestGuard, and RoleGuard components with a single,
- * declarative approach based on guard type array.
+ * This component provides a single, declarative approach to route protection based on guard type array.
  * 
  * @example
  * // Public route (no guards)
