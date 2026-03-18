@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "agent": {
+    "frontend-react-agent": {
+      "description": "Frontend React development agent"
+    }
+  },
+  "command": {
+    "commit": {
+      "description": "Interactive commit with Conventional Commits format",
+      "template": "Run `git add .` to stage all changes, then run `git diff --staged --stat` and `git diff --staged` to understand what changed. Based on the diff, generate an appropriate Conventional Commits message in the format `type(scope): description` (omit scope if not clearly applicable). Use types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert. Present the proposed commit message to the user and ask for confirmation. If confirmed, run `git commit -m \"<message>\"` and let Husky hooks run. If the user wants changes, adjust and confirm again before committing."
+    },
+    "quick-commit": {
+      "description": "Quick commit with just type and message (no scope)",
+      "template": "Run `git add .` to stage all changes, then run `git diff --staged --stat` and `git diff --staged` to understand what changed. Based on the diff, generate a short Conventional Commits message without a scope in the format `type: description`. Use types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert. Present the proposed commit message to the user and ask for confirmation. If confirmed, run `git commit -m \"<message>\"` and let Husky hooks run. If the user wants changes, adjust and confirm again before committing."
+    }
+  },
+  "watcher": {
+    "ignore": [".git/**", ".idea/**", "node_modules/**", "dist/**", "build/**"]
+  }
+}

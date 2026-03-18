@@ -13,18 +13,24 @@ This document validates the complete `.opencode` configuration for this reposito
 │   ├── project-preferences.md           ✅ Naming and conventions
 │   ├── quick-reference.md               ✅ Quick reference guide
 │   └── testing-strategy.md              ✅ Testing philosophy
-└── skills/
-    ├── antd-v6-patterns.md              ✅ Ant Design usage
-    ├── component-boundaries.md          ✅ Component organization
-    ├── git-hooks-husky.md               ✅ Git hooks and commit standards
-    ├── linting-formatting.md            ✅ Code quality
-    ├── playwright-e2e.md                ✅ E2E testing patterns
-    ├── react-ui-development.md          ✅ React patterns
-    ├── redux-logic.md                   ✅ Redux guidelines
-    ├── routing-pages.md                 ✅ Routing system
-    ├── rtk-query-api.md                 ✅ API integration
-    ├── testing-examples.md              ✅ Testing patterns
-    └── testing-setup.md                 ✅ Testing configuration
+├── skills/
+│   ├── antd-v6-patterns.md              ✅ Ant Design usage
+│   ├── component-boundaries.md          ✅ Component organization
+│   ├── git-hooks-husky.md               ✅ Git hooks and commit standards
+│   ├── linting-formatting.md            ✅ Code quality
+│   ├── playwright-e2e.md                ✅ E2E testing patterns
+│   ├── react-ui-development.md          ✅ React patterns
+│   ├── redux-logic.md                   ✅ Redux guidelines
+│   ├── routing-pages.md                 ✅ Routing system
+│   ├── rtk-query-api.md                 ✅ API integration
+│   ├── testing-examples.md              ✅ Testing patterns
+│   └── testing-setup.md                 ✅ Testing configuration
+├── OPENCODE_COMMANDS.md                 ✅ Custom command documentation
+└── VERIFICATION.md                      ✅ This file
+
+Root:
+├── opencode.json                        ✅ OpenCode configuration
+└── AGENTS.md                            ✅ Repository standards
 ```
 
 ## Agent Configuration Check

@@ -4,6 +4,28 @@
 
 This project uses **feature-based architecture** where each business domain is a self-contained module. This document provides quick reference for common tasks.
 
+## 🚀 Custom Commands (OpenCode)
+
+The repository includes custom commands for common workflows:
+
+### Commit Commands
+
+```bash
+/commit           # Interactive commit (stages all files)
+/commit-staged    # Commit staged files only
+/quick-commit     # Quick commit without scope
+```
+
+### Verification Commands
+
+```bash
+/verify           # Type check + build
+/format           # Format all code
+/format-check     # Check formatting
+```
+
+**See**: `.opencode/OPENCODE_COMMANDS.md` for detailed usage examples
+
 ## Project Structure
 
 ```text
