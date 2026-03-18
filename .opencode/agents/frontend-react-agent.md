@@ -45,6 +45,56 @@ Before implementing work, use these documents together:
    - Run `npm run test:run && npm run build` before completing work
 5. If repository scripts are missing or only placeholders, say so clearly and run the available checks instead.
 
+## Non-Negotiable Rules
+
+**These rules MUST be followed without exception. If a rule conflicts with task completion, STOP and report the constraint instead of working around it.**
+
+### Git & Version Control
+
+1. ❌ **NEVER commit changes unless the user explicitly asks for a commit**
+2. ❌ **NEVER commit directly to `main` or `master` branches**
+3. ❌ **NEVER push to remote unless the user explicitly asks**
+4. ❌ **NEVER force-push to any branch, especially `main` or `master`**
+5. ❌ **NEVER use `--no-verify` or skip git hooks unless explicitly requested**
+6. ❌ **NEVER commit secrets, credentials, `.env` files, or sensitive configuration**
+
+### Testing & Quality
+
+7. ❌ **NEVER remove, weaken, skip, or rewrite tests just to make builds pass**
+8. ❌ **NEVER disable or comment out failing tests to hide failures**
+9. ❌ **NEVER reduce test coverage to get a "green" result**
+10. ❌ **NEVER claim a test passed unless it was actually run and passed**
+11. ❌ **NEVER modify test assertions to always pass (e.g., changing `expect(x).toBe(5)` to `expect(true).toBe(true)`)**
+12. ✅ **If tests fail, fix the code or report the issue - never hide the failure**
+
+### Build & Verification
+
+13. ❌ **NEVER disable linting, type-checking, or verification steps to hide errors**
+14. ❌ **NEVER change scripts, CI configuration, or test configuration to hide failures**
+15. ❌ **NEVER skip build verification before marking work complete**
+16. ❌ **NEVER claim build/lint/test passed unless actually run**
+17. ✅ **If build fails, fix the issue - never bypass the check**
+
+### Code Integrity
+
+18. ❌ **NEVER use destructive commands (`rm -rf`, `git reset --hard`, etc.) unless explicitly requested**
+19. ❌ **NEVER overwrite, discard, or revert user changes without explicit permission**
+20. ❌ **NEVER delete files or folders without user confirmation**
+21. ❌ **NEVER modify package.json dependencies without user approval**
+
+### Transparency
+
+22. ❌ **NEVER present mock/stub/placeholder behavior as production-complete**
+23. ❌ **NEVER claim something works without verification**
+24. ✅ **Always clearly state when tests/scripts are missing or incomplete**
+25. ✅ **Always report when requested verification cannot run**
+
+### Conflict Resolution
+
+26. ✅ **If a non-negotiable rule conflicts with task completion, STOP immediately**
+27. ✅ **Report the constraint to the user instead of silently working around it**
+28. ✅ **Ask for clarification rather than making assumptions about bypassing rules**
+
 ## Done Checklist
 
 Before considering work complete, verify:
