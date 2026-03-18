@@ -2,27 +2,64 @@
 
 ## Philosophy
 
-This project follows a **pragmatic testing approach** that balances quality with velocity:
+This project uses a **pragmatic multi-layer testing approach** that balances quality with velocity:
 
 1. **Write tests for business-critical logic** - Focus on features that handle money, authentication, authorization, data validation, and user workflows
 2. **Don't test implementation details** - Test behavior and outcomes, not internal structure
 3. **Test what breaks often** - If a feature has bugs in production repeatedly, add tests
 4. **Skip tests for simple UI** - Don't test purely presentational components with no logic
 5. **Test complex logic separately** - Extract and test pure functions, validators, transformers, and calculators
+6. **Use the right tool for the job** - Unit tests for logic, integration tests for features, E2E tests for user journeys
+
+## Testing Layers
+
+This project uses a three-layer testing approach:
+
+### 1. Unit Tests (Vitest) - The Foundation
+
+**Fast, Cheap, Many**
+
+- Test individual functions and components in isolation
+- Mock dependencies
+- Run in milliseconds
+- Use for: utilities, validators, Redux slices, pure functions
+
+### 2. Integration Tests (React Testing Library + Vitest) - The Middle Layer
+
+**Medium Speed, Medium Cost, Some**
+
+- Test how components work together
+- Test API integration
+- Test complex hooks
+- Use for: feature workflows, form submissions, component interactions
+
+### 3. E2E Tests (Playwright) - The Top Layer
+
+**Slow, Expensive, Few**
+
+- Test complete user journeys
+- Test cross-system integrations
+- Run in real browsers
+- Use for: critical flows, checkout, registration, login
 
 ## Testing Pyramid
 
 ```
-           ╔═══════════════╗
-           ║   E2E Tests   ║  ← Few, slow, expensive (critical user flows)
-           ║   (Optional)  ║
-           ╚═══════════════╝
-        ╔═════════════════════╗
-        ║ Integration Tests   ║  ← Some (feature workflows)
-        ╚═════════════════════╝
-   ╔══════════════════════════════╗
-   ║      Unit Tests              ║  ← Many, fast, cheap (logic & utilities)
-   ╚══════════════════════════════╝
+           ╔═══════════════════════╗
+           ║   E2E Tests           ║  ← Few (5-10% of tests)
+           ║   (Playwright)        ║     Critical user journeys
+           ║   Slow, Expensive     ║     Real browser, full stack
+           ╚═══════════════════════╝
+        ╔═════════════════════════════╗
+        ║ Integration Tests           ║  ← Some (20-30% of tests)
+        ║ (React Testing Library)     ║     Component interactions
+        ║ Medium Speed, Medium Cost   ║     API integration
+        ╚═════════════════════════════╝
+   ╔════════════════════════════════════╗
+   ║      Unit Tests                    ║  ← Many (60-70% of tests)
+   ║      (Vitest)                      ║     Pure functions, logic
+   ║      Fast, Cheap                   ║     Redux slices, utils
+   ╚════════════════════════════════════╝
 ```
 
 ## When to Write Tests
@@ -30,50 +67,46 @@ This project follows a **pragmatic testing approach** that balances quality with
 ### ✅ ALWAYS Test
 
 1. **Authentication & Authorization Logic**
-   - Login/logout flows
-   - Session management
-   - Role-based access checks
-   - Token validation
+   - **Unit**: Token validation, session utilities
+   - **Integration**: Login/logout component flows
+   - **E2E**: Complete login → dashboard → logout journey
 
 2. **Business Logic & Calculations**
-   - Price calculations
-   - Discount/tax logic
-   - Data transformations
-   - Validation rules
+   - **Unit**: Price calculations, discount/tax logic, validators
+   - **Integration**: Form validation with business rules
+   - **E2E**: Multi-step checkout with calculations
 
 3. **Data Mutations**
-   - Form submissions
-   - API mutations (create, update, delete)
-   - State updates with side effects
+   - **Unit**: Pure mutation logic and transformers
+   - **Integration**: Form submissions, API mutation hooks
+   - **E2E**: Create → Edit → Delete workflows
 
 4. **Utility Functions**
-   - Date formatters
-   - Currency formatters
-   - Validators
-   - Parsers
+   - **Unit**: Date formatters, currency formatters, parsers
+   - **Integration**: N/A (utilities are pure)
+   - **E2E**: N/A (utilities are pure)
 
 5. **Custom Hooks with Logic**
-   - Hooks that orchestrate multiple operations
-   - Hooks with complex state management
-   - Hooks with side effects
+   - **Unit**: Hook state management logic
+   - **Integration**: Hook integration with components
+   - **E2E**: N/A (hooks are internal)
 
 ### ⚠️ CONSIDER Testing
 
 1. **Complex UI Components**
-   - Multi-step forms
-   - Interactive data tables with filters
-   - Search components with debounce
-   - Wizards and multi-page flows
+   - **Unit**: Component logic and state
+   - **Integration**: Multi-step forms, data tables with filters
+   - **E2E**: Complex wizards, search flows, filter combinations
 
 2. **Feature Workflows**
-   - User registration
-   - Checkout flows
-   - Admin CRUD operations
+   - **Unit**: Workflow validators and utilities
+   - **Integration**: Individual workflow steps
+   - **E2E**: ⭐ **PREFERRED** - Complete user registration, checkout, admin CRUD
 
 3. **Error Handling**
-   - API error responses
-   - Validation error display
-   - Fallback UI rendering
+   - **Unit**: Error parsing and formatting
+   - **Integration**: API error responses, validation display
+   - **E2E**: Error recovery flows (retry, fallback)
 
 ### ❌ DON'T Test (Usually)
 
@@ -92,6 +125,42 @@ This project follows a **pragmatic testing approach** that balances quality with
    - Mock data
    - Static config
    - Constants
+
+### 🎯 E2E Testing - When to Use
+
+Use E2E tests (Playwright) for:
+
+✅ **Critical User Journeys**:
+
+- Complete authentication flow (login → access protected page → logout)
+- Purchase/checkout flow (browse → add to cart → checkout → confirmation)
+- User registration and onboarding
+- Password reset flow
+
+✅ **Cross-System Integration**:
+
+- Payment gateway integration
+- Third-party service integration
+- Email verification flows
+
+✅ **Role-Based Workflows**:
+
+- Admin creating/editing users
+- Different user roles accessing different features
+- Permission enforcement across pages
+
+✅ **Complex Multi-Step Processes**:
+
+- Multi-page wizards
+- Search → filter → sort → view details
+- Form submission → approval → notification
+
+❌ **Don't Use E2E For**:
+
+- Simple component behavior (use unit/integration tests)
+- Pure logic and calculations (use unit tests)
+- Single-page interactions (use integration tests)
+- Utility function testing (use unit tests)
 
 ## Where to Put Tests
 
@@ -158,30 +227,31 @@ src/shared/components/ui/
 **Test**: Input → Output behavior
 
 **Example**:
+
 ```typescript
 // src/shared/utils/format-currency.ts
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
   }).format(amount);
 }
 
 // src/shared/utils/format-currency.test.ts
-import { describe, it, expect } from 'vitest';
-import { formatCurrency } from './format-currency';
+import { describe, it, expect } from "vitest";
+import { formatCurrency } from "./format-currency";
 
-describe('formatCurrency', () => {
-  it('formats positive amounts correctly', () => {
-    expect(formatCurrency(1234.56)).toBe('$1,234.56');
+describe("formatCurrency", () => {
+  it("formats positive amounts correctly", () => {
+    expect(formatCurrency(1234.56)).toBe("$1,234.56");
   });
 
-  it('formats zero correctly', () => {
-    expect(formatCurrency(0)).toBe('$0.00');
+  it("formats zero correctly", () => {
+    expect(formatCurrency(0)).toBe("$0.00");
   });
 
-  it('formats negative amounts correctly', () => {
-    expect(formatCurrency(-99.99)).toBe('-$99.99');
+  it("formats negative amounts correctly", () => {
+    expect(formatCurrency(-99.99)).toBe("-$99.99");
   });
 });
 ```
@@ -193,27 +263,31 @@ describe('formatCurrency', () => {
 **Test**: Actions, reducers, selectors
 
 **Example**:
+
 ```typescript
 // src/features/auth/tests/auth-slice.test.ts
-import { describe, it, expect } from 'vitest';
-import authReducer, { login, logout } from '../state/auth-slice';
+import { describe, it, expect } from "vitest";
+import authReducer, { login, logout } from "../state/auth-slice";
 
-describe('auth slice', () => {
-  it('should handle login', () => {
-    const state = authReducer(undefined, login({
-      user: { id: '1', name: 'Test User' },
-      token: 'abc123'
-    }));
-    
+describe("auth slice", () => {
+  it("should handle login", () => {
+    const state = authReducer(
+      undefined,
+      login({
+        user: { id: "1", name: "Test User" },
+        token: "abc123",
+      })
+    );
+
     expect(state.session).toBeDefined();
-    expect(state.session?.user.name).toBe('Test User');
+    expect(state.session?.user.name).toBe("Test User");
   });
 
-  it('should handle logout', () => {
+  it("should handle logout", () => {
     const initialState = {
-      session: { user: { id: '1', name: 'Test' }, token: 'abc' }
+      session: { user: { id: "1", name: "Test" }, token: "abc" },
     };
-    
+
     const state = authReducer(initialState, logout());
     expect(state.session).toBeNull();
   });
@@ -227,17 +301,18 @@ describe('auth slice', () => {
 **Test**: Hook behavior using `@testing-library/react-hooks`
 
 **Example**:
+
 ```typescript
 // src/features/auth/tests/use-login.test.ts
-import { renderHook, waitFor } from '@testing-library/react';
-import { useLogin } from '../hooks/use-login';
+import { renderHook, waitFor } from "@testing-library/react";
+import { useLogin } from "../hooks/use-login";
 
-describe('useLogin', () => {
-  it('should handle successful login', async () => {
+describe("useLogin", () => {
+  it("should handle successful login", async () => {
     const { result } = renderHook(() => useLogin());
-    
-    result.current.handleLogin('user@example.com', 'password123');
-    
+
+    result.current.handleLogin("user@example.com", "password123");
+
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
@@ -253,20 +328,19 @@ describe('useLogin', () => {
 **Test**: Mock API responses and verify hook behavior
 
 **Example**:
+
 ```typescript
 // src/features/viewer/tests/viewer-api.test.ts
-import { describe, it, expect } from 'vitest';
-import { setupApiStore } from '@/test/utils/store-utils';
-import { viewerApi } from '../api/viewer-api';
+import { describe, it, expect } from "vitest";
+import { setupApiStore } from "@/test/utils/store-utils";
+import { viewerApi } from "../api/viewer-api";
 
-describe('viewerApi', () => {
-  it('should fetch clinic services', async () => {
+describe("viewerApi", () => {
+  it("should fetch clinic services", async () => {
     const storeRef = setupApiStore(viewerApi);
-    
-    const promise = storeRef.store.dispatch(
-      viewerApi.endpoints.getClinicServices.initiate()
-    );
-    
+
+    const promise = storeRef.store.dispatch(viewerApi.endpoints.getClinicServices.initiate());
+
     const result = await promise;
     expect(result.data).toBeDefined();
     expect(result.data?.length).toBeGreaterThan(0);
@@ -281,6 +355,7 @@ describe('viewerApi', () => {
 **Test**: User interactions and component behavior
 
 **Example**:
+
 ```typescript
 // src/features/auth/tests/LoginForm.test.tsx
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -290,17 +365,17 @@ describe('LoginForm', () => {
   it('should submit form with valid credentials', async () => {
     const onSubmit = vi.fn();
     render(<LoginForm onSubmit={onSubmit} />);
-    
+
     fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'user@example.com' }
     });
-    
+
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'password123' }
     });
-    
+
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-    
+
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
         email: 'user@example.com',
@@ -311,9 +386,9 @@ describe('LoginForm', () => {
 
   it('should show validation errors for empty fields', async () => {
     render(<LoginForm onSubmit={vi.fn()} />);
-    
+
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-    
+
     expect(await screen.findByText('Email is required')).toBeInTheDocument();
     expect(await screen.findByText('Password is required')).toBeInTheDocument();
   });
@@ -325,18 +400,20 @@ describe('LoginForm', () => {
 ### 1. Test Behavior, Not Implementation
 
 ❌ **Bad** (testing implementation):
+
 ```typescript
-it('should call setState with updated value', () => {
+it("should call setState with updated value", () => {
   const { result } = renderHook(() => useCounter());
-  const setStateSpy = vi.spyOn(result.current, 'setState');
+  const setStateSpy = vi.spyOn(result.current, "setState");
   result.current.increment();
   expect(setStateSpy).toHaveBeenCalled();
 });
 ```
 
 ✅ **Good** (testing behavior):
+
 ```typescript
-it('should increment counter when increment is called', () => {
+it("should increment counter when increment is called", () => {
   const { result } = renderHook(() => useCounter());
   result.current.increment();
   expect(result.current.count).toBe(1);
@@ -346,12 +423,14 @@ it('should increment counter when increment is called', () => {
 ### 2. Use Descriptive Test Names
 
 ❌ **Bad**:
+
 ```typescript
 it('works', () => { ... });
 it('test 1', () => { ... });
 ```
 
 ✅ **Good**:
+
 ```typescript
 it('should return formatted currency with dollar sign', () => { ... });
 it('should redirect to login when user is not authenticated', () => { ... });
@@ -360,14 +439,14 @@ it('should redirect to login when user is not authenticated', () => { ... });
 ### 3. Arrange-Act-Assert Pattern
 
 ```typescript
-it('should calculate total with tax', () => {
+it("should calculate total with tax", () => {
   // Arrange - Set up test data
   const subtotal = 100;
   const taxRate = 0.08;
-  
+
   // Act - Execute the function
   const total = calculateTotal(subtotal, taxRate);
-  
+
   // Assert - Verify the result
   expect(total).toBe(108);
 });
@@ -376,47 +455,49 @@ it('should calculate total with tax', () => {
 ### 4. Keep Tests Independent
 
 ❌ **Bad** (tests depend on each other):
+
 ```typescript
 let user;
 
-it('should create user', () => {
-  user = createUser('John');
+it("should create user", () => {
+  user = createUser("John");
   expect(user).toBeDefined();
 });
 
-it('should update user', () => {
-  user.name = 'Jane'; // Depends on previous test!
-  expect(user.name).toBe('Jane');
+it("should update user", () => {
+  user.name = "Jane"; // Depends on previous test!
+  expect(user.name).toBe("Jane");
 });
 ```
 
 ✅ **Good** (independent tests):
+
 ```typescript
-it('should create user', () => {
-  const user = createUser('John');
+it("should create user", () => {
+  const user = createUser("John");
   expect(user).toBeDefined();
 });
 
-it('should update user', () => {
-  const user = createUser('John');
-  user.name = 'Jane';
-  expect(user.name).toBe('Jane');
+it("should update user", () => {
+  const user = createUser("John");
+  user.name = "Jane";
+  expect(user.name).toBe("Jane");
 });
 ```
 
 ### 5. Mock External Dependencies
 
 ```typescript
-import { vi } from 'vitest';
-import { fetchUserData } from './api';
+import { vi } from "vitest";
+import { fetchUserData } from "./api";
 
-vi.mock('./api', () => ({
-  fetchUserData: vi.fn(() => Promise.resolve({ id: '1', name: 'Test' }))
+vi.mock("./api", () => ({
+  fetchUserData: vi.fn(() => Promise.resolve({ id: "1", name: "Test" })),
 }));
 
-it('should load user data', async () => {
-  const data = await fetchUserData('1');
-  expect(data.name).toBe('Test');
+it("should load user data", async () => {
+  const data = await fetchUserData("1");
+  expect(data.name).toBe("Test");
 });
 ```
 
@@ -441,6 +522,7 @@ it('should load user data', async () => {
 ### During Development
 
 1. **Write the test first** (when TDD applies):
+
    ```bash
    # Run tests in watch mode
    npm run test:watch
@@ -455,6 +537,7 @@ it('should load user data', async () => {
 ### Before Committing
 
 Run the full test suite:
+
 ```bash
 npm run test && npm run build
 ```
@@ -472,6 +555,7 @@ npm run test:ci && npm run build
 **Example**: Adding a shopping cart with discount calculations
 
 **Test Priority**:
+
 1. ✅ Unit test discount calculation logic (`model/calculate-discount.test.ts`)
 2. ✅ Test Redux slice for cart state (`tests/cart-slice.test.ts`)
 3. ✅ Integration test for cart component (`tests/ShoppingCart.test.tsx`)
@@ -482,6 +566,7 @@ npm run test:ci && npm run build
 **Example**: Admin user management
 
 **Test Priority**:
+
 1. ✅ Test API integration (`tests/users-api.test.ts`)
 2. ✅ Test form validation logic (`model/validators.test.ts`)
 3. ⚠️ Integration test for user table with filters
@@ -492,6 +577,7 @@ npm run test:ci && npm run build
 **Example**: Date formatter
 
 **Test Priority**:
+
 1. ✅ Unit test with multiple cases (`utils/format-date.test.ts`)
 2. ❌ No integration tests needed
 
@@ -500,6 +586,7 @@ npm run test:ci && npm run build
 **Example**: About Us page with static content
 
 **Test Priority**:
+
 1. ❌ No tests needed
 2. Manual verification during development
 
@@ -508,22 +595,26 @@ npm run test:ci && npm run build
 Since you're starting from zero tests, here's a **phased approach**:
 
 ### Phase 1: Infrastructure Setup (Week 1)
+
 - [ ] Install testing dependencies (Vitest, Testing Library)
 - [ ] Configure Vitest
 - [ ] Create test utilities and helpers
 - [ ] Set up CI/CD integration
 
 ### Phase 2: High-Value Tests (Weeks 2-3)
+
 - [ ] Test authentication logic (login, logout, session)
 - [ ] Test critical utilities (formatters, validators)
 - [ ] Test Redux slices for core features
 
 ### Phase 3: Feature Tests (Weeks 4-6)
+
 - [ ] Test API integration for main features
 - [ ] Test custom hooks
 - [ ] Test complex components
 
 ### Phase 4: Ongoing
+
 - [ ] Write tests for new features as they're built
 - [ ] Add tests when bugs are found
 - [ ] Gradually increase coverage over time

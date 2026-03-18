@@ -17,6 +17,7 @@ This document validates the complete `.opencode` configuration for this reposito
     ├── antd-v6-patterns.md              ✅ Ant Design usage
     ├── component-boundaries.md          ✅ Component organization
     ├── linting-formatting.md            ✅ Code quality
+    ├── playwright-e2e.md                ✅ E2E testing patterns
     ├── react-ui-development.md          ✅ React patterns
     ├── redux-logic.md                   ✅ Redux guidelines
     ├── routing-pages.md                 ✅ Routing system
@@ -32,10 +33,12 @@ This document validates the complete `.opencode` configuration for this reposito
 **File**: `.opencode/agents/frontend-react-agent.md`
 
 #### ✅ Canonical Source of Truth
+
 - References `AGENTS.md` as conflict resolver
 - Follows non-negotiable rules
 
 #### ✅ Required References (10 documents)
+
 1. `AGENTS.md` - Repository policy
 2. `frontend-architecture.md` - Architecture
 3. `project-preferences.md` - Conventions
@@ -43,24 +46,26 @@ This document validates the complete `.opencode` configuration for this reposito
 5. `routing-pages.md` - Routing
 6. `react-ui-development.md` - React patterns
 7. `antd-v6-patterns.md` - Ant Design
-8. `testing-setup.md` - Test configuration ⭐
-9. `testing-examples.md` - Test patterns ⭐
-10. `linting-formatting.md` - Code quality
+8. `testing-setup.md` - Test configuration (Vitest) ⭐
+9. `testing-examples.md` - Test patterns (Unit/Integration) ⭐
+10. `playwright-e2e.md` - E2E test patterns (Playwright) ⭐
+11. `linting-formatting.md` - Code quality
 
 #### ✅ Execution Rules
+
 - Ant Design usage guidelines
 - TDD and progressive verification ⭐
-- Testing references ⭐
-- Verification commands ⭐
+- Testing references (unit, integration, E2E) ⭐
+- Verification commands (test:run, test:e2e, build) ⭐
 
 #### ✅ Non-Negotiable Rules (28 rules)
+
 - **Git & Version Control** (6 rules)
   - No commits without permission
   - No commits to main/master
   - No force-push
   - No skipping hooks
   - No committing secrets
-  
 - **Testing & Quality** (6 rules)
   - Never remove tests to pass builds ⭐
   - Never disable failing tests ⭐
@@ -68,41 +73,41 @@ This document validates the complete `.opencode` configuration for this reposito
   - Never fake test results ⭐
   - Never modify assertions to always pass ⭐
   - Fix issues, don't hide them ⭐
-  
 - **Build & Verification** (4 rules)
   - Never disable linting/type-checking
   - Never modify config to hide failures
   - Never skip build verification
   - Fix issues, don't bypass
-  
 - **Code Integrity** (4 rules)
   - No destructive commands
   - No overwriting user changes
   - No deleting without confirmation
   - No modifying dependencies without approval
-  
 - **Transparency** (4 rules)
   - Never present mocks as production
   - Never claim untested work
   - Always report missing scripts
   - Always explain verification failures
-  
 - **Conflict Resolution** (3 rules)
   - Stop if rule conflicts with task
   - Ask for clarification
   - Err on side of caution
 
 #### ✅ Done Checklist
+
 - Structure verification
 - Testing verification with ✅ ⚠️ ❌ system ⭐
-- Verification commands explicitly stated ⭐
+- E2E testing for critical flows ⭐
+- Verification commands explicitly stated (unit + E2E) ⭐
 
 ## AGENTS.md Verification
 
 **File**: `AGENTS.md` (root)
 
 #### ✅ Non-Negotiable Rules (27 rules - EXPANDED)
+
 Organized into categories:
+
 - Git & Version Control (6 rules)
 - Testing & Quality Assurance (6 rules) ⭐
 - Build & Verification (4 rules) ⭐
@@ -111,11 +116,13 @@ Organized into categories:
 - Conflict Resolution (3 rules)
 
 #### ✅ Work Methodology
+
 - TDD workflow defined
 - Continuous verification workflow
 - Test/build commands specified
 
 #### ✅ Project Structure
+
 - Updated to reflect `src/shared/` and feature-based architecture
 - Routing system documented
 - Feature public APIs documented
@@ -127,6 +134,7 @@ Organized into categories:
 **Purpose**: Core architecture principles
 
 **Contains**:
+
 - Feature-based architecture overview
 - Folder structure and responsibilities
 - Declarative routing system
@@ -143,6 +151,7 @@ Organized into categories:
 **Purpose**: Naming conventions and preferences
 
 **Contains**:
+
 - Architecture style overview
 - Naming conventions table
 - Directory structure
@@ -156,14 +165,17 @@ Organized into categories:
 
 **Updated**: ✅ All paths reference new structure
 
-### 3. testing-strategy.md ✅ NEW
+### 3. testing-strategy.md ✅ UPDATED
 
 **Purpose**: Testing philosophy and strategy
 
 **Contains**:
+
 - Pragmatic testing philosophy
-- Testing pyramid
-- When to write tests (✅ ⚠️ ❌ system)
+- Three-layer testing approach (Unit → Integration → E2E) ⭐
+- Testing pyramid with Playwright ⭐
+- When to write tests (✅ ⚠️ ❌ system) for all layers ⭐
+- E2E testing decision guide ⭐
 - Where to put tests
 - What to test (6 categories)
 - Best practices
@@ -173,24 +185,26 @@ Organized into categories:
 - Migration strategy
 - Decision tree
 
-**Status**: ✅ Newly created, comprehensive
+**Status**: ✅ Updated with E2E testing guidance
 
-### 4. quick-reference.md ✅
+### 4. quick-reference.md ✅ UPDATED
 
 **Purpose**: Quick reference for common tasks
 
 **Contains**:
+
 - Project structure overview
 - Quick start guide
 - Common patterns
 - Naming conventions
 - "Where to put code" guide
-- Testing quick reference ⭐
+- Testing quick reference with three layers ⭐
+- Testing commands (unit + E2E) ⭐
 - Common tasks
 - Troubleshooting
-- Links to all documentation
+- Links to all documentation including playwright-e2e.md ⭐
 
-**Updated**: ✅ Includes testing section
+**Updated**: ✅ Includes E2E testing commands and references
 
 ## Skills Verification
 
@@ -199,6 +213,7 @@ Organized into categories:
 **Purpose**: Declarative routing system
 
 **Contains**:
+
 - Route definition patterns
 - Guard options
 - Layout options
@@ -214,6 +229,7 @@ Organized into categories:
 **Purpose**: Component organization
 
 **Contains**:
+
 - When to split components
 - Component placement (feature vs shared)
 - "Don't prematurely share" principle
@@ -228,6 +244,7 @@ Organized into categories:
 **Purpose**: React development patterns
 
 **Contains**:
+
 - Core rules
 - Component design
 - UI/logic separation workflow
@@ -244,6 +261,7 @@ Organized into categories:
 **Purpose**: Redux and state management
 
 **Contains**:
+
 - When to use RTK Query vs createSlice
 - Appropriate uses for each
 - Mock data strategy
@@ -256,6 +274,7 @@ Organized into categories:
 **Purpose**: API integration patterns
 
 **Contains**:
+
 - API endpoint management
 - Component-level fetching
 - Caching and revalidation
@@ -264,26 +283,31 @@ Organized into categories:
 
 **Updated**: ✅ References feature api/ folders
 
-### 6. testing-setup.md ✅ NEW
+### 6. testing-setup.md ✅ UPDATED
 
 **Purpose**: Testing infrastructure setup
 
 **Contains**:
+
 - Step-by-step installation (Vitest, Testing Library)
-- Configuration files (vitest.config.ts, setup.ts)
+- **Playwright installation and setup** ⭐
+- Configuration files (vitest.config.ts, playwright.config.ts, setup.ts) ⭐
 - Test utilities (renderWithProviders, setupApiStore)
 - Mock helpers
-- Package.json scripts
+- **E2E test structure and examples** ⭐
+- **Page Object Model pattern** ⭐
+- Package.json scripts (unit + E2E) ⭐
 - Common patterns
 - Troubleshooting
 
-**Status**: ✅ Newly created, comprehensive
+**Status**: ✅ Updated with Playwright E2E testing
 
 ### 7. testing-examples.md ✅ NEW
 
 **Purpose**: Practical testing examples
 
 **Contains**:
+
 - 6 real-world examples:
   1. Testing utility functions
   2. Testing Redux slices
@@ -308,6 +332,31 @@ Organized into categories:
 
 **Status**: ✅ No changes needed (already correct)
 
+### 10. playwright-e2e.md ✅ NEW
+
+**Purpose**: E2E testing with Playwright
+
+**Contains**:
+
+- E2E testing philosophy
+- When to use E2E tests vs unit/integration
+- Page Object Model pattern
+- 6 common E2E patterns:
+  1. Authentication flows
+  2. Form submissions
+  3. Navigation and routing
+  4. Search and filtering
+  5. Role-based access
+  6. Multi-step workflows
+- Test fixtures and data management
+- Helper functions
+- Best practices
+- Debugging techniques
+- CI/CD integration
+- Real-world examples
+
+**Status**: ✅ Newly created, comprehensive
+
 ## Cross-Reference Verification
 
 ### Agent → Documentation Links
@@ -323,6 +372,7 @@ frontend-react-agent.md
 ├─→ antd-v6-patterns.md ✅
 ├─→ testing-setup.md ✅
 ├─→ testing-examples.md ✅
+├─→ playwright-e2e.md ✅ ⭐
 └─→ linting-formatting.md ✅
 ```
 
@@ -337,31 +387,41 @@ AGENTS.md
 
 frontend-react-agent.md
 ├─→ TDD execution rules ✅
-├─→ Testing references ✅
+├─→ Testing references (unit + E2E) ✅ ⭐
 ├─→ Non-negotiable testing rules ✅
-└─→ Testing checklist ✅
+└─→ Testing checklist with E2E ✅ ⭐
 
 testing-strategy.md
-├─→ When to test ✅
+├─→ When to test (all layers) ✅ ⭐
 ├─→ What to test ✅
 ├─→ Where to put tests ✅
+├─→ E2E testing guidance ✅ ⭐
 └─→ Decision tree ✅
 
 testing-setup.md
-├─→ Installation steps ✅
+├─→ Installation steps (Vitest + Playwright) ✅ ⭐
 ├─→ Configuration ✅
 ├─→ Test utilities ✅
-└─→ Scripts ✅
+├─→ E2E structure ✅ ⭐
+└─→ Scripts (unit + E2E) ✅ ⭐
 
 testing-examples.md
 ├─→ 6 real examples ✅
 ├─→ Common patterns ✅
 └─→ Copy-paste code ✅
+
+playwright-e2e.md (NEW)
+├─→ E2E philosophy ✅ ⭐
+├─→ Page Object Model ✅ ⭐
+├─→ 6 E2E patterns ✅ ⭐
+├─→ Best practices ✅ ⭐
+└─→ CI/CD integration ✅ ⭐
 ```
 
 ### Documentation → Architecture Alignment
 
 All documentation files now correctly reference:
+
 - ✅ `src/shared/` instead of `src/components/`
 - ✅ `src/features/<feature>/state/` for Redux slices
 - ✅ `src/features/<feature>/api/` for API definitions
@@ -373,18 +433,21 @@ All documentation files now correctly reference:
 
 ## Completeness Check
 
-### Required Documentation: 14 files
+### Required Documentation: 15 files
 
 **Agents** (1/1):
+
 - ✅ frontend-react-agent.md
 
 **Knowledge** (4/4):
+
 - ✅ frontend-architecture.md
 - ✅ project-preferences.md
 - ✅ testing-strategy.md
 - ✅ quick-reference.md
 
-**Skills** (9/9):
+**Skills** (10/10):
+
 - ✅ routing-pages.md
 - ✅ component-boundaries.md
 - ✅ react-ui-development.md
@@ -392,24 +455,31 @@ All documentation files now correctly reference:
 - ✅ rtk-query-api.md
 - ✅ testing-setup.md
 - ✅ testing-examples.md
+- ✅ playwright-e2e.md ⭐
 - ✅ antd-v6-patterns.md
 - ✅ linting-formatting.md
 
 **Root** (1/1):
+
 - ✅ AGENTS.md
 
 ### Coverage Analysis
 
 #### Testing Coverage: 100% ✅
+
 - ✅ Testing philosophy documented
-- ✅ Testing setup documented
-- ✅ Testing examples documented
+- ✅ Unit testing setup documented (Vitest)
+- ✅ Integration testing setup documented (React Testing Library)
+- ✅ E2E testing setup documented (Playwright) ⭐
+- ✅ Testing examples documented (unit/integration)
+- ✅ E2E testing patterns documented ⭐
 - ✅ TDD workflow documented
-- ✅ Verification workflow documented
+- ✅ Verification workflow documented (unit + E2E) ⭐
 - ✅ Non-negotiable testing rules enforced
-- ✅ Agent references all testing docs
+- ✅ Agent references all testing docs (including E2E) ⭐
 
 #### Architecture Coverage: 100% ✅
+
 - ✅ Feature-based architecture documented
 - ✅ Routing system documented
 - ✅ Component organization documented
@@ -418,6 +488,7 @@ All documentation files now correctly reference:
 - ✅ All paths updated to new structure
 
 #### Quality Coverage: 100% ✅
+
 - ✅ Linting documented
 - ✅ Formatting documented
 - ✅ Testing documented
@@ -427,19 +498,21 @@ All documentation files now correctly reference:
 ## Non-Negotiable Rules Consistency
 
 ### AGENTS.md: 27 rules ✅
+
 Organized into 6 categories
 
 ### frontend-react-agent.md: 28 rules ✅
+
 Organized into 6 categories (more detailed)
 
-**Status**: ✅ Consistent and comprehensive
+**Status**: ✅ Consistent and comprehensive (E2E testing integrity protected)
 
 ## Summary
 
 ### ✅ Everything is Properly Set Up
 
-**Documentation**: 15 files (all complete)
-**Testing Integration**: 100%
+**Documentation**: 16 files (all complete) ⭐
+**Testing Integration**: 100% (Unit + Integration + E2E) ⭐
 **Architecture Alignment**: 100%
 **Non-Negotiable Rules**: Enforced at both root and agent level
 **Cross-References**: All valid
@@ -447,44 +520,52 @@ Organized into 6 categories (more detailed)
 
 ### 🎯 Key Strengths
 
-1. **Comprehensive Testing Strategy**
+1. **Comprehensive Three-Layer Testing Strategy** ⭐
+   - Unit tests (Vitest)
+   - Integration tests (React Testing Library)
+   - E2E tests (Playwright)
    - Philosophy and decision-making
    - Setup and configuration
    - Examples and patterns
-   
 2. **Strong Non-Negotiable Rules**
    - 27+ rules enforced
    - Clear categorization
-   - Testing integrity protected
-   
+   - Testing integrity protected (all layers)
 3. **Complete Architecture Documentation**
    - Feature-based approach
    - Declarative routing
    - Clear separation of concerns
-   
 4. **Agent Integration**
-   - All documents referenced
+   - All documents referenced (including E2E)
    - TDD workflow enforced
-   - Verification required
+   - Verification required (unit + E2E)
 
 ### 🚀 Ready for Development
 
 The `.opencode` setup is:
+
 - ✅ Complete
 - ✅ Consistent
 - ✅ Well-organized
-- ✅ Testing-focused
+- ✅ Testing-focused (Unit + Integration + E2E) ⭐
 - ✅ Quality-enforced
 - ✅ Production-ready
 
 ### 📋 Next Steps
 
-1. Follow `testing-setup.md` to install Vitest
-2. Use `testing-strategy.md` to decide when to write tests
-3. Copy patterns from `testing-examples.md`
-4. Let the Frontend React Agent enforce all rules
+1. **Unit & Integration Tests**:
+   - Follow `testing-setup.md` to install Vitest + React Testing Library
+   - Use `testing-strategy.md` to decide when to write tests
+   - Copy patterns from `testing-examples.md`
+
+2. **E2E Tests**: ⭐
+   - Follow `testing-setup.md` for Playwright installation
+   - Use `playwright-e2e.md` for E2E patterns and Page Object Model
+   - Write E2E tests for critical user journeys (auth, checkout, registration)
+
+3. **Let the Frontend React Agent enforce all rules**
 
 ---
 
 **Last Verified**: March 17, 2026
-**Status**: ✅ VERIFIED AND COMPLETE
+**Status**: ✅ VERIFIED AND COMPLETE (WITH E2E TESTING) ⭐

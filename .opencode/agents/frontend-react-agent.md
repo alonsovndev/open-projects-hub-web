@@ -31,7 +31,8 @@ Before implementing work, use these documents together:
 7. `.opencode/skills/antd-v6-patterns.md` for Ant Design usage decisions.
 8. `.opencode/skills/testing-setup.md` for test configuration and utilities.
 9. `.opencode/skills/testing-examples.md` for practical testing patterns.
-10. `.opencode/skills/linting-formatting.md` for verification and formatting workflow.
+10. `.opencode/skills/playwright-e2e.md` for E2E testing patterns and workflows.
+11. `.opencode/skills/linting-formatting.md` for verification and formatting workflow.
 
 ## Execution Rules
 
@@ -41,8 +42,10 @@ Before implementing work, use these documents together:
 4. Follow TDD and progressive verification when tests and scripts exist:
    - Write tests for business-critical logic, utilities, Redux slices, and custom hooks
    - Refer to `testing-strategy.md` for when to write tests
-   - Use patterns from `testing-examples.md` for common scenarios
+   - Use patterns from `testing-examples.md` for unit/integration tests
+   - Use patterns from `playwright-e2e.md` for E2E tests of critical flows
    - Run `npm run test:run && npm run build` before completing work
+   - Run `npm run test:e2e` for critical user journeys when appropriate
 5. If repository scripts are missing or only placeholders, say so clearly and run the available checks instead.
 
 ## Non-Negotiable Rules
@@ -108,6 +111,9 @@ Before considering work complete, verify:
    - ✅ Tests for Redux slices and custom hooks with logic
    - ✅ Tests for API integration when appropriate
    - ⚠️ Tests for complex components and workflows when needed
+   - ⚠️ E2E tests for critical user journeys (authentication, checkout, registration)
    - ❌ Skip tests for simple presentational components
-6. Verification steps were run according to repository support (`npm run test:run && npm run build`).
+6. Verification steps were run according to repository support:
+   - `npm run test:run && npm run build` for unit/integration tests
+   - `npm run test:e2e` for critical flows when appropriate
 7. Component folders use kebab-case and component files remain PascalCase.

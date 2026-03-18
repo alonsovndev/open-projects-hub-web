@@ -55,10 +55,7 @@ export { myFeatureRoutes } from "./routes";
 // app/routing/routes.tsx
 import { myFeatureRoutes } from "@/features/my-feature";
 
-export const appRoutes: AppRoute[] = [
-  ...existingRoutes,
-  ...myFeatureRoutes,
-];
+export const appRoutes: AppRoute[] = [...existingRoutes, ...myFeatureRoutes];
 ```
 
 ### 5. Create Page
@@ -79,10 +76,10 @@ Done! ✅
 ### Route Guards
 
 ```typescript
-guards: ["public"]                     // Anyone
-guards: ["guest"]                      // Unauthenticated only
-guards: ["auth"]                       // Authenticated
-guards: ["auth", { role: "admin" }]    // Admin only
+guards: ["public"]; // Anyone
+guards: ["guest"]; // Unauthenticated only
+guards: ["auth"]; // Authenticated
+guards: ["auth", { role: "admin" }]; // Admin only
 ```
 
 ### Layouts
@@ -117,16 +114,16 @@ export type { MyType } from "./types";
 
 ## File Naming Conventions
 
-| Type | Convention | Example |
-| --- | --- | --- |
-| Component | PascalCase | `LoginForm.tsx` |
-| Component folder | kebab-case | `login-form/` |
-| Hook | kebab-case | `use-login-form.ts` |
-| Util | kebab-case | `format-date.ts` |
-| Config | kebab-case | `auth.ts` |
-| Stylesheet | kebab-case | `login-form.module.scss` |
-| Feature | kebab-case | `auth/`, `dashboard/` |
-| Page | lowercase | `login/`, `dashboard/` |
+| Type             | Convention | Example                  |
+| ---------------- | ---------- | ------------------------ |
+| Component        | PascalCase | `LoginForm.tsx`          |
+| Component folder | kebab-case | `login-form/`            |
+| Hook             | kebab-case | `use-login-form.ts`      |
+| Util             | kebab-case | `format-date.ts`         |
+| Config           | kebab-case | `auth.ts`                |
+| Stylesheet       | kebab-case | `login-form.module.scss` |
+| Feature          | kebab-case | `auth/`, `dashboard/`    |
+| Page             | lowercase  | `login/`, `dashboard/`   |
 
 ## Where to Put Code
 
@@ -289,12 +286,12 @@ export { MyComponent } from "./MyComponent";
 
 ## Guard Behavior
 
-| Guard | Authenticated | Unauthenticated |
-| --- | --- | --- |
-| `"public"` | ✅ Allow | ✅ Allow |
-| `"guest"` | ❌ Redirect to /dashboard | ✅ Allow |
-| `"auth"` | ✅ Allow | ❌ Redirect to /login |
-| `{ role: "admin" }` | ✅ Allow if admin | ❌ Redirect to /login |
+| Guard               | Authenticated                             | Unauthenticated       |
+| ------------------- | ----------------------------------------- | --------------------- |
+| `"public"`          | ✅ Allow                                  | ✅ Allow              |
+| `"guest"`           | ❌ Redirect to /dashboard                 | ✅ Allow              |
+| `"auth"`            | ✅ Allow                                  | ❌ Redirect to /login |
+| `{ role: "admin" }` | ✅ Allow if admin                         | ❌ Redirect to /login |
 | `{ role: "admin" }` | ❌ Redirect to /unauthorized if not admin | ❌ Redirect to /login |
 
 ## Troubleshooting
@@ -322,6 +319,7 @@ export { MyComponent } from "./MyComponent";
 ### When to Write Tests
 
 ✅ **Always test**:
+
 - Authentication/authorization logic
 - Business calculations and validations
 - Data mutations (create, update, delete)
@@ -329,11 +327,13 @@ export { MyComponent } from "./MyComponent";
 - Custom hooks with logic
 
 ⚠️ **Consider testing**:
+
 - Complex UI components (multi-step forms, tables with filters)
 - Feature workflows (registration, checkout)
 - Error handling
 
 ❌ **Don't test**:
+
 - Simple presentational components
 - Third-party libraries
 - Static configuration
@@ -353,12 +353,12 @@ src/features/my-feature/
 
 ```typescript
 // Pure function test
-import { describe, it, expect } from 'vitest';
-import { formatCurrency } from './format-currency';
+import { describe, it, expect } from "vitest";
+import { formatCurrency } from "./format-currency";
 
-describe('formatCurrency', () => {
-  it('should format amount correctly', () => {
-    expect(formatCurrency(1234.56)).toBe('$1,234.56');
+describe("formatCurrency", () => {
+  it("should format amount correctly", () => {
+    expect(formatCurrency(1234.56)).toBe("$1,234.56");
   });
 });
 ```
@@ -366,16 +366,46 @@ describe('formatCurrency', () => {
 ### Run Tests
 
 ```bash
+# Unit & Integration Tests (Vitest)
 npm run test           # Run tests in watch mode
 npm run test:run       # Run tests once
+npm run test:ui        # Open Vitest UI
 npm run test:coverage  # Run with coverage report
-npm run verify         # Run tests + build
+
+# E2E Tests (Playwright)
+npm run test:e2e       # Run E2E tests
+npm run test:e2e:ui    # Run E2E tests in UI mode
+npm run test:e2e:debug # Debug E2E tests
+
+# Complete Verification
+npm run verify         # Run all tests + build
+```
+
+### Testing Layers
+
+```text
+Unit Tests (Vitest)
+├─ Pure functions, utilities
+├─ Redux slices
+└─ Validators, formatters
+
+Integration Tests (React Testing Library)
+├─ Component interactions
+├─ API integration
+└─ Complex hooks
+
+E2E Tests (Playwright)
+├─ Authentication flows
+├─ Critical user journeys
+└─ Multi-step workflows
 ```
 
 ### Learn More
 
 - **Testing Strategy:** `.opencode/knowledge/testing-strategy.md` - When and what to test
-- **Testing Setup:** `.opencode/skills/testing-setup.md` - How to configure and write tests
+- **Testing Setup:** `.opencode/skills/testing-setup.md` - How to configure unit tests
+- **Testing Examples:** `.opencode/skills/testing-examples.md` - Unit/integration patterns
+- **E2E Testing:** `.opencode/skills/playwright-e2e.md` - E2E patterns and workflows
 
 ## Resources
 

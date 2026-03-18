@@ -2,7 +2,11 @@
 
 ## Description
 
-This skill guides you through setting up the complete testing infrastructure for this React + TypeScript + Vite project using Vitest and React Testing Library.
+This skill guides you through setting up the complete testing infrastructure for this React + TypeScript + Vite project using:
+
+- **Vitest** - Unit and integration tests
+- **React Testing Library** - Component testing
+- **Playwright** - End-to-end (E2E) tests
 
 ## Step 1: Install Testing Dependencies
 
@@ -13,6 +17,7 @@ npm install -D vitest @vitest/ui jsdom @testing-library/react @testing-library/j
 ```
 
 **Packages explanation**:
+
 - `vitest` - Fast unit test framework (Vite-native, Jest-compatible)
 - `@vitest/ui` - Web UI for viewing test results
 - `jsdom` - DOM implementation for Node.js (simulates browser)
@@ -26,34 +31,34 @@ Create `vitest.config.ts` in the project root:
 
 ```typescript
 /// <reference types="vitest" />
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
     css: true,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       exclude: [
-        'node_modules/',
-        'src/test/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
-        'dist/',
-        '.opencode/',
+        "node_modules/",
+        "src/test/",
+        "**/*.d.ts",
+        "**/*.config.*",
+        "**/mockData",
+        "dist/",
+        ".opencode/",
       ],
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
@@ -64,9 +69,9 @@ export default defineConfig({
 Create `src/test/setup.ts`:
 
 ```typescript
-import { expect, afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
-import * as matchers from '@testing-library/jest-dom/matchers';
+import { expect, afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+import * as matchers from "@testing-library/jest-dom/matchers";
 
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers);
@@ -134,8 +139,8 @@ export { renderWithProviders as render };
 Create `src/test/utils/store-utils.ts`:
 
 ```typescript
-import { configureStore } from '@reduxjs/toolkit';
-import type { BaseQueryFn } from '@reduxjs/toolkit/query';
+import { configureStore } from "@reduxjs/toolkit";
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
 /**
  * Helper to set up a Redux store for testing RTK Query APIs
@@ -191,9 +196,9 @@ export const handlers: any[] = [];
 Create `src/test/mocks/redux-mock.ts`:
 
 ```typescript
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '@/features/auth/state/auth-slice';
-import type { RootState } from '@/app/store/store';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "@/features/auth/state/auth-slice";
+import type { RootState } from "@/app/store/store";
 
 /**
  * Create a mock Redux store for testing
@@ -213,12 +218,12 @@ export function createMockStore(preloadedState?: Partial<RootState>) {
  */
 export const mockAuthSession = {
   user: {
-    id: '1',
-    email: 'test@example.com',
-    name: 'Test User',
+    id: "1",
+    email: "test@example.com",
+    name: "Test User",
   },
-  token: 'mock-token-123',
-  role: 'user',
+  token: "mock-token-123",
+  role: "user",
 };
 
 /**
@@ -226,11 +231,77 @@ export const mockAuthSession = {
  */
 export const mockAdminSession = {
   ...mockAuthSession,
-  role: 'admin',
+  role: "admin",
 };
 ```
 
-## Step 6: Update package.json Scripts
+## Step 6: Install Playwright for E2E Testing
+
+Run the following command to install Playwright:
+
+```bash
+npm install -D @playwright/test
+npx playwright install
+```
+
+**What gets installed**:
+
+- `@playwright/test` - Playwright test runner
+- Browser binaries (Chromium, Firefox, WebKit) - Installed by `npx playwright install`
+
+## Step 7: Create Playwright Configuration
+
+Create `playwright.config.ts` in the project root:
+
+```typescript
+import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: "html",
+  use: {
+    baseURL: "http://localhost:5173",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+  },
+
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+    },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+    },
+    // Mobile viewports
+    {
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
+    },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 12"] },
+    },
+  ],
+
+  webServer: {
+    command: "npm run dev",
+    url: "http://localhost:5173",
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+## Step 8: Update package.json Scripts
 
 Add these scripts to your `package.json`:
 
@@ -242,12 +313,125 @@ Add these scripts to your `package.json`:
     "test:run": "vitest run",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
-    "verify": "npm run test:run && npm run build"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "verify": "npm run test:run && npm run test:e2e && npm run build"
   }
 }
 ```
 
-## Step 7: Update TypeScript Configuration
+## Step 9: Create E2E Test Structure
+
+Create the E2E directory structure:
+
+```bash
+mkdir -p e2e/fixtures
+mkdir -p e2e/pages
+```
+
+Create `e2e/fixtures/test-users.ts`:
+
+```typescript
+/**
+ * Test user credentials for E2E tests
+ * These should match your test database or mock API
+ */
+export const testUsers = {
+  admin: {
+    email: "admin@test.com",
+    password: "admin123",
+    role: "admin",
+  },
+  user: {
+    email: "user@test.com",
+    password: "user123",
+    role: "user",
+  },
+};
+```
+
+Create `e2e/pages/LoginPage.ts` (Page Object Model):
+
+```typescript
+import { Page, Locator, expect } from "@playwright/test";
+
+export class LoginPage {
+  readonly page: Page;
+  readonly emailInput: Locator;
+  readonly passwordInput: Locator;
+  readonly submitButton: Locator;
+  readonly errorMessage: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.emailInput = page.getByLabel(/email/i);
+    this.passwordInput = page.getByLabel(/password/i);
+    this.submitButton = page.getByRole("button", { name: /login/i });
+    this.errorMessage = page.getByRole("alert");
+  }
+
+  async goto() {
+    await this.page.goto("/login");
+  }
+
+  async login(email: string, password: string) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.submitButton.click();
+  }
+
+  async expectErrorMessage(message: string) {
+    await this.errorMessage.waitFor({ state: "visible" });
+    await expect(this.errorMessage).toContainText(message);
+  }
+}
+```
+
+Create `e2e/auth.spec.ts`:
+
+```typescript
+import { test, expect } from "@playwright/test";
+import { LoginPage } from "./pages/LoginPage";
+import { testUsers } from "./fixtures/test-users";
+
+test.describe("Authentication", () => {
+  test("should login successfully with valid credentials", async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+
+    await loginPage.login(testUsers.user.email, testUsers.user.password);
+
+    // Should redirect to dashboard
+    await expect(page).toHaveURL("/dashboard");
+    await expect(page.getByText(/welcome/i)).toBeVisible();
+  });
+
+  test("should show error with invalid credentials", async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+
+    await loginPage.login("wrong@email.com", "wrongpassword");
+
+    await loginPage.expectErrorMessage("Invalid credentials");
+  });
+
+  test("should logout successfully", async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testUsers.user.email, testUsers.user.password);
+
+    // Click logout button
+    await page.getByRole("button", { name: /logout/i }).click();
+
+    // Should redirect to home
+    await expect(page).toHaveURL("/");
+  });
+});
+```
+
+## Step 10: Update TypeScript Configuration
 
 Add to `tsconfig.json` to recognize Vitest globals:
 
@@ -259,7 +443,19 @@ Add to `tsconfig.json` to recognize Vitest globals:
 }
 ```
 
-## Step 8: Create Example Test
+Create `tsconfig.e2e.json` for E2E tests:
+
+```json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["@playwright/test"]
+  },
+  "include": ["e2e/**/*"]
+}
+```
+
+## Step 11: Create Example Unit Test
 
 Create `src/shared/utils/format-date.ts`:
 
@@ -268,11 +464,11 @@ Create `src/shared/utils/format-date.ts`:
  * Format a date to a readable string
  */
 export function formatDate(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   }).format(d);
 }
 ```
@@ -280,64 +476,103 @@ export function formatDate(date: Date | string): string {
 Create `src/shared/utils/format-date.test.ts`:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { formatDate } from './format-date';
+import { describe, it, expect } from "vitest";
+import { formatDate } from "./format-date";
 
-describe('formatDate', () => {
-  it('should format Date object correctly', () => {
-    const date = new Date('2024-03-17');
-    expect(formatDate(date)).toBe('March 17, 2024');
+describe("formatDate", () => {
+  it("should format Date object correctly", () => {
+    const date = new Date("2024-03-17");
+    expect(formatDate(date)).toBe("March 17, 2024");
   });
 
-  it('should format date string correctly', () => {
-    expect(formatDate('2024-03-17')).toBe('March 17, 2024');
+  it("should format date string correctly", () => {
+    expect(formatDate("2024-03-17")).toBe("March 17, 2024");
   });
 
-  it('should handle different months', () => {
-    expect(formatDate('2024-01-01')).toBe('January 1, 2024');
-    expect(formatDate('2024-12-31')).toBe('December 31, 2024');
+  it("should handle different months", () => {
+    expect(formatDate("2024-01-01")).toBe("January 1, 2024");
+    expect(formatDate("2024-12-31")).toBe("December 31, 2024");
   });
 });
 ```
 
-## Step 9: Run Your First Test
+## Step 12: Run Your Tests
+
+### Unit Tests (Vitest)
 
 ```bash
-# Run tests once
+# Run unit tests once
 npm run test:run
 
-# Run tests in watch mode
+# Run unit tests in watch mode
 npm run test:watch
 
-# Run tests with UI
+# Run unit tests with UI
 npm run test:ui
 
-# Run tests with coverage
+# Run unit tests with coverage
 npm run test:coverage
 ```
 
-## Folder Structure After Setup
+### E2E Tests (Playwright)
+
+```bash
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI mode (interactive)
+npm run test:e2e:ui
+
+# Run E2E tests in debug mode
+npm run test:e2e:debug
+
+# View E2E test report
+npm run test:e2e:report
+```
+
+### Full Verification
+
+```bash
+# Run all tests + build
+npm run verify
+```
 
 ```
+
+## Step 13: Folder Structure After Setup
+
+```
+
 src/
-  test/
-    mocks/
-      handlers.ts
-      redux-mock.ts
-    utils/
-      render-with-providers.tsx
-      store-utils.ts
-    setup.ts
-  shared/
-    utils/
-      format-date.ts
-      format-date.test.ts    ← Example test
-  features/
-    auth/
-      tests/                 ← Feature tests go here
-        auth-slice.test.ts
-        validators.test.ts
-vitest.config.ts             ← Root config
+test/
+mocks/
+handlers.ts
+redux-mock.ts
+utils/
+render-with-providers.tsx
+store-utils.ts
+setup.ts
+shared/
+utils/
+format-date.ts
+format-date.test.ts ← Unit test example
+features/
+auth/
+tests/ ← Feature unit tests
+auth-slice.test.ts
+validators.test.ts
+e2e/ ← E2E tests directory
+fixtures/
+test-users.ts ← Test data
+pages/
+LoginPage.ts ← Page Object Model
+auth.spec.ts ← E2E test suite
+vitest.config.ts ← Vitest config
+playwright.config.ts ← Playwright config
+tsconfig.e2e.json ← E2E TypeScript config
+
+```
+
 ```
 
 ## Common Testing Patterns
@@ -351,15 +586,15 @@ export function calculateTotal(subtotal: number, taxRate: number): number {
 }
 
 // src/shared/utils/calculate-total.test.ts
-import { describe, it, expect } from 'vitest';
-import { calculateTotal } from './calculate-total';
+import { describe, it, expect } from "vitest";
+import { calculateTotal } from "./calculate-total";
 
-describe('calculateTotal', () => {
-  it('should calculate total with tax', () => {
+describe("calculateTotal", () => {
+  it("should calculate total with tax", () => {
     expect(calculateTotal(100, 0.08)).toBe(108);
   });
 
-  it('should handle zero tax', () => {
+  it("should handle zero tax", () => {
     expect(calculateTotal(100, 0)).toBe(100);
   });
 });
@@ -369,33 +604,33 @@ describe('calculateTotal', () => {
 
 ```typescript
 // src/features/auth/tests/auth-slice.test.ts
-import { describe, it, expect } from 'vitest';
-import authReducer, { login, logout } from '../state/auth-slice';
+import { describe, it, expect } from "vitest";
+import authReducer, { login, logout } from "../state/auth-slice";
 
-describe('auth slice', () => {
-  it('should return initial state', () => {
-    expect(authReducer(undefined, { type: 'unknown' })).toEqual({
+describe("auth slice", () => {
+  it("should return initial state", () => {
+    expect(authReducer(undefined, { type: "unknown" })).toEqual({
       session: null,
     });
   });
 
-  it('should handle login', () => {
+  it("should handle login", () => {
     const session = {
-      user: { id: '1', name: 'Test', email: 'test@example.com' },
-      token: 'abc123',
-      role: 'user',
+      user: { id: "1", name: "Test", email: "test@example.com" },
+      token: "abc123",
+      role: "user",
     };
 
     const state = authReducer(undefined, login(session));
     expect(state.session).toEqual(session);
   });
 
-  it('should handle logout', () => {
+  it("should handle logout", () => {
     const initialState = {
       session: {
-        user: { id: '1', name: 'Test', email: 'test@example.com' },
-        token: 'abc',
-        role: 'user',
+        user: { id: "1", name: "Test", email: "test@example.com" },
+        token: "abc",
+        role: "user",
       },
     };
 
@@ -416,7 +651,7 @@ import { LoginForm } from '../components/LoginForm';
 describe('LoginForm', () => {
   it('should render login form', () => {
     render(<LoginForm />);
-    
+
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
@@ -424,27 +659,27 @@ describe('LoginForm', () => {
 
   it('should show validation errors for empty fields', async () => {
     render(<LoginForm />);
-    
+
     const submitButton = screen.getByRole('button', { name: /login/i });
     fireEvent.click(submitButton);
-    
+
     expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
   });
 
   it('should call onSubmit with form data', async () => {
     const onSubmit = vi.fn();
     render(<LoginForm onSubmit={onSubmit} />);
-    
+
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     });
-    
+
     fireEvent.change(screen.getByLabelText(/password/i), {
       target: { value: 'password123' },
     });
-    
+
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-    
+
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
         email: 'test@example.com',
@@ -470,9 +705,9 @@ describe('useLogin', () => {
   it('should initialize with correct default state', () => {
     const store = configureStore({ reducer: { auth: authReducer } });
     const wrapper = ({ children }: any) => <Provider store={store}>{children}</Provider>;
-    
+
     const { result } = renderHook(() => useLogin(), { wrapper });
-    
+
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();
   });
@@ -483,20 +718,18 @@ describe('useLogin', () => {
 
 ```typescript
 // src/features/viewer/tests/viewer-api.test.ts
-import { describe, it, expect } from 'vitest';
-import { setupApiStore } from '@/test/utils/store-utils';
-import { viewerApi } from '../api/viewer-api';
+import { describe, it, expect } from "vitest";
+import { setupApiStore } from "@/test/utils/store-utils";
+import { viewerApi } from "../api/viewer-api";
 
-describe('viewerApi', () => {
-  it('should fetch clinic services successfully', async () => {
+describe("viewerApi", () => {
+  it("should fetch clinic services successfully", async () => {
     const storeRef = setupApiStore(viewerApi);
-    
-    const promise = storeRef.store.dispatch(
-      viewerApi.endpoints.getClinicServices.initiate()
-    );
-    
+
+    const promise = storeRef.store.dispatch(viewerApi.endpoints.getClinicServices.initiate());
+
     const { data, isSuccess } = await promise;
-    
+
     expect(isSuccess).toBe(true);
     expect(data).toBeDefined();
     expect(Array.isArray(data)).toBe(true);
