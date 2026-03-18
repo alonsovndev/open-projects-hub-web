@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import { baseApi } from "@/app/api/base-api";
-import { adminAuthReducer } from "@/features/admin-auth/state/admin-auth-slice";
+import { adminAuthReducer } from "@/features/auth/state/admin-auth-slice";
 
 export const store = configureStore({
   reducer: {
-    adminAuth: adminAuthReducer,
+    auth: adminAuthReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {

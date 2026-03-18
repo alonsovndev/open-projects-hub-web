@@ -9,7 +9,7 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard: FC<AuthGuardProps> = ({ children, redirectTo = "/login" }) => {
-  const session = useAppSelector((state) => state.adminAuth.session);
+  const session = useAppSelector((state) => state.auth.session);
 
   if (!session) {
     return <Navigate to={redirectTo} replace />;

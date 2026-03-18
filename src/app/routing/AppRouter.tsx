@@ -1,39 +1,25 @@
 import type { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { AuthGuard, GuestGuard } from "@/app/routing/guards";
-import { DashboardPage } from "@/pages/dashboard";
-import { LoginPage } from "@/pages/login";
-import { ClientViewer } from "@/pages/client-viewer";
-import { Home } from "@/pages/home";
-import { UnauthorizedPage } from "@/pages/unauthorized";
+import { GuardResolver } from "@/app/routing/GuardResolver";
+import { appRoutes } from "@/app/routing/routes";
 
+/**
+ * AppRouter - Central routing component
+ * 
+ * Uses declarative route configuration from feature modules.
+ * Each route is wrapped with GuardResolver for authentication/authorization.
+ */
 export const AppRouter: FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-
-      <Route
-        path="/login"
-        element={
-          <GuestGuard>
-            <LoginPage />
-          </GuestGuard>
-        }
-      />
-
-      <Route
-        path="/dashboard"
-        element={
-          <AuthGuard>
-            <DashboardPage />
-          </AuthGuard>
-        }
-      />
-
-      <Route path="/viewer" element={<ClientViewer />} />
-
-      <Route path="/unauthorized" element={<UnauthorizedPage />} />
+      {appRoutes.map((route) => (
+        <Route
+          key={route.path}
+          path={route.path}
+          element={<GuardResolver guards={route.guards}>{route.element}</GuardResolver>}
+        />
+      ))}
     </Routes>
   );
 };

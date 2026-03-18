@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
-import { Footer } from "@/components/layout/footer";
-import { AdminLoginForm } from "@/features/admin-auth/components/admin-login-form";
+import { Footer } from "@/shared/components/layout/footer";
+import { AdminLoginForm } from "@/features/auth/components/admin-login-form";
 
 import styles from "./login.module.scss";
 

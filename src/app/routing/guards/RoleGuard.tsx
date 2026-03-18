@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useAppSelector } from "@/app/store/hooks";
-import type { UserRole } from "@/features/admin-auth/types";
+import type { UserRole } from "@/features/auth/types";
 
 interface RoleGuardProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ interface RoleGuardProps {
 }
 
 export const RoleGuard: FC<RoleGuardProps> = ({ children, allowedRoles, redirectTo = "/unauthorized" }) => {
-  const session = useAppSelector((state) => state.adminAuth.session);
+  const session = useAppSelector((state) => state.auth.session);
 
   if (!session) {
     return <Navigate to="/login" replace />;

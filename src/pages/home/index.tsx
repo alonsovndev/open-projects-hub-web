@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/shared/components/layout/footer";
 import { HomeHero } from "@/features/home/components/home-hero";
 import { RoleSelection } from "@/features/home/components/role-selection";
 

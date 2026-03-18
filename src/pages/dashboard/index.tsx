@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
-import { Footer } from "@/components/layout/footer";
-import { AdminWelcome } from "@/features/admin-dashboard/components/admin-welcome";
+import { Footer } from "@/shared/components/layout/footer";
+import { AdminWelcome } from "@/features/dashboard/components/admin-welcome";
 
 import styles from "./dashboard.module.scss";
 

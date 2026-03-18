@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Result } from "antd";
 
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/shared/components/layout/footer";
 
 import styles from "./unauthorized.module.scss";
 
