@@ -400,12 +400,34 @@ E2E Tests (Playwright)
 └─ Multi-step workflows
 ```
 
+### Git Hooks (Husky)
+
+**Pre-commit** (runs automatically):
+
+- ✅ Formats staged files with Prettier
+
+**Commit message** (runs automatically):
+
+- ✅ Validates conventional commit format
+- Format: `type: description`
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+**Manual formatting**:
+
+```bash
+npm run format         # Format all files
+npm run format:check   # Check formatting
+```
+
+**Learn more:** `.opencode/skills/git-hooks-husky.md`
+
 ### Learn More
 
 - **Testing Strategy:** `.opencode/knowledge/testing-strategy.md` - When and what to test
 - **Testing Setup:** `.opencode/skills/testing-setup.md` - How to configure unit tests
 - **Testing Examples:** `.opencode/skills/testing-examples.md` - Unit/integration patterns
 - **E2E Testing:** `.opencode/skills/playwright-e2e.md` - E2E patterns and workflows
+- **Git Hooks:** `.opencode/skills/git-hooks-husky.md` - Husky and commit standards
 
 ## Resources
 

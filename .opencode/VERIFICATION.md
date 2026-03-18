@@ -16,6 +16,7 @@ This document validates the complete `.opencode` configuration for this reposito
 └── skills/
     ├── antd-v6-patterns.md              ✅ Ant Design usage
     ├── component-boundaries.md          ✅ Component organization
+    ├── git-hooks-husky.md               ✅ Git hooks and commit standards
     ├── linting-formatting.md            ✅ Code quality
     ├── playwright-e2e.md                ✅ E2E testing patterns
     ├── react-ui-development.md          ✅ React patterns
@@ -416,6 +417,13 @@ playwright-e2e.md (NEW)
 ├─→ 6 E2E patterns ✅ ⭐
 ├─→ Best practices ✅ ⭐
 └─→ CI/CD integration ✅ ⭐
+
+git-hooks-husky.md (NEW)
+├─→ Pre-commit hook (format) ✅ ⭐
+├─→ Commit-msg hook (conventional commits) ✅ ⭐
+├─→ Manual commands ✅ ⭐
+├─→ Troubleshooting ✅ ⭐
+└─→ Best practices ✅ ⭐
 ```
 
 ### Documentation → Architecture Alignment
@@ -433,7 +441,7 @@ All documentation files now correctly reference:
 
 ## Completeness Check
 
-### Required Documentation: 15 files
+### Required Documentation: 16 files
 
 **Agents** (1/1):
 
@@ -446,7 +454,7 @@ All documentation files now correctly reference:
 - ✅ testing-strategy.md
 - ✅ quick-reference.md
 
-**Skills** (10/10):
+**Skills** (11/11):
 
 - ✅ routing-pages.md
 - ✅ component-boundaries.md
@@ -456,6 +464,7 @@ All documentation files now correctly reference:
 - ✅ testing-setup.md
 - ✅ testing-examples.md
 - ✅ playwright-e2e.md ⭐
+- ✅ git-hooks-husky.md ⭐ NEW
 - ✅ antd-v6-patterns.md
 - ✅ linting-formatting.md
 
@@ -493,6 +502,7 @@ All documentation files now correctly reference:
 - ✅ Formatting documented
 - ✅ Testing documented
 - ✅ Build verification documented
+- ✅ Git hooks documented (Prettier + Conventional Commits) ⭐
 - ✅ Non-negotiable rules enforced
 
 ## Non-Negotiable Rules Consistency
@@ -527,16 +537,25 @@ Organized into 6 categories (more detailed)
    - Philosophy and decision-making
    - Setup and configuration
    - Examples and patterns
-2. **Strong Non-Negotiable Rules**
+
+2. **Automated Code Quality** ⭐ NEW
+   - Pre-commit hooks format code automatically
+   - Commit message validation (Conventional Commits)
+   - Prettier integration
+   - Type checking available
+
+3. **Strong Non-Negotiable Rules**
    - 27+ rules enforced
    - Clear categorization
    - Testing integrity protected (all layers)
-3. **Complete Architecture Documentation**
+
+4. **Complete Architecture Documentation**
    - Feature-based approach
    - Declarative routing
    - Clear separation of concerns
-4. **Agent Integration**
-   - All documents referenced (including E2E)
+
+5. **Agent Integration**
+   - All documents referenced (including E2E and Git hooks)
    - TDD workflow enforced
    - Verification required (unit + E2E)
 
@@ -548,7 +567,7 @@ The `.opencode` setup is:
 - ✅ Consistent
 - ✅ Well-organized
 - ✅ Testing-focused (Unit + Integration + E2E) ⭐
-- ✅ Quality-enforced
+- ✅ Quality-enforced (Git hooks + Prettier) ⭐
 - ✅ Production-ready
 
 ### 📋 Next Steps
@@ -563,9 +582,14 @@ The `.opencode` setup is:
    - Use `playwright-e2e.md` for E2E patterns and Page Object Model
    - Write E2E tests for critical user journeys (auth, checkout, registration)
 
-3. **Let the Frontend React Agent enforce all rules**
+3. **Git Hooks are Active**: ⭐ NEW
+   - Pre-commit hook will auto-format staged files
+   - Commit messages must follow Conventional Commits format
+   - See `git-hooks-husky.md` for details
+
+4. **Let the Frontend React Agent enforce all rules**
 
 ---
 
 **Last Verified**: March 17, 2026
-**Status**: ✅ VERIFIED AND COMPLETE (WITH E2E TESTING) ⭐
+**Status**: ✅ VERIFIED AND COMPLETE (WITH E2E TESTING + GIT HOOKS) ⭐

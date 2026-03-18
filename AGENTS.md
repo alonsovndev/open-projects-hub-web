@@ -20,6 +20,23 @@ npm run build
 
 Builds the application for production.
 
+### Type Check
+
+```bash
+npm run type-check
+```
+
+Runs TypeScript type checking without emitting files.
+
+### Format Code
+
+```bash
+npm run format         # Format all files in src/
+npm run format:check   # Check formatting without fixing
+```
+
+Formats code using Prettier. Git hooks automatically format staged files on commit.
+
 ### Lint Code
 
 ```bash
@@ -32,14 +49,26 @@ Runs ESLint when configured.
 
 Testing scripts are not currently configured.
 
+### Git Hooks
+
+This repository uses Husky for git hooks:
+
+- **pre-commit**: Automatically formats staged files with Prettier
+- **commit-msg**: Validates commit messages follow Conventional Commits format
+
+See `.opencode/skills/git-hooks-husky.md` for complete documentation.
+
 ### Repository Script Status
 
 Current repository status:
 
 1. `npm run build` is available.
-2. `npm run test` is present but currently a placeholder that fails.
-3. `npm run lint` is referenced in guidance but is not currently configured in `package.json`.
-4. `npm run verify` is not currently configured.
+2. `npm run type-check` is available.
+3. `npm run format` and `npm run format:check` are available.
+4. `npm run test` is present but currently a placeholder that fails.
+5. `npm run lint` is referenced in guidance but is not currently configured in `package.json`.
+6. `npm run verify` is not currently configured.
+7. Git hooks (Husky) are configured and active.
 
 Agents should follow the preferred verification workflow when these scripts exist, and clearly state when a requested verification step cannot run because the repository does not yet provide the script.
 
@@ -321,15 +350,15 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 
 ## Naming Conventions
 
-| File Type | Convention | Example |
-| --- | --- | --- |
-| Components | PascalCase | `HomePageCarousel.tsx` |
-| Component folders | kebab-case | `requirements-viewer/` |
-| Pages | `index.tsx` in lowercase folder | `src/pages/home/index.tsx` |
-| Utilities | kebab-case | `format-date.ts` |
-| Config | kebab-case | `clinic-information.ts` |
-| Mock data | kebab-case | `all-clinic-services.ts` |
-| Stylesheets | kebab-case | `home-page-carousel.module.scss` |
+| File Type         | Convention                      | Example                          |
+| ----------------- | ------------------------------- | -------------------------------- |
+| Components        | PascalCase                      | `HomePageCarousel.tsx`           |
+| Component folders | kebab-case                      | `requirements-viewer/`           |
+| Pages             | `index.tsx` in lowercase folder | `src/pages/home/index.tsx`       |
+| Utilities         | kebab-case                      | `format-date.ts`                 |
+| Config            | kebab-case                      | `clinic-information.ts`          |
+| Mock data         | kebab-case                      | `all-clinic-services.ts`         |
+| Stylesheets       | kebab-case                      | `home-page-carousel.module.scss` |
 
 ## Code Organization Best Practices
 
