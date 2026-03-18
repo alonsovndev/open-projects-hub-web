@@ -13,10 +13,10 @@ This agent builds React features for this repository using TypeScript and the re
 
 1. Build route pages using the `src/pages/<page>/index.tsx` pattern.
 2. Build domain-owned UI inside `src/features/<feature>/components/`.
-3. Build shared cross-feature UI inside `src/components/`.
+3. Build shared cross-feature UI inside `src/shared/components/`.
 4. Keep pages thin and focused on composition.
 5. Separate UI from static config, mock data, and reusable logic.
-6. Apply the repository's UI-library, styling, and verification standards consistently.
+6. Apply the repository's UI-library, styling, testing, and verification standards consistently.
 
 ## Required References
 
@@ -25,17 +25,24 @@ Before implementing work, use these documents together:
 1. `AGENTS.md` for repository-wide policy and script reality.
 2. `.opencode/knowledge/frontend-architecture.md` for folder ownership and architecture.
 3. `.opencode/knowledge/project-preferences.md` for naming and working preferences.
-4. `.opencode/skills/routing-pages.md` for route-page structure.
-5. `.opencode/skills/react-ui-development.md` for component composition and UI workflow.
-6. `.opencode/skills/antd-v6-patterns.md` for Ant Design usage decisions.
-7. `.opencode/skills/linting-formatting.md` for verification and formatting workflow.
+4. `.opencode/knowledge/testing-strategy.md` for testing philosophy and when to write tests.
+5. `.opencode/skills/routing-pages.md` for route-page structure.
+6. `.opencode/skills/react-ui-development.md` for component composition and UI workflow.
+7. `.opencode/skills/antd-v6-patterns.md` for Ant Design usage decisions.
+8. `.opencode/skills/testing-setup.md` for test configuration and utilities.
+9. `.opencode/skills/testing-examples.md` for practical testing patterns.
+10. `.opencode/skills/linting-formatting.md` for verification and formatting workflow.
 
 ## Execution Rules
 
 1. Do not restate or invent conventions that already exist in the referenced files.
 2. Use Ant Design intentionally for interactive, validated, data-heavy, and admin UI.
 3. Prefer semantic HTML and SCSS Modules for marketing, content, and branded sections.
-4. Follow TDD and progressive verification when tests and scripts exist.
+4. Follow TDD and progressive verification when tests and scripts exist:
+   - Write tests for business-critical logic, utilities, Redux slices, and custom hooks
+   - Refer to `testing-strategy.md` for when to write tests
+   - Use patterns from `testing-examples.md` for common scenarios
+   - Run `npm run test:run && npm run build` before completing work
 5. If repository scripts are missing or only placeholders, say so clearly and run the available checks instead.
 
 ## Done Checklist
@@ -46,5 +53,11 @@ Before considering work complete, verify:
 2. Styles, naming, and imports match the documented standards.
 3. Ant Design is used only where it adds structural or behavioral value.
 4. Repeated data and configuration are extracted to the proper locations.
-5. Relevant tests and verification steps were handled according to repository support.
-6. Component folders use kebab-case and component files remain PascalCase.
+5. Tests are written for business-critical logic following the testing strategy:
+   - ✅ Tests for utilities, validators, formatters, and calculators
+   - ✅ Tests for Redux slices and custom hooks with logic
+   - ✅ Tests for API integration when appropriate
+   - ⚠️ Tests for complex components and workflows when needed
+   - ❌ Skip tests for simple presentational components
+6. Verification steps were run according to repository support (`npm run test:run && npm run build`).
+7. Component folders use kebab-case and component files remain PascalCase.

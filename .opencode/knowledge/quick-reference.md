@@ -317,9 +317,71 @@ export { MyComponent } from "./MyComponent";
 - Verify import uses feature public API
 - Ensure component is exported from feature
 
+## Testing Quick Reference
+
+### When to Write Tests
+
+✅ **Always test**:
+- Authentication/authorization logic
+- Business calculations and validations
+- Data mutations (create, update, delete)
+- Utility functions (formatters, parsers)
+- Custom hooks with logic
+
+⚠️ **Consider testing**:
+- Complex UI components (multi-step forms, tables with filters)
+- Feature workflows (registration, checkout)
+- Error handling
+
+❌ **Don't test**:
+- Simple presentational components
+- Third-party libraries
+- Static configuration
+
+### Where to Put Tests
+
+```
+src/features/my-feature/
+  tests/
+    my-feature-api.test.ts       # API tests
+    my-feature-slice.test.ts     # Redux tests
+    validators.test.ts           # Model tests
+    MyComponent.test.tsx         # Component tests
+```
+
+### Quick Test Example
+
+```typescript
+// Pure function test
+import { describe, it, expect } from 'vitest';
+import { formatCurrency } from './format-currency';
+
+describe('formatCurrency', () => {
+  it('should format amount correctly', () => {
+    expect(formatCurrency(1234.56)).toBe('$1,234.56');
+  });
+});
+```
+
+### Run Tests
+
+```bash
+npm run test           # Run tests in watch mode
+npm run test:run       # Run tests once
+npm run test:coverage  # Run with coverage report
+npm run verify         # Run tests + build
+```
+
+### Learn More
+
+- **Testing Strategy:** `.opencode/knowledge/testing-strategy.md` - When and what to test
+- **Testing Setup:** `.opencode/skills/testing-setup.md` - How to configure and write tests
+
 ## Resources
 
 - **Architecture:** `.opencode/knowledge/frontend-architecture.md`
 - **Preferences:** `.opencode/knowledge/project-preferences.md`
+- **Testing Strategy:** `.opencode/knowledge/testing-strategy.md`
 - **Routing:** `.opencode/skills/routing-pages.md`
 - **Components:** `.opencode/skills/component-boundaries.md`
+- **Testing Setup:** `.opencode/skills/testing-setup.md`
