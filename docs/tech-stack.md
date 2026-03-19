@@ -11,6 +11,7 @@ The project uses a modern SPA stack aimed at keeping UI code typed, modular, and
 - **Redux Toolkit + RTK Query** for state and API integration
 - **Ant Design** for structured interactive UI
 - **SCSS Modules** for local component and page styling
+- **Vitest + React Testing Library + Playwright** for quality verification
 
 ## Frontend Runtime
 
@@ -103,16 +104,40 @@ Styling is split between:
 - SCSS Modules keep styles local and easy to delete with the component.
 - The current build failure caused by missing SCSS files shows that style imports should be kept aligned with actual files during refactors.
 
+## Testing Pattern
+
+### High-level View
+
+Testing is split by confidence level instead of forcing every concern into one tool:
+
+- **Vitest** for unit, hook, and component tests
+- **React Testing Library** for DOM assertions and user-facing interactions
+- **Playwright** for browser-level route validation
+
+### Implementation Details
+
+- `vitest.config.ts` uses `jsdom`, `src/test/setup.ts`, and V8 coverage reporting.
+- `src/test/utils/render-with-providers.tsx` wraps test renders with Redux and router context.
+- `src/test/mocks/redux-mock.ts` provides lightweight state setup for auth-aware scenarios.
+- `src/test/mocks/handlers.ts` is a placeholder for API-level test handlers when richer mocked responses are introduced.
+- `playwright.config.ts` runs e2e tests from `e2e/` across Chromium, Firefox, and WebKit.
+
+### Why This Matters
+
+- Contributors can choose the lightest test that proves the behavior.
+- The stack encourages accessible assertions instead of brittle DOM implementation checks.
+- Coverage reporting is available now, even though hard thresholds are not yet enforced.
+
 ## Documentation-Relevant Conventions
 
-| Convention                               | Current usage       |
-| ---------------------------------------- | ------------------- |
-| Feature folders own routes and internals | Yes                 |
-| Thin pages that compose features         | Yes                 |
-| Barrel exports for feature APIs          | Yes                 |
-| Shared UI under `src/shared/`            | Yes                 |
-| Static config under `src/resources/`     | Yes                 |
-| Automated tests                          | Not yet implemented |
+| Convention                               | Current usage                   |
+| ---------------------------------------- | ------------------------------- |
+| Feature folders own routes and internals | Yes                             |
+| Thin pages that compose features         | Yes                             |
+| Barrel exports for feature APIs          | Yes                             |
+| Shared UI under `src/shared/`            | Yes                             |
+| Static config under `src/resources/`     | Yes                             |
+| Automated tests                          | Yes, with Vitest and Playwright |
 
 ## Learning Resources
 
@@ -121,3 +146,5 @@ Styling is split between:
 - [Redux Toolkit RTK Query docs](https://redux-toolkit.js.org/rtk-query/overview)
 - [Ant Design overview](https://ant.design/docs/react/introduce)
 - [CSS Modules documentation](https://github.com/css-modules/css-modules)
+- [Vitest docs](https://vitest.dev/guide/)
+- [Playwright docs](https://playwright.dev/docs/intro)

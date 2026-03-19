@@ -39,6 +39,7 @@ The home experience is the landing page and role selector for the application. I
 
 - Add more role entry points in the home config when new user personas are introduced.
 - Keep new marketing or explanatory sections feature-owned unless they become shared across multiple pages.
+- The current Playwright smoke test in `e2e/home.spec.ts` is the starting point for Home-page coverage; the next step is extending it to verify both role-selection journeys.
 
 ## Auth Feature
 
@@ -60,7 +61,7 @@ The auth feature currently supports an admin login flow with client-side validat
 
 - Add logout persistence cleanup when session storage becomes part of the final behavior.
 - Expand role handling if non-admin authenticated users are introduced later.
-- Add automated tests around validation and redirect behavior when test infrastructure is available.
+- Add automated tests around validation and redirect behavior using the existing test stack: pure-model tests for password helpers, integration tests for `AdminLoginForm`, and guard-focused coverage around `/login`.
 
 ## Dashboard Feature
 
@@ -79,6 +80,7 @@ The dashboard is a protected admin-only area. Right now it acts as a placeholder
 
 - Convert placeholder cards into real dashboard modules once project, refinement, and activity flows exist.
 - Keep domain-specific dashboard panels inside `src/features/dashboard/` to avoid leaking business logic into pages or app-level layout code.
+- Add dashboard integration tests that preload an authenticated Redux session and verify `GuardResolver`, `AdminWelcome`, viewer navigation, and sign-out behavior together.
 
 ## Viewer Feature
 
@@ -99,6 +101,7 @@ The viewer flow allows a public user to search for a project by access code and 
 
 - Replace local or mock search behavior with an API-backed lookup when the viewer backend is ready.
 - Preserve the existing split between the search step and the content step so the flow stays easy to reason about.
+- Preserve the pure helper boundary in `src/features/viewer/model/project-code.ts`, because the existing unit tests in `project-code.test.ts` already show it is the cheapest place to lock down viewer input rules.
 
 ## App-Level Pages and Layouts
 

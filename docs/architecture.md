@@ -21,17 +21,17 @@ At a high level, the codebase separates responsibilities into four layers:
 
 ### Overall App Score
 
-- **7/10**
+- **7.5/10**
 
-The project has a strong architectural foundation, clear feature boundaries, and modern stack choices. The score is not higher yet because build verification is currently broken by missing stylesheet files and the repository does not have working automated tests.
+The project has a strong architectural foundation, clear feature boundaries, modern stack choices, and a real testing foundation. The score is not higher yet because production build verification is still broken by a missing stylesheet import and the automated suite has only begun covering the highest-value paths.
 
 ### Category Scores
 
-| Category        | Score    | Why                                                                                                                                                                                                                                                                                         |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Readability     | **8/10** | The folder structure is easy to scan, routes are declared in feature modules, and pages stay thin. The main drag on readability is duplicated or inconsistent page naming such as `src/pages/Home/` versus `src/pages/home/`.                                                               |
-| Scalability     | **8/10** | Feature folders, shared layout components, typed store setup, and route aggregation make it straightforward to add new flows without centralizing all logic in one place. Scalability is limited today by the early-stage placeholder features and the lack of broader validation at scale. |
-| Maintainability | **6/10** | TypeScript, Redux Toolkit, RTK Query, and clear ownership boundaries support maintenance. The score drops because the build is currently failing, tests are not configured, and some flows are still placeholders rather than fully exercised modules.                                      |
+| Category        | Score    | Why                                                                                                                                                                                                                                                                                     |
+| --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Readability     | **8/10** | The folder structure is easy to scan, routes are declared in feature modules, and pages stay thin. The main drag on readability is duplicated or inconsistent page naming such as `src/pages/Home/` versus `src/pages/home/`.                                                           |
+| Scalability     | **8/10** | Feature folders, shared layout components, typed store setup, route aggregation, and reusable test utilities make it straightforward to add new flows without centralizing all logic in one place. Scalability is still limited by placeholder product areas and incomplete test depth. |
+| Maintainability | **7/10** | TypeScript, Redux Toolkit, RTK Query, clear ownership boundaries, and a working Vitest + Playwright setup support maintenance better than before. The score is held back because the build currently fails and critical auth/dashboard journeys are not yet fully covered.              |
 
 ## System Layout
 
@@ -62,6 +62,21 @@ The project has a strong architectural foundation, clear feature boundaries, and
 5. Feature pages render their own components inside `PublicLayout` or `PrivateLayout`.
 6. API interactions flow through `src/app/api/base-api.ts` and feature-specific endpoint modules.
 
+## Testing-Aware Architecture
+
+### High-level View
+
+The app structure now supports testing as a first-class engineering concern instead of treating it as a future add-on.
+
+### Implementation Details
+
+- `vitest.config.ts` configures a jsdom environment for component and model tests.
+- `playwright.config.ts` configures browser-level flows and starts the Vite dev server automatically for e2e runs.
+- `src/test/setup.ts` centralizes matcher setup and cleanup.
+- `src/test/utils/render-with-providers.tsx` gives feature components Redux and router context during tests.
+- `src/app/routing/GuardResolver.tsx` keeps route-protection rules in one place, which reduces duplicated guard test setups.
+- Thin route pages plus feature hooks (`use-admin-login-form.ts`, `use-admin-welcome.ts`, `use-role-selection.ts`) keep orchestration separate from presentational markup.
+
 ## Why This Architecture Works
 
 ### For junior engineers
@@ -80,7 +95,7 @@ The project has a strong architectural foundation, clear feature boundaries, and
 ## Known Constraints
 
 - `npm run build` currently fails because `src/pages/home/index.tsx` imports `./home.module.scss`, but that file is missing.
-- `npm test` is still a placeholder script that exits with an error.
+- `npm run test:run` passes today, but coverage is still narrow and centered on the viewer model plus a home-page smoke test.
 - `npm run format:check` currently reports pre-existing formatting issues under `src/`.
 
 These items are important context for future engineering work because they affect confidence in changes, even when the architecture itself is sound.
