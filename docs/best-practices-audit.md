@@ -40,8 +40,8 @@ This audit evaluates the current codebase as a reference implementation for futu
 
 ### Testing maturity
 
-- `npm test` is still a placeholder script and there is no active test suite.
-- This is the biggest gap in turning the app into a trusted boilerplate.
+- The repo now has a real testing stack: Vitest for unit/component tests, Playwright for e2e flows, and shared test helpers under `src/test/`.
+- The main gap has shifted from "no tests exist" to "coverage is still too shallow around auth, guards, and dashboard behavior."
 
 ### Formatting consistency
 
@@ -60,21 +60,21 @@ This audit evaluates the current codebase as a reference implementation for futu
 
 ## Baseline Recommendation
 
-As a reference application today, this project is a **good architectural starter but not yet a complete boilerplate**. It is best suited for:
+As a reference application today, this project is a **good architectural starter with a credible quality foundation, but not yet a complete boilerplate**. It is best suited for:
 
 - demonstrating folder organization
 - illustrating routing and guard patterns
 - showing a clean auth feature structure
 - teaching how to separate app infrastructure from feature code
 
-It is not yet ideal as a drop-in production starter until the build and testing gaps are addressed.
+It is not yet ideal as a drop-in production starter until the build issue is fixed and the most critical application flows have deeper automated coverage.
 
 ## Future Improvements
 
 ### Short-term
 
 1. Restore build health by fixing missing stylesheet imports and casing inconsistencies.
-2. Add a real test runner and at least a small suite for auth, guards, and the viewer flow.
+2. Expand the current suite with auth, guard, and dashboard integration coverage.
 3. Make format checks pass consistently so CI can enforce style.
 
 ### Mid-term
@@ -82,12 +82,30 @@ It is not yet ideal as a drop-in production starter until the build and testing 
 1. Add a 404 route and document error-state behavior.
 2. Formalize session persistence and sign-out cleanup.
 3. Replace placeholder dashboard content with feature-owned modules backed by real data.
+4. Start enforcing coverage thresholds once the current critical-path suite exists.
 
 ### Long-term
 
 1. Extract reusable app shell patterns into a formal boilerplate template.
-2. Add CI guidance and contribution standards alongside the engineering docs.
+2. Add a dedicated application CI workflow that publishes coverage and Playwright reports.
 3. Provide sample feature-generation conventions for scaling to many domains.
+4. Add visual regression coverage for branded screens once the UI stabilizes.
+
+## Best Practices for Testing
+
+### Project philosophy
+
+- Prefer **behavior-oriented tests** over implementation-detail tests.
+- Mock at the **API, router, or store boundary** instead of mocking every local helper.
+- Use pure-model tests for business rules and integration tests for user journeys.
+- Treat coverage as a way to reveal risk concentration, not as a vanity metric.
+
+### What this means in practice
+
+- Home should prove navigation intent.
+- Login should prove validation, mutation handling, and redirect behavior.
+- Dashboard should prove guard enforcement and post-login actions.
+- Viewer should keep pure validation logic in test-friendly model files.
 
 ## How to Use This Audit
 
@@ -107,3 +125,4 @@ It is not yet ideal as a drop-in production starter until the build and testing 
 - [Martin Fowler on technical debt](https://martinfowler.com/bliki/TechnicalDebt.html)
 - [Testing Library guiding principles](https://testing-library.com/docs/guiding-principles/)
 - [Twelve-Factor App config principle](https://12factor.net/config)
+- [Playwright best practices](https://playwright.dev/docs/best-practices)
