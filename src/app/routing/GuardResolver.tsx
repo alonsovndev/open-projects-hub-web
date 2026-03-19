@@ -11,19 +11,19 @@ interface GuardResolverProps {
 
 /**
  * GuardResolver - Unified guard component that handles all authentication and authorization logic
- * 
+ *
  * This component provides a single, declarative approach to route protection based on guard type array.
- * 
+ *
  * @example
  * // Public route (no guards)
  * <GuardResolver guards={["public"]}><HomePage /></GuardResolver>
- * 
+ *
  * // Auth-only route
  * <GuardResolver guards={["auth"]}><DashboardPage /></GuardResolver>
- * 
+ *
  * // Guest-only route (redirect if logged in)
  * <GuardResolver guards={["guest"]}><LoginPage /></GuardResolver>
- * 
+ *
  * // Role-based route
  * <GuardResolver guards={["auth", { role: "admin" }]}><AdminPanel /></GuardResolver>
  */
@@ -50,8 +50,8 @@ export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["pub
     }
 
     // Check role-based guards if present
-    const roleGuard = guards.find((guard): guard is { role: string } => 
-      typeof guard === "object" && "role" in guard
+    const roleGuard = guards.find(
+      (guard): guard is { role: string } => typeof guard === "object" && "role" in guard
     );
 
     if (roleGuard) {

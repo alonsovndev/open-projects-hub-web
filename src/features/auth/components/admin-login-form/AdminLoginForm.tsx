@@ -36,7 +36,11 @@ export const AdminLoginForm: FC = () => {
             />
           </Form.Item>
 
-          <Form.Item name="password" className={styles.passwordField} rules={adminLoginForm.passwordFieldRules}>
+          <Form.Item
+            name="password"
+            className={styles.passwordField}
+            rules={adminLoginForm.passwordFieldRules}
+          >
             <Input.Password
               size="large"
               prefix={<LockOutlined className={styles.inputIcon} />}
@@ -62,11 +66,16 @@ export const AdminLoginForm: FC = () => {
                   size={[304, 6]}
                 />
 
-                <Text className={styles[adminLoginForm.passwordStrength.tone]}>{adminLoginForm.passwordStrength.label}</Text>
+                <Text className={styles[adminLoginForm.passwordStrength.tone]}>
+                  {adminLoginForm.passwordStrength.label}
+                </Text>
 
                 <ul className={styles.passwordRules} aria-label="Password requirements">
                   {adminLoginForm.passwordRuleStatuses.map((rule) => (
-                    <li key={rule.id} className={rule.isMet ? styles.passwordRuleMet : styles.passwordRulePending}>
+                    <li
+                      key={rule.id}
+                      className={rule.isMet ? styles.passwordRuleMet : styles.passwordRulePending}
+                    >
                       <CheckCircleFilled className={styles.ruleIcon} />
                       <span>{rule.label}</span>
                     </li>
@@ -81,7 +90,12 @@ export const AdminLoginForm: FC = () => {
           </div>
 
           {adminLoginForm.authError ? (
-            <Alert className={styles.errorAlert} type="error" showIcon message={adminLoginForm.authError} />
+            <Alert
+              className={styles.errorAlert}
+              type="error"
+              showIcon
+              message={adminLoginForm.authError}
+            />
           ) : null}
 
           <Button

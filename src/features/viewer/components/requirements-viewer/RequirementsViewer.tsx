@@ -22,7 +22,12 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ project, onSig
     <Layout className={styles.layout}>
       <AppHeader
         actions={
-          <Button type="text" icon={<LogoutOutlined />} className={styles.headerAction} onClick={onSignOut}>
+          <Button
+            type="text"
+            icon={<LogoutOutlined />}
+            className={styles.headerAction}
+            onClick={onSignOut}
+          >
             Sign Out
           </Button>
         }
@@ -48,8 +53,9 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ project, onSig
                 </div>
 
                 <Paragraph className={styles.storySummary}>
-                  As a <strong>{story.userStory.userRole}</strong>, I want to <strong>{story.userStory.goal}</strong>,
-                  so that <strong>{story.userStory.benefit}</strong>.
+                  As a <strong>{story.userStory.userRole}</strong>, I want to{" "}
+                  <strong>{story.userStory.goal}</strong>, so that{" "}
+                  <strong>{story.userStory.benefit}</strong>.
                 </Paragraph>
 
                 <div className={styles.criteriaPanel}>
@@ -58,8 +64,8 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ project, onSig
                   <ul className={styles.criteriaList}>
                     {story.acceptanceCriteria.map((criterion) => (
                       <li key={`${criterion.given}-${criterion.when}-${criterion.then}`}>
-                        <strong>Given</strong> {criterion.given}, <strong>when</strong> {criterion.when},{" "}
-                        <strong>then</strong> {criterion.then}.
+                        <strong>Given</strong> {criterion.given}, <strong>when</strong>{" "}
+                        {criterion.when}, <strong>then</strong> {criterion.then}.
                       </li>
                     ))}
                   </ul>

@@ -1,7 +1,12 @@
 import { adminAuthConfig } from "@/resources/config/auth";
 
 import { baseApi } from "@/app/api/base-api";
-import type { AdminAuthResponse, AdminLoginValues, AdminSession, UserRole } from "@/features/auth/types";
+import type {
+  AdminAuthResponse,
+  AdminLoginValues,
+  AdminSession,
+  UserRole,
+} from "@/features/auth/types";
 
 interface AdminLoginApiResponse {
   token?: string;
@@ -25,7 +30,9 @@ const getDisplayNameFromEmail = (email: string) => {
 };
 
 const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string): AdminSession => {
-  const normalizedEmail = (response.user?.email ?? response.email ?? fallbackEmail).trim().toLowerCase();
+  const normalizedEmail = (response.user?.email ?? response.email ?? fallbackEmail)
+    .trim()
+    .toLowerCase();
   const token = response.token ?? response.accessToken;
 
   if (!token) {

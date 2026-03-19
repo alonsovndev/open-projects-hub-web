@@ -26,12 +26,17 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
-export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
   const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error) {
     const errorData = result.error.data as { message?: string } | undefined;
-    const normalizedMessage = errorData?.message ?? "Something went wrong while communicating with the API.";
+    const normalizedMessage =
+      errorData?.message ?? "Something went wrong while communicating with the API.";
 
     if (typeof result.error.status === "number") {
       return {

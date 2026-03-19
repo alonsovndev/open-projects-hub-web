@@ -6,7 +6,7 @@ import { appRoutes } from "@/app/routing/routes";
 
 /**
  * AppRouter - Central routing component
- * 
+ *
  * Uses declarative route configuration from feature modules.
  * Each route is wrapped with GuardResolver for authentication/authorization.
  */

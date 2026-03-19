@@ -10,7 +10,7 @@ import { viewerRoutes } from "@/features/viewer/routes";
 
 /**
  * Central route aggregator
- * 
+ *
  * Each feature exports its own routes which are aggregated here.
  * This follows the feature-based architecture principle where each feature
  * owns its routing configuration.

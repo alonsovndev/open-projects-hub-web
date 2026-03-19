@@ -17,8 +17,8 @@ export const HomeHero: FC = () => {
         Open Freelancer Project Hub
       </Title>
       <Paragraph className={styles.subtitle}>
-        Discover freelance projects and refine requirements with AI. Please
-        select your role to access the platform.
+        Discover freelance projects and refine requirements with AI. Please select your role to
+        access the platform.
       </Paragraph>
     </header>
   );

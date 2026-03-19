@@ -50,12 +50,19 @@ export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({ onSearch }) => {
       </Form>
 
       {projectCodeSearch.errorMessage ? (
-        <Alert className={styles.feedback} type="error" showIcon description={projectCodeSearch.errorMessage} />
+        <Alert
+          className={styles.feedback}
+          type="error"
+          showIcon
+          description={projectCodeSearch.errorMessage}
+        />
       ) : null}
 
       <Divider className={styles.divider} />
 
-      <Button type="link" className={styles.backButton} onClick={projectCodeSearch.handleBack}>Back to role selection</Button>
+      <Button type="link" className={styles.backButton} onClick={projectCodeSearch.handleBack}>
+        Back to role selection
+      </Button>
     </Card>
   );
 };

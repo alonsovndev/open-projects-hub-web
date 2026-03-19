@@ -24,12 +24,14 @@ export const AdminWelcome: FC = () => {
           </Title>
 
           {adminWelcome.session ? (
-            <Paragraph className={styles.sessionMeta}>Signed in as {adminWelcome.session.displayName}</Paragraph>
+            <Paragraph className={styles.sessionMeta}>
+              Signed in as {adminWelcome.session.displayName}
+            </Paragraph>
           ) : null}
 
           <Paragraph className={styles.description}>
-            You are now inside the admin area. This screen is a simple placeholder while the project workspace, AI
-            refinement flow, and team tools are still being built.
+            You are now inside the admin area. This screen is a simple placeholder while the project
+            workspace, AI refinement flow, and team tools are still being built.
           </Paragraph>
 
           <div className={styles.actions}>

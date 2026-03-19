@@ -10,13 +10,15 @@ export const adminWelcomePanels: AdminWelcomePanel[] = [
   {
     id: "refinement",
     title: "AI refinement queue",
-    description: "This area will surface requirements ready for review, updates, and AI-assisted refinement.",
+    description:
+      "This area will surface requirements ready for review, updates, and AI-assisted refinement.",
     status: "Placeholder",
   },
   {
     id: "activity",
     title: "Team activity",
-    description: "Recent updates, approvals, and collaborator activity will be displayed in a future iteration.",
+    description:
+      "Recent updates, approvals, and collaborator activity will be displayed in a future iteration.",
     status: "Planned",
   },
 ];

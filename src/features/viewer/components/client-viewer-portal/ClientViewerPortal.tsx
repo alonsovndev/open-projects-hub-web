@@ -8,7 +8,12 @@ export const ClientViewerPortal: FC = () => {
   const clientViewerPortal = useClientViewerPortal();
 
   if (clientViewerPortal.activeProject) {
-    return <RequirementsViewer project={clientViewerPortal.activeProject} onSignOut={clientViewerPortal.clearActiveProject} />;
+    return (
+      <RequirementsViewer
+        project={clientViewerPortal.activeProject}
+        onSignOut={clientViewerPortal.clearActiveProject}
+      />
+    );
   }
 
   return <ProjectCodeSearch onSearch={clientViewerPortal.searchProject} />;
