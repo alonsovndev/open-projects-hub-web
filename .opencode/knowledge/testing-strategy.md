@@ -519,27 +519,70 @@ it("should load user data", async () => {
 
 ## Testing Workflow
 
-### During Development
+### During Development (TDD Approach)
 
-1. **Write the test first** (when TDD applies):
+See `.opencode/knowledge/tdd-workflow.md` for complete TDD methodology.
+
+**Quick TDD cycle**:
+
+1. **RED**: Write a failing test first
 
    ```bash
-   # Run tests in watch mode
-   npm run test:watch
+   npm run test:watch  # Auto-runs on file save
    ```
 
-2. **See it fail** - Confirm the test fails for the right reason
+2. **GREEN**: Implement minimum code to pass
 
-3. **Implement minimum code** to make it pass
+3. **REFACTOR**: Clean up while keeping tests green
 
-4. **Refactor** while keeping tests green
+4. **VERIFY**: Run full checks
+
+   ```bash
+   npm run test:run && npm run type-check
+   ```
+
+**Example TDD in action** (from `project-code.ts`):
+
+```typescript
+// Step 1: Write failing test (RED)
+it("should remove special characters throughout the string", () => {
+  expect(normalizeProjectCode("PRJ-123@456")).toBe("PRJ-123456"); // ❌ Fails
+});
+
+// Step 2: Fix implementation (GREEN)
+export const normalizeProjectCode = (projectCode: string) => {
+  return projectCode
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9-]/g, "");
+  // Changed from /[^A-Z0-9-]+$/g to remove throughout, not just at end
+};
+
+// Step 3: Test passes ✅
+```
+
+### Progressive Verification Workflow
+
+```bash
+# During active development
+npm run test:watch
+
+# After feature increment
+npm run test:run && npm run type-check
+
+# Before committing
+npm run verify
+
+# E2E for critical flows
+npm run test:e2e
+```
 
 ### Before Committing
 
 Run the full test suite:
 
 ```bash
-npm run test && npm run build
+npm run verify  # Runs test:run && type-check && build
 ```
 
 ### In CI/CD (Future)
@@ -647,5 +690,14 @@ Is it business-critical logic?
 5. **Make tests readable** - they're documentation for future developers
 6. **Keep tests fast** - slow tests won't be run
 7. **Test behavior** - not implementation details
+8. **Use TDD when appropriate** - See `.opencode/knowledge/tdd-workflow.md` for Red-Green-Refactor cycle
 
 **Remember**: A few well-written tests for critical logic are better than hundreds of shallow tests that give false confidence.
+
+## Related Documentation
+
+- `.opencode/knowledge/tdd-workflow.md` - Complete TDD methodology with Red-Green-Refactor cycle and practical examples
+- `.opencode/skills/testing-setup.md` - Vitest and Playwright configuration
+- `.opencode/skills/testing-examples.md` - Practical testing patterns
+- `.opencode/skills/playwright-e2e.md` - E2E testing with Playwright
+- `AGENTS.md` - Repository-wide testing standards and non-negotiable rules
