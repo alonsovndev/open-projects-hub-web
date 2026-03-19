@@ -66,7 +66,16 @@ npm create vite@latest my-app -- --template react-ts
 
 ```bash
 npm install react-router-dom @reduxjs/toolkit react-redux antd
-npm install -D sass-embedded prettier vitest @vitest/coverage-v8 @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom @playwright/test
+npm install -D \
+  sass-embedded \
+  prettier \
+  vitest \
+  @vitest/coverage-v8 \
+  @testing-library/react \
+  @testing-library/jest-dom \
+  @testing-library/user-event \
+  jsdom \
+  @playwright/test
 ```
 
 ### 3. Create the app shell first

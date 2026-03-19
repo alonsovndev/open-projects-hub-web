@@ -95,7 +95,7 @@ The tables below describe both the current state and the intended pattern for th
 
 **How seniors can optimize it:** cover the guard once with focused integration tests instead of repeating auth checks in every dashboard spec.
 
-## Best Practices for Testing
+## Project Testing Practices
 
 ### Mocking philosophy
 
