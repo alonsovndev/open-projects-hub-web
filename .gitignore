@@ -34,3 +34,4 @@ playwright/.auth/
 
 # Vitest
 .vitest
+.env
