@@ -1,0 +1,180 @@
+.loginPanel {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 362px;
+  padding: 32px 28px 20px;
+  border: 1px solid #d9e1ea;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.title {
+  margin: 0 0 28px !important;
+  text-align: center;
+  color: #1f2937 !important;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+}
+
+.form :global(.ant-form-item) {
+  margin-bottom: 18px;
+}
+
+.form :global(.ant-input-affix-wrapper),
+.form :global(.ant-input-outlined),
+.form :global(.ant-input-password) {
+  min-height: 52px;
+  border-radius: 10px;
+  border-color: #cbd5e1;
+}
+
+.form :global(.ant-input-affix-wrapper:hover),
+.form :global(.ant-input-outlined:hover),
+.form :global(.ant-input-password:hover) {
+  border-color: #9fb2c8;
+}
+
+.form :global(.ant-input-affix-wrapper-focused),
+.form :global(.ant-input-outlined:focus),
+.form :global(.ant-input-password-focused) {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
+}
+
+.form :global(.ant-input-prefix) {
+  margin-right: 10px;
+}
+
+.form :global(.ant-input),
+.form :global(.ant-input-password input) {
+  color: #475569;
+}
+
+.passwordField {
+  margin-bottom: 8px !important;
+}
+
+.inputIcon {
+  color: #94a3b8;
+}
+
+.passwordMeta {
+  margin: -2px 0 24px;
+}
+
+.passwordMeta :global(.ant-progress) {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.passwordMeta :global(.ant-progress-outer) {
+  width: 100%;
+}
+
+.passwordMeta :global(.ant-progress-inner) {
+  border-radius: 999px;
+}
+
+.passwordMeta :global(.ant-progress-bg) {
+  border-radius: 999px;
+}
+
+.weak,
+.medium,
+.strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+}
+
+.weak {
+  color: #ef4444;
+}
+
+.medium {
+  color: #d39b20;
+}
+
+.strong {
+  color: #2fa84f;
+}
+
+.passwordRules {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.passwordRulePending,
+.passwordRuleMet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.passwordRulePending {
+  color: #94a3b8;
+}
+
+.passwordRuleMet {
+  color: #2fa84f;
+}
+
+.ruleIcon {
+  font-size: 0.875rem;
+}
+
+.forgotLink {
+  color: #1677ff;
+  font-size: 0.95rem;
+}
+
+.errorAlert {
+  margin-bottom: 18px;
+}
+
+.submitButton {
+  min-height: 52px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.submitButton:disabled,
+.submitButton:global(.ant-btn-disabled) {
+  cursor: not-allowed;
+}
+
+.cardFooter {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eef2f7;
+  text-align: center;
+}
+
+.backButton {
+  padding: 0;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+  .card {
+    max-width: 100%;
+    padding: 28px 20px 18px;
+  }
+
+  .title {
+    font-size: 1.625rem !important;
+  }
+}

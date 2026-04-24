@@ -1,116 +1,474 @@
 # AGENTS.md
 
-This document provides essential guidelines for agents working on this repository, including build commands, test commands, code style guidelines, and error-handling practices.
+This document defines the working standards for agents in this repository.
+
+## Agent Communication Guidelines
+
+### Response Efficiency
+
+- Be concise and direct
+- Use bullet points over paragraphs
+- Skip unnecessary preambles ("Here's what I did...", "I've updated...")
+- Provide explanations only when:
+  - Explicitly requested
+  - Complex tradeoffs need discussion
+  - Clarification required before proceeding
+  - In Plan mode reviewing major changes
+
+### Code Output
+
+- Output code directly without surrounding explanation for simple tasks
+- Include only essential inline comments
+- For complex changes: brief summary + code
+
+### Token Budget Guidelines
+
+- Simple tasks (file reads, small edits): ~150 tokens
+- Medium tasks (feature additions, refactors): ~300 tokens
+- Complex/planning tasks: No limit when detail adds value
+- Always prioritize clarity over strict limits
+
+### When to Be Detailed
+
+- Explaining architectural decisions
+- Discussing multiple implementation approaches
+- Plan mode reviews
+- Error diagnosis and debugging
+- User explicitly requests explanation
 
 ## Build, Lint, and Test Commands
 
 ### Development Server
 
-- **Command:**
+```bash
+npm run dev
+```
 
-  ```bash
-  npm run dev
-  ```
-
-  - Starts the Vite development server on a local port.
+Starts the Vite development server.
 
 ### Build Application
 
-- **Command:**
+```bash
+npm run build
+```
 
-  ```bash
-  npm run build
-  ```
+Builds the application for production.
 
-  - Executes TypeScript checks and bundles the application for production.
+### Type Check
+
+```bash
+npm run type-check
+```
+
+Runs TypeScript type checking without emitting files.
+
+### Format Code
+
+```bash
+npm run format         # Format all files in src/
+npm run format:check   # Check formatting without fixing
+```
+
+Formats code using Prettier. Git hooks automatically format staged files on commit.
 
 ### Lint Code
 
-- **Command:**
+```bash
+npm run lint
+```
 
-  ```bash
-  npm run lint
-  ```
-
-  - Runs ESLint against all files in the project.
+Runs ESLint when configured.
 
 ### Run Tests
 
-> **Note:** Testing scripts are currently unavailable. Add tests to the repository to enable testing automation.
+Testing scripts are not currently configured.
 
-## Code Style Guidelines
+### Git Hooks
 
-### Component Architecture (Feature-Driven)
+This repository uses Husky for git hooks:
 
-- **Folder Structure**: Always use Feature-Driven Development. Components belong in `src/features/<featureName>/components/`.
-- **Component Isolation**: Every component must have its own dedicated directory containing:
-  - `ComponentName.tsx`: The actual React component (using named exports, e.g., `export const ComponentName`).
-  - `ComponentName.module.scss`: Isolated SCSS modules for styling (NEVER use standard `.css` or global class names).
-  - `index.ts`: A clean barrel export (e.g., `export { ComponentName } from "./ComponentName";`).
-- **Pages**: `src/pages` should only contain high-level layout containers that import feature components. They should NOT contain complex logic or hardcoded content.
+- **pre-commit**: Automatically formats staged files with Prettier
+- **commit-msg**: Validates commit messages follow Conventional Commits format
 
-### Styling (Ant Design + SCSS Modules)
+See `.opencode/skills/git-hooks-husky.md` for complete documentation.
 
-- **Ant Design First**: Rely on Ant Design components (`Typography`, `Layout`, `Row`, `Col`, `Button`, `Skeleton`, etc.) for UI elements.
-- **SCSS Modules**: Use `.module.scss` for custom styling. Apply classes using `className={styles["class-name"]}`.
-- **Responsive Design**: Ensure responsive designs using Ant Design's grid system (`xs`, `sm`, `md`, `lg`) combined with media queries inside the SCSS modules.
+### Repository Script Status
 
-### State Management & Data Fetching (RTK Query)
+Current repository status:
 
-- **Mock APIs First**: When building new features, simulate backend data using a Mock API pattern inside `src/features/<featureName>/api/mockData.ts` with a `simulateNetworkDelay` wrapper.
-- **RTK Query Slices**: Define endpoints using `createApi` and `fakeBaseQuery()` inside `src/features/<featureName>/api/<featureName>Api.ts`.
-- **Component-Level Fetching**: Favor granular component-level data fetching. Each component should call its own RTK Query hook (e.g., `useGetWhatWeDoQuery()`).
-- **Loading & Error States**: Always handle `isLoading` (using Ant Design `<Skeleton>` or `<Spin>`) and `isError` (using Ant Design `<Alert>`) gracefully.
+1. `npm run build` is available.
+2. `npm run type-check` is available.
+3. `npm run format` and `npm run format:check` are available.
+4. `npm run test` is present but currently a placeholder that fails.
+5. `npm run lint` is referenced in guidance but is not currently configured in `package.json`.
+6. `npm run verify` is not currently configured.
+7. Git hooks (Husky) are configured and active.
 
-### Imports
+Agents should follow the preferred verification workflow when these scripts exist, and clearly state when a requested verification step cannot run because the repository does not yet provide the script.
 
-- Use **absolute imports** where applicable, and **relative imports** for files within the same module or subdirectory.
-- Group external library imports at the top, followed by internal modules.
-- Order imports alphabetically where possible for consistency.
+## Project Structure
 
-### Formatting
+Use this structure by default:
 
-- Maintain consistent spacing and indentation:
-  - Use **2 spaces** for indentation.
-  - Limit line length to **100 characters**.
-  - No trailing spaces at the end of lines.
-- Use Prettier (if integrated) for automatic formatting.
+```text
+src/
+  app/
+    api/
+      base-api.ts
+    layouts/
+      PublicLayout.tsx
+      PrivateLayout.tsx
+      index.ts
+    routing/
+      AppRouter.tsx
+      GuardResolver.tsx
+      routes.tsx
+      types.ts
+    providers/
+    store/
+      store.ts
+      hooks.ts
+  shared/
+    components/
+      layout/
+        app-header/
+        footer/
+      ui/
+        app-button/
+    hooks/
+    utils/
+    types/
+  features/
+    auth/
+      api/
+      components/
+      hooks/
+      model/
+      state/
+      tests/
+      types/
+      routes.tsx
+      index.ts
+    dashboard/
+      components/
+      hooks/
+      types/
+      routes.tsx
+      index.ts
+  pages/
+    home/
+      index.tsx
+      home.module.scss
+    login/
+      index.tsx
+      login.module.scss
+  resources/
+    mock-data/
+      all-clinic-services.ts
+    config/
+      auth.ts
+      clinic-information.ts
+  styles/
+    global.scss
+```
 
-### TypeScript Rules
+### Folder Responsibilities
 
-- All files must use the `.tsx` or `.ts` extensions.
-- Always prefer **strict types** over `any`.
-- Use TypeScript's utility types like `Partial<T>`, `Readonly<T>`, or `Pick<T>` where relevant.
-- Define props and state as interfaces when working with React components.
+- `src/app/`: Application bootstrap, providers, routing system, layouts, store setup, and base API configuration.
+- `src/shared/`: Cross-feature reusable code including UI components, hooks, utilities, and shared types.
+- `src/features/`: Self-contained business domains with their own routes, components, API logic, state, tests, and types. Each feature exports a public API via `index.ts`.
+- `src/pages/`: Route-level page entry points only. Pages compose feature components and remain thin.
+- `src/resources/`: Static configuration and mock data separate from UI logic.
+- `src/styles/`: Global styles and theme configuration.
 
-### Naming Conventions
+## Pages
 
-- File and directory names:
-  - Use **PascalCase** for React components.
-  - Use **camelCase** for utility functions, variables, and constants.
-  - Use **SCREAMING_SNAKE_CASE** for environment variables and constants.
-- React components:
-  - Function components should be named as `ComponentName: React.FC<Props> = () => {}`
+Each route page must follow this pattern:
 
-### Error Handling
+```text
+src/pages/<page>/
+  index.tsx
+  <page>.module.scss
+```
 
-- Wrap asynchronous logic in `try-catch` blocks to handle runtime errors.
-- For frontend UI, handle errors gracefully by showing user-friendly messages.
-- Always use `console.error` for logging errors in development, but ensure logs do not expose sensitive data.
+Rules:
+
+1. Use lowercase page folder names such as `home` or `admin-dashboard`.
+2. Use `index.tsx` as the page entry file.
+3. Keep pages thin and focused on route composition.
+4. Pages should compose feature components and shared layout pieces.
+5. Do not place repeated UI blocks, feature logic, static config, or heavy state logic in page files.
+
+## Features
+
+Use `src/features/` for business-domain-owned code.
+
+Recommended structure:
+
+```text
+src/features/<feature>/
+  api/
+  components/
+    <component-folder>/
+      <ComponentName>.tsx
+      <component-name>.module.scss
+      index.ts
+  hooks/
+  model/
+  state/
+  tests/
+  types/
+  routes.tsx
+  index.ts
+```
+
+Rules:
+
+1. Put business-domain UI, async logic, and state close to the owning feature.
+2. Keep feature components inside `src/features/<feature>/components/`.
+3. Use kebab-case for component folder names.
+4. Put feature API integration and mock-facing logic in `api/`.
+5. Put feature-specific Redux state in `state/` when needed.
+6. Put feature tests inside the owning feature.
+7. Each feature exports a public API via `index.ts` - do not use deep imports.
+8. Each feature can define its own routes in `routes.tsx`.
+9. Promote code to `src/shared/` only when it is truly cross-feature.
+
+## Components
+
+Place shared components in `src/shared/components/`.
+
+Rules:
+
+1. Use PascalCase for component file names and component names.
+2. Use kebab-case for component folder names when a component has its own folder.
+3. Reserve `src/shared/components/` for shared cross-feature UI, layout components, and UI wrappers.
+4. Prefer `src/shared/components/ui/` for reusable wrapped primitives and `src/shared/components/layout/` for shared shells.
+5. Do not place feature-owned business components in `src/shared/` when they belong inside `src/features/`.
+6. Use `index.ts` barrel exports when a folder contains multiple related files.
+
+Example:
+
+```text
+src/shared/components/ui/
+  app-button/
+    AppButton.tsx
+    app-button.module.scss
+    index.ts
+```
+
+## Styling
+
+Use SCSS Modules for component- and page-level styles.
+
+Rules:
+
+1. Use `.module.scss` for colocated styles.
+2. Use kebab-case for stylesheet names.
+3. Keep global styles in `src/styles/`.
+4. Avoid inline styles unless the value is truly dynamic.
+
+## UI Library Guidelines
+
+Core principle:
+
+- Use Ant Design for behavior and structure.
+- Use semantic HTML and SCSS Modules for branding, storytelling, and custom visual identity.
+
+### Use Ant Design For
+
+1. Forms and validation
+   - `Form`
+   - `Input`, `Select`, `DatePicker`
+   - `Form.Item` validation
+2. Data display and CRUD flows
+   - `Table`
+   - `Pagination`
+   - `Tag`
+   - `Badge`
+3. Overlays and state-driven interactions
+   - `Modal`
+   - `Drawer`
+   - `Popconfirm`
+   - `notification`, `message`
+4. Admin and internal layouts
+   - `Layout`
+   - `Menu`
+   - `Breadcrumb`
+   - `Tabs`
+
+### Prefer Semantic HTML and SCSS For
+
+1. Marketing and content sections
+2. Static informational pages
+3. Highly custom branded layouts or UI elements
+
+### Mixed Approach
+
+Mixing Ant Design with semantic HTML is encouraged.
+
+Recommended default:
+
+1. Use semantic sectioning and custom layout for page composition.
+2. Use Ant Design where it reduces interaction, validation, accessibility, or CRUD complexity.
+3. Use SCSS Modules for spacing, branding, and custom visual styling.
+
+### Anti-Patterns
+
+1. Do not use Ant Design for purely static content by default.
+2. Do not wrap every section in `Card` automatically.
+3. Do not recreate Ant Design form validation manually for standard forms.
+4. Do not deeply override Ant Design internal CSS classes unless absolutely necessary.
+5. Do not use Ant Design only to make marketing pages feel superficially consistent.
+
+### Decision Checklist
+
+Before choosing Ant Design, ask:
+
+1. Is this data-driven or CRUD-related?
+2. Does it need validation, state handling, or accessibility behavior?
+3. Would Ant Design reduce custom logic or styling effort?
+
+If two or more answers are yes, prefer Ant Design.
+Otherwise, prefer semantic HTML and SCSS Modules.
+
+### Wrapper Components Strategy
+
+When the same Ant Design patterns repeat, prefer thin shared wrappers such as:
+
+```text
+src/shared/components/ui/
+  AppButton.tsx
+  AppForm.tsx
+  AppModal.tsx
+  AppTable.tsx
+```
+
+Rules:
+
+1. Wrap Ant Design, do not reimplement it.
+2. Centralize shared props and styling in the wrapper.
+3. Reuse wrappers across admin and internal tools when it improves consistency.
+
+## Work Methodology
+
+### Test-Driven Development (TDD)
+
+Use TDD whenever tests exist or are being added for the area under change.
+
+Rules:
+
+1. Write the test first.
+2. Confirm the test fails before implementing the behavior.
+3. Implement only the minimum code required to make the test pass.
+4. Refactor after the test is green.
+5. Keep code structured so it remains easy to test.
+
+### Continuous Verification
+
+Use progressive verification during development instead of waiting until the very end.
+
+After each feature increment, prefer:
+
+```bash
+npm run test && npm run build
+```
+
+At the end of a development cycle, prefer:
+
+```bash
+npm run verify
+```
+
+If `test`, `lint`, or `verify` are not configured in the repository, explicitly say so and run the checks that are available instead.
+
+## Naming Conventions
+
+| File Type         | Convention                      | Example                          |
+| ----------------- | ------------------------------- | -------------------------------- |
+| Components        | PascalCase                      | `HomePageCarousel.tsx`           |
+| Component folders | kebab-case                      | `requirements-viewer/`           |
+| Pages             | `index.tsx` in lowercase folder | `src/pages/home/index.tsx`       |
+| Utilities         | kebab-case                      | `format-date.ts`                 |
+| Config            | kebab-case                      | `clinic-information.ts`          |
+| Mock data         | kebab-case                      | `all-clinic-services.ts`         |
+| Stylesheets       | kebab-case                      | `home-page-carousel.module.scss` |
+
+## Code Organization Best Practices
+
+1. Colocate files with the page or component they belong to when they are not shared.
+2. Keep mock data and static config out of components.
+3. Keep pages thin, features cohesive, and shared UI generic.
+4. Keep components focused and easy to understand.
+5. Prefer clean imports through `index.ts` barrels when helpful.
+6. Use absolute imports where supported by the project setup.
+
+## TypeScript Rules
+
+1. Use `.ts` and `.tsx` only.
+2. Prefer strict types over `any`.
+3. Define props with interfaces.
+4. Keep utility and config files typed.
+
+## Error Handling
+
+1. Wrap asynchronous logic in `try-catch` blocks when needed.
+2. Show user-friendly UI feedback for loading and error states.
+3. Use `console.error` only for safe development diagnostics.
 
 ## General Agent Guidelines
 
-1. Review and understand the current project structure before making changes.
-2. Test changes locally using `npm run dev` and ensure there are no build errors before committing.
-3. Follow provided naming conventions and formatting guidelines strictly to maintain consistency in the codebase.
-4. If any dependencies are added, ensure they are relevant and do not bloat the project unnecessarily.
-5. In case of ambiguity or conflicts in code style, prioritize consistency with the existing codebase.
+1. Review the existing structure before making changes.
+2. Follow these conventions consistently.
+3. Avoid adding unnecessary dependencies.
+4. Validate changes with build, lint, or type-check commands when possible.
+5. If guidance conflicts, prefer this file and the `.opencode` setup.
 
-## Suggestions for Agents
+## Non-Negotiable Rules
 
-Agents are encouraged to:
+**These rules MUST be followed without exception by all agents. If a rule conflicts with task completion, STOP and report the constraint instead of silently working around it.**
 
-- Add test cases to improve test coverage whenever functionality is updated.
-- Automate repetitive tasks with scripts when feasible to enhance project maintainability.
+### Git & Version Control
 
-**End of Guidelines**
+1. ❌ **Do not commit changes unless the user explicitly asks for a commit.**
+2. ❌ **Do not commit directly to `main` or `master` branches.**
+3. ❌ **Do not push or force-push unless the user explicitly asks.**
+4. ❌ **Never force-push to protected branches such as `main` or `master`.**
+5. ❌ **Do not use bypass flags such as `--no-verify` or skip git hooks unless the user explicitly requests it.**
+6. ❌ **Do not commit secrets, credentials, `.env` files, or sensitive configuration.**
+
+### Testing & Quality Assurance
+
+7. ❌ **Do not remove, weaken, skip, or rewrite tests just to make builds or checks pass.**
+8. ❌ **Do not disable or comment out failing tests to hide failures.**
+9. ❌ **Do not reduce test coverage requirements to get a "green" result.**
+10. ❌ **Do not claim a test, build, or verification step passed unless it was actually run.**
+11. ❌ **Do not modify test assertions to always pass (e.g., changing meaningful assertions to `expect(true).toBe(true)`).**
+12. ✅ **If tests fail, fix the underlying issue or report the problem - never hide the failure.**
+
+### Build & Verification
+
+13. ❌ **Do not disable linting, type-checking, verification steps, CI checks, or git hooks just to get a green result.**
+14. ❌ **Do not change scripts, CI configuration, or test configuration merely to hide failures.**
+15. ❌ **Do not skip build verification before marking work complete.**
+16. ✅ **If build fails, fix the issue - never bypass the check.**
+
+### Code & File Integrity
+
+17. ❌ **Do not use destructive git or filesystem commands unless the user explicitly requests them.**
+18. ❌ **Do not overwrite, discard, or revert user changes you did not make unless the user explicitly requests it.**
+19. ❌ **Do not delete files or folders without user confirmation when the deletion is not part of the explicit task.**
+20. ❌ **Do not modify package.json dependencies or scripts without understanding the impact and user approval.**
+
+### Transparency & Honesty
+
+21. ❌ **Do not present mock, stub, or placeholder behavior as production-complete without clearly saying so.**
+22. ❌ **Do not claim something works without verification.**
+23. ✅ **Always clearly state when test scripts, lint scripts, or verification commands are missing or incomplete.**
+24. ✅ **Always report when requested verification cannot run and explain why.**
+
+### Conflict Resolution
+
+25. ✅ **If a non-negotiable rule conflicts with task completion, stop immediately and report the constraint to the user.**
+26. ✅ **Ask for clarification rather than making assumptions about bypassing safety rules.**
+27. ✅ **When in doubt about whether a rule applies, err on the side of caution and ask the user.**

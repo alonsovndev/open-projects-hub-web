@@ -1,0 +1,11 @@
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
+}
