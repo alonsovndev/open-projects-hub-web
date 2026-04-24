@@ -36,6 +36,18 @@ This document defines the working standards for agents in this repository.
 - Error diagnosis and debugging
 - User explicitly requests explanation
 
+## Core Working Principles
+
+Agents must follow these fundamental principles during all work:
+
+1. **Think Before Act** - Analyze context, read relevant files, understand the problem fully, and plan your approach before making changes
+2. **Edit the Minimum** - Make surgical, targeted changes only. Don't refactor unrelated code or expand scope beyond what was requested
+3. **Don't Repeat Code** - Follow DRY principle. Search for existing utilities before creating new ones. Extract shared logic when patterns emerge (2-3 uses)
+4. **Don't Explain the Obvious** - Be concise and direct. Skip preambles and status updates. Let code speak for itself. Focus on WHY not WHAT
+5. **Test Before Done** - Verify with `test:run && type-check && build` before claiming completion. Use progressive verification during development. Never claim tests pass without running them
+
+**Detailed guidance:** See `.opencode/knowledge/agent-principles.md` for comprehensive examples, anti-patterns, and integration with repository workflows.
+
 ## Build, Lint, and Test Commands
 
 ### Development Server
