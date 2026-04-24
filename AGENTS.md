@@ -428,6 +428,63 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 2. Show user-friendly UI feedback for loading and error states.
 3. Use `console.error` only for safe development diagnostics.
 
+## Google Stitch Integration
+
+This project uses Google Stitch for design specifications and component library management.
+
+### Available MCP Tools
+
+Use these tools when building or updating UI components:
+
+1. **google_stitch_list_components** - Browse available components in the design system
+2. **google_stitch_fetch_component** - Get detailed component specifications including props, variants, and styles
+3. **google_stitch_fetch_design_tokens** - Retrieve design tokens (colors, typography, spacing)
+4. **google_stitch_generate_react_component** - Generate React component code from Stitch designs
+
+### Workflow for Creating New Components
+
+When implementing a component from Stitch:
+
+1. **Reference the design** - Use `google_stitch_list_components` to find the design or `google_stitch_fetch_component` with the component name/ID
+2. **Generate initial code** - Use `google_stitch_generate_react_component` to create the initial component structure
+3. **Follow project structure** - Place the component in the appropriate directory:
+   - `src/shared/components/` for cross-feature reusable UI
+   - `src/features/<feature>/components/` for domain-specific components
+4. **Enhance with logic** - Add business logic, state management, and interactivity
+5. **Apply design tokens** - Use tokens from `google_stitch_fetch_design_tokens` for consistent styling
+6. **Add tests** - Follow TDD principles and testing strategy guidelines
+
+### Workflow for Syncing Existing Components
+
+When updating a component to match latest Stitch designs:
+
+1. **Fetch latest specs** - Use `google_stitch_fetch_component` to get current design specifications
+2. **Compare implementations** - Review differences between current code and Stitch design
+3. **Update styles and structure** - Modify to match Stitch while preserving business logic and tests
+4. **Verify functionality** - Run tests to ensure no regressions
+
+### Using Design Tokens
+
+1. **Fetch tokens** - Use `google_stitch_fetch_design_tokens` to get the latest design system tokens
+2. **Apply consistently** - Reference tokens in SCSS variables rather than hardcoding values
+3. **Update regularly** - Keep project tokens in sync with Stitch updates
+
+### Custom Commands
+
+Use these convenience commands for common Stitch workflows:
+
+- `/stitch-sync` - Sync a component with its Stitch design
+- `/stitch-new` - Create a new component from a Stitch design
+- `/stitch-tokens` - Update project design tokens from Stitch
+
+### Best Practices
+
+1. **Always reference Stitch designs** before implementing or modifying UI components
+2. **Use design tokens** for colors, spacing, typography, borders, and shadows
+3. **Keep components synchronized** with Stitch updates using the sync workflow
+4. **Document deviations** - If you deviate from a Stitch design, add comments explaining why
+5. **Generate then customize** - Use the code generator as a starting point, then enhance with project-specific logic
+
 ## General Agent Guidelines
 
 1. Review the existing structure before making changes.
