@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "@/app/store/hooks";
 import type { GuardType } from "@/app/routing/types";
@@ -29,6 +29,7 @@ interface GuardResolverProps {
  */
 export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["public"] }) => {
   const session = useAppSelector((state) => state.auth.session);
+  const location = useLocation();
 
   // No guards means public access
   if (!guards || guards.length === 0 || guards.includes("public")) {
@@ -46,7 +47,8 @@ export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["pub
   // Auth guard - redirect to login if not authenticated
   if (guards.includes("auth")) {
     if (!session) {
-      return <Navigate to="/login" replace />;
+      // Save the attempted URL to redirect back after login
+      return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
     // Check role-based guards if present

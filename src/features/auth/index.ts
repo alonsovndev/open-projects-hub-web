@@ -18,6 +18,7 @@ export { ForgotPasswordForm } from "./components/forgot-password-form";
 export { ResetPasswordForm } from "./components/reset-password-form";
 export { useAuth } from "./hooks/use-auth";
 export { useLogout } from "./hooks/use-logout";
+export { useRole } from "./hooks/use-role";
 export { sessionStorage } from "./model/session-storage";
 export type {
   AdminLoginValues,

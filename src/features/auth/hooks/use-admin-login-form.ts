@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { Form, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useAppDispatch } from "@/app/store/hooks";
 import { useLoginMutation } from "@/features/auth/api/admin-auth-api";
@@ -18,6 +18,7 @@ export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const [login, { isLoading, error }] = useLoginMutation();
@@ -55,7 +56,11 @@ export const useAdminLoginForm = () => {
       const response = await login(values).unwrap();
 
       dispatch(setAdminSession(response.session));
-      navigate("/dashboard");
+
+      // Redirect to the page they were trying to access, or dashboard
+      const from =
+        (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     } catch (error) {
       const nextError = error as { data?: { message?: string } } | undefined;
 
