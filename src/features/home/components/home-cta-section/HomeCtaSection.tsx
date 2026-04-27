@@ -3,9 +3,13 @@ import type { FC } from "react";
 import { Button } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
+import { useHomeNavigation } from "@/features/home/hooks/use-home-navigation";
+
 import styles from "./home-cta-section.module.scss";
 
 export const HomeCtaSection: FC = () => {
+  const { handleStartProject, handleLearnMore } = useHomeNavigation();
+
   return (
     <section className={styles.ctaSection}>
       <div className={styles.ctaContainer}>
@@ -16,10 +20,15 @@ export const HomeCtaSection: FC = () => {
             and a solid foundation that sets you up for success.
           </p>
           <div className={styles.ctaActions}>
-            <Button type="primary" size="large" className={styles.ctaPrimaryButton}>
+            <Button
+              type="primary"
+              size="large"
+              className={styles.ctaPrimaryButton}
+              onClick={handleStartProject}
+            >
               Start Your First Project
             </Button>
-            <Button size="large" className={styles.ctaSecondaryButton}>
+            <Button size="large" className={styles.ctaSecondaryButton} onClick={handleLearnMore}>
               Learn More <ArrowRightOutlined />
             </Button>
           </div>

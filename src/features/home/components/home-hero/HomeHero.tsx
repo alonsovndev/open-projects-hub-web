@@ -2,9 +2,13 @@ import type { FC } from "react";
 
 import { Button } from "antd";
 
+import { useHomeNavigation } from "@/features/home/hooks/use-home-navigation";
+
 import styles from "./home-hero.module.scss";
 
 export const HomeHero: FC = () => {
+  const { handleGetStarted } = useHomeNavigation();
+
   return (
     <section className={styles.heroSection}>
       <div className={styles.heroContent}>
@@ -17,7 +21,12 @@ export const HomeHero: FC = () => {
           Transform unclear requirements into actionable project plans. Our AI-powered platform
           helps freelancers and clients collaborate with precision.
         </p>
-        <Button type="primary" size="large" className={styles.heroButton}>
+        <Button
+          type="primary"
+          size="large"
+          className={styles.heroButton}
+          onClick={handleGetStarted}
+        >
           Get Started
         </Button>
       </div>

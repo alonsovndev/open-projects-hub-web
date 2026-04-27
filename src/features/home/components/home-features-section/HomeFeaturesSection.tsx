@@ -30,7 +30,7 @@ const features = [
 
 export const HomeFeaturesSection: FC = () => {
   return (
-    <section className={styles.featuresSection}>
+    <section className={styles.featuresSection} data-section="features">
       <div className={styles.featuresContainer}>
         <div className={styles.featuresHeader}>
           <h2 className={styles.featuresTitle}>REFINE TO APPROVE.</h2>

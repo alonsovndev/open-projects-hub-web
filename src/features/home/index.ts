@@ -11,6 +11,7 @@ export { RoleSelection } from "./components/role-selection";
 
 // Hooks
 export { useRoleSelection } from "./hooks/use-role-selection";
+export { useHomeNavigation } from "./hooks/use-home-navigation";
 
 // Types
 export type { RoleIconType } from "./types";

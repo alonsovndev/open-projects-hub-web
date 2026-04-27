@@ -8,6 +8,11 @@
   align-items: center;
   background-color: #f9f9f9;
 
+  @media (max-width: 1024px) {
+    gap: 3rem;
+    padding: 4rem 2rem;
+  }
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     padding: 3rem 1.5rem;
@@ -19,6 +24,11 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  animation: slideInLeft 0.6s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .heroTitle {
@@ -29,9 +39,22 @@
   color: #1a1c1c;
   margin: 0;
   letter-spacing: -0.02em;
+  animation: fadeInUp 0.6s ease-out;
+
+  @media (max-width: 1024px) {
+    font-size: 3rem;
+  }
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }
 
@@ -46,6 +69,16 @@
   color: #414755;
   margin: 0;
   max-width: 480px;
+  animation: fadeInUp 0.6s ease-out 0.1s backwards;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .heroButton {
@@ -56,9 +89,30 @@
   border: none;
   border-radius: 0.375rem;
   padding: 0 2rem;
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+  transition: all 0.3s ease;
 
   &:hover {
     background: linear-gradient(135deg, #004398 0%, #0057c2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 87, 194, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 }
 
@@ -69,9 +123,22 @@
   background-color: #eeeeee;
   border-radius: 0.375rem;
   overflow: hidden;
+  animation: slideInRight 0.6s ease-out 0.2s backwards;
+
+  @media (max-width: 1024px) {
+    height: 400px;
+  }
 
   @media (max-width: 768px) {
     height: 320px;
+  }
+
+  @media (max-width: 480px) {
+    height: 240px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }
 
@@ -79,4 +146,48 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
