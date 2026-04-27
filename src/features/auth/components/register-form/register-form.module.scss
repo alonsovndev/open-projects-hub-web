@@ -1,4 +1,4 @@
-.loginPanel {
+.registerPanel {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,17 +88,41 @@
   font-size: 16px;
 }
 
-.formOptions {
+.passwordSection {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 0.5rem;
+}
 
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
+.passwordRules {
+  margin: 0.75rem 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.passwordRulePending,
+.passwordRuleMet {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.8125rem;
+  transition: color 0.2s ease;
+}
+
+.passwordRulePending {
+  color: #727786;
+}
+
+.passwordRuleMet {
+  color: #2fa84f;
+}
+
+.ruleIcon {
+  font-size: 0.75rem;
 }
 
 .checkboxItem {
@@ -120,9 +144,7 @@
   }
 }
 
-.forgotLink {
-  font-family: "Inter", sans-serif;
-  font-size: 0.875rem;
+.termsLink {
   color: #0057c2;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -131,10 +153,6 @@
     color: #004398;
     text-decoration: underline;
   }
-}
-
-.errorAlert {
-  margin-bottom: 1rem;
 }
 
 .submitButton {
