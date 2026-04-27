@@ -4,6 +4,9 @@ import { baseApi } from "@/app/api/base-api";
 import type {
   AdminAuthResponse,
   AdminLoginValues,
+  AdminRegisterValues,
+  ForgotPasswordValues,
+  ResetPasswordValues,
   AdminSession,
   UserRole,
 } from "@/features/auth/types";
@@ -21,6 +24,10 @@ interface AdminLoginApiResponse {
     name?: string;
     role?: UserRole;
   };
+}
+
+interface MessageResponse {
+  message: string;
 }
 
 const getDisplayNameFromEmail = (email: string) => {
@@ -68,7 +75,36 @@ export const adminAuthApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["AdminAuth"],
     }),
+
+    register: builder.mutation<MessageResponse, AdminRegisterValues>({
+      query: (userData) => ({
+        url: adminAuthConfig.registerEndpoint,
+        method: "POST",
+        body: userData,
+      }),
+    }),
+
+    forgotPassword: builder.mutation<MessageResponse, ForgotPasswordValues>({
+      query: (data) => ({
+        url: adminAuthConfig.forgotPasswordEndpoint,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    resetPassword: builder.mutation<MessageResponse, ResetPasswordValues>({
+      query: (data) => ({
+        url: adminAuthConfig.resetPasswordEndpoint,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = adminAuthApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = adminAuthApi;
