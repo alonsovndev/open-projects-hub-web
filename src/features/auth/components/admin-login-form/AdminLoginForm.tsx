@@ -1,14 +1,12 @@
 import type { FC } from "react";
 
-import { CheckCircleFilled, LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Alert, Button, Form, Input, Progress, Typography } from "antd";
+import { ArrowRightOutlined, LockOutlined, MailOutlined, SafetyOutlined } from "@ant-design/icons";
+import { Alert, Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
 import { useAdminLoginForm } from "@/features/auth/hooks/use-admin-login-form";
 
 import styles from "./admin-login-form.module.scss";
-
-const { Text, Title } = Typography;
 
 export const AdminLoginForm: FC = () => {
   const adminLoginForm = useAdminLoginForm();
@@ -16,9 +14,13 @@ export const AdminLoginForm: FC = () => {
   return (
     <section className={styles.loginPanel} aria-labelledby="admin-login-title">
       <div className={styles.card}>
-        <Title level={2} id="admin-login-title" className={styles.title}>
-          Admin Login
-        </Title>
+        <div className={styles.iconWrapper}>
+          <SafetyOutlined className={styles.icon} />
+        </div>
+
+        <h1 id="admin-login-title" className={styles.title}>
+          Admin Sign In
+        </h1>
 
         <Form
           form={adminLoginForm.form}
@@ -27,62 +29,40 @@ export const AdminLoginForm: FC = () => {
           onFinish={adminLoginForm.handleSubmit}
           requiredMark={false}
         >
-          <Form.Item name="email" rules={adminLoginForm.emailFieldRules}>
+          <Form.Item
+            label="EMAIL"
+            name="email"
+            rules={adminLoginForm.emailFieldRules}
+            className={styles.formItem}
+          >
             <Input
               size="large"
               prefix={<MailOutlined className={styles.inputIcon} />}
-              placeholder="Email Address"
+              placeholder="admin@projecthub.com"
               autoComplete="email"
+              className={styles.input}
             />
           </Form.Item>
 
           <Form.Item
+            label="PASSWORD"
             name="password"
-            className={styles.passwordField}
+            className={styles.formItem}
             rules={adminLoginForm.passwordFieldRules}
           >
             <Input.Password
               size="large"
               prefix={<LockOutlined className={styles.inputIcon} />}
-              placeholder="Password"
+              placeholder="••••••••"
               autoComplete="current-password"
+              className={styles.input}
             />
           </Form.Item>
 
-          <div className={styles.passwordMeta}>
-            {adminLoginForm.hasPasswordInput ? (
-              <>
-                <Progress
-                  percent={adminLoginForm.passwordStrength.percent}
-                  showInfo={false}
-                  strokeColor={
-                    adminLoginForm.passwordStrength.tone === "strong"
-                      ? "#2fa84f"
-                      : adminLoginForm.passwordStrength.tone === "medium"
-                        ? "#d39b20"
-                        : "#ef4444"
-                  }
-                  trailColor="#e5e7eb"
-                  size={[304, 6]}
-                />
-
-                <Text className={styles[adminLoginForm.passwordStrength.tone]}>
-                  {adminLoginForm.passwordStrength.label}
-                </Text>
-
-                <ul className={styles.passwordRules} aria-label="Password requirements">
-                  {adminLoginForm.passwordRuleStatuses.map((rule) => (
-                    <li
-                      key={rule.id}
-                      className={rule.isMet ? styles.passwordRuleMet : styles.passwordRulePending}
-                    >
-                      <CheckCircleFilled className={styles.ruleIcon} />
-                      <span>{rule.label}</span>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : null}
+          <div className={styles.formOptions}>
+            <Form.Item name="remember" valuePropName="checked" className={styles.checkboxItem}>
+              <Checkbox className={styles.checkbox}>Remember me</Checkbox>
+            </Form.Item>
 
             <Link to="/forgot-password" className={styles.forgotLink}>
               Forgot password?
@@ -105,16 +85,18 @@ export const AdminLoginForm: FC = () => {
             block
             className={styles.submitButton}
             loading={adminLoginForm.isSubmitting}
-            disabled={!adminLoginForm.isSubmitEnabled}
+            icon={<ArrowRightOutlined />}
+            iconPosition="end"
           >
             Sign In
           </Button>
         </Form>
 
         <div className={styles.cardFooter}>
-          <Button type="link" className={styles.backButton} onClick={adminLoginForm.handleBack}>
-            Back to role selection
-          </Button>
+          <span className={styles.footerText}>New to the portal? </span>
+          <Link to="/register" className={styles.footerLink}>
+            Create account
+          </Link>
         </div>
       </div>
     </section>

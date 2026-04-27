@@ -25,7 +25,7 @@ This document defines the working standards for agents in this repository.
 
 - Simple tasks (file reads, small edits): ~150 tokens
 - Medium tasks (feature additions, refactors): ~300 tokens
-- Complex/planning tasks: No limit when detail adds value
+- Complex/planning tasks: ~1500 tokens
 - Always prioritize clarity over strict limits
 
 ### When to Be Detailed
@@ -432,6 +432,12 @@ If `test`, `lint`, or `verify` are not configured in the repository, explicitly 
 
 This project uses Google Stitch for design specifications and component library management.
 
+**Project Configuration:**
+
+- Project ID: `16776115461154935486`
+- Design System: Anthesis Corporate (`64c0bbcd704041f3a925eb09c697f79b`)
+- See `.opencode/knowledge/stitch-project.md` for complete screen IDs and design tokens
+
 ### Available MCP Tools
 
 Use these tools when building or updating UI components:
@@ -492,52 +498,3 @@ Use these convenience commands for common Stitch workflows:
 3. Avoid adding unnecessary dependencies.
 4. Validate changes with build, lint, or type-check commands when possible.
 5. If guidance conflicts, prefer this file and the `.opencode` setup.
-
-## Non-Negotiable Rules
-
-**These rules MUST be followed without exception by all agents. If a rule conflicts with task completion, STOP and report the constraint instead of silently working around it.**
-
-### Git & Version Control
-
-1. ❌ **Do not commit changes unless the user explicitly asks for a commit.**
-2. ❌ **Do not commit directly to `main` or `master` branches.**
-3. ❌ **Do not push or force-push unless the user explicitly asks.**
-4. ❌ **Never force-push to protected branches such as `main` or `master`.**
-5. ❌ **Do not use bypass flags such as `--no-verify` or skip git hooks unless the user explicitly requests it.**
-6. ❌ **Do not commit secrets, credentials, `.env` files, or sensitive configuration.**
-
-### Testing & Quality Assurance
-
-7. ❌ **Do not remove, weaken, skip, or rewrite tests just to make builds or checks pass.**
-8. ❌ **Do not disable or comment out failing tests to hide failures.**
-9. ❌ **Do not reduce test coverage requirements to get a "green" result.**
-10. ❌ **Do not claim a test, build, or verification step passed unless it was actually run.**
-11. ❌ **Do not modify test assertions to always pass (e.g., changing meaningful assertions to `expect(true).toBe(true)`).**
-12. ✅ **If tests fail, fix the underlying issue or report the problem - never hide the failure.**
-
-### Build & Verification
-
-13. ❌ **Do not disable linting, type-checking, verification steps, CI checks, or git hooks just to get a green result.**
-14. ❌ **Do not change scripts, CI configuration, or test configuration merely to hide failures.**
-15. ❌ **Do not skip build verification before marking work complete.**
-16. ✅ **If build fails, fix the issue - never bypass the check.**
-
-### Code & File Integrity
-
-17. ❌ **Do not use destructive git or filesystem commands unless the user explicitly requests them.**
-18. ❌ **Do not overwrite, discard, or revert user changes you did not make unless the user explicitly requests it.**
-19. ❌ **Do not delete files or folders without user confirmation when the deletion is not part of the explicit task.**
-20. ❌ **Do not modify package.json dependencies or scripts without understanding the impact and user approval.**
-
-### Transparency & Honesty
-
-21. ❌ **Do not present mock, stub, or placeholder behavior as production-complete without clearly saying so.**
-22. ❌ **Do not claim something works without verification.**
-23. ✅ **Always clearly state when test scripts, lint scripts, or verification commands are missing or incomplete.**
-24. ✅ **Always report when requested verification cannot run and explain why.**
-
-### Conflict Resolution
-
-25. ✅ **If a non-negotiable rule conflicts with task completion, stop immediately and report the constraint to the user.**
-26. ✅ **Ask for clarification rather than making assumptions about bypassing safety rules.**
-27. ✅ **When in doubt about whether a rule applies, err on the side of caution and ask the user.**

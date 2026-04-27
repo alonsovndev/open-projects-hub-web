@@ -1,34 +1,86 @@
-# Open Projects Hub Web Docs
+# Open Projects Hub Web Documentation
 
-This directory is the engineering reference for the current React SPA. It is intentionally split into focused modules so teammates can either scan the high-level architecture or jump straight into the implementation details they need.
+Complete engineering reference for the Open Projects Hub React SPA.
 
-## How to Use This Documentation
+## Quick Navigation
 
-- Start with [`architecture.md`](./architecture.md) for the system overview and current-state scorecard.
-- Read [`features.md`](./features.md) for page-by-page and feature-by-feature responsibilities.
-- Use [`tech-stack.md`](./tech-stack.md) to understand the routing, state, styling, and API patterns.
-- Use [`testing.md`](./testing.md) to understand the current unit, integration, and end-to-end testing approach.
-- Open [`auth-flow.md`](./auth-flow.md) when working on sign-in, protected routes, or admin session behavior.
-- Review [`best-practices-audit.md`](./best-practices-audit.md) for strengths, gaps, and future improvements.
-- Follow [`boilerplate.md`](./boilerplate.md) when using this project as a reference for a new SPA.
+### 🚀 Getting Started
 
-## Table of Contents
+- **[Getting Started Guide](./getting-started.md)** - Quick start for new developers, essential commands, and first steps
 
-1. [Architecture Overview](./architecture.md)
-2. [Feature Architecture](./features.md)
-3. [Tech Stack and Patterns](./tech-stack.md)
-4. [Testing Strategy and Quality Guide](./testing.md)
-5. [Authentication and Authorization Flow](./auth-flow.md)
-6. [Best Practices Audit and Future Improvements](./best-practices-audit.md)
-7. [Boilerplate Guide for New Projects](./boilerplate.md)
+### 🏗️ Architecture
 
-## Intended Audience
+- **[Architecture Overview](./architecture/overview.md)** - System design, current state scorecard, and constraints
+- **[Folder Structure](./architecture/folder-structure.md)** - Layer-by-layer guide to project organization
+- **[Routing](./architecture/routing.md)** - Feature-owned routing, guards, and navigation patterns
+- **[State Management](./architecture/state-management.md)** - Redux Toolkit + RTK Query patterns
 
-### Quick Context
+### 💻 Development
 
-- **Junior engineers:** Begin with the “High-level view” sections in each file.
-- **Senior engineers:** Use the “Implementation details” and “Where this lives” sections to verify code ownership and extension points.
+- **[Conventions](./development/conventions.md)** - Naming, imports, file placement, and code organization
+- **[Styling](./development/styling.md)** - SCSS Modules + Ant Design strategy
+- **[Testing](./development/testing.md)** - Testing strategy, patterns, and quality guide
 
-### Repository Scope
+### 🎯 Features
 
-This documentation covers the application code in `src/` and the current implementation patterns already present in the repository. It does not replace official third-party library documentation.
+- **[Feature Architecture](./features/features.md)** - Page-by-page and feature-by-feature breakdown
+- **[Authentication Flow](./features/auth-flow.md)** - Sign-in, session, and authorization deep-dive
+
+### 📖 Guides
+
+- **[Adding Features](./guides/adding-features.md)** - Step-by-step workflow for creating new features
+- **[Boilerplate Guide](./guides/boilerplate.md)** - Using this project as a reference for new SPAs
+- **[Troubleshooting](./guides/troubleshooting.md)** - Common issues and solutions
+
+### ✅ Quality
+
+- **[Best Practices](./quality/best-practices.md)** - Audit, recommendations, and improvement roadmap
+- **[Tech Stack](./quality/tech-stack.md)** - Technology choices and patterns
+
+## Documentation Philosophy
+
+This documentation is:
+
+- **Honest** - Reports both strengths and current gaps
+- **Layered** - Quick-reference → detailed explanation → deep-dive
+- **Practical** - Includes working examples and patterns
+- **Agent-friendly** - Structured for both human and AI consumption
+
+## For New Team Members
+
+1. Start with **[Getting Started](./getting-started.md)** for environment setup and key commands
+2. Read **[Architecture Overview](./architecture/overview.md)** to understand system design
+3. Review **[Conventions](./development/conventions.md)** before writing code
+4. Use **[Adding Features](./guides/adding-features.md)** as your workflow template
+5. Reference **[Troubleshooting](./guides/troubleshooting.md)** when stuck
+
+## For AI Agents
+
+Key files for agent context:
+
+- **[Folder Structure](./architecture/folder-structure.md)** - Where to place code
+- **[Conventions](./development/conventions.md)** - Naming and organization rules
+- **[Routing](./architecture/routing.md)** - How routes are registered
+- **[State Management](./architecture/state-management.md)** - Redux + RTK Query patterns
+- **[Adding Features](./guides/adding-features.md)** - Step-by-step feature creation
+
+Also see `AGENTS.md` in repository root for agent-specific working standards.
+
+## Current Project State
+
+**Build Status**: ⚠️ Build currently fails (missing stylesheet import)  
+**Test Coverage**: ✅ Foundation in place, expanding coverage  
+**Architecture Score**: 7.5/10 (strong foundation, production gaps)
+
+See **[Architecture Overview](./architecture/overview.md)** for detailed scorecard and **[Best Practices](./quality/best-practices.md)** for improvement roadmap.
+
+## External Resources
+
+- [React Documentation](https://react.dev/)
+- [Vite Guide](https://vite.dev/guide/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [React Router](https://reactrouter.com/)
+- [Ant Design](https://ant.design/)
+- [Vitest](https://vitest.dev/)
+- [Playwright](https://playwright.dev/)

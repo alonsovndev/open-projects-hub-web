@@ -1,9 +1,27 @@
 // Public API for auth feature
 export { authRoutes } from "./routes";
-export { adminAuthApi, useLoginMutation } from "./api/admin-auth-api";
+export {
+  adminAuthApi,
+  useLoginMutation,
+  useRegisterMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} from "./api/admin-auth-api";
 export {
   adminAuthReducer,
   setAdminSession,
   clearAdminSessionState,
 } from "./state/admin-auth-slice";
-export type { AdminLoginValues, AdminSession, AdminAuthResponse, UserRole } from "./types";
+export { AdminLoginForm } from "./components/admin-login-form";
+export { RegisterForm } from "./components/register-form";
+export { ForgotPasswordForm } from "./components/forgot-password-form";
+export { ResetPasswordForm } from "./components/reset-password-form";
+export type {
+  AdminLoginValues,
+  AdminRegisterValues,
+  ForgotPasswordValues,
+  ResetPasswordValues,
+  AdminSession,
+  AdminAuthResponse,
+  UserRole,
+} from "./types";

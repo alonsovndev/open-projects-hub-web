@@ -1,25 +1,42 @@
 import type { FC } from "react";
 
-import { ProjectOutlined } from "@ant-design/icons";
-import { Typography } from "antd";
+import { Button } from "antd";
+
+import { useHomeNavigation } from "@/features/home/hooks/use-home-navigation";
 
 import styles from "./home-hero.module.scss";
 
-const { Paragraph, Title } = Typography;
-
 export const HomeHero: FC = () => {
+  const { handleGetStarted } = useHomeNavigation();
+
   return (
-    <header className={styles.headerSection}>
-      <div className={styles.topIconWrapper}>
-        <ProjectOutlined />
+    <section className={styles.heroSection}>
+      <div className={styles.heroContent}>
+        <h1 className={styles.heroTitle}>
+          TURN AMBIGUITY
+          <br />
+          INTO <span className={styles.heroAccent}>ACTION.</span>
+        </h1>
+        <p className={styles.heroDescription}>
+          Transform unclear requirements into actionable project plans. Our AI-powered platform
+          helps freelancers and clients collaborate with precision.
+        </p>
+        <Button
+          type="primary"
+          size="large"
+          className={styles.heroButton}
+          onClick={handleGetStarted}
+        >
+          Get Started
+        </Button>
       </div>
-      <Title level={1} className={styles.title}>
-        Open Freelancer Project Hub
-      </Title>
-      <Paragraph className={styles.subtitle}>
-        Discover freelance projects and refine requirements with AI. Please select your role to
-        access the platform.
-      </Paragraph>
-    </header>
+      <div className={styles.heroImage}>
+        <img
+          src="/hero-workspace.jpg"
+          alt="Modern workspace with monitor and desk setup"
+          className={styles.heroImg}
+        />
+      </div>
+    </section>
   );
 };

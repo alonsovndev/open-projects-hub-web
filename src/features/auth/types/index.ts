@@ -1,6 +1,25 @@
 export interface AdminLoginValues {
   email: string;
   password: string;
+  remember?: boolean;
+}
+
+export interface AdminRegisterValues {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+}
+
+export interface ForgotPasswordValues {
+  email: string;
+}
+
+export interface ResetPasswordValues {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export type UserRole = "admin" | "user" | "viewer";
