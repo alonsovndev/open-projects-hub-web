@@ -1,13 +1,18 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type { AdminSession } from "@/features/auth/types";
+import { sessionStorage } from "@/features/auth/model/session-storage";
 
 interface AdminAuthState {
   session: AdminSession | null;
 }
 
+const loadInitialSession = (): AdminSession | null => {
+  return sessionStorage.load();
+};
+
 const initialState: AdminAuthState = {
-  session: null,
+  session: loadInitialSession(),
 };
 
 const adminAuthSlice = createSlice({
@@ -16,9 +21,11 @@ const adminAuthSlice = createSlice({
   reducers: {
     setAdminSession(state, action: PayloadAction<AdminSession>) {
       state.session = action.payload;
+      sessionStorage.save(action.payload);
     },
     clearAdminSessionState(state) {
       state.session = null;
+      sessionStorage.clear();
     },
   },
 });
