@@ -1,12 +1,27 @@
 .footer {
-  margin-top: 40px;
-  color: #94a3b8;
-  font-size: 13px;
   display: flex;
-  gap: 16px;
   justify-content: center;
-  width: 100%;
-  padding-bottom: 20px;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background-color: #f3f3f3;
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  color: #414755;
+}
+
+.footerLink {
+  cursor: pointer;
+  color: #414755;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0057c2;
+  }
+}
+
+.footerDot {
+  color: #c1c6d7;
 }
 
 .footerLink {
