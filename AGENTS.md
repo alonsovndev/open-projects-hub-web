@@ -7,6 +7,7 @@ This document defines the working standards for agents in this repository.
 ### Response Efficiency
 
 - Be concise and direct
+- Be low verbose by default
 - Use bullet points over paragraphs
 - Skip unnecessary preambles ("Here's what I did...", "I've updated...")
 - Provide explanations only when:
@@ -20,6 +21,7 @@ This document defines the working standards for agents in this repository.
 - Output code directly without surrounding explanation for simple tasks
 - Include only essential inline comments
 - For complex changes: brief summary + code
+- Do not show code output unless explicitly requested.
 
 ### Token Budget Guidelines
 
