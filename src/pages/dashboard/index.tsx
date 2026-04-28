@@ -1,18 +1,63 @@
 import type { FC } from "react";
+import { Typography, Button, Spin } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
-import { Footer } from "@/shared/components/layout/footer";
-import { AdminWelcome } from "@/features/dashboard/components/admin-welcome";
+import { AppHeader } from "@/shared/components/layout/app-header";
+import { DashboardStats } from "@/features/dashboard/components/dashboard-stats";
+import { ProjectList } from "@/features/dashboard/components/project-list";
+import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
 
 import styles from "./dashboard.module.scss";
 
-export const DashboardPage: FC = () => {
-  return (
-    <main className={styles.pageContainer}>
-      <div className={styles.contentWrapper}>
-        <AdminWelcome />
-      </div>
+const { Title, Text } = Typography;
 
-      <Footer />
-    </main>
+export const DashboardPage: FC = () => {
+  const { user, projects, stats, loading, handleViewProject, handleCreateProject } = useDashboard();
+
+  if (loading) {
+    return (
+      <div className={styles.pageContainer}>
+        <AppHeader />
+        <main className={styles.contentWrapper}>
+          <div className={styles.loadingContainer}>
+            <Spin size="large" />
+            <Text className={styles.loadingText}>Loading dashboard...</Text>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.pageContainer}>
+      <AppHeader />
+      <main className={styles.contentWrapper}>
+        <div className={styles.dashboardHeader}>
+          <div className={styles.headerContent}>
+            <div className={styles.welcomeSection}>
+              <Title level={1} className={styles.pageTitle}>
+                Welcome back, {user?.displayName || "Admin"}
+              </Title>
+              <Text className={styles.subtitle}>
+                Here's an overview of your projects and team activity
+              </Text>
+            </div>
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={handleCreateProject}
+              className={styles.createButton}
+            >
+              New Project
+            </Button>
+          </div>
+        </div>
+
+        {stats && <DashboardStats stats={stats} />}
+
+        <ProjectList projects={projects} onViewProject={handleViewProject} />
+      </main>
+    </div>
   );
 };
