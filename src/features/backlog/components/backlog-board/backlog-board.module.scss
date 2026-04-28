@@ -1,0 +1,133 @@
+@use "@/styles/variables.scss" as *;
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(280px, 1fr));
+  gap: $spacing-lg;
+  overflow-x: auto;
+  padding-bottom: $spacing-md;
+
+  @media (max-width: 1600px) {
+    grid-template-columns: repeat(3, minmax(280px, 1fr));
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.columnWrapper {
+  min-width: 280px;
+}
+
+.column {
+  background: $surface-light;
+  border: 2px solid $surface-base;
+  border-radius: $radius-lg;
+  height: calc(100vh - 280px);
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+
+  &.columnOver {
+    border-color: $primary-base;
+    background: rgba(0, 87, 194, 0.02);
+    box-shadow: 0 0 0 2px rgba(0, 87, 194, 0.1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  :global {
+    .ant-card-body {
+      padding: $spacing-md;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-md;
+  margin: (-$spacing-md) (-$spacing-md) $spacing-md;
+  background: $surface-white;
+  border-left: 4px solid $primary-base;
+  border-radius: $radius-sm;
+  border-bottom: 1px solid $surface-base;
+}
+
+.columnTitle {
+  font-family: $font-headline;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}
+
+.countBadge {
+  :global {
+    .ant-badge-count {
+      font-family: $font-body;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.columnContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: $spacing-xs;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $surface-base;
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+.emptyColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  border: 2px dashed $surface-base;
+  border-radius: $radius-md;
+  margin-top: $spacing-sm;
+}
+
+.emptyText {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  opacity: 0.6;
+}
+
+.dragOverlay {
+  cursor: grabbing;
+  transform: rotate(3deg);
+  opacity: 0.9;
+}

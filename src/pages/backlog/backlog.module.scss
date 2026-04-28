@@ -1,0 +1,85 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  max-width: 100%;
+  height: 100%;
+}
+
+.pageHeader {
+  margin-bottom: $spacing-xl;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-xl;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+}
+
+.pageTitle {
+  font-family: $font-headline;
+  font-size: 2rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-family: $font-body;
+  font-size: 1rem;
+  color: $text-secondary;
+  display: block;
+  margin-top: $spacing-sm;
+}
+
+.actionButton {
+  font-family: $font-body;
+  font-weight: 600;
+  border-color: $primary-base;
+  color: $primary-base;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-dark;
+    color: $primary-dark;
+    background: rgba(0, 87, 194, 0.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.createButton {
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  border: none;
+  font-family: $font-body;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 87, 194, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover:not(:disabled) {
+      transform: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
