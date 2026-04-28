@@ -5,6 +5,7 @@ import { UnauthorizedPage } from "@/pages/unauthorized";
 // Feature routes
 import { homeRoutes } from "@/features/home/routes";
 import { authRoutes } from "@/features/auth/routes";
+import { onboardingRoutes } from "@/features/onboarding/routes";
 import { dashboardRoutes } from "@/features/dashboard/routes";
 import { viewerRoutes } from "@/features/viewer/routes";
 
@@ -17,6 +18,7 @@ import { viewerRoutes } from "@/features/viewer/routes";
  */
 export const appRoutes: AppRoute[] = [
   ...homeRoutes,
+  ...onboardingRoutes,
   ...authRoutes,
   ...dashboardRoutes,
   ...viewerRoutes,

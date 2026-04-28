@@ -8,8 +8,8 @@ export const useHomeNavigation = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // Navigate to login/registration page
-    navigate("/login");
+    // Navigate to role selection page
+    navigate("/role-selection");
   };
 
   const handleStartProject = () => {
