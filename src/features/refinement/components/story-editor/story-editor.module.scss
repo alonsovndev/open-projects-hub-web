@@ -1,0 +1,152 @@
+@use "@/styles/variables.scss" as *;
+
+.editorCard {
+  background: $surface-white;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-xl;
+}
+
+.cardTitle {
+  font-family: $font-headline;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}
+
+.cardSubtitle {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  color: $text-secondary;
+  display: block;
+  margin-top: $spacing-xs;
+}
+
+.statusTag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  :global {
+    .ant-form-item-label > label {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .ant-input,
+    .ant-input-number {
+      font-family: $font-body;
+      border-radius: $radius-sm;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        border-color: $primary-base;
+      }
+
+      &:focus {
+        border-color: $primary-base;
+        box-shadow: 0 0 0 2px rgba(0, 87, 194, 0.1);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global {
+      .ant-input,
+      .ant-input-number {
+        transition: none;
+      }
+    }
+  }
+}
+
+.formItem {
+  margin-bottom: $spacing-lg;
+}
+
+.criteriaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+}
+
+.criteriaNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  color: $surface-white;
+  border-radius: 50%;
+  font-family: $font-body;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: $spacing-xs;
+}
+
+.criteriaInput {
+  flex: 1;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  margin-top: $spacing-xs;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $surface-base;
+
+  button {
+    background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+    border: none;
+    font-family: $font-body;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 87, 194, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
+      &:hover:not(:disabled) {
+        transform: none;
+      }
+
+      &:active:not(:disabled) {
+        transform: none;
+      }
+    }
+  }
+}

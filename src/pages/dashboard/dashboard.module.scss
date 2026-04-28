@@ -1,22 +1,8 @@
 @use "@/styles/variables.scss" as *;
 
 .pageContainer {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, $surface-light 0%, $surface-base 100%);
-}
-
-.contentWrapper {
-  flex: 1;
   max-width: 1400px;
-  width: 100%;
   margin: 0 auto;
-  padding: $spacing-2xl $spacing-xl $spacing-3xl;
-
-  @media (max-width: $breakpoint-tablet) {
-    padding: $spacing-xl $spacing-md $spacing-2xl;
-  }
 }
 
 .loadingContainer {

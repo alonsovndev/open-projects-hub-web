@@ -1,13 +1,13 @@
 import type { AppRoute } from "@/app/routing/types";
 import { AdminLayout } from "@/app/layouts/admin-layout";
-import { DashboardPage } from "@/pages/dashboard";
+import { RefinementPage } from "@/pages/refinement";
 
-export const dashboardRoutes: AppRoute[] = [
+export const refinementRoutes: AppRoute[] = [
   {
-    path: "/dashboard",
+    path: "/refinement",
     element: (
       <AdminLayout>
-        <DashboardPage />
+        <RefinementPage />
       </AdminLayout>
     ),
     guards: ["auth"],

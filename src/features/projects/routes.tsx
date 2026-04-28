@@ -1,5 +1,5 @@
 import type { AppRoute } from "@/app/routing/types";
-import { PrivateLayout } from "@/app/layouts";
+import { AdminLayout } from "@/app/layouts/admin-layout";
 import { ProjectsOverview } from "@/pages/projects";
 import { ProjectNewPage } from "@/pages/project-new";
 
@@ -7,18 +7,18 @@ export const projectsRoutes: AppRoute[] = [
   {
     path: "/projects",
     element: (
-      <PrivateLayout>
+      <AdminLayout>
         <ProjectsOverview />
-      </PrivateLayout>
+      </AdminLayout>
     ),
     guards: ["auth"],
   },
   {
     path: "/projects/new",
     element: (
-      <PrivateLayout>
+      <AdminLayout>
         <ProjectNewPage />
-      </PrivateLayout>
+      </AdminLayout>
     ),
     guards: ["auth"],
   },

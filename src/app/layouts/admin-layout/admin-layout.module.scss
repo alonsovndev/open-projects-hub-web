@@ -1,0 +1,178 @@
+@use "@/styles/variables.scss" as *;
+
+.layout {
+  min-height: 100vh;
+}
+
+.sider {
+  background: $surface-white;
+  border-right: 1px solid $surface-base;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+
+  :global {
+    .ant-layout-sider-trigger {
+      display: none;
+    }
+  }
+}
+
+.siderContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-lg 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: 0 $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.logoIcon {
+  font-size: 1.5rem;
+  color: $primary-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoText {
+  font-family: $font-headline;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $text-primary;
+  white-space: nowrap;
+}
+
+.collapseButton {
+  margin: 0 $spacing-md $spacing-lg;
+  color: $text-secondary;
+
+  &:hover {
+    color: $primary-base;
+    background: rgba(0, 87, 194, 0.04);
+  }
+}
+
+.menu {
+  flex: 1;
+  border: none;
+  background: transparent;
+
+  :global {
+    .ant-menu-item {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-secondary;
+      border-radius: $radius-sm;
+      margin: 0 $spacing-md $spacing-xs;
+      padding-left: $spacing-md;
+      height: 40px;
+      line-height: 40px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $primary-base;
+        background: rgba(0, 87, 194, 0.04);
+      }
+
+      &.ant-menu-item-selected {
+        background: linear-gradient(135deg, rgba(0, 87, 194, 0.1) 0%, rgba(0, 110, 242, 0.1) 100%);
+        color: $primary-base;
+        font-weight: 600;
+
+        &::after {
+          display: none;
+        }
+      }
+
+      .ant-menu-item-icon {
+        font-size: 1.125rem;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global {
+      .ant-menu-item {
+        transition: none;
+      }
+    }
+  }
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  margin-top: auto;
+  border-top: 1px solid $surface-base;
+  position: relative;
+}
+
+.avatar {
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  font-family: $font-headline;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  color: $text-secondary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logoutButton {
+  color: $text-secondary;
+  padding: $spacing-xs;
+
+  &:hover {
+    color: $primary-base;
+    background: rgba(0, 87, 194, 0.04);
+  }
+}
+
+.mainLayout {
+  background: $surface-light;
+}
+
+.content {
+  min-height: 100vh;
+  padding: $spacing-2xl;
+  overflow-y: auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: $spacing-xl $spacing-md;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: $spacing-lg $spacing-sm;
+  }
+}

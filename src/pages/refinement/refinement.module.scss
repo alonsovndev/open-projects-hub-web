@@ -1,0 +1,35 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: $spacing-2xl;
+}
+
+.pageTitle {
+  font-family: $font-headline;
+  font-size: 2rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}
+
+.pageSubtitle {
+  font-family: $font-body;
+  font-size: 1rem;
+  color: $text-secondary;
+  display: block;
+  margin-top: $spacing-sm;
+}
+
+.workspaceGrid {
+  :global {
+    .ant-col {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
