@@ -7,6 +7,7 @@ import { homeRoutes } from "@/features/home/routes";
 import { authRoutes } from "@/features/auth/routes";
 import { onboardingRoutes } from "@/features/onboarding/routes";
 import { dashboardRoutes } from "@/features/dashboard/routes";
+import { projectsRoutes } from "@/features/projects/routes";
 import { viewerRoutes } from "@/features/viewer/routes";
 
 /**
@@ -21,6 +22,7 @@ export const appRoutes: AppRoute[] = [
   ...onboardingRoutes,
   ...authRoutes,
   ...dashboardRoutes,
+  ...projectsRoutes,
   ...viewerRoutes,
   // Error routes
   {

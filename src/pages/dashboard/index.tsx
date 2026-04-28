@@ -12,7 +12,15 @@ import styles from "./dashboard.module.scss";
 const { Title, Text } = Typography;
 
 export const DashboardPage: FC = () => {
-  const { user, projects, stats, loading, handleViewProject, handleCreateProject } = useDashboard();
+  const {
+    user,
+    projects,
+    stats,
+    loading,
+    handleViewProject,
+    handleCreateProject,
+    handleViewAllProjects,
+  } = useDashboard();
 
   if (loading) {
     return (
@@ -56,7 +64,11 @@ export const DashboardPage: FC = () => {
 
         {stats && <DashboardStats stats={stats} />}
 
-        <ProjectList projects={projects} onViewProject={handleViewProject} />
+        <ProjectList
+          projects={projects}
+          onViewProject={handleViewProject}
+          onViewAllProjects={handleViewAllProjects}
+        />
       </main>
     </div>
   );

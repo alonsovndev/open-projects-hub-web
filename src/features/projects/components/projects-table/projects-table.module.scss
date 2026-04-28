@@ -1,0 +1,73 @@
+@use "@/styles/variables.scss" as *;
+
+.tableWrapper {
+  background: $surface-white;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.projectsTable {
+  font-family: $font-body;
+
+  :global(.ant-table-thead > tr > th) {
+    background: $surface-light;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: rgba(0, 87, 194, 0.04);
+  }
+}
+
+.projectCell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.projectName {
+  font-size: 1rem;
+  color: $text-primary;
+}
+
+.projectCode {
+  font-size: 0.875rem;
+  color: $text-secondary;
+}
+
+.clientText {
+  font-size: 0.875rem;
+  color: $text-primary;
+}
+
+.statusTag,
+.priorityTag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progressCell {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  min-width: 120px;
+}
+
+.progressText {
+  font-size: 0.75rem;
+  color: $text-secondary;
+}
+
+.dateIcon {
+  color: $primary-base;
+}
+
+.actionButton {
+  font-family: $font-body;
+  font-weight: 600;
+  padding: 0;
+}

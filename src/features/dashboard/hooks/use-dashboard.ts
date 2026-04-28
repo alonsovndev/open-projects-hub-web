@@ -35,8 +35,11 @@ export const useDashboard = () => {
   };
 
   const handleCreateProject = () => {
-    // TODO: Navigate to project creation page
-    console.log("Create new project");
+    navigate("/projects/new");
+  };
+
+  const handleViewAllProjects = () => {
+    navigate("/projects");
   };
 
   return {
@@ -46,5 +49,6 @@ export const useDashboard = () => {
     loading,
     handleViewProject,
     handleCreateProject,
+    handleViewAllProjects,
   };
 };

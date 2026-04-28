@@ -1,0 +1,71 @@
+@use "@/styles/variables.scss" as *;
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+  align-items: flex-start;
+  padding: $spacing-xl;
+  background: $surface-white;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: $spacing-2xl;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+}
+
+.searchSection {
+  flex: 1;
+  min-width: 280px;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.searchInput {
+  font-family: $font-body;
+}
+
+.filterSection {
+  display: flex;
+  gap: $spacing-md;
+  align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+}
+
+.filterSelect {
+  min-width: 160px;
+  font-family: $font-body;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+.clearButton {
+  font-family: $font-body;
+  font-weight: 600;
+}
+
+.viewSection {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+
+    button {
+      flex: 1;
+    }
+  }
+}

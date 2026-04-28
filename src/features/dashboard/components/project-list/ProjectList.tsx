@@ -1,6 +1,11 @@
 import type { FC } from "react";
 import { Card, Tag, Progress, Button, Typography } from "antd";
-import { EyeOutlined, CalendarOutlined, TeamOutlined, FileTextOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  CalendarOutlined,
+  TeamOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
 
 import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
 
@@ -9,6 +14,7 @@ import styles from "./project-list.module.scss";
 interface ProjectListProps {
   projects: ProjectSummary[];
   onViewProject: (projectCode: string) => void;
+  onViewAllProjects?: () => void;
 }
 
 const { Text, Title, Paragraph } = Typography;
@@ -44,14 +50,30 @@ const getTimeAgo = (dateString: string): string => {
   return formatDate(dateString);
 };
 
-export const ProjectListComponent: FC<ProjectListProps> = ({ projects, onViewProject }) => {
+export const ProjectListComponent: FC<ProjectListProps> = ({
+  projects,
+  onViewProject,
+  onViewAllProjects,
+}) => {
   return (
     <div className={styles.projectList}>
       <div className={styles.listHeader}>
         <Title level={2} className={styles.listTitle}>
           Projects
         </Title>
-        <Text className={styles.listCount}>{projects.length} total</Text>
+        <div className={styles.headerActions}>
+          <Text className={styles.listCount}>{projects.length} total</Text>
+          {onViewAllProjects && (
+            <Button
+              type="default"
+              icon={<UnorderedListOutlined />}
+              onClick={onViewAllProjects}
+              className={styles.viewAllButton}
+            >
+              View All Projects
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className={styles.projectGrid}>
