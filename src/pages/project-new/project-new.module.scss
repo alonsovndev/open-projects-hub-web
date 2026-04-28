@@ -1,0 +1,24 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  min-height: 100vh;
+  background: $surface-light;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  flex: 1;
+  padding: $spacing-2xl $spacing-lg;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: $spacing-xl $spacing-md;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: $spacing-lg $spacing-sm;
+  }
+}
