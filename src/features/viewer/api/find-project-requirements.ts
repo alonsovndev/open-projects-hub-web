@@ -1,14 +1,18 @@
 import { projectRequirementsData } from "@/features/viewer/api/project-requirements-data";
-import { normalizeProjectCode } from "@/features/viewer/model/project-code";
 import type { ProjectRequirementsRecord } from "@/features/viewer/types";
 
+/**
+ * Finds project requirements by project code
+ * For demo purposes, returns mock data for any non-empty project code
+ */
 export const findProjectRequirements = (projectCode: string): ProjectRequirementsRecord | null => {
-  const normalizedInput = normalizeProjectCode(projectCode);
-  const normalizedProjectCode = normalizeProjectCode(projectRequirementsData.code);
-
-  if (normalizedInput === normalizedProjectCode) {
-    return projectRequirementsData;
+  if (!projectCode || projectCode.trim().length === 0) {
+    return null;
   }
 
-  return null;
+  // Return mock data with the provided project code
+  return {
+    ...projectRequirementsData,
+    code: projectCode,
+  };
 };

@@ -12,4 +12,13 @@ export const viewerRoutes: AppRoute[] = [
     ),
     guards: ["public"],
   },
+  {
+    path: "/viewer/:projectId",
+    element: (
+      <PublicLayout>
+        <ClientViewer />
+      </PublicLayout>
+    ),
+    guards: ["public"],
+  },
 ];
