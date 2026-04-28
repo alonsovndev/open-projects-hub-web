@@ -1,0 +1,85 @@
+@use "@/styles/variables.scss" as *;
+
+.card {
+  background: $surface-white;
+  border: 1px solid $surface-base;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  margin-bottom: $spacing-md;
+  border-bottom: 1px solid $surface-base;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: $primary-base;
+  margin-top: 2px;
+}
+
+.title {
+  font-family: $font-headline;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $text-primary;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.subtitle {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.preferences {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+}
+
+.itemLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  flex: 1;
+  min-width: 0;
+}
+
+.itemIcon {
+  font-size: 1.25rem;
+  color: $text-secondary;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.itemTitle {
+  font-family: $font-body;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $text-primary;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.itemDescription {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.divider {
+  margin: 0;
+}

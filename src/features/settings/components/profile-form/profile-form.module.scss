@@ -1,0 +1,64 @@
+@use "@/styles/variables.scss" as *;
+
+.card {
+  background: $surface-white;
+  border: 1px solid $surface-base;
+  border-radius: $radius-lg;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  padding-bottom: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  border-bottom: 1px solid $surface-base;
+}
+
+.avatar {
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.uploadButton {
+  border-color: $surface-base;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-base;
+    color: $primary-base;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.form {
+  :global {
+    .ant-form-item-label > label {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: $spacing-md;
+  margin-top: $spacing-lg;
+  border-top: 1px solid $surface-base;
+}
+
+.roleText {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  font-weight: 600;
+}

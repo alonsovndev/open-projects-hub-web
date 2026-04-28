@@ -11,6 +11,7 @@ import { projectsRoutes } from "@/features/projects/routes";
 import { viewerRoutes } from "@/features/viewer/routes";
 import { refinementRoutes } from "@/features/refinement/routes";
 import { backlogRoutes } from "@/features/backlog/routes";
+import { settingsRoutes } from "@/features/settings/routes";
 
 /**
  * Central route aggregator
@@ -27,6 +28,7 @@ export const appRoutes: AppRoute[] = [
   ...projectsRoutes,
   ...refinementRoutes,
   ...backlogRoutes,
+  ...settingsRoutes,
   ...viewerRoutes,
   // Error routes
   {
