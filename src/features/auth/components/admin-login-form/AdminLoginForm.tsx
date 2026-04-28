@@ -1,6 +1,12 @@
 import type { FC } from "react";
 
-import { ArrowRightOutlined, LockOutlined, MailOutlined, SafetyOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  LockOutlined,
+  MailOutlined,
+  SafetyOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 import { Alert, Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
@@ -14,6 +20,10 @@ export const AdminLoginForm: FC = () => {
   return (
     <section className={styles.loginPanel} aria-labelledby="admin-login-title">
       <div className={styles.card}>
+        <Link to="/" className={styles.backButton}>
+          <HomeOutlined /> Back to Home
+        </Link>
+
         <div className={styles.iconWrapper}>
           <SafetyOutlined className={styles.icon} />
         </div>
