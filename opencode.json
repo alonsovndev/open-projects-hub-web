@@ -1,13 +1,26 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md"],
+  "small_model": "anthropic/claude-haiku-4-20250514",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 8000
+  },
+  "instructions": [
+    "./.opencode/AGENTS.repo.md",
+    "./.opencode/knowledge/repo-standards.md",
+    "/Users/alonso/.config/opencode/AGENTS.md",
+    "/Users/alonso/.config/opencode/knowledge/global/non-negotiable-rules.md",
+    "/Users/alonso/.config/opencode/knowledge/global/agent-principles.md",
+    "/Users/alonso/.config/opencode/knowledge/global/communication-compact.md"
+  ],
   "mcp": {
-    "stitch": {
+    "context7": {
       "type": "remote",
-      "url": "https://stitch.googleapis.com/mcp",
+      "url": "https://mcp.context7.com/mcp",
       "enabled": true,
       "headers": {
-        "X-Goog-Api-Key": "${GOOGLE_STITCH_API_KEY}"
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     }
   }
