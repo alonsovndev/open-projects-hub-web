@@ -11,3 +11,4 @@ export const ClientViewer: FC = () => {
     </main>
   );
 };
+export default ClientViewer;

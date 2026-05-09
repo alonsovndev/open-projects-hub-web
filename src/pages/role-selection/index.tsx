@@ -101,3 +101,4 @@ export const RoleSelection: FC = () => {
     </div>
   );
 };
+export default RoleSelection;

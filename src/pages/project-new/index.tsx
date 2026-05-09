@@ -19,3 +19,4 @@ export const ProjectNewPage: FC = () => {
     </div>
   );
 };
+export default ProjectNewPage;

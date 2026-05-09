@@ -39,3 +39,4 @@ export const UnauthorizedPage: FC = () => {
     </main>
   );
 };
+export default UnauthorizedPage;

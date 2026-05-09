@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Button, message } from "antd";
 
@@ -104,3 +104,4 @@ export const ProjectEntry: FC = () => {
     </div>
   );
 };
+export default ProjectEntry;

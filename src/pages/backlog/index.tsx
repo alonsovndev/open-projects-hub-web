@@ -72,3 +72,4 @@ export const BacklogPage: FC = () => {
     </div>
   );
 };
+export default BacklogPage;

@@ -16,3 +16,4 @@ export const LoginPage: FC = () => {
     </main>
   );
 };
+export default LoginPage;

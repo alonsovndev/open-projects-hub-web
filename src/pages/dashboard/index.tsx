@@ -66,3 +66,5 @@ export const DashboardPage: FC = () => {
     </div>
   );
 };
+
+export default DashboardPage;

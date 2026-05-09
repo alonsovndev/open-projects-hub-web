@@ -106,3 +106,4 @@ export const ProjectsOverview: FC = () => {
     </div>
   );
 };
+export default ProjectsOverview;

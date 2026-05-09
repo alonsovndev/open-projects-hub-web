@@ -55,3 +55,4 @@ export const RefinementPage: FC = () => {
     </div>
   );
 };
+export default RefinementPage;
