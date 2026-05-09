@@ -1,6 +1,6 @@
 import type { AppRoute } from "@/app/routing/types";
 import { PublicLayout } from "@/app/layouts";
-import { UnauthorizedPage } from "@/pages/unauthorized";
+import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
 // Feature routes
 import { homeRoutes } from "@/features/home/routes";
@@ -13,12 +13,16 @@ import { refinementRoutes } from "@/features/refinement/routes";
 import { backlogRoutes } from "@/features/backlog/routes";
 import { settingsRoutes } from "@/features/settings/routes";
 
+const UnauthorizedPage = lazyWithRetry(() => import("@/pages/unauthorized"));
+
 /**
  * Central route aggregator
  *
  * Each feature exports its own routes which are aggregated here.
  * This follows the feature-based architecture principle where each feature
  * owns its routing configuration.
+ *
+ * All routes are lazy-loaded for optimal bundle splitting.
  */
 export const appRoutes: AppRoute[] = [
   ...homeRoutes,
