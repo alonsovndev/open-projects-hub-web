@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/app/App";
+import { mode } from "@/config/env";
 
 async function enableMocking() {
-  if (import.meta.env.MODE !== "development") {
+  if (mode !== "development") {
     return;
   }
 

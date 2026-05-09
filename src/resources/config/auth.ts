@@ -1,5 +1,7 @@
+import { env } from "@/config/env";
+
 export const adminAuthConfig = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000",
+  apiBaseUrl: env.VITE_API_BASE_URL,
   loginEndpoint: "/auth/login",
   registerEndpoint: "/auth/register",
   forgotPasswordEndpoint: "/auth/forgot-password",
