@@ -6,14 +6,7 @@
     "prune": true,
     "reserved": 8000
   },
-  "instructions": [
-    "./.opencode/AGENTS.repo.md",
-    "./.opencode/knowledge/repo-standards.md",
-    "/Users/alonso/.config/opencode/AGENTS.md",
-    "/Users/alonso/.config/opencode/knowledge/global/non-negotiable-rules.md",
-    "/Users/alonso/.config/opencode/knowledge/global/agent-principles.md",
-    "/Users/alonso/.config/opencode/knowledge/global/communication-compact.md"
-  ],
+  "instructions": ["./AGENTS.md", "./.opencode/knowledge/repo-standards.md"],
   "mcp": {
     "context7": {
       "type": "remote",
