@@ -8,15 +8,15 @@ export const useCreateProject = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: ProjectFormData) => {
+  const handleSubmit = async (_values: ProjectFormData) => {
     setLoading(true);
 
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // TODO: Replace with actual API call
-      console.log("Creating project:", values);
+      // TODO: Replace with actual API call via RTK Query mutation
+      // const result = await createProject(_values).unwrap();
 
       message.success("Project created successfully!");
       navigate("/projects");

@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getProjects } from "@/features/dashboard/api/projects-data";
-import type { ProjectSummary } from "@/features/dashboard/types";
 import type { ProjectFilters, ProjectSort, ProjectView } from "@/features/projects/types";
 
 export const useProjectsOverview = () => {
@@ -65,10 +64,11 @@ export const useProjectsOverview = () => {
         case "status":
           compareValue = a.status.localeCompare(b.status);
           break;
-        case "priority":
+        case "priority": {
           const priorityOrder = { high: 0, medium: 1, low: 2 };
           compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
           break;
+        }
         case "dueDate":
           compareValue = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
           break;
@@ -120,7 +120,7 @@ export const useProjectsOverview = () => {
 
   const handleEditProject = (projectId: string) => {
     // TODO: Navigate to project edit page
-    console.log("Edit project:", projectId);
+    navigate(`/projects/${projectId}/edit`);
   };
 
   const handleCreateProject = () => {

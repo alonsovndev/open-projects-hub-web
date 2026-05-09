@@ -1,10 +1,14 @@
 import type { FC } from "react";
+import { memo, useMemo } from "react";
 import { Table, Tag, Progress, Button, Space, Typography } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
+import type { FilterValue, SorterResult } from "antd/es/table/interface";
 import { EyeOutlined, EditOutlined, CalendarOutlined } from "@ant-design/icons";
 
-import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
+import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/shared/types/domain";
+import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
 import type { ProjectSort } from "@/features/projects/types";
+import { formatDate } from "@/shared/utils/date";
 
 import styles from "./projects-table.module.scss";
 
@@ -18,146 +22,136 @@ interface ProjectsTableProps {
 
 const { Text } = Typography;
 
-const statusColors: Record<ProjectStatus, string> = {
-  active: "processing",
-  completed: "success",
-  "on-hold": "warning",
-  planning: "default",
-};
-
-const priorityColors: Record<ProjectPriority, string> = {
-  high: "red",
-  medium: "orange",
-  low: "blue",
-};
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-};
-
-export const ProjectsTable: FC<ProjectsTableProps> = ({
+const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   projects,
   sort,
   onSortChange,
   onViewProject,
   onEditProject,
 }) => {
-  const columns: ColumnsType<ProjectSummary> = [
-    {
-      title: "Project",
-      dataIndex: "name",
-      key: "name",
-      sorter: true,
-      sortOrder: sort.field === "name" ? (sort.order === "asc" ? "ascend" : "descend") : null,
-      render: (text, record) => (
-        <div className={styles.projectCell}>
-          <Text strong className={styles.projectName}>
-            {text}
-          </Text>
-          <Text type="secondary" className={styles.projectCode}>
-            {record.code}
-          </Text>
-        </div>
-      ),
-    },
-    {
-      title: "Client",
-      dataIndex: "client",
-      key: "client",
-      render: (text) => <Text className={styles.clientText}>{text}</Text>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      sorter: true,
-      sortOrder: sort.field === "status" ? (sort.order === "asc" ? "ascend" : "descend") : null,
-      render: (status: ProjectStatus) => (
-        <Tag color={statusColors[status]} className={styles.statusTag}>
-          {status}
-        </Tag>
-      ),
-    },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      key: "priority",
-      sorter: true,
-      sortOrder: sort.field === "priority" ? (sort.order === "asc" ? "ascend" : "descend") : null,
-      render: (priority: ProjectPriority) => (
-        <Tag color={priorityColors[priority]} className={styles.priorityTag}>
-          {priority}
-        </Tag>
-      ),
-    },
-    {
-      title: "Progress",
-      key: "progress",
-      render: (_, record) => {
-        const percent =
-          record.storiesCount > 0
-            ? Math.round((record.completedStories / record.storiesCount) * 100)
-            : 0;
-        return (
-          <div className={styles.progressCell}>
-            <Progress
-              percent={percent}
-              size="small"
-              strokeColor={{
-                "0%": "#0057c2",
-                "100%": "#006ef2",
-              }}
-            />
-            <Text type="secondary" className={styles.progressText}>
-              {record.completedStories}/{record.storiesCount}
+  const columns: ColumnsType<ProjectSummary> = useMemo(
+    () => [
+      {
+        title: "Project",
+        dataIndex: "name",
+        key: "name",
+        sorter: true,
+        sortOrder: sort.field === "name" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (text, record) => (
+          <div className={styles.projectCell}>
+            <Text strong className={styles.projectName}>
+              {text}
+            </Text>
+            <Text type="secondary" className={styles.projectCode}>
+              {record.code}
             </Text>
           </div>
-        );
+        ),
       },
-    },
-    {
-      title: "Due Date",
-      dataIndex: "dueDate",
-      key: "dueDate",
-      sorter: true,
-      sortOrder: sort.field === "dueDate" ? (sort.order === "asc" ? "ascend" : "descend") : null,
-      render: (date) => (
-        <Space>
-          <CalendarOutlined className={styles.dateIcon} />
-          <Text>{formatDate(date)}</Text>
-        </Space>
-      ),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space size="small">
-          <Button
-            type="link"
-            icon={<EyeOutlined />}
-            onClick={() => onViewProject(record.code)}
-            className={styles.actionButton}
-          >
-            View
-          </Button>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => onEditProject(record.id)}
-            className={styles.actionButton}
-          >
-            Edit
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+      {
+        title: "Client",
+        dataIndex: "client",
+        key: "client",
+        render: (text) => <Text className={styles.clientText}>{text}</Text>,
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        sorter: true,
+        sortOrder: sort.field === "status" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (status: ProjectStatus) => (
+          <Tag color={PROJECT_STATUS_COLORS[status]} className={styles.statusTag}>
+            {status}
+          </Tag>
+        ),
+      },
+      {
+        title: "Priority",
+        dataIndex: "priority",
+        key: "priority",
+        sorter: true,
+        sortOrder: sort.field === "priority" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (priority: ProjectPriority) => (
+          <Tag color={PROJECT_PRIORITY_COLORS[priority]} className={styles.priorityTag}>
+            {priority}
+          </Tag>
+        ),
+      },
+      {
+        title: "Progress",
+        key: "progress",
+        render: (_, record) => {
+          const percent =
+            record.storiesCount > 0
+              ? Math.round((record.completedStories / record.storiesCount) * 100)
+              : 0;
+          return (
+            <div className={styles.progressCell}>
+              <Progress
+                percent={percent}
+                size="small"
+                strokeColor={{
+                  "0%": "#0057c2",
+                  "100%": "#006ef2",
+                }}
+              />
+              <Text type="secondary" className={styles.progressText}>
+                {record.completedStories}/{record.storiesCount}
+              </Text>
+            </div>
+          );
+        },
+      },
+      {
+        title: "Due Date",
+        dataIndex: "dueDate",
+        key: "dueDate",
+        sorter: true,
+        sortOrder: sort.field === "dueDate" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (date) => (
+          <Space>
+            <CalendarOutlined className={styles.dateIcon} />
+            <Text>{formatDate(date)}</Text>
+          </Space>
+        ),
+      },
+      {
+        title: "Actions",
+        key: "actions",
+        render: (_, record) => (
+          <Space size="small">
+            <Button
+              type="link"
+              icon={<EyeOutlined />}
+              onClick={() => onViewProject(record.code)}
+              className={styles.actionButton}
+            >
+              View
+            </Button>
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => onEditProject(record.id)}
+              className={styles.actionButton}
+            >
+              Edit
+            </Button>
+          </Space>
+        ),
+      },
+    ],
+    [sort, onViewProject, onEditProject]
+  );
 
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-    if (sorter.field) {
-      onSortChange(sorter.field);
+  const handleTableChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<ProjectSummary> | SorterResult<ProjectSummary>[]
+  ) => {
+    // Handle single sorter (not array)
+    if (!Array.isArray(sorter) && sorter.field) {
+      onSortChange(sorter.field as ProjectSort["field"]);
     }
   };
 
@@ -178,3 +172,5 @@ export const ProjectsTable: FC<ProjectsTableProps> = ({
     </div>
   );
 };
+
+export const ProjectsTable = memo(ProjectsTableComponent);
