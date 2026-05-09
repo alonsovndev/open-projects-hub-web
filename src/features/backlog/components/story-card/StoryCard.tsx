@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { memo } from "react";
 import { Card, Tag, Typography, Button, Space } from "antd";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -11,7 +12,7 @@ import {
 } from "@ant-design/icons";
 
 import type { Story } from "@/features/backlog/types";
-import type { ProjectPriority } from "@/features/dashboard/types";
+import { PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
 
 import styles from "./story-card.module.scss";
 
@@ -23,13 +24,7 @@ interface StoryCardProps {
   onDelete: (storyId: string) => void;
 }
 
-const priorityColors: Record<ProjectPriority, string> = {
-  high: "red",
-  medium: "orange",
-  low: "blue",
-};
-
-export const StoryCardComponent: FC<StoryCardProps> = ({ story, onEdit, onDelete }) => {
+const StoryCardComponent: FC<StoryCardProps> = ({ story, onEdit, onDelete }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: story.id,
   });
@@ -47,7 +42,7 @@ export const StoryCardComponent: FC<StoryCardProps> = ({ story, onEdit, onDelete
           <div className={styles.dragHandle} {...attributes} {...listeners}>
             <DragOutlined />
           </div>
-          <Tag color={priorityColors[story.priority]} className={styles.priorityTag}>
+          <Tag color={PROJECT_PRIORITY_COLORS[story.priority]} className={styles.priorityTag}>
             {story.priority}
           </Tag>
         </div>
@@ -99,3 +94,5 @@ export const StoryCardComponent: FC<StoryCardProps> = ({ story, onEdit, onDelete
     </div>
   );
 };
+
+export const StoryCard = memo(StoryCardComponent);

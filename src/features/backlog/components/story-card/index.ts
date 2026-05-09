@@ -1,1 +1,1 @@
-export { StoryCardComponent as StoryCard } from "./StoryCard";
+export { StoryCard } from "./StoryCard";

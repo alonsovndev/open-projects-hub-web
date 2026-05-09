@@ -1,6 +1,8 @@
 import type { AppRoute } from "@/app/routing/types";
 import { AdminLayout } from "@/app/layouts/admin-layout";
-import { BacklogPage } from "@/pages/backlog";
+import { lazyWithRetry } from "@/app/routing/lazy-loader";
+
+const BacklogPage = lazyWithRetry(() => import("@/pages/backlog"));
 
 export const backlogRoutes: AppRoute[] = [
   {

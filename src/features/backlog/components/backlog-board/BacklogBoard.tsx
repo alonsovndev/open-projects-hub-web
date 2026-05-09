@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { memo } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -6,6 +7,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
 } from "@dnd-kit/core";
 
 import type { Story, BacklogColumn as BacklogColumnType } from "@/features/backlog/types";
@@ -23,7 +26,7 @@ interface BacklogBoardProps {
   onDeleteStory: (storyId: string) => void;
 }
 
-export const BacklogBoardComponent: FC<BacklogBoardProps> = ({
+const BacklogBoardBase: FC<BacklogBoardProps> = ({
   columns,
   activeStory,
   onDragStart,
@@ -39,24 +42,24 @@ export const BacklogBoardComponent: FC<BacklogBoardProps> = ({
     })
   );
 
-  const handleDragStart = (event: any) => {
-    onDragStart(event.active.id);
+  const handleDragStart = (event: DragStartEvent) => {
+    onDragStart(event.active.id as string);
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over) {
-      onDragEnd(active.id, "");
+      onDragEnd(active.id as string, "");
       return;
     }
 
     // Check if dropped on a different column
     const targetColumn = columns.find((col) => col.id === over.id);
     if (targetColumn) {
-      onDragEnd(active.id, targetColumn.id);
+      onDragEnd(active.id as string, targetColumn.id);
     } else {
-      onDragEnd(active.id, "");
+      onDragEnd(active.id as string, "");
     }
   };
 
@@ -90,3 +93,5 @@ export const BacklogBoardComponent: FC<BacklogBoardProps> = ({
     </DndContext>
   );
 };
+
+export const BacklogBoardComponent = memo(BacklogBoardBase);
