@@ -1,7 +1,9 @@
 import type { AppRoute } from "@/app/routing/types";
 import { PublicLayout } from "@/app/layouts";
-import { RoleSelection } from "@/pages/role-selection";
-import { ProjectEntry } from "@/pages/project-entry";
+import { lazyWithRetry } from "@/app/routing/lazy-loader";
+
+const RoleSelection = lazyWithRetry(() => import("@/pages/role-selection"));
+const ProjectEntry = lazyWithRetry(() => import("@/pages/project-entry"));
 
 export const onboardingRoutes: AppRoute[] = [
   {

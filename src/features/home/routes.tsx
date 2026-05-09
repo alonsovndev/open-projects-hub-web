@@ -1,6 +1,8 @@
 import type { AppRoute } from "@/app/routing/types";
 import { PublicLayout } from "@/app/layouts";
-import { Home } from "@/pages/home";
+import { lazyWithRetry } from "@/app/routing/lazy-loader";
+
+const Home = lazyWithRetry(() => import("@/pages/home"));
 
 export const homeRoutes: AppRoute[] = [
   {
