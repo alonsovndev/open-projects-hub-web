@@ -44,7 +44,7 @@ export const useRefinementWorkspace = () => {
   };
 
   const handleApplySuggestion = (suggestion: AISuggestion) => {
-    let updatedStory = { ...story };
+    const updatedStory = { ...story };
 
     switch (suggestion.type) {
       case "title":
@@ -53,11 +53,12 @@ export const useRefinementWorkspace = () => {
       case "description":
         updatedStory.description = suggestion.content;
         break;
-      case "criteria":
+      case "criteria": {
         // Split by newline for multiple criteria
         const criteria = suggestion.content.split("\n").filter((c) => c.trim());
         updatedStory.acceptanceCriteria = criteria;
         break;
+      }
       case "complete":
         // Parse complete story (would need more sophisticated parsing in real app)
         message.info("Complete story suggestion - manual review recommended");
