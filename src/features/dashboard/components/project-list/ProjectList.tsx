@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { memo } from "react";
 import { Card, Tag, Progress, Button, Typography } from "antd";
 import {
   EyeOutlined,
@@ -7,7 +8,9 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 
-import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
+import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
+import type { ProjectSummary } from "@/features/dashboard/types";
+import { formatDate, formatRelativeTime } from "@/shared/utils/date";
 
 import styles from "./project-list.module.scss";
 
@@ -19,38 +22,7 @@ interface ProjectListProps {
 
 const { Text, Title, Paragraph } = Typography;
 
-const statusColors: Record<ProjectStatus, string> = {
-  active: "processing",
-  completed: "success",
-  "on-hold": "warning",
-  planning: "default",
-};
-
-const priorityColors: Record<ProjectPriority, string> = {
-  high: "red",
-  medium: "orange",
-  low: "blue",
-};
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-};
-
-const getTimeAgo = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return formatDate(dateString);
-};
-
-export const ProjectListComponent: FC<ProjectListProps> = ({
+const ProjectListComponent: FC<ProjectListProps> = ({
   projects,
   onViewProject,
   onViewAllProjects,
@@ -94,10 +66,13 @@ export const ProjectListComponent: FC<ProjectListProps> = ({
                     <Text className={styles.projectCode}>{project.code}</Text>
                   </div>
                   <div className={styles.tags}>
-                    <Tag color={statusColors[project.status]} className={styles.statusTag}>
+                    <Tag color={PROJECT_STATUS_COLORS[project.status]} className={styles.statusTag}>
                       {project.status}
                     </Tag>
-                    <Tag color={priorityColors[project.priority]} className={styles.priorityTag}>
+                    <Tag
+                      color={PROJECT_PRIORITY_COLORS[project.priority]}
+                      className={styles.priorityTag}
+                    >
                       {project.priority}
                     </Tag>
                   </div>
@@ -140,7 +115,7 @@ export const ProjectListComponent: FC<ProjectListProps> = ({
                 <div className={styles.metaRow}>
                   <Text className={styles.client}>Client: {project.client}</Text>
                   <Text className={styles.lastUpdated}>
-                    Updated {getTimeAgo(project.lastUpdated)}
+                    Updated {formatRelativeTime(project.lastUpdated)}
                   </Text>
                 </div>
               </div>
@@ -162,3 +137,5 @@ export const ProjectListComponent: FC<ProjectListProps> = ({
     </div>
   );
 };
+
+export const ProjectList = memo(ProjectListComponent);

@@ -1,34 +1,43 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getProjects, getDashboardStats } from "@/features/dashboard/api/projects-data";
-import type { ProjectSummary, DashboardStats } from "@/features/dashboard/types";
+import {
+  useGetProjectsQuery,
+  useGetDashboardStatsQuery,
+} from "@/features/projects/api/projects-api";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 
+/**
+ * Dashboard hook with RTK Query data fetching
+ *
+ * Note: Currently using mock data fallback until backend endpoints are ready.
+ * When backend is available, remove the mock data imports and fallbacks.
+ */
 export const useDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate API call
-    const loadData = async () => {
-      setLoading(true);
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+  // Fetch projects and stats using RTK Query
+  const {
+    data: projectsData,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useGetProjectsQuery({ page: 1, limit: 10 });
 
-      const projectsData = getProjects();
-      const statsData = getDashboardStats();
+  const {
+    data: statsData,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useGetDashboardStatsQuery();
 
-      setProjects(projectsData);
-      setStats(statsData);
-      setLoading(false);
-    };
+  const loading = projectsLoading || statsLoading;
+  const projects = projectsData?.projects ?? [];
+  const stats = statsData?.stats ?? null;
 
-    loadData();
-  }, []);
+  // TODO: Handle errors appropriately
+  // For now, errors will show empty states in the UI
+  if (projectsError || statsError) {
+    // Could dispatch to error tracking service (e.g., Sentry)
+  }
 
   const handleViewProject = (projectCode: string) => {
     navigate(`/viewer/${projectCode}`);

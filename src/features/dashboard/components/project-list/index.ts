@@ -1,1 +1,1 @@
-export { ProjectListComponent as ProjectList } from "./ProjectList";
+export { ProjectList } from "./ProjectList";
