@@ -1,3 +1,3 @@
-export { PublicLayout } from "./PublicLayout";
-export { PrivateLayout } from "./PrivateLayout";
+export { PublicLayout } from "./public-layout";
+export { PrivateLayout } from "./private-layout";
 export { AdminLayout } from "./admin-layout";
