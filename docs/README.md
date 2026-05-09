@@ -18,6 +18,7 @@ Complete engineering reference for the Open Projects Hub React SPA.
 ### 💻 Development
 
 - **[Conventions](./development/conventions.md)** - Naming, imports, file placement, and code organization
+- **[Concepts](./development/concepts.md)** - Core principles, patterns, and best practices
 - **[Styling](./development/styling.md)** - SCSS Modules + Ant Design strategy
 - **[Testing](./development/testing.md)** - Testing strategy, patterns, and quality guide
 
@@ -36,6 +37,13 @@ Complete engineering reference for the Open Projects Hub React SPA.
 
 - **[Best Practices](./quality/best-practices.md)** - Audit, recommendations, and improvement roadmap
 - **[Tech Stack](./quality/tech-stack.md)** - Technology choices and patterns
+
+### 🧩 Implementation (Work Logs)
+
+- **[Implementation Status](./implementation/STATUS.md)** - What has been completed so far
+- **[Next Steps Roadmap](./implementation/NEXT-STEPS.md)** - Prioritized follow-up work
+- **[Phase 1 Quick Wins Summary](./implementation/phase-1-quick-wins-summary.md)** - Details of Phase 1 changes
+- **[API Integration Guide](./api/integration-guide.md)** - Backend contract + frontend RTK Query integration notes
 
 ## Documentation Philosophy
 
@@ -68,7 +76,7 @@ Also see `AGENTS.md` in repository root for agent-specific working standards.
 
 ## Current Project State
 
-**Build Status**: ⚠️ Build currently fails (missing stylesheet import)  
+**Build Status**: ✅ Build passing locally (type-check + build)  
 **Test Coverage**: ✅ Foundation in place, expanding coverage  
 **Architecture Score**: 7.5/10 (strong foundation, production gaps)
 
