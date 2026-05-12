@@ -13,7 +13,7 @@ import { refinementRoutes } from "@/features/refinement/routes";
 import { backlogRoutes } from "@/features/backlog/routes";
 import { settingsRoutes } from "@/features/settings/routes";
 
-const UnauthorizedPage = lazyWithRetry(() => import("@/pages/unauthorized"));
+const UnauthorizedPage = lazyWithRetry(() => import("@/shared/pages/unauthorized"));
 
 /**
  * Central route aggregator

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import { isDev } from "@/config/env";
 
+import styles from "./RouteErrorBoundary.module.scss";
+
 interface RouteErrorFallbackProps {
   error?: Error;
   resetError?: () => void;
@@ -31,7 +33,7 @@ export const RouteErrorFallback: FC<RouteErrorFallbackProps> = ({ error, resetEr
   };
 
   return (
-    <div style={{ padding: "50px 24px", maxWidth: "600px", margin: "0 auto" }}>
+    <div className={styles.container}>
       <Result
         status="warning"
         title="This page encountered an error"
@@ -47,19 +49,11 @@ export const RouteErrorFallback: FC<RouteErrorFallbackProps> = ({ error, resetEr
       />
 
       {isDev && error && (
-        <details style={{ marginTop: "24px", whiteSpace: "pre-wrap" }}>
-          <summary style={{ cursor: "pointer", marginBottom: "12px" }}>
+        <details className={styles.errorDetails}>
+          <summary className={styles.errorSummary}>
             <strong>Error Details (Development Only)</strong>
           </summary>
-          <div
-            style={{
-              background: "#f5f5f5",
-              padding: "12px",
-              borderRadius: "4px",
-              fontSize: "12px",
-              fontFamily: "monospace",
-            }}
-          >
+          <div className={styles.errorContent}>
             <p>
               <strong>Error:</strong> {error.toString()}
             </p>
