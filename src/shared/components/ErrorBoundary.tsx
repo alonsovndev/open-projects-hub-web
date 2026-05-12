@@ -3,6 +3,8 @@ import { Button, Result } from "antd";
 
 import { isDev } from "@/config/env";
 
+import styles from "./ErrorBoundary.module.scss";
+
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -75,7 +77,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       // Default fallback UI
       return (
-        <div style={{ padding: "50px 24px", maxWidth: "600px", margin: "0 auto" }}>
+        <div className={styles.container}>
           <Result
             status="error"
             title="Something went wrong"
@@ -91,19 +93,11 @@ export class ErrorBoundary extends Component<Props, State> {
           />
 
           {isDev && this.state.error && (
-            <details style={{ marginTop: "24px", whiteSpace: "pre-wrap" }}>
-              <summary style={{ cursor: "pointer", marginBottom: "12px" }}>
+            <details className={styles.errorDetails}>
+              <summary className={styles.errorSummary}>
                 <strong>Error Details (Development Only)</strong>
               </summary>
-              <div
-                style={{
-                  background: "#f5f5f5",
-                  padding: "12px",
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                  fontFamily: "monospace",
-                }}
-              >
+              <div className={styles.errorContent}>
                 <p>
                   <strong>Error:</strong> {this.state.error.toString()}
                 </p>
