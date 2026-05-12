@@ -2,7 +2,6 @@ import type { FC } from "react";
 
 import { Button, Card, Tag, Typography } from "antd";
 
-import { AppHeader } from "@/shared/components/layout/app-header";
 import { useAdminWelcome } from "@/features/dashboard/hooks/use-admin-welcome";
 import { adminWelcomePanels } from "@/resources/config/welcome-panels";
 

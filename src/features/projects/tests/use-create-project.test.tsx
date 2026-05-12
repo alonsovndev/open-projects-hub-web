@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { message } from "antd";
+import type { ReactNode } from "react";
 
 import { useCreateProject } from "@/features/projects/hooks/use-create-project";
 import type { ProjectFormData } from "@/features/projects/components/project-form";
@@ -33,7 +34,7 @@ describe("useCreateProject", () => {
     vi.clearAllMocks();
   });
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: { children: ReactNode }) => (
     <BrowserRouter>{children}</BrowserRouter>
   );
 

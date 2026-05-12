@@ -2,8 +2,8 @@ import type { AppRoute } from "@/app/routing/types";
 import { AdminLayout } from "@/app/layouts/admin-layout";
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
-const ProjectsOverview = lazyWithRetry(() => import("@/pages/projects"));
-const ProjectNewPage = lazyWithRetry(() => import("@/pages/project-new"));
+const ProjectsOverview = lazyWithRetry(() => import("@/features/projects/pages/projects"));
+const ProjectNewPage = lazyWithRetry(() => import("@/features/projects/pages/project-new"));
 
 export const projectsRoutes: AppRoute[] = [
   {

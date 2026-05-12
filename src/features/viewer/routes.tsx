@@ -2,7 +2,7 @@ import type { AppRoute } from "@/app/routing/types";
 import { PublicLayout } from "@/app/layouts";
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
-const ClientViewer = lazyWithRetry(() => import("@/pages/viewer"));
+const ClientViewer = lazyWithRetry(() => import("@/features/viewer/pages/viewer"));
 
 export const viewerRoutes: AppRoute[] = [
   {

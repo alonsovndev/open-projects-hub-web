@@ -15,7 +15,11 @@ import styles from "./projects-table.module.scss";
 interface ProjectsTableProps {
   projects: ProjectSummary[];
   sort: ProjectSort;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
   onSortChange: (field: ProjectSort["field"]) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
   onViewProject: (projectCode: string) => void;
   onEditProject: (projectId: string) => void;
 }
@@ -25,7 +29,11 @@ const { Text } = Typography;
 const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   projects,
   sort,
+  currentPage,
+  pageSize,
+  totalCount,
   onSortChange,
+  onPageChange,
   onViewProject,
   onEditProject,
 }) => {
@@ -149,6 +157,11 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
     filters: Record<string, FilterValue | null>,
     sorter: SorterResult<ProjectSummary> | SorterResult<ProjectSummary>[]
   ) => {
+    // Handle pagination change
+    if (pagination.current && pagination.pageSize) {
+      onPageChange(pagination.current, pagination.pageSize);
+    }
+
     // Handle single sorter (not array)
     if (!Array.isArray(sorter) && sorter.field) {
       onSortChange(sorter.field as ProjectSort["field"]);
@@ -162,9 +175,12 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         dataSource={projects}
         rowKey="id"
         pagination={{
-          pageSize: 10,
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalCount,
           showSizeChanger: true,
           showTotal: (total) => `Total ${total} projects`,
+          pageSizeOptions: ["10", "20", "50", "100"],
         }}
         onChange={handleTableChange}
         className={styles.projectsTable}

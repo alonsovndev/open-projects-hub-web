@@ -2,7 +2,6 @@ import type { FC } from "react";
 import { Input, Select, Button, Badge } from "antd";
 import {
   SearchOutlined,
-  FilterOutlined,
   ClearOutlined,
   AppstoreOutlined,
   UnorderedListOutlined,

@@ -5,11 +5,13 @@ import {
   DragOverlay,
   closestCorners,
   PointerSensor,
+  KeyboardSensor,
   useSensor,
   useSensors,
   type DragStartEvent,
   type DragEndEvent,
 } from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import type { Story, BacklogColumn as BacklogColumnType } from "@/features/backlog/types";
 import { BacklogColumnComponent } from "./BacklogColumn";
@@ -39,6 +41,9 @@ const BacklogBoardBase: FC<BacklogBoardProps> = ({
       activationConstraint: {
         distance: 8,
       },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
@@ -69,6 +74,32 @@ const BacklogBoardBase: FC<BacklogBoardProps> = ({
       collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      accessibility={{
+        announcements: {
+          onDragStart({ active }) {
+            return `Picked up story ${active.id}`;
+          },
+          onDragOver({ active, over }) {
+            if (over) {
+              const column = columns.find((col) => col.id === over.id);
+              const columnName = column?.title || over.id;
+              return `Story ${active.id} is over column ${columnName}`;
+            }
+            return `Story ${active.id} is no longer over a column`;
+          },
+          onDragEnd({ active, over }) {
+            if (over) {
+              const column = columns.find((col) => col.id === over.id);
+              const columnName = column?.title || over.id;
+              return `Story ${active.id} was dropped in column ${columnName}`;
+            }
+            return `Story ${active.id} was dropped`;
+          },
+          onDragCancel({ active }) {
+            return `Dragging story ${active.id} was cancelled`;
+          },
+        },
+      }}
     >
       <div className={styles.board}>
         {columns.map((column) => (

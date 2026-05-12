@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { memo } from "react";
 import { List, Card, Tag, Typography, Button, Space, Popconfirm, Empty } from "antd";
 import {
   DeleteOutlined,
@@ -34,7 +35,7 @@ const statusColors: Record<string, string> = {
   done: "success",
 };
 
-export const StoryList: FC<StoryListProps> = ({ stories, onDelete }) => {
+const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
   return (
     <List
       className={styles.storyList}
@@ -113,3 +114,5 @@ export const StoryList: FC<StoryListProps> = ({ stories, onDelete }) => {
     />
   );
 };
+
+export const StoryList = memo(StoryListComponent);

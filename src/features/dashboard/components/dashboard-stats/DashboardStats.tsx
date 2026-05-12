@@ -1,11 +1,6 @@
 import type { FC } from "react";
 import { Card, Row, Col, Statistic } from "antd";
-import {
-  ProjectOutlined,
-  CheckCircleOutlined,
-  FileTextOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import { ProjectOutlined, CheckCircleOutlined, TeamOutlined } from "@ant-design/icons";
 
 import type { DashboardStats } from "@/features/dashboard/types";
 

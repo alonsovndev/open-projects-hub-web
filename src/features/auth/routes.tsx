@@ -2,10 +2,10 @@ import type { AppRoute } from "@/app/routing/types";
 import { PublicLayout } from "@/app/layouts";
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
-const LoginPage = lazyWithRetry(() => import("@/pages/login"));
-const RegisterPage = lazyWithRetry(() => import("@/pages/register"));
-const ForgotPasswordPage = lazyWithRetry(() => import("@/pages/forgot-password"));
-const ResetPasswordPage = lazyWithRetry(() => import("@/pages/reset-password"));
+const LoginPage = lazyWithRetry(() => import("@/features/auth/pages/login"));
+const RegisterPage = lazyWithRetry(() => import("@/features/auth/pages/register"));
+const ForgotPasswordPage = lazyWithRetry(() => import("@/features/auth/pages/forgot-password"));
+const ResetPasswordPage = lazyWithRetry(() => import("@/features/auth/pages/reset-password"));
 
 export const authRoutes: AppRoute[] = [
   {

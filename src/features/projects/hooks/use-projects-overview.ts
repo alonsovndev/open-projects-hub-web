@@ -21,6 +21,10 @@ export const useProjectsOverview = () => {
 
   const [view, setView] = useState<ProjectView>("grid");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   // Filter projects
   const filteredProjects = useMemo(() => {
     return allProjects.filter((project) => {
@@ -85,14 +89,17 @@ export const useProjectsOverview = () => {
 
   const handleSearchChange = (search: string) => {
     setFilters((prev) => ({ ...prev, search }));
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   const handleStatusFilter = (status: ProjectFilters["status"]) => {
     setFilters((prev) => ({ ...prev, status }));
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   const handlePriorityFilter = (priority: ProjectFilters["priority"]) => {
     setFilters((prev) => ({ ...prev, priority }));
+    setCurrentPage(1); // Reset to first page on filter change
   };
 
   const handleSortChange = (field: ProjectSort["field"]) => {
@@ -112,6 +119,15 @@ export const useProjectsOverview = () => {
       status: "all",
       priority: "all",
     });
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const handlePageChange = (page: number, newPageSize?: number) => {
+    setCurrentPage(page);
+    if (newPageSize && newPageSize !== pageSize) {
+      setPageSize(newPageSize);
+      setCurrentPage(1); // Reset to first page when changing page size
+    }
   };
 
   const handleViewProject = (projectCode: string) => {
@@ -139,6 +155,8 @@ export const useProjectsOverview = () => {
     filters,
     sort,
     view,
+    currentPage,
+    pageSize,
     totalCount: allProjects.length,
     filteredCount: sortedProjects.length,
     activeFilterCount,
@@ -148,6 +166,7 @@ export const useProjectsOverview = () => {
     handleSortChange,
     handleViewChange,
     handleClearFilters,
+    handlePageChange,
     handleViewProject,
     handleEditProject,
     handleCreateProject,

@@ -2,7 +2,7 @@ import type { AppRoute } from "@/app/routing/types";
 import { AdminLayout } from "@/app/layouts/admin-layout";
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
-const RefinementPage = lazyWithRetry(() => import("@/pages/refinement"));
+const RefinementPage = lazyWithRetry(() => import("@/features/refinement/pages/refinement"));
 
 export const refinementRoutes: AppRoute[] = [
   {

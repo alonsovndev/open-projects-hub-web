@@ -260,3 +260,10 @@
     }
   }
 }
+
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: $spacing-2xl;
+  padding: $spacing-lg 0;
+}

@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { memo } from "react";
-import { Card, Tag, Progress, Button, Typography } from "antd";
+import { Card, Tag, Progress, Button, Typography, Pagination } from "antd";
 import {
   EyeOutlined,
   CalendarOutlined,
@@ -16,6 +16,10 @@ import styles from "./project-list.module.scss";
 
 interface ProjectListProps {
   projects: ProjectSummary[];
+  currentPage?: number;
+  pageSize?: number;
+  totalCount?: number;
+  onPageChange?: (page: number, pageSize?: number) => void;
   onViewProject: (projectCode: string) => void;
   onViewAllProjects?: () => void;
 }
@@ -24,6 +28,10 @@ const { Text, Title, Paragraph } = Typography;
 
 const ProjectListComponent: FC<ProjectListProps> = ({
   projects,
+  currentPage,
+  pageSize,
+  totalCount,
+  onPageChange,
   onViewProject,
   onViewAllProjects,
 }) => {
@@ -34,7 +42,9 @@ const ProjectListComponent: FC<ProjectListProps> = ({
           Projects
         </Title>
         <div className={styles.headerActions}>
-          <Text className={styles.listCount}>{projects.length} total</Text>
+          <Text className={styles.listCount}>
+            {totalCount !== undefined ? `${totalCount} total` : `${projects.length} total`}
+          </Text>
           {onViewAllProjects && (
             <Button
               type="default"
@@ -134,6 +144,24 @@ const ProjectListComponent: FC<ProjectListProps> = ({
           );
         })}
       </div>
+
+      {onPageChange &&
+        currentPage &&
+        pageSize &&
+        totalCount !== undefined &&
+        totalCount > pageSize && (
+          <div className={styles.paginationWrapper}>
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={totalCount}
+              showSizeChanger
+              showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} projects`}
+              pageSizeOptions={["10", "20", "50", "100"]}
+              onChange={onPageChange}
+            />
+          </div>
+        )}
     </div>
   );
 };

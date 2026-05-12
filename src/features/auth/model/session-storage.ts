@@ -1,21 +1,28 @@
 import { adminAuthConfig } from "@/resources/config/auth";
 import type { AdminSession } from "@/features/auth/types";
+import { isDev } from "@/config/env";
 
 export const sessionStorage = {
   save: (session: AdminSession): void => {
     try {
-      localStorage.setItem(adminAuthConfig.sessionStorageKey, JSON.stringify(session));
+      // Exclude token from localStorage for security
+      const { token: _token, ...sessionWithoutToken } = session;
+      localStorage.setItem(adminAuthConfig.sessionStorageKey, JSON.stringify(sessionWithoutToken));
     } catch (error) {
-      console.error("Failed to save session:", error);
+      if (isDev) {
+        console.error("Failed to save session:", error);
+      }
     }
   },
 
-  load: (): AdminSession | null => {
+  load: (): Omit<AdminSession, "token"> | null => {
     try {
       const stored = localStorage.getItem(adminAuthConfig.sessionStorageKey);
       return stored ? JSON.parse(stored) : null;
     } catch (error) {
-      console.error("Failed to load session:", error);
+      if (isDev) {
+        console.error("Failed to load session:", error);
+      }
       return null;
     }
   },
@@ -24,12 +31,9 @@ export const sessionStorage = {
     try {
       localStorage.removeItem(adminAuthConfig.sessionStorageKey);
     } catch (error) {
-      console.error("Failed to clear session:", error);
+      if (isDev) {
+        console.error("Failed to clear session:", error);
+      }
     }
-  },
-
-  getToken: (): string | null => {
-    const session = sessionStorage.load();
-    return session?.token ?? null;
   },
 };

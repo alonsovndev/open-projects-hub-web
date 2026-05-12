@@ -1,4 +1,4 @@
-import type { ProjectPriority, ProjectStatus } from "@/features/dashboard/types";
+import type { ProjectPriority } from "@/features/dashboard/types";
 
 export type StoryStatus = "backlog" | "ready" | "in-progress" | "review" | "done";
 

@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { memo, useMemo } from "react";
 import { Card, Typography, Badge } from "antd";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -26,7 +27,7 @@ const statusColors: Record<StoryStatus, string> = {
   done: "#52c41a",
 };
 
-export const BacklogColumnComponent: FC<BacklogColumnProps> = ({
+const BacklogColumnBase: FC<BacklogColumnProps> = ({
   id,
   title,
   stories,
@@ -36,6 +37,9 @@ export const BacklogColumnComponent: FC<BacklogColumnProps> = ({
   const { setNodeRef, isOver } = useDroppable({
     id,
   });
+
+  // Memoize story IDs for SortableContext
+  const storyIds = useMemo(() => stories.map((s) => s.id), [stories]);
 
   return (
     <div className={styles.columnWrapper}>
@@ -53,7 +57,7 @@ export const BacklogColumnComponent: FC<BacklogColumnProps> = ({
         </div>
 
         <div className={styles.columnContent}>
-          <SortableContext items={stories.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={storyIds} strategy={verticalListSortingStrategy}>
             {stories.map((story) => (
               <StoryCard
                 key={story.id}
@@ -74,3 +78,5 @@ export const BacklogColumnComponent: FC<BacklogColumnProps> = ({
     </div>
   );
 };
+
+export const BacklogColumnComponent = memo(BacklogColumnBase);

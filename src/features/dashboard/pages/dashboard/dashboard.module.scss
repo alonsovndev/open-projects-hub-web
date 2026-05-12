@@ -1,0 +1,98 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-lg;
+  min-height: 50vh;
+}
+
+.loadingText {
+  font-family: $font-body;
+  font-size: 1rem;
+  color: $text-secondary;
+}
+
+.dashboardHeader {
+  margin-bottom: $spacing-2xl;
+}
+
+.headerContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-xl;
+
+  @media (max-width: $breakpoint-tablet) {
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+}
+
+.welcomeSection {
+  flex: 1;
+}
+
+.pageTitle {
+  font-family: $font-headline;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 $spacing-sm;
+  color: $text-primary;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 2rem;
+  }
+}
+
+.subtitle {
+  font-family: $font-body;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: $text-secondary;
+}
+
+.createButton {
+  font-family: $font-body;
+  font-weight: 600;
+  height: auto;
+  padding: $spacing-md $spacing-xl;
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  border: none;
+  border-radius: $radius-sm;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 87, 194, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover:not(:disabled) {
+      transform: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}

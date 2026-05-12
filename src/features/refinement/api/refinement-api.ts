@@ -40,7 +40,7 @@ export const getMockAISuggestions = (): AISuggestion[] => [
   },
 ];
 
-export const refineStory = async (storyId: string, prompt: string): Promise<AISuggestion[]> => {
+export const refineStory = async (_storyId: string, _prompt: string): Promise<AISuggestion[]> => {
   // Simulate API call
   await new Promise((resolve) => setTimeout(resolve, 1500));
   return getMockAISuggestions();

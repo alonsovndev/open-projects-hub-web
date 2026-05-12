@@ -20,7 +20,7 @@ export const PasswordForm: FC<PasswordFormProps> = ({ saving, onSubmit }) => {
     try {
       await onSubmit(values);
       form.resetFields();
-    } catch (error) {
+    } catch {
       // Error already handled in hook
     }
   };

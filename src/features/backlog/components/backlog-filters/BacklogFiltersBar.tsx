@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Input, Select, Space, Badge } from "antd";
+import { Input, Select, Space, Badge, Button } from "antd";
 import { SearchOutlined, FilterOutlined, ClearOutlined } from "@ant-design/icons";
 
 import type { BacklogFilters } from "@/features/backlog/types";
@@ -86,9 +86,9 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
 
         {activeFilterCount > 0 && (
           <Badge count={activeFilterCount} offset={[-10, 0]}>
-            <a onClick={onClearFilters} className={styles.clearLink}>
+            <Button type="link" onClick={onClearFilters} className={styles.clearLink}>
               <ClearOutlined /> Clear Filters
-            </a>
+            </Button>
           </Badge>
         )}
       </Space>

@@ -7,7 +7,6 @@ import type { AdminRegisterValues } from "@/features/auth/types";
 import { useRegisterMutation } from "@/features/auth/api/admin-auth-api";
 import {
   getPasswordRuleStatuses,
-  isValidEmail,
   validatePasswordRequirements,
 } from "@/features/auth/model/password-policy";
 import { getPasswordStrength } from "@/features/auth/model/password-strength";

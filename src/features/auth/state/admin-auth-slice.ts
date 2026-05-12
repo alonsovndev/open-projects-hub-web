@@ -8,7 +8,9 @@ interface AdminAuthState {
 }
 
 const loadInitialSession = (): AdminSession | null => {
-  return sessionStorage.load();
+  // Token is not persisted in localStorage for security
+  // User must re-authenticate on page reload
+  return null;
 };
 
 const initialState: AdminAuthState = {
