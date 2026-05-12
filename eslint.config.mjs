@@ -55,10 +55,10 @@ export default [
       "react-hooks/exhaustive-deps": "warn",
 
       // Accessibility
-      "jsx-a11y/alt-text": "warn",
-      "jsx-a11y/anchor-is-valid": "warn",
-      "jsx-a11y/click-events-have-key-events": "warn",
-      "jsx-a11y/no-static-element-interactions": "warn",
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/anchor-is-valid": "error",
+      "jsx-a11y/click-events-have-key-events": "error",
+      "jsx-a11y/no-static-element-interactions": "error",
 
       // General
       "no-console": ["warn", { allow: ["error", "warn"] }],
