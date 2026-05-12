@@ -2,24 +2,19 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import { adminAuthConfig } from "@/resources/config/auth";
+import type { RootState } from "@/app/store/store";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
-  prepareHeaders: (headers) => {
+  prepareHeaders: (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
 
-    const session = window.localStorage.getItem(adminAuthConfig.sessionStorageKey);
+    // Read token from Redux state (in-memory only)
+    const state = getState() as RootState;
+    const token = state.adminAuth.session?.token;
 
-    if (session) {
-      try {
-        const parsedSession = JSON.parse(session) as { token?: string };
-
-        if (parsedSession.token) {
-          headers.set("Authorization", `Bearer ${parsedSession.token}`);
-        }
-      } catch {
-        window.localStorage.removeItem(adminAuthConfig.sessionStorageKey);
-      }
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
     }
 
     return headers;

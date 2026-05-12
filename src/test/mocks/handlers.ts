@@ -3,6 +3,8 @@
  * Add handlers here when you need to mock API responses in tests
  */
 
+import type { RequestHandler } from "msw";
+
 // Example:
 // import { http, HttpResponse } from 'msw';
 //
@@ -12,4 +14,4 @@
 //   }),
 // ];
 
-export const handlers: any[] = [];
+export const handlers: RequestHandler[] = [];
