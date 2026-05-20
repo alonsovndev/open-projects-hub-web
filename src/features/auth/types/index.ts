@@ -26,6 +26,7 @@ export type UserRole = "admin" | "user" | "viewer";
 
 export interface AdminSession {
   token: string;
+  refreshToken?: string;
   email: string;
   displayName: string;
   loggedInAt: string;

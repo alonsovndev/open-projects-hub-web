@@ -14,6 +14,7 @@ import type {
 interface AdminLoginApiResponse {
   token?: string;
   accessToken?: string;
+  refreshToken?: string;
   email?: string;
   displayName?: string;
   loggedInAt?: string;
@@ -28,6 +29,15 @@ interface AdminLoginApiResponse {
 
 interface MessageResponse {
   message: string;
+}
+
+interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }
 
 const getDisplayNameFromEmail = (email: string) => {
@@ -48,6 +58,7 @@ const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string)
 
   return {
     token,
+    refreshToken: response.refreshToken,
     email: normalizedEmail,
     displayName:
       response.user?.displayName ??
@@ -76,11 +87,28 @@ export const adminAuthApi = baseApi.injectEndpoints({
       invalidatesTags: ["AdminAuth"],
     }),
 
-    register: builder.mutation<MessageResponse, AdminRegisterValues>({
+    register: builder.mutation<AdminAuthResponse, AdminRegisterValues>({
       query: (userData) => ({
         url: adminAuthConfig.registerEndpoint,
         method: "POST",
-        body: userData,
+        body: {
+          displayName: userData.fullName,
+          email: userData.email,
+          password: userData.password,
+        },
+      }),
+      transformResponse: (response: AdminLoginApiResponse, _meta, credentials) => {
+        return {
+          session: mapAdminSession(response, credentials.email),
+        };
+      },
+    }),
+
+    refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
+      query: (data) => ({
+        url: adminAuthConfig.refreshEndpoint,
+        method: "POST",
+        body: data,
       }),
     }),
 
@@ -105,6 +133,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useRefreshTokenMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
 } = adminAuthApi;
