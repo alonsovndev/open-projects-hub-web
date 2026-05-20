@@ -7,6 +7,17 @@
 
 .pageHeader {
   margin-bottom: $spacing-2xl;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.projectSelector {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .pageTitle {

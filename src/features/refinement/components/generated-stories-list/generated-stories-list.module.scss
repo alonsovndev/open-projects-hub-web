@@ -1,0 +1,129 @@
+.listCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  :global(.ant-card-body) {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  margin: 0 !important;
+}
+
+.cardSubtitle {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+}
+
+.approveButton {
+  flex-shrink: 0;
+}
+
+.empty {
+  margin: 60px 0;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.emptyText {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.storyCard {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  background: #ffffff;
+  border-left: 4px solid #1890ff;
+
+  &:hover {
+    border-left-color: #096dd9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  }
+}
+
+.storyHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.storyTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.storyTitle {
+  font-size: 16px;
+  flex: 1;
+}
+
+.storyActions {
+  display: flex;
+  gap: 8px;
+}
+
+.approveBtn {
+  color: #52c41a;
+
+  &:hover {
+    color: #73d13d;
+  }
+}
+
+.storyDescription {
+  margin: 0 0 16px 0 !important;
+  color: rgba(0, 0, 0, 0.65);
+  font-style: italic;
+}
+
+.divider {
+  margin: 16px 0 !important;
+}
+
+.criteriaSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteriaLabel {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  letter-spacing: 0.5px;
+}
+
+.criteriaItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.criteriaCheckbox {
+  margin-top: 4px;
+}
+
+.criteriaText {
+  flex: 1;
+  color: rgba(0, 0, 0, 0.85);
+}
