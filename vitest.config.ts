@@ -11,6 +11,9 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: true,
     exclude: ["e2e/**", "node_modules/**", ".opencode/node_modules/**"],
+    env: {
+      VITE_API_BASE_URL: "http://127.0.0.1:8000",
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
