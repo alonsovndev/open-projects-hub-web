@@ -74,6 +74,14 @@ export default [
     },
   },
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**", "playwright-report/**"],
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "coverage/**",
+      "playwright-report/**",
+      "*.config.ts",
+      "*.config.js",
+      "*.config.mjs",
+    ],
   },
 ];
