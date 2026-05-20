@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import type { BaseQueryFn, Reducer, Middleware } from "@reduxjs/toolkit/query";
+import type { Reducer, Middleware } from "@reduxjs/toolkit";
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
 /**
  * Helper to set up a Redux store for testing RTK Query APIs
