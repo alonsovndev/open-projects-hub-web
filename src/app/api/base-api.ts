@@ -11,7 +11,7 @@ const rawBaseQuery = fetchBaseQuery({
 
     // Read token from Redux state (in-memory only)
     const state = getState() as RootState;
-    const token = state.adminAuth.session?.token;
+    const token = state.auth.session?.token;
 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -29,6 +29,16 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
   const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error) {
+    // Log full error for debugging
+    console.error("[baseQuery] Error occurred:", {
+      status: result.error.status,
+      statusType: typeof result.error.status,
+      data: result.error.data,
+      error: "error" in result.error ? result.error.error : undefined,
+      originalStatus: "originalStatus" in result.error ? result.error.originalStatus : undefined,
+      fullError: JSON.stringify(result.error, null, 2),
+    });
+
     const errorData = result.error.data as { message?: string } | undefined;
     const normalizedMessage =
       errorData?.message ?? "Something went wrong while communicating with the API.";
@@ -64,9 +74,11 @@ export const baseApi = createApi({
   tagTypes: [
     "AdminAuth",
     "Projects",
+    "Clients",
     "DashboardStats",
     "Stories",
     "Backlog",
+    "Refinement",
     "UserProfile",
     "UserPreferences",
   ],
