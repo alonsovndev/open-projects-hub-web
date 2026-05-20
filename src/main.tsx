@@ -1,17 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "@/app/App";
-import { mode } from "@/config/env";
 
 async function enableMocking() {
-  if (mode !== "development") {
-    return;
-  }
+  // Disable MSW to use real backend API
+  // To re-enable mocking, uncomment the code below
+  return;
 
-  const { worker } = await import("./mocks/browser");
-  return worker.start({
-    onUnhandledRequest: "bypass",
-  });
+  // if (mode !== "development") {
+  //   return;
+  // }
+
+  // const { worker } = await import("./mocks/browser");
+  // return worker.start({
+  //   onUnhandledRequest: "bypass",
+  // });
 }
 
 enableMocking().then(() => {
