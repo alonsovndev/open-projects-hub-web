@@ -31,14 +31,14 @@ export const settingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get user profile
     getUserProfile: builder.query<UserProfile, void>({
-      query: () => "/user/profile",
+      query: () => "/v1/users/me/profile",
       providesTags: ["UserProfile"],
     }),
 
     // Update user profile
     updateUserProfile: builder.mutation<UserProfile, UpdateProfileRequest>({
       query: (data) => ({
-        url: "/user/profile",
+        url: "/v1/users/me/profile",
         method: "PATCH",
         body: data,
       }),
@@ -48,7 +48,7 @@ export const settingsApi = baseApi.injectEndpoints({
     // Change password
     changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
       query: (data) => ({
-        url: "/user/password",
+        url: "/v1/users/me/password",
         method: "POST",
         body: data,
       }),
@@ -56,14 +56,14 @@ export const settingsApi = baseApi.injectEndpoints({
 
     // Get user preferences
     getUserPreferences: builder.query<UserPreferences, void>({
-      query: () => "/user/preferences",
+      query: () => "/v1/users/me/preferences",
       providesTags: ["UserPreferences"],
     }),
 
     // Update user preferences
     updateUserPreferences: builder.mutation<UserPreferences, Partial<UserPreferences>>({
       query: (data) => ({
-        url: "/user/preferences",
+        url: "/v1/users/me/preferences",
         method: "PATCH",
         body: data,
       }),
@@ -73,7 +73,7 @@ export const settingsApi = baseApi.injectEndpoints({
     // Upload avatar
     uploadAvatar: builder.mutation<{ avatarUrl: string }, FormData>({
       query: (formData) => ({
-        url: "/user/avatar",
+        url: "/v1/users/me/avatar",
         method: "POST",
         body: formData,
       }),
