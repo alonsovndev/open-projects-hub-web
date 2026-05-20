@@ -1,28 +1,31 @@
-export interface StoryDraft {
-  id: string;
+export interface UpdateDraftPayload {
+  title?: string;
+  description?: string;
+  acceptanceCriteria?: string[];
+}
+
+export interface GeneratedStory {
+  id: string; // Draft ID
   title: string;
   description: string;
   acceptanceCriteria: string[];
-  status: "draft" | "refining" | "refined" | "approved";
-  projectId?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
-export interface AISuggestion {
-  id: string;
-  type: "title" | "description" | "criteria" | "complete";
-  content: string;
-  reasoning?: string;
-  confidence: number;
+export interface GenerateStoriesPayload {
+  projectId: string;
+  rawNotes: string;
 }
 
-export interface RefinementSession {
-  id: string;
-  storyId: string;
-  suggestions: AISuggestion[];
-  feedback: string[];
-  status: "active" | "completed" | "cancelled";
-  startedAt: string;
-  completedAt?: string;
+export interface GenerateStoriesResponse {
+  stories: GeneratedStory[];
+  rawNotes: string;
+}
+
+export interface ApproveDraftsBulkPayload {
+  draftIds: string[];
+}
+
+export interface ApproveDraftsBulkResponse {
+  approvedCount: number;
+  stories: Array<{ id: string; title: string }>;
 }
