@@ -137,8 +137,8 @@ export const ProjectsOverview: FC = () => {
             ? {
                 name: editingProject.name,
                 description: editingProject.description,
-                startDate: editingProject.dueDate, // Backend doesn't have startDate, using dueDate as placeholder
-                endDate: editingProject.dueDate,
+                startDate: editingProject.startDate,
+                endDate: editingProject.endDate,
               }
             : undefined
         }

@@ -98,8 +98,8 @@ export const useProjectsOverview = () => {
           compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
           break;
         }
-        case "dueDate":
-          compareValue = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        case "endDate":
+          compareValue = new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
           break;
         case "lastUpdated":
           compareValue = new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();

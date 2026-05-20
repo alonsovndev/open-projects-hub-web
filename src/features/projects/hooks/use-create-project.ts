@@ -10,17 +10,14 @@ export const useCreateProject = () => {
 
   const handleSubmit = async (values: ProjectFormData) => {
     try {
-      // dueDate is now a string from the form (YYYY-MM-DD format)
-      const endDate = values.dueDate;
-
       await createProject({
         name: values.name,
         code: values.code,
         clientId: values.clientId,
         description: values.description,
         priority: values.priority,
-        startDate: new Date().toISOString().split("T")[0], // Today as start date
-        endDate,
+        startDate: values.startDate,
+        endDate: values.endDate,
       }).unwrap();
 
       message.success("Project created successfully!");

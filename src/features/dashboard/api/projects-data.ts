@@ -13,7 +13,7 @@ export const mockProjects: ProjectSummary[] = [
     storiesCount: 12,
     completedStories: 8,
     startDate: "2024-04-01",
-    dueDate: "2024-05-15",
+    endDate: "2024-05-15",
     lastUpdated: new Date().toISOString(),
     description:
       "Complete clinic management solution with appointment scheduling, medical records, and prescription management.",
@@ -30,7 +30,7 @@ export const mockProjects: ProjectSummary[] = [
     storiesCount: 18,
     completedStories: 12,
     startDate: "2024-05-01",
-    dueDate: "2024-06-01",
+    endDate: "2024-06-01",
     lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     description:
       "Modern e-commerce platform with product catalog, shopping cart, payment integration, and order management.",
@@ -47,7 +47,7 @@ export const mockProjects: ProjectSummary[] = [
     storiesCount: 8,
     completedStories: 0,
     startDate: "2024-06-01",
-    dueDate: "2024-07-10",
+    endDate: "2024-07-10",
     lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     description:
       "Internal employee portal for HR management, time tracking, and performance reviews.",
@@ -64,7 +64,7 @@ export const mockProjects: ProjectSummary[] = [
     storiesCount: 10,
     completedStories: 10,
     startDate: "2024-03-01",
-    dueDate: "2024-04-01",
+    endDate: "2024-04-01",
     lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
     description:
       "Comprehensive inventory tracking system with real-time stock updates and reporting.",
@@ -81,7 +81,7 @@ export const mockProjects: ProjectSummary[] = [
     storiesCount: 6,
     completedStories: 3,
     startDate: "2024-07-01",
-    dueDate: "2024-08-15",
+    endDate: "2024-08-15",
     lastUpdated: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Customer support ticketing system with automated routing and analytics.",
   },

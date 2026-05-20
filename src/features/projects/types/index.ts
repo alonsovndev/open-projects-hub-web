@@ -1,6 +1,6 @@
 import type { ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
 
-export type ProjectSortField = "name" | "status" | "priority" | "dueDate" | "lastUpdated";
+export type ProjectSortField = "name" | "status" | "priority" | "endDate" | "lastUpdated";
 export type SortOrder = "asc" | "desc";
 
 export interface ProjectFilters {

@@ -38,7 +38,7 @@ export interface ProjectSummary {
   storiesCount: number;
   completedStories: number;
   startDate: string;
-  dueDate: string;
+  endDate: string;
   lastUpdated: string;
   description: string;
 }

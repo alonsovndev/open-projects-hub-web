@@ -117,7 +117,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         title: "Timeline",
         key: "timeline",
         sorter: true,
-        sortOrder: sort.field === "dueDate" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        sortOrder: sort.field === "endDate" ? (sort.order === "asc" ? "ascend" : "descend") : null,
         render: (_, record) => (
           <Space direction="vertical" size="small">
             <Space>
@@ -127,8 +127,8 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             </Space>
             <Space>
               <CalendarOutlined className={styles.dateIcon} />
-              <Text type="secondary">Due:</Text>
-              <Text>{formatDate(record.dueDate)}</Text>
+              <Text type="secondary">End:</Text>
+              <Text>{formatDate(record.endDate)}</Text>
             </Space>
           </Space>
         ),

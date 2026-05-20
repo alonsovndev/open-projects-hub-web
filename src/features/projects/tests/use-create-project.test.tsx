@@ -56,7 +56,8 @@ describe("useCreateProject", () => {
       description: "A test project description",
       status: "planning",
       priority: "medium",
-      dueDate: "2024-12-31",
+      startDate: "2024-01-01",
+      endDate: "2024-12-31",
     };
 
     const submitPromise = result.current.handleSubmit(mockFormData);
@@ -94,7 +95,8 @@ describe("useCreateProject", () => {
       description: "Test description",
       status: "active",
       priority: "high",
-      dueDate: "2024-12-31",
+      startDate: "2024-01-01",
+      endDate: "2024-12-31",
     };
 
     expect(result.current.loading).toBe(false);

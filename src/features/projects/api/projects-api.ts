@@ -77,7 +77,7 @@ const transformProject = (backendProject: ProjectResponse): ProjectSummary => ({
   storiesCount: backendProject.storiesCount,
   completedStories: backendProject.completedStories,
   startDate: backendProject.startDate ?? new Date().toISOString(),
-  dueDate: backendProject.endDate ?? new Date().toISOString(),
+  endDate: backendProject.endDate ?? new Date().toISOString(),
   lastUpdated: backendProject.updatedAt,
   description: backendProject.description ?? "",
 });

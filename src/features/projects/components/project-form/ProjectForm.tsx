@@ -18,7 +18,8 @@ export interface ProjectFormData {
   description: string;
   status: ProjectStatus;
   priority: ProjectPriority;
-  dueDate: string;
+  startDate: string;
+  endDate: string;
 }
 
 interface ProjectFormProps {
@@ -62,7 +63,8 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
     // Convert dayjs to ISO string
     const formattedValues = {
       ...values,
-      dueDate: dayjs(values.dueDate).format("YYYY-MM-DD"),
+      startDate: dayjs(values.startDate).format("YYYY-MM-DD"),
+      endDate: dayjs(values.endDate).format("YYYY-MM-DD"),
     };
     await onSubmit(formattedValues);
   };
@@ -70,7 +72,8 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
   const formInitialValues = initialValues
     ? {
         ...initialValues,
-        dueDate: initialValues.dueDate ? dayjs(initialValues.dueDate) : undefined,
+        startDate: initialValues.startDate ? dayjs(initialValues.startDate) : undefined,
+        endDate: initialValues.endDate ? dayjs(initialValues.endDate) : undefined,
       }
     : {
         status: "planning" as ProjectStatus,
@@ -176,15 +179,45 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           </Form.Item>
 
           <Form.Item
-            name="dueDate"
-            label="Due Date"
-            rules={[{ required: true, message: "Please select due date" }]}
+            name="startDate"
+            label="Start Date"
+            rules={[{ required: true, message: "Please select start date" }]}
           >
             <DatePicker
-              placeholder="Select due date"
+              placeholder="Select start date"
               size="large"
               style={{ width: "100%" }}
               disabledDate={(current) => current && current < dayjs().startOf("day")}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="endDate"
+            label="End Date"
+            rules={[
+              { required: true, message: "Please select end date" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const startDate = getFieldValue("startDate");
+                  if (!value || !startDate || dayjs(value).isAfter(dayjs(startDate))) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("End date must be after start date"));
+                },
+              }),
+            ]}
+          >
+            <DatePicker
+              placeholder="Select end date"
+              size="large"
+              style={{ width: "100%" }}
+              disabledDate={(current) => {
+                const startDate = form.getFieldValue("startDate");
+                if (!startDate) {
+                  return current && current < dayjs().startOf("day");
+                }
+                return current && current < dayjs(startDate).startOf("day");
+              }}
             />
           </Form.Item>
         </div>

@@ -28,7 +28,7 @@ describe("Dashboard API", () => {
       expect(project).toHaveProperty("storiesCount");
       expect(project).toHaveProperty("completedStories");
       expect(project).toHaveProperty("teamMembers");
-      expect(project).toHaveProperty("dueDate");
+      expect(project).toHaveProperty("endDate");
       expect(project).toHaveProperty("lastUpdated");
       expect(project).toHaveProperty("description");
     });
