@@ -52,7 +52,7 @@ describe("useAuth", () => {
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
 
-    store.dispatch(setAdminSession(mockSession));
+    store.dispatch(setAdminSession({ session: mockSession }));
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider store={store}>{children}</Provider>
@@ -79,7 +79,7 @@ describe("useAuth", () => {
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
 
-    store.dispatch(setAdminSession({ ...mockSession, role: "user" }));
+    store.dispatch(setAdminSession({ session: { ...mockSession, role: "user" } }));
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider store={store}>{children}</Provider>

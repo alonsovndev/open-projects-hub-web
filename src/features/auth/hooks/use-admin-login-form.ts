@@ -55,7 +55,12 @@ export const useAdminLoginForm = () => {
     try {
       const response = await login(values).unwrap();
 
-      dispatch(setAdminSession(response.session));
+      dispatch(
+        setAdminSession({
+          session: response.session,
+          rememberMe: values.remember,
+        })
+      );
 
       // Redirect to the page they were trying to access, or dashboard
       const from =

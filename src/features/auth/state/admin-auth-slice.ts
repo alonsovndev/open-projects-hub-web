@@ -21,9 +21,9 @@ const adminAuthSlice = createSlice({
   name: "adminAuth",
   initialState,
   reducers: {
-    setAdminSession(state, action: PayloadAction<AdminSession>) {
-      state.session = action.payload;
-      sessionStorage.save(action.payload);
+    setAdminSession(state, action: PayloadAction<{ session: AdminSession; rememberMe?: boolean }>) {
+      state.session = action.payload.session;
+      sessionStorage.save(action.payload.session, action.payload.rememberMe);
     },
     clearAdminSessionState(state) {
       state.session = null;

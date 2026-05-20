@@ -49,7 +49,7 @@ describe("useLogout", () => {
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
 
-    store.dispatch(setAdminSession(mockSession));
+    store.dispatch(setAdminSession({ session: mockSession }));
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <BrowserRouter>
