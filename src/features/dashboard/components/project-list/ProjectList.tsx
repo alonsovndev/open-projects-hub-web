@@ -1,10 +1,11 @@
 import type { FC } from "react";
 import { memo } from "react";
-import { Card, Tag, Progress, Button, Typography, Pagination } from "antd";
+import { Card, Tag, Progress, Button, Typography, Pagination, Space } from "antd";
 import {
   EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
   CalendarOutlined,
-  TeamOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
 
@@ -21,6 +22,8 @@ interface ProjectListProps {
   totalCount?: number;
   onPageChange?: (page: number, pageSize?: number) => void;
   onViewProject: (projectCode: string) => void;
+  onEditProject?: (projectId: string) => void;
+  onDeleteProject?: (projectId: string, projectName: string) => void;
   onViewAllProjects?: () => void;
 }
 
@@ -33,6 +36,8 @@ const ProjectListComponent: FC<ProjectListProps> = ({
   totalCount,
   onPageChange,
   onViewProject,
+  onEditProject,
+  onDeleteProject,
   onViewAllProjects,
 }) => {
   return (
@@ -113,12 +118,10 @@ const ProjectListComponent: FC<ProjectListProps> = ({
 
                 <div className={styles.infoRow}>
                   <div className={styles.infoItem}>
-                    <TeamOutlined className={styles.infoIcon} />
-                    <Text className={styles.infoText}>{project.teamMembers} members</Text>
-                  </div>
-                  <div className={styles.infoItem}>
                     <CalendarOutlined className={styles.infoIcon} />
-                    <Text className={styles.infoText}>Due {formatDate(project.dueDate)}</Text>
+                    <Text className={styles.infoText}>
+                      {formatDate(project.startDate)} - {formatDate(project.dueDate)}
+                    </Text>
                   </div>
                 </div>
 
@@ -131,14 +134,37 @@ const ProjectListComponent: FC<ProjectListProps> = ({
               </div>
 
               <div className={styles.cardFooter}>
-                <Button
-                  type="primary"
-                  icon={<EyeOutlined />}
-                  onClick={() => onViewProject(project.code)}
-                  className={styles.viewButton}
-                >
-                  View Project
-                </Button>
+                <Space size="small" className={styles.actions}>
+                  <Button
+                    type="primary"
+                    icon={<EyeOutlined />}
+                    onClick={() => onViewProject(project.code)}
+                    className={styles.viewButton}
+                  >
+                    View
+                  </Button>
+                  {onEditProject && (
+                    <Button
+                      type="default"
+                      icon={<EditOutlined />}
+                      onClick={() => onEditProject(project.id)}
+                      className={styles.editButton}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                  {onDeleteProject && (
+                    <Button
+                      type="default"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => onDeleteProject(project.id, project.name)}
+                      className={styles.deleteButton}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </Space>
               </div>
             </Card>
           );

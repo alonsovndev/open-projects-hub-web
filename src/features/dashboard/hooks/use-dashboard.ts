@@ -31,7 +31,7 @@ export const useDashboard = () => {
 
   const loading = projectsLoading || statsLoading;
   const projects = projectsData?.projects ?? [];
-  const stats = statsData?.stats ?? null;
+  const stats = statsData ?? null;
 
   // TODO: Handle errors appropriately
   // For now, errors will show empty states in the UI

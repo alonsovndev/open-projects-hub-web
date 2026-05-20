@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Card, Row, Col, Statistic } from "antd";
-import { ProjectOutlined, CheckCircleOutlined, TeamOutlined } from "@ant-design/icons";
+import { ProjectOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
 import type { DashboardStats } from "@/features/dashboard/types";
 
@@ -51,17 +51,6 @@ export const DashboardStatsComponent: FC<DashboardStatsProps> = ({ stats }) => {
             <div className={styles.subtext}>
               {stats.completedStories} of {stats.totalStories} stories
             </div>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} lg={6}>
-          <Card className={styles.statCard}>
-            <Statistic
-              title="Team Members"
-              value={stats.teamMembers}
-              prefix={<TeamOutlined className={styles.iconPrimary} />}
-              valueStyle={{ color: "#0057c2", fontWeight: 700 }}
-            />
           </Card>
         </Col>
       </Row>
