@@ -1,30 +1,33 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 
+import { useCreateProjectMutation } from "@/features/projects/api/projects-api";
 import type { ProjectFormData } from "@/features/projects/components/project-form";
 
 export const useCreateProject = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [createProject, { isLoading: loading }] = useCreateProjectMutation();
 
-  const handleSubmit = async (_values: ProjectFormData) => {
-    setLoading(true);
-
+  const handleSubmit = async (values: ProjectFormData) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // dueDate is now a string from the form (YYYY-MM-DD format)
+      const endDate = values.dueDate;
 
-      // TODO: Replace with actual API call via RTK Query mutation
-      // const result = await createProject(_values).unwrap();
+      await createProject({
+        name: values.name,
+        code: values.code,
+        clientId: values.clientId,
+        description: values.description,
+        priority: values.priority,
+        startDate: new Date().toISOString().split("T")[0], // Today as start date
+        endDate,
+      }).unwrap();
 
       message.success("Project created successfully!");
       navigate("/projects");
     } catch (error) {
       console.error("Failed to create project:", error);
       message.error("Failed to create project. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 

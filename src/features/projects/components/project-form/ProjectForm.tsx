@@ -1,9 +1,10 @@
 import type { FC } from "react";
-import { Form, Input, Select, DatePicker, InputNumber, Button, Card, Typography } from "antd";
+import { Form, Input, Select, DatePicker, Button, Card, Typography, Spin } from "antd";
 import { SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 import type { ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
+import { useGetClientsQuery, selectClientSummaries } from "@/features/clients/api/clients-api";
 
 import styles from "./project-form.module.scss";
 
@@ -13,11 +14,10 @@ const { Title } = Typography;
 export interface ProjectFormData {
   name: string;
   code: string;
-  client: string;
+  clientId: string;
   description: string;
   status: ProjectStatus;
   priority: ProjectPriority;
-  teamMembers: number;
   dueDate: string;
 }
 
@@ -51,11 +51,18 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
 }) => {
   const [form] = Form.useForm<ProjectFormData>();
 
+  // Fetch clients for dropdown
+  const {
+    data: clientsData,
+    isLoading: isLoadingClients,
+    error: clientsError,
+  } = useGetClientsQuery();
+
   const handleSubmit = async (values: ProjectFormData) => {
     // Convert dayjs to ISO string
     const formattedValues = {
       ...values,
-      dueDate: values.dueDate,
+      dueDate: dayjs(values.dueDate).format("YYYY-MM-DD"),
     };
     await onSubmit(formattedValues);
   };
@@ -68,8 +75,17 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
     : {
         status: "planning" as ProjectStatus,
         priority: "medium" as ProjectPriority,
-        teamMembers: 1,
       };
+
+  const clientOptions = clientsData
+    ? selectClientSummaries(clientsData.items).map((client) => ({
+        label: client.company ? `${client.name} (${client.company})` : client.name,
+        value: client.id,
+      }))
+    : [];
+
+  // Show error message if clients failed to load
+  const selectStatus = clientsError ? "error" : undefined;
 
   return (
     <Card className={styles.formCard}>
@@ -115,15 +131,32 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           </Form.Item>
 
           <Form.Item
-            name="client"
-            label="Client Name"
-            rules={[
-              { required: true, message: "Please enter client name" },
-              { min: 2, message: "Client name must be at least 2 characters" },
-              { max: 100, message: "Client name must not exceed 100 characters" },
-            ]}
+            name="clientId"
+            label="Client"
+            rules={[{ required: true, message: "Please select a client" }]}
+            help={clientsError ? "Failed to load clients. Please refresh the page." : undefined}
+            validateStatus={selectStatus}
           >
-            <Input placeholder="Enter client name" size="large" />
+            <Select
+              options={clientOptions}
+              placeholder={isLoadingClients ? "Loading clients..." : "Select client"}
+              size="large"
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+              }
+              loading={isLoadingClients}
+              disabled={isLoadingClients || !!clientsError}
+              notFoundContent={
+                isLoadingClients ? (
+                  <Spin size="small" />
+                ) : clientsError ? (
+                  "Error loading clients"
+                ) : (
+                  "No clients found"
+                )
+              }
+            />
           </Form.Item>
 
           <Form.Item
@@ -140,22 +173,6 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
             rules={[{ required: true, message: "Please select project priority" }]}
           >
             <Select options={priorityOptions} placeholder="Select priority" size="large" />
-          </Form.Item>
-
-          <Form.Item
-            name="teamMembers"
-            label="Team Members"
-            rules={[
-              { required: true, message: "Please enter number of team members" },
-              { type: "number", min: 1, message: "Must have at least 1 team member" },
-              { type: "number", max: 100, message: "Cannot exceed 100 team members" },
-            ]}
-          >
-            <InputNumber
-              placeholder="Number of team members"
-              size="large"
-              style={{ width: "100%" }}
-            />
           </Form.Item>
 
           <Form.Item

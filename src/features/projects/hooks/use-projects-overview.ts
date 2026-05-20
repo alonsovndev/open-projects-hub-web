@@ -1,18 +1,29 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getProjects } from "@/features/dashboard/api/projects-data";
+import { useGetProjectsQuery, useGetProjectByIdQuery } from "@/features/projects/api/projects-api";
+import { useDeleteProject } from "@/features/projects/hooks/use-delete-project";
+import { useUpdateProject } from "@/features/projects/hooks/use-update-project";
 import type { ProjectFilters, ProjectSort, ProjectView } from "@/features/projects/types";
 
 export const useProjectsOverview = () => {
   const navigate = useNavigate();
-  const allProjects = getProjects();
+  const { deleteProject, isDeleting } = useDeleteProject();
+  const { updateProject, isUpdating } = useUpdateProject({
+    onSuccess: () => {
+      setEditModalOpen(false);
+      setEditingProjectId(null);
+    },
+  });
 
   const [filters, setFilters] = useState<ProjectFilters>({
     search: "",
     status: "all",
     priority: "all",
   });
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
   const [sort, setSort] = useState<ProjectSort>({
     field: "lastUpdated",
@@ -25,8 +36,22 @@ export const useProjectsOverview = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  // Fetch projects using RTK Query
+  const { data, isLoading, error } = useGetProjectsQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
+
+  // Fetch project details for editing
+  const { data: editingProject } = useGetProjectByIdQuery(editingProjectId ?? "", {
+    skip: !editingProjectId,
+  });
+
+  const totalCount = data?.total ?? 0;
+
   // Filter projects
   const filteredProjects = useMemo(() => {
+    const allProjects = data?.projects ?? [];
     return allProjects.filter((project) => {
       // Search filter
       if (filters.search) {
@@ -52,7 +77,7 @@ export const useProjectsOverview = () => {
 
       return true;
     });
-  }, [allProjects, filters]);
+  }, [data?.projects, filters]);
 
   // Sort projects
   const sortedProjects = useMemo(() => {
@@ -135,13 +160,32 @@ export const useProjectsOverview = () => {
   };
 
   const handleEditProject = (projectId: string) => {
-    // TODO: Navigate to project edit page
-    navigate(`/projects/${projectId}/edit`);
+    setEditingProjectId(projectId);
+    setEditModalOpen(true);
+  };
+
+  const handleUpdateProject = async (data: {
+    name: string;
+    description?: string;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    if (editingProjectId) {
+      await updateProject(editingProjectId, data);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditModalOpen(false);
+    setEditingProjectId(null);
   };
 
   const handleCreateProject = () => {
-    // TODO: Navigate to project creation page
     navigate("/projects/new");
+  };
+
+  const handleDeleteProject = (projectId: string, projectName: string) => {
+    deleteProject(projectId, projectName);
   };
 
   const activeFilterCount = [
@@ -157,9 +201,15 @@ export const useProjectsOverview = () => {
     view,
     currentPage,
     pageSize,
-    totalCount: allProjects.length,
+    totalCount,
     filteredCount: sortedProjects.length,
     activeFilterCount,
+    isLoading,
+    isDeleting,
+    isUpdating,
+    error,
+    editModalOpen,
+    editingProject,
     handleSearchChange,
     handleStatusFilter,
     handlePriorityFilter,
@@ -169,6 +219,9 @@ export const useProjectsOverview = () => {
     handlePageChange,
     handleViewProject,
     handleEditProject,
+    handleUpdateProject,
+    handleCancelEdit,
     handleCreateProject,
+    handleDeleteProject,
   };
 };

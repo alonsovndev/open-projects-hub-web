@@ -5,6 +5,7 @@ import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import { ProjectList } from "@/features/dashboard/components/project-list";
 import { ProjectsFilterBar } from "@/features/projects/components/projects-filter-bar";
 import { ProjectsTable } from "@/features/projects/components/projects-table";
+import { EditProjectModal } from "@/features/projects/components/edit-project-modal";
 import { useProjectsOverview } from "@/features/projects/hooks/use-projects-overview";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -24,6 +25,9 @@ export const ProjectsOverview: FC = () => {
     totalCount,
     filteredCount,
     activeFilterCount,
+    isUpdating,
+    editModalOpen,
+    editingProject,
     handleSearchChange,
     handleStatusFilter,
     handlePriorityFilter,
@@ -33,7 +37,10 @@ export const ProjectsOverview: FC = () => {
     handlePageChange,
     handleViewProject,
     handleEditProject,
+    handleUpdateProject,
+    handleCancelEdit,
     handleCreateProject,
+    handleDeleteProject,
   } = useProjectsOverview();
 
   return (
@@ -105,6 +112,8 @@ export const ProjectsOverview: FC = () => {
           totalCount={filteredCount}
           onPageChange={handlePageChange}
           onViewProject={handleViewProject}
+          onEditProject={handleEditProject}
+          onDeleteProject={handleDeleteProject}
         />
       ) : (
         <ProjectsTable
@@ -117,8 +126,26 @@ export const ProjectsOverview: FC = () => {
           onPageChange={handlePageChange}
           onViewProject={handleViewProject}
           onEditProject={handleEditProject}
+          onDeleteProject={handleDeleteProject}
         />
       )}
+
+      <EditProjectModal
+        open={editModalOpen}
+        initialValues={
+          editingProject
+            ? {
+                name: editingProject.name,
+                description: editingProject.description,
+                startDate: editingProject.dueDate, // Backend doesn't have startDate, using dueDate as placeholder
+                endDate: editingProject.dueDate,
+              }
+            : undefined
+        }
+        loading={isUpdating}
+        onSubmit={handleUpdateProject}
+        onCancel={handleCancelEdit}
+      />
     </div>
   );
 };

@@ -1,36 +1,98 @@
 import { baseApi } from "@/app/api/base-api";
 import type { ProjectSummary, DashboardStats } from "@/features/dashboard/types";
 
+// Backend API response types (camelCase - from backend Pydantic with alias_generator)
+interface ProjectResponse {
+  id: string;
+  name: string;
+  code: string;
+  description: string | null;
+  createdBy: string;
+  clientId: string;
+  clientName: string;
+  status: string;
+  priority: string;
+  startDate: string | null;
+  endDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  storiesCount: number;
+  completedStories: number;
+}
+
+interface PaginatedProjectsResponse {
+  items: ProjectResponse[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+interface DashboardStatsResponse {
+  totalProjects: number;
+  activeProjects: number;
+  totalStories: number;
+  assignedStories: number;
+  completedStories: number;
+  recentProjects?: Array<{
+    id: string;
+    name: string;
+    status: string;
+    createdAt: string;
+  }>;
+  recentStories?: Array<{
+    id: string;
+    title: string;
+    status: string;
+    priority: string;
+    createdAt: string;
+  }>;
+}
+
+// Frontend response types
 interface GetProjectsResponse {
   projects: ProjectSummary[];
   total: number;
 }
 
-interface GetDashboardStatsResponse {
-  stats: DashboardStats;
-}
-
 interface CreateProjectRequest {
   name: string;
   code: string;
-  client: string;
-  description: string;
-  priority: "high" | "medium" | "low";
-  dueDate: string;
+  clientId: string;
+  description?: string;
+  priority?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-interface CreateProjectResponse {
-  project: ProjectSummary;
-  message: string;
-}
+// Transform backend project to frontend format
+const transformProject = (backendProject: ProjectResponse): ProjectSummary => ({
+  id: backendProject.id,
+  name: backendProject.name,
+  code: backendProject.code,
+  status: backendProject.status as ProjectSummary["status"],
+  priority: backendProject.priority as ProjectSummary["priority"],
+  clientId: backendProject.clientId,
+  clientName: backendProject.clientName,
+  client: backendProject.clientName, // For backwards compatibility
+  storiesCount: backendProject.storiesCount,
+  completedStories: backendProject.completedStories,
+  startDate: backendProject.startDate ?? new Date().toISOString(),
+  dueDate: backendProject.endDate ?? new Date().toISOString(),
+  lastUpdated: backendProject.updatedAt,
+  description: backendProject.description ?? "",
+});
 
 export const projectsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get all projects
     getProjects: builder.query<GetProjectsResponse, { page?: number; limit?: number }>({
       query: ({ page = 1, limit = 10 }) => ({
-        url: "/projects",
-        params: { page, limit },
+        url: "/v1/projects",
+        params: { offset: (page - 1) * limit, limit },
+      }),
+      transformResponse: (response: PaginatedProjectsResponse) => ({
+        projects: response.items.map(transformProject),
+        total: response.total,
       }),
       providesTags: (result) =>
         result
@@ -43,33 +105,46 @@ export const projectsApi = baseApi.injectEndpoints({
 
     // Get single project by ID
     getProjectById: builder.query<ProjectSummary, string>({
-      query: (id) => `/projects/${id}`,
+      query: (id) => `/v1/projects/${id}`,
+      transformResponse: (response: ProjectResponse) => transformProject(response),
       providesTags: (result, error, id) => [{ type: "Projects", id }],
     }),
 
     // Get dashboard stats
-    getDashboardStats: builder.query<GetDashboardStatsResponse, void>({
-      query: () => "/dashboard/stats",
+    getDashboardStats: builder.query<DashboardStats, void>({
+      query: () => "/v1/dashboard/stats",
+      transformResponse: (response: DashboardStatsResponse): DashboardStats => ({
+        totalProjects: response.totalProjects,
+        activeProjects: response.activeProjects,
+        completedProjects: 0, // Backend doesn't provide this directly
+        totalStories: response.totalStories,
+        completedStories: response.completedStories,
+      }),
       providesTags: ["DashboardStats"],
     }),
 
     // Create new project
-    createProject: builder.mutation<CreateProjectResponse, CreateProjectRequest>({
+    createProject: builder.mutation<ProjectSummary, CreateProjectRequest>({
       query: (project) => ({
-        url: "/projects",
+        url: "/v1/projects",
         method: "POST",
         body: project,
       }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
       invalidatesTags: [{ type: "Projects", id: "LIST" }, "DashboardStats"],
     }),
 
     // Update project
-    updateProject: builder.mutation<ProjectSummary, { id: string; data: Partial<ProjectSummary> }>({
+    updateProject: builder.mutation<
+      ProjectSummary,
+      { id: string; data: Partial<CreateProjectRequest> }
+    >({
       query: ({ id, data }) => ({
-        url: `/projects/${id}`,
+        url: `/v1/projects/${id}`,
         method: "PATCH",
         body: data,
       }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
       invalidatesTags: (result, error, { id }) => [
         { type: "Projects", id },
         { type: "Projects", id: "LIST" },
@@ -78,9 +153,9 @@ export const projectsApi = baseApi.injectEndpoints({
     }),
 
     // Delete project
-    deleteProject: builder.mutation<{ message: string }, string>({
+    deleteProject: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/projects/${id}`,
+        url: `/v1/projects/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [

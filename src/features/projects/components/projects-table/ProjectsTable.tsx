@@ -3,7 +3,7 @@ import { memo, useMemo } from "react";
 import { Table, Tag, Progress, Button, Space, Typography } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
-import { EyeOutlined, EditOutlined, CalendarOutlined } from "@ant-design/icons";
+import { EyeOutlined, EditOutlined, DeleteOutlined, CalendarOutlined } from "@ant-design/icons";
 
 import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/shared/types/domain";
 import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
@@ -22,6 +22,7 @@ interface ProjectsTableProps {
   onPageChange: (page: number, pageSize?: number) => void;
   onViewProject: (projectCode: string) => void;
   onEditProject: (projectId: string) => void;
+  onDeleteProject?: (projectId: string, projectName: string) => void;
 }
 
 const { Text } = Typography;
@@ -36,6 +37,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   onPageChange,
   onViewProject,
   onEditProject,
+  onDeleteProject,
 }) => {
   const columns: ColumnsType<ProjectSummary> = useMemo(
     () => [
@@ -112,15 +114,22 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         },
       },
       {
-        title: "Due Date",
-        dataIndex: "dueDate",
-        key: "dueDate",
+        title: "Timeline",
+        key: "timeline",
         sorter: true,
         sortOrder: sort.field === "dueDate" ? (sort.order === "asc" ? "ascend" : "descend") : null,
-        render: (date) => (
-          <Space>
-            <CalendarOutlined className={styles.dateIcon} />
-            <Text>{formatDate(date)}</Text>
+        render: (_, record) => (
+          <Space direction="vertical" size="small">
+            <Space>
+              <CalendarOutlined className={styles.dateIcon} />
+              <Text type="secondary">Start:</Text>
+              <Text>{formatDate(record.startDate)}</Text>
+            </Space>
+            <Space>
+              <CalendarOutlined className={styles.dateIcon} />
+              <Text type="secondary">Due:</Text>
+              <Text>{formatDate(record.dueDate)}</Text>
+            </Space>
           </Space>
         ),
       },
@@ -145,11 +154,22 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             >
               Edit
             </Button>
+            {onDeleteProject && (
+              <Button
+                type="link"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => onDeleteProject(record.id, record.name)}
+                className={styles.actionButton}
+              >
+                Delete
+              </Button>
+            )}
           </Space>
         ),
       },
     ],
-    [sort, onViewProject, onEditProject]
+    [sort, onViewProject, onEditProject, onDeleteProject]
   );
 
   const handleTableChange = (

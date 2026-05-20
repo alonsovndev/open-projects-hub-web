@@ -52,11 +52,10 @@ describe("useCreateProject", () => {
     const mockFormData: ProjectFormData = {
       name: "Test Project",
       code: "TEST-2024",
-      client: "Test Client",
+      clientId: "client-001",
       description: "A test project description",
       status: "planning",
       priority: "medium",
-      teamMembers: 5,
       dueDate: "2024-12-31",
     };
 
@@ -91,11 +90,10 @@ describe("useCreateProject", () => {
     const mockFormData: ProjectFormData = {
       name: "Test Project",
       code: "TEST-2024",
-      client: "Test Client",
+      clientId: "client-001",
       description: "Test description",
       status: "active",
       priority: "high",
-      teamMembers: 3,
       dueDate: "2024-12-31",
     };
 

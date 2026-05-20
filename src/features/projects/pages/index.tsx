@@ -19,6 +19,8 @@ export const ProjectsOverview: FC = () => {
     filters,
     sort,
     view,
+    currentPage,
+    pageSize,
     totalCount,
     filteredCount,
     activeFilterCount,
@@ -28,6 +30,7 @@ export const ProjectsOverview: FC = () => {
     handleSortChange,
     handleViewChange,
     handleClearFilters,
+    handlePageChange,
     handleViewProject,
     handleEditProject,
     handleCreateProject,
@@ -100,7 +103,11 @@ export const ProjectsOverview: FC = () => {
         <ProjectsTable
           projects={projects}
           sort={sort}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
           onSortChange={handleSortChange}
+          onPageChange={handlePageChange}
           onViewProject={handleViewProject}
           onEditProject={handleEditProject}
         />
