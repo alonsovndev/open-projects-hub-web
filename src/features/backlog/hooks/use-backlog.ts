@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
 import { message } from "antd";
 
-import type { Story, BacklogFilters } from "@/features/backlog/types";
+import type { BacklogFilters } from "@/features/backlog/types";
 import type { ProjectPriority } from "@/features/dashboard/types";
-import { getStories, deleteStory } from "@/features/backlog/api/backlog-api";
+import { useGetStoriesQuery, useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
 
 export const useBacklog = () => {
-  const [stories, setStories] = useState<Story[]>(getStories());
+  const { data, isLoading, error } = useGetStoriesQuery({});
+  const [deleteStoryMutation] = useDeleteStoryMutation();
+
   const [filters, setFilters] = useState<BacklogFilters>({
     search: "",
     project: "all",
@@ -16,6 +18,7 @@ export const useBacklog = () => {
 
   // Filter stories
   const filteredStories = useMemo(() => {
+    const stories = data?.stories ?? [];
     return stories.filter((story) => {
       // Search filter
       if (filters.search) {
@@ -48,7 +51,7 @@ export const useBacklog = () => {
 
       return true;
     });
-  }, [stories, filters]);
+  }, [data?.stories, filters]);
 
   // Count active filters
   const activeFilterCount = useMemo(() => {
@@ -62,8 +65,7 @@ export const useBacklog = () => {
 
   const handleDeleteStory = async (storyId: string) => {
     try {
-      await deleteStory(storyId);
-      setStories((prev) => prev.filter((s) => s.id !== storyId));
+      await deleteStoryMutation(storyId).unwrap();
       message.success("Story deleted successfully");
     } catch (error) {
       console.error("Failed to delete story:", error);
@@ -149,6 +151,8 @@ export const useBacklog = () => {
     filteredStories,
     filters,
     activeFilterCount,
+    isLoading,
+    error,
     handleDeleteStory,
     handleSearchChange,
     handleProjectFilter,
