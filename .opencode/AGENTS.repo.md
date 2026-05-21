@@ -1,22 +1,34 @@
 # Repository Agent Instructions
 
-This file contains repository-specific rules and preferences.
+Repository-only guidance for `open-projects-hub-web`.
 
 ## Scope
 
 - Apply only to this repository.
-- Do not duplicate global rules from ${HOME}/.config/opencode.
+- Keep this file lean; put durable repo rules in `.opencode/knowledge/repo-standards.md`.
+- Do not duplicate global safety, git, testing, or communication rules.
 
-## What to Define Here
+## Working Model
 
-1. Domain boundaries and terminology for this repo
-2. Build, test, and lint commands
-3. Security and data constraints unique to this repo
-4. Performance and reliability goals
-5. Any local conventions not already covered globally
+- This is a React + TypeScript + Vite frontend organized by feature slices under `src/features/*`.
+- Prefer the existing split of responsibilities:
+  - route/page components render UI
+  - hooks own page logic and side effects
+  - `api/` owns RTK Query endpoints and API-to-domain mapping
+  - `shared/` owns cross-feature types, hooks, utilities, and layout pieces
+- Follow current naming and file placement before introducing new patterns.
 
-## Token Discipline
+## Verification Commands
 
-- Keep this file short.
-- Link to local docs instead of copying large guides.
-- Add only rules that are specific to this repository.
+- Lint: `npm run lint`
+- Type-check: `npm run type-check`
+- Unit/integration tests: `npm run test:run`
+- E2E tests: `npm run test:e2e`
+- Full verification: `npm run verify`
+
+## High-Value Local Rules
+
+- Keep generated instruction files (`AGENTS.md`, `.github/copilot-instructions.md`) as generated outputs; edit source files and re-sync.
+- Use the `@/` path alias for internal imports where the codebase already does so.
+- When backend payloads differ from UI/domain types, keep translation at the API boundary instead of leaking transport shapes into components.
+- For repo-specific standards, terminology, and architecture details, see `.opencode/knowledge/repo-standards.md`.

@@ -99,6 +99,7 @@ Do not use for: refactoring, writing scripts from scratch, debugging business lo
 | **Edit the Minimum**          | Modify only what's required. Don't reformat, refactor unrelated code, or expand scope |
 | **Don't Repeat Code**         | Search for existing utilities first. Extract shared logic after 2-3 repetitions       |
 | **Don't Explain the Obvious** | Show code directly for simple tasks. Explain WHY, not WHAT. Skip preambles            |
+| **Flag Over-engineering**     | Call out when the ask adds unnecessary complexity; suggest simpler alternatives first |
 | **Test Before Done**          | Run tests + build + type-check before claiming completion                             |
 
 ## Rules
@@ -114,6 +115,14 @@ Do not use for: refactoring, writing scripts from scratch, debugging business lo
 - One concern per change — don't mix bug fixes with enhancements
 - Match the style and naming already present; don't impose new patterns
 - No premature optimization or abstraction
+
+### Flag Over-engineering
+
+- When a request adds unnecessary abstraction, complexity, or features, call it out immediately
+- When trying to apply a programming pattern or architecture that doesn't fit the problem, flag it
+- Suggest the simplest solution that satisfies the actual need
+- Ask clarifying questions if the scope seems misaligned with stated goals
+- Propose simpler alternatives before implementing the complex version
 
 ### Don't Repeat Code
 
@@ -182,42 +191,86 @@ Do not use for: refactoring, writing scripts from scratch, debugging business lo
 
 # Repository Agent Instructions
 
-This file contains repository-specific rules and preferences.
+Repository-only guidance for `open-projects-hub-web`.
 
 ## Scope
 
 - Apply only to this repository.
-- Do not duplicate global rules from ${HOME}/.config/opencode.
+- Keep this file lean; put durable repo rules in `.opencode/knowledge/repo-standards.md`.
+- Do not duplicate global safety, git, testing, or communication rules.
 
-## What to Define Here
+## Working Model
 
-1. Domain boundaries and terminology for this repo
-2. Build, test, and lint commands
-3. Security and data constraints unique to this repo
-4. Performance and reliability goals
-5. Any local conventions not already covered globally
+- This is a React + TypeScript + Vite frontend organized by feature slices under `src/features/*`.
+- Prefer the existing split of responsibilities:
+  - route/page components render UI
+  - hooks own page logic and side effects
+  - `api/` owns RTK Query endpoints and API-to-domain mapping
+  - `shared/` owns cross-feature types, hooks, utilities, and layout pieces
+- Follow current naming and file placement before introducing new patterns.
 
-## Token Discipline
+## Verification Commands
 
-- Keep this file short.
-- Link to local docs instead of copying large guides.
-- Add only rules that are specific to this repository.
+- Lint: `npm run lint`
+- Type-check: `npm run type-check`
+- Unit/integration tests: `npm run test:run`
+- E2E tests: `npm run test:e2e`
+- Full verification: `npm run verify`
+
+## High-Value Local Rules
+
+- Keep generated instruction files (`AGENTS.md`, `.github/copilot-instructions.md`) as generated outputs; edit source files and re-sync.
+- Use the `@/` path alias for internal imports where the codebase already does so.
+- When backend payloads differ from UI/domain types, keep translation at the API boundary instead of leaking transport shapes into components.
+- For repo-specific standards, terminology, and architecture details, see `.opencode/knowledge/repo-standards.md`.
 
 ### Source: ./.opencode/knowledge/repo-standards.md
 
 # Repository Standards
 
-Add concise, repository-specific standards here.
+## Architecture Boundaries
 
-## Suggested Sections
+- Organize work by feature under `src/features/<feature>/`.
+- Feature routes are declared in each feature `routes.tsx` and aggregated in `src/app/routing/routes.tsx`.
+- Keep pages thin: render composition in page components, move stateful logic and mutations into feature hooks.
+- Put cross-feature domain models in `src/shared/types/domain.ts`; avoid redefining shared business types inside features.
+- Put cross-feature UI and utilities in `src/shared/`; do not move feature-only code there prematurely.
 
-- Architecture boundaries
-- API contract rules
-- Data and migration constraints
-- Testing strategy for this repo
-- Deployment notes (if needed)
+## API and State Conventions
 
-## Keep It Lean
+- Use RTK Query endpoints via `src/app/api/base-api.ts` and feature `api/` modules.
+- Keep backend response shapes as `*Response` types and map them to frontend/domain types in `transformResponse` or dedicated transformers.
+- Normalize naming mismatches at the API boundary:
+  - backend transport fields may be snake_case or backend-oriented
+  - frontend domain and component props should stay consistent with existing app naming
+- Reuse existing tag names and invalidation patterns before adding new cache tags.
+- Auth tokens are read from Redux state by `base-api`; do not introduce alternate auth plumbing casually.
 
-- Document only what differs from global standards.
-- Avoid duplicating global guidance.
+## UI and Component Patterns
+
+- Prefer Ant Design components and existing SCSS module styling patterns over custom primitives.
+- Follow current page composition: feature page + feature hooks + focused child components.
+- Prefer explicit names aligned with domain language (`ProjectResponse`, `StoryResponse`, `endDate`, `clientName`).
+- Keep forms typed, validate at the form layer, and convert date objects to API-safe strings at submit boundaries.
+
+## Security Constraints
+
+- Treat auth/session changes as security-sensitive.
+- Do not persist access tokens or refresh tokens in browser storage without explicit user approval and security review.
+- Never log secrets, tokens, credentials, or raw sensitive payloads in production-oriented code.
+- Keep error normalization centralized when possible; avoid scattering custom auth or API error handling across components.
+
+## Testing and Verification
+
+- Prefer targeted verification for the touched slice first, then broader repo checks when impact is wider.
+- Minimum expected checks for code changes are the relevant subset of:
+  - `npm run lint`
+  - `npm run type-check`
+  - `npm run test:run -- <relevant paths>` or equivalent targeted Vitest runs
+  - `npm run build` when routing, bundling, or app-wide types may be affected
+- If repo tests are already failing outside the changed scope, report that clearly instead of masking it.
+
+## Generated AI Instruction Files
+
+- `AGENTS.md` and `.github/copilot-instructions.md` are generated artifacts.
+- Edit `.opencode/AGENTS.repo.md` and `.opencode/knowledge/repo-standards.md`, then run `/sync-copilot-instructions` (or the fallback sync script) to regenerate them.
