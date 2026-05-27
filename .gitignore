@@ -37,3 +37,7 @@ playwright/.auth/
 .env
 docs/work-logs/*.md
 docs/requested-features/*.md
+
+# Specs: ignore all files in /specs except .gitkeep
+/specs/*
+!/specs/.gitkeep
