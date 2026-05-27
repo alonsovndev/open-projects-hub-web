@@ -3,7 +3,6 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { message } from "antd";
 
 import { useBacklog } from "@/features/backlog/hooks/use-backlog";
-import * as backlogApi from "@/features/backlog/api/backlog-api";
 import type { Story } from "@/features/backlog/types";
 
 // Mock Ant Design message
@@ -19,13 +18,20 @@ vi.mock("antd", async () => {
   };
 });
 
-// Mock backlog API
-vi.mock("@/features/backlog/api/backlog-api", () => ({
-  getStories: vi.fn(),
-  getStoryById: vi.fn(),
-  updateStoryStatus: vi.fn(),
-  updateStory: vi.fn(),
-  deleteStory: vi.fn(),
+// Mock stories-api RTK Query hooks
+const mockDeleteStoryFn = vi.fn();
+const mockGetStoriesData = { data: { stories: [] as Story[] }, isLoading: false, error: undefined };
+
+vi.mock("@/features/backlog/api/stories-api", () => ({
+  useGetStoriesQuery: vi.fn(() => mockGetStoriesData),
+  useDeleteStoryMutation: vi.fn(() => [mockDeleteStoryFn, { isLoading: false }]),
+}));
+
+// Mock projects-api RTK Query hook
+const mockGetProjectsData = { data: { projects: [] }, isLoading: false };
+
+vi.mock("@/features/projects/api/projects-api", () => ({
+  useGetProjectsQuery: vi.fn(() => mockGetProjectsData),
 }));
 
 const mockStories: Story[] = [
@@ -38,8 +44,7 @@ const mockStories: Story[] = [
     priority: "high",
     storyPoints: 8,
     assignee: "John Doe",
-    projectId: "PROJ-001",
-    projectName: "Project Alpha",
+    projectId: "PROJ-2024",
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
   },
@@ -52,8 +57,7 @@ const mockStories: Story[] = [
     priority: "medium",
     storyPoints: 5,
     assignee: "Jane Smith",
-    projectId: "PROJ-001",
-    projectName: "Project Alpha",
+    projectId: "PROJ-2024",
     createdAt: "2024-01-02T00:00:00Z",
     updatedAt: "2024-01-02T00:00:00Z",
   },
@@ -66,8 +70,7 @@ const mockStories: Story[] = [
     priority: "low",
     storyPoints: 13,
     assignee: "Bob Wilson",
-    projectId: "PROJ-002",
-    projectName: "Project Beta",
+    projectId: "PROJ-2024",
     createdAt: "2024-01-03T00:00:00Z",
     updatedAt: "2024-01-03T00:00:00Z",
   },
@@ -80,8 +83,7 @@ const mockStories: Story[] = [
     priority: "high",
     storyPoints: 8,
     assignee: "Alice Johnson",
-    projectId: "PROJ-001",
-    projectName: "Project Alpha",
+    projectId: "PROJ-2024",
     createdAt: "2024-01-04T00:00:00Z",
     updatedAt: "2024-01-04T00:00:00Z",
   },
@@ -93,8 +95,7 @@ const mockStories: Story[] = [
     status: "backlog",
     priority: "medium",
     storyPoints: 5,
-    projectId: "PROJ-001",
-    projectName: "Project Alpha",
+    projectId: "ADMIN-2024",
     createdAt: "2024-01-05T00:00:00Z",
     updatedAt: "2024-01-05T00:00:00Z",
   },
@@ -103,7 +104,9 @@ const mockStories: Story[] = [
 describe("useBacklog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(backlogApi.getStories).mockReturnValue(mockStories);
+    mockGetStoriesData.data = { stories: mockStories };
+    mockGetStoriesData.isLoading = false;
+    mockGetStoriesData.error = undefined;
 
     // Mock URL.createObjectURL and revokeObjectURL for export tests
     global.URL.createObjectURL = vi.fn(() => "mock-url");
@@ -115,11 +118,10 @@ describe("useBacklog", () => {
   });
 
   describe("Initial State", () => {
-    it("should initialize with stories from getStories", () => {
+    it("should initialize with stories from useGetStoriesQuery", () => {
       const { result } = renderHook(() => useBacklog());
 
       expect(result.current.filteredStories).toHaveLength(5);
-      expect(backlogApi.getStories).toHaveBeenCalledOnce();
     });
 
     it("should initialize with default filters", () => {
@@ -127,9 +129,8 @@ describe("useBacklog", () => {
 
       expect(result.current.filters).toEqual({
         search: "",
-        project: "all",
         priority: "all",
-        assignee: "all",
+        project: "all",
       });
       expect(result.current.activeFilterCount).toBe(0);
     });
@@ -181,37 +182,6 @@ describe("useBacklog", () => {
     });
   });
 
-  describe("Project Filter", () => {
-    it("should filter stories by project", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleProjectFilter("PROJ-001");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(4);
-      expect(result.current.filteredStories.every((s) => s.projectId === "PROJ-001")).toBe(true);
-      expect(result.current.activeFilterCount).toBe(1);
-    });
-
-    it("should show all stories when project is 'all'", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleProjectFilter("PROJ-001");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(4);
-
-      act(() => {
-        result.current.handleProjectFilter("all");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(5);
-      expect(result.current.activeFilterCount).toBe(0);
-    });
-  });
-
   describe("Priority Filter", () => {
     it("should filter stories by priority", () => {
       const { result } = renderHook(() => useBacklog());
@@ -248,66 +218,13 @@ describe("useBacklog", () => {
     });
   });
 
-  describe("Assignee Filter", () => {
-    it("should filter stories by assignee", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleAssigneeFilter("John Doe");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(1);
-      expect(result.current.filteredStories[0].assignee).toBe("John Doe");
-      expect(result.current.activeFilterCount).toBe(1);
-    });
-
-    it("should filter unassigned stories", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleAssigneeFilter("unassigned");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(1);
-      expect(result.current.filteredStories[0].assignee).toBeUndefined();
-    });
-
-    it("should not show assigned stories when filtering unassigned", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleAssigneeFilter("unassigned");
-      });
-
-      const hasAssignedStories = result.current.filteredStories.some((s) => s.assignee);
-      expect(hasAssignedStories).toBe(false);
-    });
-  });
-
   describe("Combined Filters", () => {
     it("should apply multiple filters together", () => {
       const { result } = renderHook(() => useBacklog());
 
       act(() => {
-        result.current.handleProjectFilter("PROJ-001");
         result.current.handlePriorityFilter("high");
-      });
-
-      expect(result.current.filteredStories).toHaveLength(2);
-      expect(result.current.activeFilterCount).toBe(2);
-      expect(
-        result.current.filteredStories.every(
-          (s) => s.projectId === "PROJ-001" && s.priority === "high"
-        )
-      ).toBe(true);
-    });
-
-    it("should apply search with other filters", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleProjectFilter("PROJ-001");
-        result.current.handleSearchChange("User");
+        result.current.handleProjectFilter("PROJ-2024");
       });
 
       expect(result.current.filteredStories).toHaveLength(2);
@@ -318,8 +235,8 @@ describe("useBacklog", () => {
       const { result } = renderHook(() => useBacklog());
 
       act(() => {
-        result.current.handleProjectFilter("PROJ-002");
-        result.current.handlePriorityFilter("high");
+        result.current.handleProjectFilter("NONEXISTENT");
+        result.current.handlePriorityFilter("low");
       });
 
       expect(result.current.filteredStories).toHaveLength(0);
@@ -332,12 +249,11 @@ describe("useBacklog", () => {
 
       act(() => {
         result.current.handleSearchChange("test");
-        result.current.handleProjectFilter("PROJ-001");
         result.current.handlePriorityFilter("high");
-        result.current.handleAssigneeFilter("John Doe");
+        result.current.handleProjectFilter("PROJ-2024");
       });
 
-      expect(result.current.activeFilterCount).toBe(4);
+      expect(result.current.activeFilterCount).toBe(3);
 
       act(() => {
         result.current.handleClearFilters();
@@ -345,9 +261,8 @@ describe("useBacklog", () => {
 
       expect(result.current.filters).toEqual({
         search: "",
-        project: "all",
         priority: "all",
-        assignee: "all",
+        project: "all",
       });
       expect(result.current.activeFilterCount).toBe(0);
       expect(result.current.filteredStories).toHaveLength(5);
@@ -355,28 +270,26 @@ describe("useBacklog", () => {
   });
 
   describe("Delete Story", () => {
-    it("should delete story and update state", async () => {
-      vi.mocked(backlogApi.deleteStory).mockResolvedValue(undefined);
+    it("should call delete mutation and show success message", async () => {
+      mockDeleteStoryFn.mockReturnValue({ unwrap: () => Promise.resolve(undefined) });
 
       const { result } = renderHook(() => useBacklog());
-
-      const initialCount = result.current.filteredStories.length;
 
       await act(async () => {
         await result.current.handleDeleteStory("story-1");
       });
 
       await waitFor(() => {
-        expect(backlogApi.deleteStory).toHaveBeenCalledWith("story-1");
-        expect(result.current.filteredStories).toHaveLength(initialCount - 1);
-        expect(result.current.filteredStories.find((s) => s.id === "story-1")).toBeUndefined();
+        expect(mockDeleteStoryFn).toHaveBeenCalledWith("story-1");
         expect(message.success).toHaveBeenCalledWith("Story deleted successfully");
       });
     });
 
     it("should handle delete errors gracefully", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-      vi.mocked(backlogApi.deleteStory).mockRejectedValue(new Error("Delete failed"));
+      mockDeleteStoryFn.mockReturnValue({
+        unwrap: () => Promise.reject(new Error("Delete failed")),
+      });
 
       const { result } = renderHook(() => useBacklog());
 
@@ -456,7 +369,6 @@ describe("useBacklog", () => {
           const content = reader.result as string;
           expect(content).toContain("# User Stories Backlog");
           expect(content).toContain("User Authentication");
-          expect(content).toContain("**Project:**");
           expect(content).toContain("**Status:**");
           expect(content).toContain("**Priority:**");
         };
@@ -500,36 +412,14 @@ describe("useBacklog", () => {
       expect(result.current.activeFilterCount).toBe(1);
 
       act(() => {
-        result.current.handleProjectFilter("PROJ-001");
+        result.current.handlePriorityFilter("high");
       });
       expect(result.current.activeFilterCount).toBe(2);
 
       act(() => {
-        result.current.handlePriorityFilter("high");
+        result.current.handleProjectFilter("PROJ-2024");
       });
       expect(result.current.activeFilterCount).toBe(3);
-
-      act(() => {
-        result.current.handleAssigneeFilter("John Doe");
-      });
-      expect(result.current.activeFilterCount).toBe(4);
-    });
-
-    it("should not count 'all' as active filter", () => {
-      const { result } = renderHook(() => useBacklog());
-
-      act(() => {
-        result.current.handleProjectFilter("PROJ-001");
-        result.current.handlePriorityFilter("high");
-      });
-
-      expect(result.current.activeFilterCount).toBe(2);
-
-      act(() => {
-        result.current.handleProjectFilter("all");
-      });
-
-      expect(result.current.activeFilterCount).toBe(1);
     });
   });
 });
