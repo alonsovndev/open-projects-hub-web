@@ -56,11 +56,6 @@ export const PreferencesForm: FC<PreferencesFormProps> = ({ preferences, saving,
             <Select size="large">
               <Select.Option value="en">English</Select.Option>
               <Select.Option value="es">Español</Select.Option>
-              <Select.Option value="fr">Français</Select.Option>
-              <Select.Option value="de">Deutsch</Select.Option>
-              <Select.Option value="pt">Português</Select.Option>
-              <Select.Option value="ja">日本語</Select.Option>
-              <Select.Option value="zh">中文</Select.Option>
             </Select>
           </Form.Item>
 
