@@ -16,9 +16,10 @@ interface PasswordFormProps {
 export const PasswordForm: FC<PasswordFormProps> = ({ saving, onSubmit }) => {
   const [form] = Form.useForm();
 
-  const handleFinish = async (values: PasswordChangeData) => {
+  const handleFinish = async (values: PasswordChangeData & { confirmPassword?: string }) => {
     try {
-      await onSubmit(values);
+      const { confirmPassword: _, ...apiData } = values;
+      await onSubmit(apiData);
       form.resetFields();
     } catch {
       // Error already handled in hook

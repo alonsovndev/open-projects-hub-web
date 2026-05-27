@@ -1,30 +1,14 @@
 import { baseApi } from "@/app/api/base-api";
 
-interface UserProfile {
-  email: string;
-  displayName: string;
-  role: "admin" | "viewer";
-  avatar?: string;
-  createdAt: string;
-}
+import type { UserProfile, UserPreferences } from "@/features/settings/types";
 
 interface UpdateProfileRequest {
-  displayName?: string;
-  avatar?: string;
+  displayName: string;
 }
 
 interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
-}
-
-interface UserPreferences {
-  theme: "light" | "dark" | "auto";
-  notifications: {
-    email: boolean;
-    push: boolean;
-  };
-  language: string;
 }
 
 export const settingsApi = baseApi.injectEndpoints({
@@ -45,15 +29,6 @@ export const settingsApi = baseApi.injectEndpoints({
       invalidatesTags: ["UserProfile"],
     }),
 
-    // Change password
-    changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
-      query: (data) => ({
-        url: "/v1/users/me/password",
-        method: "POST",
-        body: data,
-      }),
-    }),
-
     // Get user preferences
     getUserPreferences: builder.query<UserPreferences, void>({
       query: () => "/v1/users/me/preferences",
@@ -70,14 +45,13 @@ export const settingsApi = baseApi.injectEndpoints({
       invalidatesTags: ["UserPreferences"],
     }),
 
-    // Upload avatar
-    uploadAvatar: builder.mutation<{ avatarUrl: string }, FormData>({
-      query: (formData) => ({
-        url: "/v1/users/me/avatar",
+    // Change password
+    changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
+      query: (data) => ({
+        url: "/v1/users/me/password",
         method: "POST",
-        body: formData,
+        body: data,
       }),
-      invalidatesTags: ["UserProfile"],
     }),
   }),
 });
@@ -85,8 +59,7 @@ export const settingsApi = baseApi.injectEndpoints({
 export const {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useChangePasswordMutation,
   useGetUserPreferencesQuery,
   useUpdateUserPreferencesMutation,
-  useUploadAvatarMutation,
+  useChangePasswordMutation,
 } = settingsApi;

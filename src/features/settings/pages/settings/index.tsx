@@ -1,9 +1,10 @@
 import type { FC } from "react";
-import { Tabs, Typography, Spin } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Tabs, Typography, Spin, Alert } from "antd";
+import { UserOutlined, LockOutlined, SettingOutlined } from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
+import { PreferencesForm } from "@/features/settings/components/preferences-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -13,12 +14,34 @@ const { Title } = Typography;
 
 export const SettingsPage: FC = () => {
   usePageTitle("Settings");
-  const { profile, loading, saving, handleUpdateProfile, handleChangePassword } = useSettings();
+  const {
+    profile,
+    preferences,
+    loading,
+    error,
+    saving,
+    handleUpdateProfile,
+    handleUpdatePreferences,
+    handleChangePassword,
+  } = useSettings();
 
-  if (loading || !profile) {
+  if (loading) {
     return (
       <div className={styles.loadingContainer}>
-        <Spin size="large" />
+        <Spin size="large" tip="Loading settings..." />
+      </div>
+    );
+  }
+
+  if (error || !profile || !preferences) {
+    return (
+      <div className={styles.pageContainer}>
+        <Alert
+          message="Error Loading Settings"
+          description="Failed to load your profile. Please try again."
+          type="error"
+          showIcon
+        />
       </div>
     );
   }
@@ -33,6 +56,22 @@ export const SettingsPage: FC = () => {
         </span>
       ),
       children: <ProfileForm profile={profile} saving={saving} onSubmit={handleUpdateProfile} />,
+    },
+    {
+      key: "preferences",
+      label: (
+        <span>
+          <SettingOutlined />
+          Preferences
+        </span>
+      ),
+      children: (
+        <PreferencesForm
+          preferences={preferences}
+          saving={saving}
+          onSubmit={handleUpdatePreferences}
+        />
+      ),
     },
     {
       key: "security",

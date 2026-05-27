@@ -1,71 +1,95 @@
-import { useState, useEffect } from "react";
+import { useCallback } from "react";
 import { message } from "antd";
 
-import type { UserProfile, PasswordChangeData } from "@/features/settings/types";
 import {
-  getUserProfile,
-  updateUserProfile,
-  changePassword,
-} from "@/features/settings/api/settings-api";
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+  useGetUserPreferencesQuery,
+  useUpdateUserPreferencesMutation,
+  useChangePasswordMutation,
+} from "@/features/settings/api/settings-rtk-api";
+import type { PasswordChangeData, UserPreferences } from "@/features/settings/types";
 
 export const useSettings = () => {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  // Profile
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useGetUserProfileQuery();
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  // Preferences
+  const {
+    data: preferences,
+    isLoading: preferencesLoading,
+    error: preferencesError,
+  } = useGetUserPreferencesQuery();
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const profileData = await getUserProfile();
-      setProfile(profileData);
-    } catch (error) {
-      console.error("Failed to load settings:", error);
-      message.error("Failed to load settings. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Mutations
+  const [updateProfile, { isLoading: isUpdatingProfile }] = useUpdateUserProfileMutation();
+  const [updatePreferences, { isLoading: isUpdatingPreferences }] =
+    useUpdateUserPreferencesMutation();
+  const [changePasswordMutation, { isLoading: isChangingPassword }] = useChangePasswordMutation();
 
-  const handleUpdateProfile = async (updates: Partial<UserProfile>) => {
-    try {
-      setSaving(true);
-      const updated = await updateUserProfile(updates);
-      setProfile(updated);
-      message.success("Profile updated successfully");
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      message.error("Failed to update profile. Please try again.");
-      throw error;
-    } finally {
-      setSaving(false);
-    }
-  };
+  const loading = profileLoading || preferencesLoading;
+  const saving = isUpdatingProfile || isUpdatingPreferences || isChangingPassword;
+  const error = profileError || preferencesError;
 
-  const handleChangePassword = async (data: PasswordChangeData) => {
-    try {
-      setSaving(true);
-      await changePassword(data);
-      message.success("Password changed successfully");
-    } catch (error) {
-      console.error("Failed to change password:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to change password. Please try again.";
-      message.error(errorMessage);
-      throw error;
-    } finally {
-      setSaving(false);
-    }
-  };
+  const handleUpdateProfile = useCallback(
+    async (values: { displayName: string }) => {
+      try {
+        await updateProfile({ displayName: values.displayName }).unwrap();
+        message.success("Profile updated successfully");
+      } catch (err) {
+        console.error("Failed to update profile:", err);
+        message.error("Failed to update profile. Please try again.");
+        throw err;
+      }
+    },
+    [updateProfile]
+  );
+
+  const handleUpdatePreferences = useCallback(
+    async (values: Partial<UserPreferences>) => {
+      try {
+        await updatePreferences(values).unwrap();
+        message.success("Preferences updated successfully");
+      } catch (err) {
+        console.error("Failed to update preferences:", err);
+        message.error("Failed to update preferences. Please try again.");
+        throw err;
+      }
+    },
+    [updatePreferences]
+  );
+
+  const handleChangePassword = useCallback(
+    async (data: PasswordChangeData) => {
+      try {
+        await changePasswordMutation({
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        }).unwrap();
+        message.success("Password changed successfully");
+      } catch (err) {
+        console.error("Failed to change password:", err);
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to change password. Please try again.";
+        message.error(errorMessage);
+        throw err;
+      }
+    },
+    [changePasswordMutation]
+  );
 
   return {
-    profile,
+    profile: profile ?? null,
+    preferences: preferences ?? null,
     loading,
+    error,
     saving,
     handleUpdateProfile,
+    handleUpdatePreferences,
     handleChangePassword,
   };
 };

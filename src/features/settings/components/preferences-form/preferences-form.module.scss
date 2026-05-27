@@ -1,6 +1,6 @@
 @use "@/styles/variables.scss" as *;
 
-.profileForm {
+.preferencesForm {
   max-width: 600px;
 }
 
@@ -39,16 +39,6 @@
   font-size: 0.875rem;
   display: block;
   margin-top: 2px;
-}
-
-.readonlyFields {
-  margin-bottom: $spacing-lg;
-}
-
-.divider {
-  height: 1px;
-  background: $surface-base;
-  margin-bottom: $spacing-lg;
 }
 
 .form {
