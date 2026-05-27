@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Button, Space } from "antd";
+import { Typography, Button, Space, Spin, Alert } from "antd";
 import { PlusOutlined, FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
@@ -17,11 +17,14 @@ export const BacklogPage: FC = () => {
     filteredStories,
     filters,
     activeFilterCount,
+    isLoading,
+    error,
+    isLoadingProjects,
+    projectOptions,
     handleDeleteStory,
     handleSearchChange,
     handleProjectFilter,
     handlePriorityFilter,
-    handleAssigneeFilter,
     handleClearFilters,
     handleExportMarkdown,
   } = useBacklog();
@@ -60,17 +63,36 @@ export const BacklogPage: FC = () => {
         </div>
       </div>
 
-      <BacklogFiltersBar
-        filters={filters}
-        activeFilterCount={activeFilterCount}
-        onSearchChange={handleSearchChange}
-        onProjectFilter={handleProjectFilter}
-        onPriorityFilter={handlePriorityFilter}
-        onAssigneeFilter={handleAssigneeFilter}
-        onClearFilters={handleClearFilters}
-      />
+      {error ? (
+        <Alert
+          message="Error Loading Backlog"
+          description="Failed to load backlog stories. Please try again."
+          type="error"
+          showIcon
+          className={styles.errorAlert}
+        />
+      ) : (
+        <>
+          <BacklogFiltersBar
+            filters={filters}
+            activeFilterCount={activeFilterCount}
+            projectOptions={projectOptions}
+            isLoadingProjects={isLoadingProjects}
+            onSearchChange={handleSearchChange}
+            onProjectFilter={handleProjectFilter}
+            onPriorityFilter={handlePriorityFilter}
+            onClearFilters={handleClearFilters}
+          />
 
-      <StoryList stories={filteredStories} onDelete={handleDeleteStory} />
+          {isLoading ? (
+            <div className={styles.loadingContainer}>
+              <Spin size="large" tip="Loading stories..." />
+            </div>
+          ) : (
+            <StoryList stories={filteredStories} onDelete={handleDeleteStory} />
+          )}
+        </>
+      )}
     </div>
   );
 };

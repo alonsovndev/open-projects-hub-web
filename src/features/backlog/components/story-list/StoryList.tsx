@@ -4,7 +4,6 @@ import { List, Card, Tag, Typography, Button, Space, Popconfirm, Empty } from "a
 import {
   DeleteOutlined,
   UserOutlined,
-  ProjectOutlined,
   CheckCircleOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
@@ -40,6 +39,7 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
     <List
       className={styles.storyList}
       dataSource={stories}
+      data-testid="story-list"
       locale={{
         emptyText: (
           <Empty
@@ -49,7 +49,7 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
         ),
       }}
       renderItem={(story) => (
-        <List.Item className={styles.listItem}>
+        <List.Item className={styles.listItem} data-testid="story-item">
           <Card className={styles.storyCard}>
             <div className={styles.cardHeader}>
               <div className={styles.headerLeft}>
@@ -96,10 +96,6 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
 
             <div className={styles.cardFooter}>
               <Space size="middle">
-                <Space size="small">
-                  <ProjectOutlined className={styles.metaIcon} />
-                  <Text className={styles.metaText}>{story.projectName}</Text>
-                </Space>
                 {story.assignee && (
                   <Space size="small">
                     <UserOutlined className={styles.metaIcon} />

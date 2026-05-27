@@ -3,6 +3,7 @@ import { AdminLayout } from "@/app/layouts/admin-layout";
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 
 const BacklogPage = lazyWithRetry(() => import("@/features/backlog/pages/backlog"));
+const ProjectBacklogPage = lazyWithRetry(() => import("@/features/backlog/pages/project-backlog"));
 
 export const backlogRoutes: AppRoute[] = [
   {
@@ -10,6 +11,15 @@ export const backlogRoutes: AppRoute[] = [
     element: (
       <AdminLayout>
         <BacklogPage />
+      </AdminLayout>
+    ),
+    guards: ["auth"],
+  },
+  {
+    path: "/backlog/project/:projectId",
+    element: (
+      <AdminLayout>
+        <ProjectBacklogPage />
       </AdminLayout>
     ),
     guards: ["auth"],

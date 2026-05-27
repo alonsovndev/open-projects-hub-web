@@ -9,13 +9,19 @@ import styles from "./backlog-filters.module.scss";
 
 const { Search } = Input;
 
+interface ProjectOption {
+  label: string;
+  value: string;
+}
+
 interface BacklogFiltersBarProps {
   filters: BacklogFilters;
   activeFilterCount: number;
+  projectOptions: ProjectOption[];
+  isLoadingProjects: boolean;
   onSearchChange: (search: string) => void;
   onProjectFilter: (project: string) => void;
   onPriorityFilter: (priority: ProjectPriority | "all") => void;
-  onAssigneeFilter: (assignee: string) => void;
   onClearFilters: () => void;
 }
 
@@ -26,26 +32,16 @@ const priorityOptions = [
   { label: "Low", value: "low" },
 ];
 
-const projectOptions = [
-  { label: "All Projects", value: "all" },
-  { label: "E-Commerce Platform", value: "PROJ-2024" },
-  { label: "Admin Portal", value: "ADMIN-2024" },
-];
-
-const assigneeOptions = [
-  { label: "All Assignees", value: "all" },
-  { label: "John Doe", value: "John Doe" },
-  { label: "Jane Smith", value: "Jane Smith" },
-  { label: "Unassigned", value: "unassigned" },
-];
+const allProjectsOption = { label: "All Projects", value: "all" };
 
 export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
   filters,
   activeFilterCount,
+  projectOptions,
+  isLoadingProjects,
   onSearchChange,
   onProjectFilter,
   onPriorityFilter,
-  onAssigneeFilter,
   onClearFilters,
 }) => {
   return (
@@ -63,8 +59,9 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
         <Select
           value={filters.project}
           onChange={onProjectFilter}
-          options={projectOptions}
+          options={[allProjectsOption, ...projectOptions]}
           className={styles.filterSelect}
+          loading={isLoadingProjects}
           suffixIcon={<FilterOutlined />}
         />
 
@@ -72,14 +69,6 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
           value={filters.priority}
           onChange={onPriorityFilter}
           options={priorityOptions}
-          className={styles.filterSelect}
-          suffixIcon={<FilterOutlined />}
-        />
-
-        <Select
-          value={filters.assignee}
-          onChange={onAssigneeFilter}
-          options={assigneeOptions}
           className={styles.filterSelect}
           suffixIcon={<FilterOutlined />}
         />

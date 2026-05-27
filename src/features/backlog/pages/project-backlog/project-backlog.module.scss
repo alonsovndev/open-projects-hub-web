@@ -1,0 +1,86 @@
+.pageContainer {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.backButton {
+  align-self: flex-start;
+  padding: 4px 8px;
+  height: auto;
+  font-size: 14px;
+}
+
+.pageTitle {
+  margin: 0 !important;
+  font-size: 32px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.projectSelector {
+  display: flex;
+  align-items: center;
+}
+
+.actionButton {
+  white-space: nowrap;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 48px;
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 16px;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .projectSelector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    :global(.ant-select) {
+      width: 100% !important;
+    }
+  }
+
+  .pageTitle {
+    font-size: 24px;
+  }
+}

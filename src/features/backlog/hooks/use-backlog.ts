@@ -4,16 +4,27 @@ import { message } from "antd";
 import type { BacklogFilters } from "@/features/backlog/types";
 import type { ProjectPriority } from "@/features/dashboard/types";
 import { useGetStoriesQuery, useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
+import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
+import type { ProjectSummary } from "@/shared/types/domain";
 
 export const useBacklog = () => {
   const { data, isLoading, error } = useGetStoriesQuery({});
   const [deleteStoryMutation] = useDeleteStoryMutation();
 
+  const { data: projectsData, isLoading: isLoadingProjects } = useGetProjectsQuery({
+    limit: 100,
+  });
+
+  const projectOptions =
+    projectsData?.projects.map((p: ProjectSummary) => ({
+      label: `${p.name} (${p.code})`,
+      value: p.id,
+    })) ?? [];
+
   const [filters, setFilters] = useState<BacklogFilters>({
     search: "",
     project: "all",
     priority: "all",
-    assignee: "all",
   });
 
   // Filter stories
@@ -39,16 +50,6 @@ export const useBacklog = () => {
         return false;
       }
 
-      // Assignee filter
-      if (filters.assignee !== "all") {
-        if (filters.assignee === "unassigned" && story.assignee) {
-          return false;
-        }
-        if (filters.assignee !== "unassigned" && story.assignee !== filters.assignee) {
-          return false;
-        }
-      }
-
       return true;
     });
   }, [data?.stories, filters]);
@@ -59,7 +60,6 @@ export const useBacklog = () => {
     if (filters.search) count++;
     if (filters.project !== "all") count++;
     if (filters.priority !== "all") count++;
-    if (filters.assignee !== "all") count++;
     return count;
   }, [filters]);
 
@@ -85,16 +85,11 @@ export const useBacklog = () => {
     setFilters((prev) => ({ ...prev, priority }));
   };
 
-  const handleAssigneeFilter = (assignee: string) => {
-    setFilters((prev) => ({ ...prev, assignee }));
-  };
-
   const handleClearFilters = () => {
     setFilters({
       search: "",
       project: "all",
       priority: "all",
-      assignee: "all",
     });
   };
 
@@ -111,7 +106,6 @@ export const useBacklog = () => {
 
     filteredStories.forEach((story, index) => {
       markdown += `## ${index + 1}. ${story.title}\n\n`;
-      markdown += `**Project:** ${story.projectName} (${story.projectId})\n\n`;
       markdown += `**Status:** ${story.status}\n\n`;
       markdown += `**Priority:** ${story.priority}\n\n`;
       if (story.assignee) {
@@ -152,12 +146,13 @@ export const useBacklog = () => {
     filters,
     activeFilterCount,
     isLoading,
+    isLoadingProjects,
     error,
+    projectOptions,
     handleDeleteStory,
     handleSearchChange,
     handleProjectFilter,
     handlePriorityFilter,
-    handleAssigneeFilter,
     handleClearFilters,
     handleExportMarkdown,
   };

@@ -12,20 +12,12 @@ export interface Story {
   storyPoints?: number;
   assignee?: string;
   projectId: string;
-  projectName: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface BacklogColumn {
-  id: StoryStatus;
-  title: string;
-  stories: Story[];
 }
 
 export interface BacklogFilters {
   search: string;
   project: string;
   priority: ProjectPriority | "all";
-  assignee: string;
 }

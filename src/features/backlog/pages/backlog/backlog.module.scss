@@ -55,6 +55,18 @@
   }
 }
 
+.errorAlert {
+  margin: $spacing-lg 0;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 48px;
+}
+
 .createButton {
   background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
   border: none;
