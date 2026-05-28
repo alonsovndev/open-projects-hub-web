@@ -1,39 +1,27 @@
+@use "@/styles/variables.scss" as *;
+
 .footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
+  gap: $spacing-md;
+  padding: $spacing-xl;
   background-color: #f3f3f3;
-  font-family: "Inter", sans-serif;
+  font-family: $font-body;
   font-size: 0.875rem;
-  color: #414755;
+  color: $text-secondary;
 }
 
 .footerLink {
   cursor: pointer;
-  color: #414755;
+  color: $text-secondary;
   transition: color 0.2s;
 
   &:hover {
-    color: #0057c2;
+    color: $primary-base;
   }
 }
 
 .footerDot {
   color: #c1c6d7;
-}
-
-.footerLink {
-  color: #94a3b8;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.footerLink:hover {
-  color: #1677ff;
-}
-
-.footerDot {
-  color: #cbd5e1;
 }

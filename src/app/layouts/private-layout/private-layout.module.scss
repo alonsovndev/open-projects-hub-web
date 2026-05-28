@@ -1,3 +1,5 @@
+@use "@/styles/variables.scss" as *;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -6,10 +8,10 @@
 
 .main {
   flex: 1;
-  padding: 2rem;
+  padding: $spacing-xl;
 }
 
 .userInfo {
-  margin-right: 1rem;
-  color: rgba(0, 0, 0, 0.65);
+  margin-right: $spacing-md;
+  color: $text-secondary;
 }

@@ -74,7 +74,7 @@
   &:hover {
     border-color: $primary-base;
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 87, 194, 0.15);
+    box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.15);
   }
 
   &:active {

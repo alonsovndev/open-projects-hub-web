@@ -1,10 +1,12 @@
+@use "@/styles/variables.scss" as *;
+
 /* Default Header Styles */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  background-color: #ffffff;
+  padding: $spacing-lg $spacing-xl;
+  background-color: $surface-white;
   backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 rgba(193, 198, 215, 0.15);
 }
@@ -31,7 +33,7 @@
 }
 
 .brandName {
-  color: #0f172a;
+  color: $text-primary;
   font-size: 1.05rem;
   font-weight: 600;
 }
@@ -57,19 +59,19 @@
 .landingContainer {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 $spacing-lg;
   height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  gap: $spacing-xl;
 }
 
 /* Left Section: Brand + Navigation */
 .leftSection {
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: $spacing-2xl;
   flex: 1;
 }
 
@@ -94,13 +96,13 @@
 .navLinks {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: $spacing-lg;
 }
 
 .navLink {
   font-size: 14px;
   font-weight: 500;
-  color: #475569;
+  color: $text-secondary;
   text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;
@@ -109,7 +111,7 @@
   gap: 6px;
 
   &:hover {
-    color: #1e293b;
+    color: $text-primary;
   }
 }
 
@@ -126,25 +128,25 @@
 }
 
 .signInButton {
-  color: #475569;
+  color: $text-secondary;
   font-weight: 500;
 
   &:hover {
-    color: #1e293b;
+    color: $text-primary;
     background: rgba(0, 0, 0, 0.04);
   }
 }
 
 .ctaButton {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: $primary-base;
+  border-color: $primary-base;
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
 
   &:hover {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
+    background: $primary-dark;
+    border-color: $primary-dark;
     box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
     transform: translateY(-1px);
   }
@@ -160,13 +162,13 @@
   background: none;
   border: none;
   font-size: 20px;
-  color: #475569;
+  color: $text-secondary;
   cursor: pointer;
-  padding: 8px;
+  padding: $spacing-sm;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #1e293b;
+    color: $text-primary;
   }
 }
 
@@ -176,30 +178,30 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 24px;
+  padding: $spacing-lg;
 }
 
 .mobileNavLinks {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 24px;
+  margin-bottom: $spacing-lg;
 }
 
 .mobileNavLink {
   font-size: 16px;
   font-weight: 500;
-  color: #475569;
+  color: $text-secondary;
   text-decoration: none;
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-sm;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: $spacing-sm;
 
   &:hover {
-    color: #1e293b;
+    color: $text-primary;
     background: rgba(0, 0, 0, 0.04);
   }
 }
@@ -211,31 +213,31 @@
 }
 
 .mobileSignInButton {
-  color: #475569;
+  color: $text-secondary;
   font-weight: 500;
 
   &:hover {
-    color: #1e293b;
+    color: $text-primary;
     background: rgba(0, 0, 0, 0.04);
   }
 }
 
 .mobileCtaButton {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: $primary-base;
+  border-color: $primary-base;
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
   &:hover {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
+    background: $primary-dark;
+    border-color: $primary-dark;
   }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .header {
-    padding: 16px 20px;
+    padding: $spacing-md 20px;
     align-items: flex-start;
     flex-direction: column;
     gap: 14px;
@@ -251,7 +253,7 @@
     .landingContainer {
       height: 64px;
       padding: 0 20px;
-      gap: 16px;
+      gap: $spacing-md;
     }
 
     .brandName {
@@ -281,12 +283,12 @@
 /* Tablet adjustments */
 @media (max-width: 1024px) and (min-width: 769px) {
   .headerLanding .landingContainer {
-    padding: 0 32px;
-    gap: 32px;
+    padding: 0 $spacing-xl;
+    gap: $spacing-xl;
   }
 
   .navLinks {
-    gap: 24px;
+    gap: $spacing-lg;
   }
 
   .navLink {

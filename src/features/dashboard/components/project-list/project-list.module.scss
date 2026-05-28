@@ -44,7 +44,7 @@
   &:hover:not(:disabled) {
     border-color: $primary-dark;
     color: $primary-dark;
-    background: rgba(0, 87, 194, 0.04);
+    background: rgba(var(--color-primary-rgb), 0.04);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -72,9 +72,9 @@
   flex-direction: column;
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 87, 194, 0.12);
+    box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.12);
     transform: translateY(-4px);
-    border-color: rgba(0, 87, 194, 0.2);
+    border-color: rgba(var(--color-primary-rgb), 0.2);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -241,7 +241,7 @@
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 87, 194, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
   }
 
   &:active:not(:disabled) {

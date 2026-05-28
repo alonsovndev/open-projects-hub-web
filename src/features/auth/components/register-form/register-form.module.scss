@@ -79,7 +79,7 @@
   &:focus,
   &:focus-within {
     border-color: #0057c2;
-    box-shadow: 0 0 0 2px rgba(0, 87, 194, 0.1);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
   }
 }
 
@@ -168,7 +168,7 @@
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, #004398 0%, #0057c2 100%);
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0, 87, 194, 0.2);
+    box-shadow: 0 12px 32px rgba(var(--color-primary-rgb), 0.2);
   }
 
   &:active:not(:disabled) {

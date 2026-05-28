@@ -1,0 +1,63 @@
+/* ============================================
+   Global Styles — CSS Custom Properties
+   ============================================ */
+
+/* Light theme (default) */
+:root {
+  --color-primary: #0057c2;
+  --color-primary-rgb: 0, 87, 194;
+  --color-primary-light: #4a8fd9;
+  --color-primary-light-rgb: 74, 143, 217;
+  --color-primary-dark: #006ef2;
+  --color-surface-white: #ffffff;
+  --color-surface-light: #f9f9f9;
+  --color-surface-base: #eeeeee;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #666666;
+
+  --font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --color-primary: #4a8fd9;
+  --color-primary-rgb: 74, 143, 217;
+  --color-primary-light: #6ba8e8;
+  --color-primary-light-rgb: 107, 168, 232;
+  --color-primary-dark: #3a7ac4;
+  --color-surface-white: #1e1e1e;
+  --color-surface-light: #141414;
+  --color-surface-base: #2d2d2d;
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #a0a0a0;
+}
+
+/* Base element styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--color-surface-light);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

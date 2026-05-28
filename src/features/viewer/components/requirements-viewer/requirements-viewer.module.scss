@@ -80,7 +80,7 @@
 
 .headerDivider {
   margin: $spacing-xl 0;
-  border-color: rgba(0, 87, 194, 0.1);
+  border-color: rgba(var(--color-primary-rgb), 0.1);
 }
 
 .storyList {
@@ -97,7 +97,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 87, 194, 0.12);
+    box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.12);
     transform: translateY(-2px);
   }
 
@@ -185,7 +185,11 @@
 .highlight {
   font-weight: 600;
   color: $primary-base;
-  background: linear-gradient(135deg, rgba(0, 87, 194, 0.1) 0%, rgba(0, 110, 242, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.1) 0%,
+    rgba(var(--color-primary-rgb), 0.1) 100%
+  );
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
 }

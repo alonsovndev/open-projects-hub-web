@@ -1,35 +1,21 @@
-// Design tokens based on Precision Editorial design system
+// Design tokens — reference CSS custom properties for runtime theming (light/dark)
+// The actual values are defined in global.scss under :root and [data-theme="dark"]
+
 // Colors
-$primary-base: #0057c2;
-$primary-light: #4a8fd9;
-$primary-dark: #006ef2;
+$primary-base: var(--color-primary);
+$primary-light: var(--color-primary-light);
+$primary-dark: var(--color-primary-dark);
 
-$surface-white: #ffffff;
-$surface-light: #f9f9f9;
-$surface-base: #eeeeee;
+$surface-white: var(--color-surface-white);
+$surface-light: var(--color-surface-light);
+$surface-base: var(--color-surface-base);
 
-$text-primary: #1a1a1a;
-$text-secondary: #666666;
+$text-primary: var(--color-text-primary);
+$text-secondary: var(--color-text-secondary);
 
 // Typography
-$font-headline:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  Arial,
-  sans-serif;
-$font-body:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  Arial,
-  sans-serif;
+$font-headline: var(--font-family);
+$font-body: var(--font-family);
 
 // Spacing
 $spacing-xs: 0.25rem; // 4px

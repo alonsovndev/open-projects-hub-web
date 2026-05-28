@@ -25,7 +25,6 @@ export default defineConfig({
           "vendor-react": ["react", "react-dom", "react-router-dom"],
           "vendor-redux": ["@reduxjs/toolkit", "react-redux"],
           "vendor-antd": ["antd", "@ant-design/icons"],
-          "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
           
           // Feature chunks (loaded on-demand via lazy routes)
           // These will be automatically split by dynamic imports

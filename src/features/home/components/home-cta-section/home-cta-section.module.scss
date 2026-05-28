@@ -89,7 +89,7 @@
   &:hover {
     background: linear-gradient(135deg, #004398 0%, #0057c2 100%);
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0, 87, 194, 0.3);
+    box-shadow: 0 12px 32px rgba(var(--color-primary-rgb), 0.3);
   }
 
   &:active {

@@ -40,7 +40,7 @@
       &:focus,
       &:focus-within {
         border-color: $primary-base;
-        box-shadow: 0 0 0 2px rgba(0, 87, 194, 0.1);
+        box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
       }
     }
 
@@ -100,7 +100,7 @@
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 87, 194, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
   }
 
   &:active:not(:disabled) {
