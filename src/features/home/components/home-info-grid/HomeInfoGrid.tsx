@@ -1,36 +1,49 @@
 import type { FC } from "react";
 
-import { BulbOutlined, EditOutlined, EyeOutlined, LineChartOutlined } from "@ant-design/icons";
+import {
+  BulbOutlined,
+  EyeOutlined,
+  RobotOutlined,
+  FileTextOutlined,
+  CodeOutlined,
+} from "@ant-design/icons";
 
 import styles from "./home-info-grid.module.scss";
 
 const freelancerFeatures = [
   {
-    id: "direct-discovery",
+    id: "raw-ideas-to-structures",
     icon: <BulbOutlined />,
-    title: "Direct Discovery",
-    description: "AI-assisted mapping for complex requirements.",
+    title: "Raw Ideas to Structured Plans",
+    description: "Transform unstructured notes into detailed stories and plans.",
   },
   {
-    id: "story-structuring",
-    icon: <EditOutlined />,
-    title: "Story Structuring",
-    description: "Full editorial control over project components.",
+    id: "ai-powered-refinement",
+    icon: <RobotOutlined />,
+    title: "AI-Powered Refinement",
+    description: "AI-assisted mapping for complex requirements and ambiguity identification.",
+  },
+  {
+    id: "export-to-markdown",
+    icon: <FileTextOutlined />,
+    title: "Export to Markdown",
+    description:
+      "Seamlessly export all structured artifacts to Markdown for easy sharing and integration.",
   },
 ];
 
 const clientFeatures = [
   {
-    id: "secure-review",
+    id: "clients-backlog-visualization",
     icon: <EyeOutlined />,
-    title: "Secure Review",
-    description: "Read-only access to structured roadmaps.",
+    title: "Client Backlog Visualization",
+    description: "Read-only, transparent view of the project backlog and structured roadmaps.",
   },
   {
-    id: "visual-clarity",
-    icon: <LineChartOutlined />,
-    title: "Visual Clarity",
-    description: "Real-time momentum tracking and alignment.",
+    id: "open-source-friendly",
+    icon: <CodeOutlined />,
+    title: "Open Source & Developer Friendly",
+    description: "Integrate with developer workflows and leverage open-source standards.",
   },
 ];
 

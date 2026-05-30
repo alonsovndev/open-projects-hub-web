@@ -1,33 +1,33 @@
 import type { FC } from "react";
 
-import { FileTextOutlined, QuestionCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { FileTextOutlined, RobotOutlined, BarChartOutlined } from "@ant-design/icons";
 
 import styles from "./home-features-section.module.scss";
 
 const steps = [
   {
-    id: "paste-notes",
+    id: "capture-raw-ideas",
     number: "01",
     icon: <FileTextOutlined />,
-    title: "Paste Raw Notes",
+    title: "Capture Raw Ideas",
     description:
-      "Input chaotic client emails, meeting transcripts, or voice notes. We take the mess so you don't have to.",
+      "Input unstructured notes, emails, and conversations to begin structuring your project.",
   },
   {
-    id: "identify-ambiguity",
+    id: "ai-refine-stories",
     number: "02",
-    icon: <QuestionCircleOutlined />,
-    title: "Identify Ambiguity",
+    icon: <RobotOutlined />,
+    title: "AI-Powered Story Refinement",
     description:
-      "Our AI highlights missing details, conflicting requirements, and hidden risks in real-time.",
+      "Leverage AI to refine raw ideas into structured stories, identify ambiguities, and create actionable plans.",
   },
   {
-    id: "admin-approval",
+    id: "visualize-export-plan",
     number: "03",
-    icon: <CheckCircleOutlined />,
-    title: "Admin Approval",
+    icon: <BarChartOutlined />,
+    title: "Visualize & Export Plan",
     description:
-      "Structure these insights into stories. Admins approve the final plan to lock in a professional roadmap.",
+      "Visualize client backlogs, maintain editorial control, and export structured artifacts to Markdown.",
   },
 ];
 
@@ -36,9 +36,9 @@ export const HomeFeaturesSection: FC = () => {
     <section className={styles.featuresSection} id="features">
       <div className={styles.featuresContainer}>
         <div className={styles.featuresHeader}>
-          <h2 className={styles.featuresTitle}>Refine to Approve.</h2>
+          <h2 className={styles.featuresTitle}>From Idea to Impact.</h2>
           <p className={styles.featuresSubtitle}>
-            A seamless three-step cycle to bring professional clarity to every freelance engagement.
+            A seamless three-step cycle to bring professional clarity to every project.
           </p>
         </div>
 

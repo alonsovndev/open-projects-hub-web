@@ -16,8 +16,8 @@ export const HomeHero: FC = () => {
           Turn Ambiguity <span className={styles.heroAccent}>Into Action.</span>
         </h1>
         <p className={styles.heroDescription}>
-          The official space for Admin discovery and Viewer planning review. We bridge the gap
-          between messy client notes and structured project success.
+          Transform raw ideas into structured project plans with AI-powered refinement, seamless
+          Markdown exports, and transparent client backlog visualization.
         </p>
         <div className={styles.heroActions}>
           <Button
