@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { MenuOutlined, CloseOutlined, FileTextOutlined } from "@ant-design/icons";
+import { MenuOutlined, CloseOutlined, FileTextOutlined, GithubOutlined } from "@ant-design/icons";
 
 import { useActiveTheme } from "@/app/hooks/use-active-theme";
 import { ThemeToggle } from "@/shared/components/theme-toggle";
@@ -48,6 +48,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                   rel="noopener noreferrer"
                   className={styles.navLink}
                 >
+                  <GithubOutlined className={styles.navIcon} />
                   Code
                 </a>
                 <a
@@ -57,7 +58,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                   className={styles.navLink}
                 >
                   <FileTextOutlined className={styles.navIcon} />
-                  Documentation
+                  Docs
                 </a>
               </nav>
             </div>
@@ -100,6 +101,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 className={styles.mobileNavLink}
                 onClick={toggleMobileMenu}
               >
+                <GithubOutlined className={styles.navIcon} />
                 Code
               </a>
               <a
