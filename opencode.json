@@ -8,8 +8,10 @@
   },
   "instructions": [
     "./AGENTS.md",
+    "./DESIGN.md",
     "./.opencode/knowledge/repo-standards.md",
-    "./.opencode/knowledge/stitch.md"
+    "./.opencode/knowledge/stitch.md",
+    "./.opencode/workflows/ui-ux-workflows.md"
   ],
   "mcp": {
     "context7": {
