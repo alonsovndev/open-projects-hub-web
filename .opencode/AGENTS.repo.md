@@ -18,6 +18,31 @@ Repository-only guidance for `open-projects-hub-web`.
   - `shared/` owns cross-feature types, hooks, utilities, and layout pieces
 - Follow current naming and file placement before introducing new patterns.
 
+## Design System
+
+- **DESIGN.md** (project root) is the single source of truth for all UI/UX decisions.
+- All components and pages must conform to DESIGN.md standards.
+- When DESIGN.md and existing code conflict, code should be updated to match DESIGN.md.
+- Load the `design-system-guardian` skill after any component/page creation to verify compliance.
+
+## UI/UX Skills
+
+The repository has 9 specialized skills in `.opencode/skills/`:
+
+| Skill                        | When to Use                             |
+| ---------------------------- | --------------------------------------- |
+| `ui-ux-reviewer`             | Review overall UX and interface quality |
+| `design-system-guardian`     | Enforce DESIGN.md compliance            |
+| `ant-design-architect`       | Verify Ant Design component usage       |
+| `responsive-design-reviewer` | Verify all breakpoints work             |
+| `accessibility-reviewer`     | Verify WCAG AA compliance               |
+| `landing-page-expert`        | Optimize marketing/conversion pages     |
+| `form-ux-expert`             | Optimize form UX                        |
+| `dashboard-ux-expert`        | Improve admin panel UX                  |
+| `css-modules-reviewer`       | Review SCSS maintainability             |
+
+Load the relevant skill when the task matches its purpose. See `.opencode/workflows/ui-ux-workflows.md` for automation triggers.
+
 ## Verification Commands
 
 - Lint: `npm run lint`

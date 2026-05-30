@@ -24,6 +24,17 @@
 - Follow current page composition: feature page + feature hooks + focused child components.
 - Prefer explicit names aligned with domain language (`ProjectResponse`, `StoryResponse`, `endDate`, `clientName`).
 - Keep forms typed, validate at the form layer, and convert date objects to API-safe strings at submit boundaries.
+- **DESIGN.md** is the single source of truth for all UI decisions — always reference it before building UI.
+
+## Design System Enforcement
+
+- Every component must use the design token system (`$primary-base`, `$spacing-md`, etc.) — no hardcoded values.
+- The 9 skills in `.opencode/skills/` provide automated review for UI/UX quality. Load the relevant skill when:
+  - Creating new pages → `responsive-design-reviewer` + `accessibility-reviewer` + `ant-design-architect`
+  - Building forms → `form-ux-expert` + `accessibility-reviewer`
+  - Editing SCSS → `css-modules-reviewer` + `design-system-guardian`
+  - Pre-release → `design-system-guardian` + `accessibility-reviewer`
+- See `.opencode/workflows/ui-ux-workflows.md` for detailed trigger mapping.
 
 ## Security Constraints
 
@@ -41,6 +52,7 @@
   - `npm run test:run -- <relevant paths>` or equivalent targeted Vitest runs
   - `npm run build` when routing, bundling, or app-wide types may be affected
 - If repo tests are already failing outside the changed scope, report that clearly instead of masking it.
+- For UI changes, also run `design-system-guardian` + `accessibility-reviewer` skills.
 
 ## Generated AI Instruction Files
 
