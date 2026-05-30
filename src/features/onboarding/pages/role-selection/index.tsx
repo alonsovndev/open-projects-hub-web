@@ -1,5 +1,7 @@
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { CheckOutlined, EyeOutlined, SafetyOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AppHeader } from "@/shared/components/layout/app-header";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
@@ -10,92 +12,86 @@ export const RoleSelection: FC = () => {
   usePageTitle("Choose Role");
   const navigate = useNavigate();
 
-  const handleAdminClick = () => {
-    navigate("/login");
-  };
-
-  const handleUserClick = () => {
-    navigate("/project-entry");
-  };
-
   return (
     <div className={styles.pageContainer}>
       <AppHeader />
       <main className={styles.mainContent}>
         <section className={styles.selectionSection}>
           <div className={styles.selectionContent}>
-            <h1 className={styles.title}>Choose Your Role</h1>
-            <p className={styles.description}>Select how you want to interact with the platform</p>
+            <h1 className={styles.title}>Welcome to Open Projects Hub</h1>
+            <p className={styles.subtitle}>Choose how you'd like to continue</p>
 
             <div className={styles.roleCards}>
-              <button className={styles.roleCard} onClick={handleAdminClick}>
-                <div className={styles.roleIcon}>
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 2L2 7L12 12L22 7L12 2Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M2 17L12 22L22 17"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M2 12L12 17L22 12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+              {/* Admin Card */}
+              <div className={styles.roleCard}>
+                <div className={styles.roleIconWrapper}>
+                  <SafetyOutlined className={styles.roleIcon} />
                 </div>
-                <h2 className={styles.roleTitle}>Admin</h2>
-                <p className={styles.roleDescription}>
-                  Manage projects, users, and platform settings
-                </p>
-              </button>
+                <h2 className={styles.roleTitle}>I&apos;m an Admin</h2>
+                <span className={styles.roleBadge}>Dashboard &amp; Project Management</span>
 
-              <button className={styles.roleCard} onClick={handleUserClick}>
-                <div className={styles.roleIcon}>
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                <ul className={styles.featureList}>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Manage projects
+                  </li>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Track backlog
+                  </li>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Refine stories
+                  </li>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Team settings
+                  </li>
+                </ul>
+
+                <Button
+                  type="primary"
+                  size="large"
+                  block
+                  className={styles.primaryButton}
+                  onClick={() => navigate("/login")}
+                >
+                  Continue as Admin
+                </Button>
+              </div>
+
+              {/* Client Card */}
+              <div className={styles.roleCard}>
+                <div className={styles.roleIconWrapper}>
+                  <EyeOutlined className={styles.roleIcon} />
                 </div>
-                <h2 className={styles.roleTitle}>User</h2>
-                <p className={styles.roleDescription}>
-                  View and collaborate on projects with your team
-                </p>
-              </button>
+                <h2 className={styles.roleTitle}>I&apos;m a Client</h2>
+                <span className={styles.roleBadge}>Story Review &amp; Feedback</span>
+
+                <ul className={styles.featureList}>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> View approved stories
+                  </li>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Provide feedback
+                  </li>
+                  <li className={styles.featureItem}>
+                    <CheckOutlined className={styles.checkIcon} /> Track progress
+                  </li>
+                </ul>
+
+                <Button
+                  type="default"
+                  size="large"
+                  block
+                  className={styles.outlineButton}
+                  onClick={() => navigate("/project-entry")}
+                >
+                  Continue as Client
+                </Button>
+              </div>
+            </div>
+
+            <div className={styles.footer}>
+              <Link to="/project-entry" className={styles.footerLink}>
+                Have a project ID? Enter it here
+              </Link>
             </div>
           </div>
         </section>

@@ -1,15 +1,17 @@
+@use "@/styles/variables.scss" as *;
+
 .roleCard {
   flex: 1;
   text-align: left;
   border-radius: 12px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
-  border: 1px solid #f1f5f9 !important;
+  box-shadow: $shadow-card !important;
+  border: 1px solid $surface-light !important;
   transition: all 0.3s ease;
   padding: 10px;
 }
 
 .roleCard:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: $shadow-card-hover !important;
   transform: translateY(-2px);
 }
 
@@ -26,24 +28,24 @@
 
 /* Modifier classes for icon colors based on role */
 .adminIcon {
-  background-color: #e6f4ff;
-  color: #1677ff;
+  background-color: $primary-bg-light;
+  color: $primary-base;
 }
 
 .viewerIcon {
-  background-color: #f1f5f9;
-  color: #475569;
+  background-color: $surface-light;
+  color: $text-secondary;
 }
 
 .cardTitle {
   font-size: 18px !important;
   font-weight: 600 !important;
   margin-bottom: 12px !important;
-  color: #0f172a !important;
+  color: $text-primary !important;
 }
 
 .cardDescription {
-  color: #64748b;
+  color: $text-secondary;
   font-size: 14px;
   margin-bottom: 32px;
   line-height: 1.5;

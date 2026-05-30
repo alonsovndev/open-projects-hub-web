@@ -4,11 +4,9 @@ import { message } from "antd";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetUserPreferencesQuery,
-  useUpdateUserPreferencesMutation,
   useChangePasswordMutation,
 } from "@/features/settings/api/settings-rtk-api";
-import type { PasswordChangeData, UserPreferences } from "@/features/settings/types";
+import type { PasswordChangeData } from "@/features/settings/types";
 
 export const useSettings = () => {
   // Profile
@@ -18,22 +16,13 @@ export const useSettings = () => {
     error: profileError,
   } = useGetUserProfileQuery();
 
-  // Preferences
-  const {
-    data: preferences,
-    isLoading: preferencesLoading,
-    error: preferencesError,
-  } = useGetUserPreferencesQuery();
-
   // Mutations
   const [updateProfile, { isLoading: isUpdatingProfile }] = useUpdateUserProfileMutation();
-  const [updatePreferences, { isLoading: isUpdatingPreferences }] =
-    useUpdateUserPreferencesMutation();
   const [changePasswordMutation, { isLoading: isChangingPassword }] = useChangePasswordMutation();
 
-  const loading = profileLoading || preferencesLoading;
-  const saving = isUpdatingProfile || isUpdatingPreferences || isChangingPassword;
-  const error = profileError || preferencesError;
+  const loading = profileLoading;
+  const saving = isUpdatingProfile || isChangingPassword;
+  const error = profileError;
 
   const handleUpdateProfile = useCallback(
     async (values: { displayName: string }) => {
@@ -47,20 +36,6 @@ export const useSettings = () => {
       }
     },
     [updateProfile]
-  );
-
-  const handleUpdatePreferences = useCallback(
-    async (values: Partial<UserPreferences>) => {
-      try {
-        await updatePreferences(values).unwrap();
-        message.success("Preferences updated successfully");
-      } catch (err) {
-        console.error("Failed to update preferences:", err);
-        message.error("Failed to update preferences. Please try again.");
-        throw err;
-      }
-    },
-    [updatePreferences]
   );
 
   const handleChangePassword = useCallback(
@@ -84,12 +59,10 @@ export const useSettings = () => {
 
   return {
     profile: profile ?? null,
-    preferences: preferences ?? null,
     loading,
     error,
     saving,
     handleUpdateProfile,
-    handleUpdatePreferences,
     handleChangePassword,
   };
 };

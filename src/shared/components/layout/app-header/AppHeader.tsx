@@ -1,9 +1,11 @@
 import type { FC, ReactNode } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Typography } from "antd";
-import { MenuOutlined, CloseOutlined, GithubOutlined, FileTextOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import { MenuOutlined, CloseOutlined, FileTextOutlined } from "@ant-design/icons";
 
+import { useActiveTheme } from "@/app/hooks/use-active-theme";
+import { ThemeToggle } from "@/shared/components/theme-toggle";
 import styles from "./app-header.module.scss";
 
 interface AppHeaderProps {
@@ -13,8 +15,6 @@ interface AppHeaderProps {
   variant?: "default" | "landing";
 }
 
-const { Text } = Typography;
-
 export const AppHeader: FC<AppHeaderProps> = ({
   children,
   actions,
@@ -22,6 +22,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
   variant = "default",
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme: activeTheme } = useActiveTheme();
+  const logoSrc = activeTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -36,11 +38,18 @@ export const AppHeader: FC<AppHeaderProps> = ({
             {/* Left: Brand + Links */}
             <div className={styles.leftSection}>
               <Link to="/" className={styles.brandSection}>
-                <img src="/logo.svg" alt="Open Freelancer Hub" className={styles.brandLogo} />
-                <Text className={styles.brandName}>Open Freelancer Hub</Text>
+                <img src={logoSrc} alt="Open Freelancer Hub" className={styles.brandLogo} />
               </Link>
 
               <nav className={styles.navLinks}>
+                <a
+                  href="https://github.com/alonsovndev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.navLink}
+                >
+                  Code
+                </a>
                 <a
                   href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
                   target="_blank"
@@ -48,22 +57,14 @@ export const AppHeader: FC<AppHeaderProps> = ({
                   className={styles.navLink}
                 >
                   <FileTextOutlined className={styles.navIcon} />
-                  Docs
-                </a>
-                <a
-                  href="https://github.com/NaranjoSolutions/open-projects-hub-web"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.navLink}
-                >
-                  <GithubOutlined className={styles.navIcon} />
-                  GitHub
+                  Documentation
                 </a>
               </nav>
             </div>
 
             {/* Right: Actions */}
             <div className={styles.landingActions}>
+              <ThemeToggle />
               <Button type="text" size="large" href="/login" className={styles.signInButton}>
                 Log In
               </Button>
@@ -93,6 +94,15 @@ export const AppHeader: FC<AppHeaderProps> = ({
           <div className={styles.mobileMenu}>
             <nav className={styles.mobileNavLinks}>
               <a
+                href="https://github.com/alonsovndev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.mobileNavLink}
+                onClick={toggleMobileMenu}
+              >
+                Code
+              </a>
+              <a
                 href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -100,20 +110,11 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 onClick={toggleMobileMenu}
               >
                 <FileTextOutlined className={styles.navIcon} />
-                Docs
-              </a>
-              <a
-                href="https://github.com/NaranjoSolutions/open-projects-hub-web"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.mobileNavLink}
-                onClick={toggleMobileMenu}
-              >
-                <GithubOutlined className={styles.navIcon} />
-                GitHub
+                Documentation
               </a>
             </nav>
             <div className={styles.mobileActions}>
+              <ThemeToggle />
               <Button
                 type="text"
                 size="large"
@@ -143,9 +144,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
   return (
     <header className={styles.header}>
       <Link to="/" className={styles.brandSection}>
-        <img src="/logo.svg" alt="Open Freelancer Project Hub logo" className={styles.brandLogo} />
-
-        <Text className={styles.brandName}>Open Freelancer Project Hub</Text>
+        <img src={logoSrc} alt="Open Freelancer Project Hub logo" className={styles.brandLogo} />
 
         {children}
       </Link>

@@ -91,9 +91,9 @@
 
 .storyCard {
   background: $surface-white;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid $border-subtle;
   border-radius: $radius-lg;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: $shadow-lg;
   transition: all 0.3s ease;
 
   &:hover {
@@ -221,8 +221,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
-  color: $surface-white;
-  font-family: $font-headline;
+  color: $text-inverted;
   font-size: 0.875rem;
   font-weight: 700;
   border-radius: 50%;

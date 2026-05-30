@@ -11,144 +11,163 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $surface-light 0%, $surface-base 100%);
+  background-color: $surface-light;
   padding: $spacing-xl;
 }
 
 .entrySection {
   width: 100%;
-  max-width: 600px;
+  max-width: 440px;
   margin: 0 auto;
 }
 
 .entryContent {
   background: $surface-white;
   border-radius: $radius-lg;
-  padding: $spacing-2xl;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 3rem 2.5rem;
+  box-shadow: $shadow-card;
+  border: 1px solid $surface-base;
   text-align: center;
-}
 
-.iconWrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 96px;
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
-  border-radius: $radius-md;
-  color: $surface-white;
-  margin-bottom: $spacing-xl;
-
-  svg {
-    width: 64px;
-    height: 64px;
-  }
-}
-
-.title {
-  font-family: $font-headline;
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 $spacing-md;
-  color: $text-primary;
-
-  @media (max-width: $breakpoint-tablet) {
-    font-size: 2rem;
-  }
-}
-
-.description {
-  font-family: $font-body;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  margin: 0 0 $spacing-2xl;
-  color: $text-secondary;
-}
-
-.formWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
-}
-
-.input {
-  font-family: $font-body;
-  font-size: 1rem;
-  padding: $spacing-md;
-  border-radius: $radius-sm;
-  border: 2px solid $surface-base;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: $primary-light;
-  }
-
-  &:focus {
-    border-color: $primary-base;
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
-  }
-}
-
-.submitButton {
-  font-family: $font-body;
-  font-weight: 600;
-  padding: $spacing-md $spacing-xl;
-  height: auto;
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
-  border: none;
-  border-radius: $radius-sm;
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    &:hover:not(:disabled) {
-      transform: none;
-    }
-
-    &:active:not(:disabled) {
-      transform: none;
-    }
-  }
-}
-
-.helpText {
-  padding-top: $spacing-lg;
-  border-top: 1px solid $surface-base;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-
-  p {
-    font-family: $font-body;
-    font-size: 0.875rem;
-    margin: 0;
-    color: $text-secondary;
+  @media (max-width: 480px) {
+    padding: $spacing-xl $spacing-lg;
   }
 }
 
 .backLink {
   font-family: $font-body;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: $primary-base;
-  background: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-xl;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+}
+
+.backArrow {
+  flex-shrink: 0;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  border-radius: $radius-md;
+  color: $text-inverted;
+  margin-bottom: $spacing-lg;
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.title {
+  font-family: $font-headline;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 $spacing-sm;
+  color: $text-primary;
+}
+
+.description {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 $spacing-xl;
+  color: $text-secondary;
+}
+
+.form {
+  margin-bottom: $spacing-lg;
+
+  :global(.ant-form-item) {
+    margin-bottom: $spacing-md;
+  }
+}
+
+.formItem {
+  margin-bottom: 0;
+  text-align: left;
+
+  :global(.ant-form-item-label) {
+    padding-bottom: $spacing-xs;
+
+    label {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-primary;
+      height: auto;
+    }
+  }
+}
+
+.input {
+  height: 44px;
+  background-color: $surface-white;
+  border: 1px solid $border-light;
+  border-radius: $radius-sm;
+  padding: 12px 16px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: $primary-base;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: $primary-base;
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+  }
+}
+
+.submitButton {
+  height: 44px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  background-color: $primary-base;
   border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.3s ease;
+  border-radius: $radius-sm;
+  transition: background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+  }
+
+  &:active:not(:disabled) {
+    opacity: 0.9;
+  }
+}
+
+.helpText {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  color: $text-secondary;
+  margin: 0 0 $spacing-lg;
+}
+
+.homeLink {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  color: $primary-base;
+  text-decoration: none;
+  font-weight: 500;
+  display: block;
+  text-align: center;
 
   &:hover {
     color: $primary-dark;

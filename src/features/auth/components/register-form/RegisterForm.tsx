@@ -1,13 +1,12 @@
 import type { FC } from "react";
 
 import {
-  ArrowRightOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   LockOutlined,
   MailOutlined,
+  SafetyOutlined,
   UserOutlined,
-  UserAddOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
@@ -23,12 +22,16 @@ export const RegisterForm: FC = () => {
     <section className={styles.registerPanel} aria-labelledby="admin-register-title">
       <div className={styles.card}>
         <div className={styles.iconWrapper}>
-          <UserAddOutlined className={styles.icon} />
+          <SafetyOutlined className={styles.icon} />
         </div>
 
         <h1 id="admin-register-title" className={styles.title}>
           Create Admin Account
         </h1>
+
+        <p className={styles.description}>
+          Only Admin users create and manage planning workspaces.
+        </p>
 
         <Form
           form={registerForm.form}
@@ -38,7 +41,7 @@ export const RegisterForm: FC = () => {
           requiredMark={false}
         >
           <Form.Item
-            label="FULL NAME"
+            label="Full Name"
             name="fullName"
             rules={registerForm.fullNameFieldRules}
             className={styles.formItem}
@@ -53,7 +56,7 @@ export const RegisterForm: FC = () => {
           </Form.Item>
 
           <Form.Item
-            label="WORK EMAIL"
+            label="Work Email"
             name="email"
             rules={registerForm.emailFieldRules}
             className={styles.formItem}
@@ -69,7 +72,7 @@ export const RegisterForm: FC = () => {
 
           <div className={styles.passwordSection}>
             <Form.Item
-              label="PASSWORD"
+              label="Password"
               name="password"
               className={styles.formItem}
               rules={registerForm.passwordFieldRules}
@@ -102,7 +105,7 @@ export const RegisterForm: FC = () => {
             )}
 
             <Form.Item
-              label="CONFIRM PASSWORD"
+              label="Confirm Password"
               name="confirmPassword"
               className={styles.formItem}
               rules={registerForm.confirmPasswordFieldRules}
@@ -139,8 +142,6 @@ export const RegisterForm: FC = () => {
             block
             className={styles.submitButton}
             loading={registerForm.isSubmitting}
-            icon={<ArrowRightOutlined />}
-            iconPosition="end"
           >
             Create Account
           </Button>
@@ -149,7 +150,7 @@ export const RegisterForm: FC = () => {
         <div className={styles.cardFooter}>
           <span className={styles.footerText}>Already have an account? </span>
           <Link to="/login" className={styles.footerLink}>
-            Sign in
+            Sign In
           </Link>
         </div>
       </div>

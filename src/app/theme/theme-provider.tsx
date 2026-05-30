@@ -9,7 +9,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
-  const theme = useActiveTheme();
+  const { theme } = useActiveTheme();
   const themeConfig = theme === "dark" ? darkTokens : lightTokens;
 
   return <ConfigProvider theme={themeConfig}>{children}</ConfigProvider>;

@@ -7,7 +7,7 @@
 .sider {
   background: $surface-white;
   border-right: 1px solid $surface-base;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+  box-shadow: $shadow-md;
 
   :global {
     .ant-layout-sider-trigger {
@@ -26,25 +26,20 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
+  gap: $spacing-sm; // Reduced gap for logo and text
   padding: 0 $spacing-lg;
   margin-bottom: $spacing-xl;
+  height: 64px; // Ensure consistent height for logo area
 }
 
-.logoIcon {
-  font-size: 1.5rem;
-  color: $primary-base;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.logoImage {
+  height: 36px; // Size for expanded sider
+  width: auto;
+  transition: height 0.2s ease;
 }
 
-.logoText {
-  font-family: $font-headline;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: $text-primary;
-  white-space: nowrap;
+.sider.ant-layout-sider-collapsed .logoImage {
+  height: 32px; // Slightly smaller for collapsed sider
 }
 
 .collapseButton {

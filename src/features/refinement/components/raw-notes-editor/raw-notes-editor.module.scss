@@ -1,3 +1,5 @@
+@use "@/styles/variables.scss" as *;
+
 .editorCard {
   height: 100%;
   display: flex;
@@ -22,11 +24,11 @@
 }
 
 .aiIcon {
-  color: #1890ff;
+  color: $primary-base;
 }
 
 .cardSubtitle {
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(var(--color-text-primary-rgb), 0.45);
   font-size: 14px;
 }
 

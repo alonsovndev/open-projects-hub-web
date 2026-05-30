@@ -1,35 +1,32 @@
 import type { FC } from "react";
 
 import { Button } from "antd";
-import { ArrowRightOutlined } from "@ant-design/icons";
-
-import { useHomeNavigation } from "@/features/home/hooks/use-home-navigation";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./home-cta-section.module.scss";
 
 export const HomeCtaSection: FC = () => {
-  const { handleStartProject, handleLearnMore } = useHomeNavigation();
+  const navigate = useNavigate();
 
   return (
     <section className={styles.ctaSection}>
       <div className={styles.ctaContainer}>
         <div className={styles.ctaContent}>
-          <h2 className={styles.ctaTitle}>BUILD WITH PRECISION.</h2>
+          <h2 className={styles.ctaTitle}>Build with Precision.</h2>
           <p className={styles.ctaDescription}>
-            Stop wasting time on unclear requirements. Start every project with confidence, clarity,
-            and a solid foundation that sets you up for success.
+            Turn ambiguous notes into actionable project plans. Starts here.
           </p>
           <div className={styles.ctaActions}>
             <Button
               type="primary"
               size="large"
               className={styles.ctaPrimaryButton}
-              onClick={handleStartProject}
+              onClick={() => navigate("/register")}
             >
-              Start Your First Project
+              Create Account
             </Button>
-            <Button size="large" className={styles.ctaSecondaryButton} onClick={handleLearnMore}>
-              Learn More <ArrowRightOutlined />
+            <Button size="large" className={styles.ctaSecondaryButton}>
+              Contact
             </Button>
           </div>
         </div>

@@ -10,7 +10,7 @@ import { usePageTitle } from "@/shared/hooks/use-page-title";
 import styles from "./home.module.scss";
 
 export const Home: FC = () => {
-  usePageTitle("Welcome");
+  usePageTitle("Project Hub — From Ambiguous Notes to Approved Artifacts");
 
   return (
     <div className={styles.pageContainer}>

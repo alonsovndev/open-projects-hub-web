@@ -1,105 +1,103 @@
 import type { FC } from "react";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Button, message } from "antd";
+import { Button, Form, Input, message } from "antd";
+import { KeyOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
-import { AppHeader } from "@/shared/components/layout/app-header";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./project-entry.module.scss";
 
+interface ProjectIdFormValues {
+  projectId: string;
+}
+
 export const ProjectEntry: FC = () => {
   usePageTitle("Project Entry");
   const navigate = useNavigate();
-  const [projectId, setProjectId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm<ProjectIdFormValues>();
 
-  const handleSubmit = async () => {
-    if (!projectId.trim()) {
+  const handleSubmit = async (values: ProjectIdFormValues) => {
+    const id = values.projectId.trim();
+    if (!id) {
       message.error("Please enter a project ID");
       return;
     }
 
-    setLoading(true);
-
     // TODO: Validate project ID with backend
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      message.success("Project ID validated successfully");
-      // Navigate to viewer with project ID
-      navigate(`/viewer/${projectId}`);
-    }, 1000);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
+    message.success("Project ID validated successfully");
+    navigate(`/viewer/${id}`);
   };
 
   return (
     <div className={styles.pageContainer}>
-      <AppHeader />
       <main className={styles.mainContent}>
         <section className={styles.entrySection}>
           <div className={styles.entryContent}>
-            <div className={styles.iconWrapper}>
+            <Link to="/role-selection" className={styles.backLink}>
               <svg
-                width="64"
-                height="64"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.backArrow}
               >
-                <path
-                  d="M9 11L12 14L22 4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
               </svg>
+              Back to Role Selection
+            </Link>
+
+            <div className={styles.iconWrapper}>
+              <KeyOutlined className={styles.icon} />
             </div>
 
             <h1 className={styles.title}>Enter Project ID</h1>
             <p className={styles.description}>
-              Please enter the project ID provided to you to access the project details
+              Paste the project ID shared by your admin to access the project.
             </p>
 
-            <div className={styles.formWrapper}>
-              <Input
-                size="large"
-                placeholder="e.g., PRJ-2024-XXXX"
-                value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className={styles.input}
-              />
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+              requiredMark={false}
+              className={styles.form}
+            >
+              <Form.Item
+                label="Project ID"
+                name="projectId"
+                className={styles.formItem}
+                rules={[{ required: true, message: "Please enter your project ID." }]}
+              >
+                <Input
+                  size="large"
+                  placeholder="e.g. PROJ-XXXX-XXXX"
+                  autoComplete="off"
+                  className={styles.input}
+                />
+              </Form.Item>
+
               <Button
                 type="primary"
+                htmlType="submit"
                 size="large"
-                loading={loading}
-                onClick={handleSubmit}
+                block
                 className={styles.submitButton}
               >
                 Access Project
               </Button>
-            </div>
+            </Form>
 
-            <div className={styles.helpText}>
-              <p>Don't have a project ID?</p>
-              <button className={styles.backLink} onClick={() => navigate("/role-selection")}>
-                Go back to role selection
-              </button>
-            </div>
+            <p className={styles.helpText}>Don&apos;t have a project ID? Contact your admin</p>
+
+            <Link to="/" className={styles.homeLink}>
+              Back to Home
+            </Link>
           </div>
         </section>
       </main>

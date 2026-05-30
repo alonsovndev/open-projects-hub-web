@@ -1,3 +1,5 @@
+@use "@/styles/variables.scss" as *;
+
 .container {
   padding: 50px 24px;
   max-width: 600px;
@@ -15,7 +17,7 @@
 }
 
 .errorContent {
-  background: #f5f5f5;
+  background: $surface-light;
   padding: 12px;
   border-radius: 4px;
   font-size: 12px;

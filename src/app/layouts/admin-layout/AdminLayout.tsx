@@ -15,6 +15,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import { ThemeToggle } from "@/shared/components/theme-toggle";
+import { useActiveTheme } from "@/app/hooks/use-active-theme";
 
 import styles from "./admin-layout.module.scss";
 
@@ -30,6 +32,8 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth.session);
+  const { theme: activeTheme } = useActiveTheme();
+  const logoSrc = activeTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -88,10 +92,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       >
         <div className={styles.siderContent}>
           <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <ProjectOutlined />
-            </div>
-            {!collapsed && <span className={styles.logoText}>Open Project Hub</span>}
+            <img src={logoSrc} alt="Open Project Hub" className={styles.logoImage} />
           </div>
 
           <Button
@@ -118,6 +119,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
                 <Text className={styles.userEmail}>{session?.email || ""}</Text>
               </div>
             )}
+            <ThemeToggle />
             <Button
               type="text"
               icon={<LogoutOutlined />}

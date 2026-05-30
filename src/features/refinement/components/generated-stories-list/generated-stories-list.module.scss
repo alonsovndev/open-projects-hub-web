@@ -1,3 +1,5 @@
+@use "@/styles/variables.scss" as *;
+
 .listCard {
   height: 100%;
   display: flex;
@@ -21,7 +23,7 @@
 }
 
 .cardSubtitle {
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(var(--color-text-primary-rgb), 0.45);
   font-size: 14px;
 }
 
@@ -35,7 +37,7 @@
 
 .emptyIcon {
   font-size: 64px;
-  color: rgba(0, 0, 0, 0.25);
+  color: rgba(var(--color-text-primary-rgb), 0.25);
 }
 
 .emptyTitle {
@@ -44,19 +46,19 @@
 }
 
 .emptyText {
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(var(--color-text-primary-rgb), 0.45);
 }
 
 .storyCard {
-  border: 1px solid #d9d9d9;
+  border: 1px solid $border-light;
   border-radius: 8px;
   padding: 20px;
-  background: #ffffff;
-  border-left: 4px solid #1890ff;
+  background: $surface-white;
+  border-left: 4px solid $primary-base;
 
   &:hover {
-    border-left-color: #096dd9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    border-left-color: $primary-dark;
+    box-shadow: $shadow-card;
   }
 }
 
@@ -84,16 +86,16 @@
 }
 
 .approveBtn {
-  color: #52c41a;
+  color: $success-base;
 
   &:hover {
-    color: #73d13d;
+    color: $success-base;
   }
 }
 
 .storyDescription {
   margin: 0 0 16px 0 !important;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(var(--color-text-primary-rgb), 0.65);
   font-style: italic;
 }
 
@@ -109,7 +111,7 @@
 
 .criteriaLabel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(var(--color-text-primary-rgb), 0.45);
   letter-spacing: 0.5px;
 }
 
@@ -125,5 +127,5 @@
 
 .criteriaText {
   flex: 1;
-  color: rgba(0, 0, 0, 0.85);
+  color: rgba(var(--color-text-primary-rgb), 0.85);
 }

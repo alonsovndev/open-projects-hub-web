@@ -1,34 +1,38 @@
 import type { FC } from "react";
 
+import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-
-import { useHomeNavigation } from "@/features/home/hooks/use-home-navigation";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./home-hero.module.scss";
 
 export const HomeHero: FC = () => {
-  const { handleGetStarted } = useHomeNavigation();
+  const navigate = useNavigate();
 
   return (
     <section className={styles.heroSection}>
       <div className={styles.heroContent}>
         <h1 className={styles.heroTitle}>
-          TURN AMBIGUITY
-          <br />
-          INTO <span className={styles.heroAccent}>ACTION.</span>
+          Turn Ambiguity <span className={styles.heroAccent}>Into Action.</span>
         </h1>
         <p className={styles.heroDescription}>
-          Transform unclear requirements into actionable project plans. Our AI-powered platform
-          helps freelancers and clients collaborate with precision.
+          The official space for Admin discovery and Viewer planning review. We bridge the gap
+          between messy client notes and structured project success.
         </p>
-        <Button
-          type="primary"
-          size="large"
-          className={styles.heroButton}
-          onClick={handleGetStarted}
-        >
-          Get Started
-        </Button>
+        <div className={styles.heroActions}>
+          <Button
+            type="primary"
+            size="large"
+            className={styles.heroPrimaryButton}
+            onClick={() => navigate("/role-selection")}
+          >
+            Start Project
+            <ArrowRightOutlined />
+          </Button>
+          <Button size="large" className={styles.heroSecondaryButton}>
+            View Sample
+          </Button>
+        </div>
       </div>
       <div className={styles.heroImage}>
         <img

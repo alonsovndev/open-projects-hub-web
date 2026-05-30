@@ -58,10 +58,8 @@ export const lightTokens: ThemeConfig = {
     marginLG: 24,
 
     // Shadow
-    boxShadow:
-      "0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02)",
-    boxShadowSecondary:
-      "0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)", // $shadow-card
+    boxShadowSecondary: "0 4px 16px rgba(0, 0, 0, 0.08)", // $shadow-lg
   },
   components: {
     Menu: {
@@ -156,16 +154,16 @@ export const darkTokens: ThemeConfig = {
     colorTextTertiary: "#7a7a7a",
     colorTextQuaternary: "#555555",
 
-    // Preserved primary (slightly lighter for dark bg contrast)
-    colorPrimary: "#4a8fd9",
-    colorPrimaryHover: "#6ba8e8",
-    colorPrimaryActive: "#3a7ac4",
-    colorLink: "#4a8fd9",
-    colorInfo: "#4a8fd9",
+    // Primary (darkened for WCAG AA 4.5:1 contrast on white button text)
+    colorPrimary: "#3270b5",
+    colorPrimaryHover: "#4882c7",
+    colorPrimaryActive: "#27609b",
+    colorLink: "#5a94d4",
+    colorInfo: "#3270b5",
 
     // Softened shadow for dark
-    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.2)",
-    boxShadowSecondary: "0 6px 16px 0 rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)", // $shadow-card
+    boxShadowSecondary: "0 4px 16px rgba(0, 0, 0, 0.4)", // $shadow-lg
   },
   components: {
     ...lightTokens.components,
@@ -173,10 +171,10 @@ export const darkTokens: ThemeConfig = {
       ...lightTokens.components?.Menu,
       itemBg: "transparent",
       itemColor: "#a0a0a0",
-      itemHoverBg: "rgba(74, 143, 217, 0.1)",
-      itemHoverColor: "#4a8fd9",
-      itemSelectedBg: "rgba(74, 143, 217, 0.15)",
-      itemSelectedColor: "#4a8fd9",
+      itemHoverBg: "rgba(50, 112, 181, 0.1)",
+      itemHoverColor: "#3270b5",
+      itemSelectedBg: "rgba(50, 112, 181, 0.15)",
+      itemSelectedColor: "#3270b5",
     },
     Button: {
       ...lightTokens.components?.Button,
@@ -185,13 +183,13 @@ export const darkTokens: ThemeConfig = {
       ...lightTokens.components?.Table,
       headerBg: "#1e1e1e",
       headerColor: "#a0a0a0",
-      rowHoverBg: "rgba(74, 143, 217, 0.05)",
+      rowHoverBg: "rgba(50, 112, 181, 0.05)",
     },
     Tabs: {
       ...lightTokens.components?.Tabs,
-      inkBarColor: "#4a8fd9",
-      itemSelectedColor: "#4a8fd9",
-      itemHoverColor: "#4a8fd9",
+      inkBarColor: "#3270b5",
+      itemSelectedColor: "#3270b5",
+      itemHoverColor: "#3270b5",
     },
   },
 };

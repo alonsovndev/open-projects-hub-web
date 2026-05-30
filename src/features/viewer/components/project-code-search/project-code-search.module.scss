@@ -1,9 +1,11 @@
+@use "@/styles/variables.scss" as *;
+
 .card {
   width: 100%;
   max-width: 500px;
   border-radius: 16px;
-  border: 1px solid #dbe4f0;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid $border-light;
+  box-shadow: $shadow-lg;
 }
 
 .title {
@@ -17,7 +19,7 @@
 }
 
 .inputIcon {
-  color: #94a3b8;
+  color: $text-secondary;
 }
 
 .feedback {
@@ -33,11 +35,11 @@
   display: block;
   margin: 0 auto;
   padding: 0;
-  color: #64748b;
+  color: $text-secondary;
 }
 
 .backButton:hover {
-  color: #1677ff;
+  color: $primary-base;
 }
 
 @media (max-width: 576px) {

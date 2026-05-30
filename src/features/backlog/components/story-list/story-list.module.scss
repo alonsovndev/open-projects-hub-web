@@ -22,7 +22,7 @@
   background: $surface-white;
   border: 1px solid $surface-base;
   border-radius: $radius-lg;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: $shadow-card;
   transition: all 0.3s ease;
 
   &:hover {

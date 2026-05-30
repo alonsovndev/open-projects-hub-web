@@ -80,7 +80,6 @@ export const baseApi = createApi({
     "Backlog",
     "Refinement",
     "UserProfile",
-    "UserPreferences",
   ],
   endpoints: () => ({}),
 });

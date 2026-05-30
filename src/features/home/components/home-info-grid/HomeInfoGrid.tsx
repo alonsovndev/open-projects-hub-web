@@ -1,43 +1,71 @@
 import type { FC } from "react";
 
-import { FolderOpenOutlined, UsergroupAddOutlined } from "@ant-design/icons";
+import { BulbOutlined, EditOutlined, EyeOutlined, LineChartOutlined } from "@ant-design/icons";
 
 import styles from "./home-info-grid.module.scss";
 
+const freelancerFeatures = [
+  {
+    id: "direct-discovery",
+    icon: <BulbOutlined />,
+    title: "Direct Discovery",
+    description: "AI-assisted mapping for complex requirements.",
+  },
+  {
+    id: "story-structuring",
+    icon: <EditOutlined />,
+    title: "Story Structuring",
+    description: "Full editorial control over project components.",
+  },
+];
+
+const clientFeatures = [
+  {
+    id: "secure-review",
+    icon: <EyeOutlined />,
+    title: "Secure Review",
+    description: "Read-only access to structured roadmaps.",
+  },
+  {
+    id: "visual-clarity",
+    icon: <LineChartOutlined />,
+    title: "Visual Clarity",
+    description: "Real-time momentum tracking and alignment.",
+  },
+];
+
 export const HomeInfoGrid: FC = () => {
   return (
-    <section className={styles.infoGridSection}>
-      <div className={styles.infoGridContainer}>
-        <div className={styles.infoCard}>
-          <div className={styles.infoIconWrapper}>
-            <FolderOpenOutlined className={styles.infoIcon} />
+    <section className={styles.gridSection}>
+      <div className={styles.gridContainer}>
+        <div className={styles.gridColumn}>
+          <h3 className={styles.columnTitle}>Freelancers</h3>
+          <div className={styles.featureList}>
+            {freelancerFeatures.map((feature) => (
+              <div key={feature.id} className={styles.featureCard}>
+                <div className={styles.featureIcon}>{feature.icon}</div>
+                <div className={styles.featureContent}>
+                  <h4 className={styles.featureTitle}>{feature.title}</h4>
+                  <p className={styles.featureDescription}>{feature.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <h3 className={styles.infoTitle}>PROJECT ARCHIVE</h3>
-          <p className={styles.infoDescription}>
-            Access your complete project history. Review past requirements, decisions, and outcomes
-            to inform future work and maintain institutional knowledge.
-          </p>
-          <ul className={styles.infoList}>
-            <li>Searchable project repository</li>
-            <li>Version history tracking</li>
-            <li>Exportable documentation</li>
-          </ul>
         </div>
 
-        <div className={styles.infoCard}>
-          <div className={styles.infoIconWrapper}>
-            <UsergroupAddOutlined className={styles.infoIcon} />
+        <div className={styles.gridColumn}>
+          <h3 className={styles.columnTitle}>Clients</h3>
+          <div className={styles.featureList}>
+            {clientFeatures.map((feature) => (
+              <div key={feature.id} className={styles.featureCard}>
+                <div className={styles.featureIcon}>{feature.icon}</div>
+                <div className={styles.featureContent}>
+                  <h4 className={styles.featureTitle}>{feature.title}</h4>
+                  <p className={styles.featureDescription}>{feature.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <h3 className={styles.infoTitle}>CLIENTS</h3>
-          <p className={styles.infoDescription}>
-            Manage client relationships and project portfolios. Track communication, preferences,
-            and project outcomes to deliver consistently excellent results.
-          </p>
-          <ul className={styles.infoList}>
-            <li>Client profile management</li>
-            <li>Project history per client</li>
-            <li>Communication logs</li>
-          </ul>
         </div>
       </div>
     </section>

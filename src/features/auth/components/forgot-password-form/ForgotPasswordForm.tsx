@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { ArrowRightOutlined, KeyOutlined, MailOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
@@ -14,12 +14,12 @@ export const ForgotPasswordForm: FC = () => {
   return (
     <section className={styles.forgotPasswordPanel} aria-labelledby="forgot-password-title">
       <div className={styles.card}>
-        <div className={styles.iconWrapper}>
-          <KeyOutlined className={styles.icon} />
-        </div>
+        <Link to="/login" className={styles.backLink}>
+          <ArrowLeftOutlined /> Back to Sign In
+        </Link>
 
         <h1 id="forgot-password-title" className={styles.title}>
-          Forgot Password?
+          Forgot Password
         </h1>
 
         <p className={styles.description}>
@@ -34,7 +34,7 @@ export const ForgotPasswordForm: FC = () => {
           requiredMark={false}
         >
           <Form.Item
-            label="EMAIL"
+            label="Email Address"
             name="email"
             rules={forgotPasswordForm.emailFieldRules}
             className={styles.formItem}
@@ -55,16 +55,17 @@ export const ForgotPasswordForm: FC = () => {
             block
             className={styles.submitButton}
             loading={forgotPasswordForm.isSubmitting}
-            icon={<ArrowRightOutlined />}
-            iconPosition="end"
           >
             Send Reset Link
           </Button>
         </Form>
 
-        <Link to="/login" className={styles.backLink}>
-          Back to Sign In
-        </Link>
+        <div className={styles.footer}>
+          Remember your password?{" "}
+          <Link to="/login" className={styles.footerLink}>
+            Sign In
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { useGetUserPreferencesQuery } from "@/features/settings/api/settings-rtk-api";
+export type ActiveTheme = "light" | "dark";
 
-type ActiveTheme = "light" | "dark";
+const THEME_OVERRIDE_KEY = "oph-theme";
 
 function resolveSystemTheme(): ActiveTheme {
   if (typeof window === "undefined") return "light";
@@ -11,9 +11,22 @@ function resolveSystemTheme(): ActiveTheme {
 
 const SYSTEM_THEME_QUERY = "(prefers-color-scheme: dark)";
 
-export const useActiveTheme = (): ActiveTheme => {
-  const { data: preferences, isLoading } = useGetUserPreferencesQuery();
+function getLocalOverride(): ActiveTheme | null {
+  try {
+    const val = localStorage.getItem(THEME_OVERRIDE_KEY);
+    if (val === "light" || val === "dark") return val;
+  } catch {
+    // localStorage unavailable
+  }
+  return null;
+}
+
+export const useActiveTheme = (): {
+  theme: ActiveTheme;
+  toggleTheme: () => void;
+} => {
   const [systemTheme, setSystemTheme] = useState<ActiveTheme>(resolveSystemTheme);
+  const [localOverride, setLocalOverride] = useState<ActiveTheme | null>(getLocalOverride);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(SYSTEM_THEME_QUERY);
@@ -26,19 +39,24 @@ export const useActiveTheme = (): ActiveTheme => {
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
 
-  // Wait for preferences to load — default to system theme
-  const activeTheme: ActiveTheme = (() => {
-    if (isLoading || !preferences) return systemTheme;
-
-    if (preferences.theme === "auto") return systemTheme;
-    if (preferences.theme === "dark") return "dark";
-    return "light";
-  })();
+  const activeTheme: ActiveTheme = localOverride ?? systemTheme;
 
   // Sync data-theme attribute on <html> for SCSS-level dark overrides
+  // and update favicon to match the active theme
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", activeTheme);
+
+    const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (favicon) {
+      favicon.href = activeTheme === "dark" ? "/favicon-dark.svg" : "/favicon.svg";
+    }
   }, [activeTheme]);
 
-  return activeTheme;
+  const toggleTheme = useCallback(() => {
+    const next = activeTheme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_OVERRIDE_KEY, next);
+    setLocalOverride(next);
+  }, [activeTheme]);
+
+  return { theme: activeTheme, toggleTheme };
 };

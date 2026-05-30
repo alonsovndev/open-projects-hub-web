@@ -1,6 +1,6 @@
 import { baseApi } from "@/app/api/base-api";
 
-import type { UserProfile, UserPreferences } from "@/features/settings/types";
+import type { UserProfile } from "@/features/settings/types";
 
 interface UpdateProfileRequest {
   displayName: string;
@@ -29,22 +29,6 @@ export const settingsApi = baseApi.injectEndpoints({
       invalidatesTags: ["UserProfile"],
     }),
 
-    // Get user preferences
-    getUserPreferences: builder.query<UserPreferences, void>({
-      query: () => "/v1/users/me/preferences",
-      providesTags: ["UserPreferences"],
-    }),
-
-    // Update user preferences
-    updateUserPreferences: builder.mutation<UserPreferences, Partial<UserPreferences>>({
-      query: (data) => ({
-        url: "/v1/users/me/preferences",
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["UserPreferences"],
-    }),
-
     // Change password
     changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
       query: (data) => ({
@@ -56,10 +40,5 @@ export const settingsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetUserProfileQuery,
-  useUpdateUserProfileMutation,
-  useGetUserPreferencesQuery,
-  useUpdateUserPreferencesMutation,
-  useChangePasswordMutation,
-} = settingsApi;
+export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useChangePasswordMutation } =
+  settingsApi;

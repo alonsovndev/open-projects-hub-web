@@ -1,10 +1,9 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined, SettingOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
-import { PreferencesForm } from "@/features/settings/components/preferences-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -14,16 +13,8 @@ const { Title } = Typography;
 
 export const SettingsPage: FC = () => {
   usePageTitle("Settings");
-  const {
-    profile,
-    preferences,
-    loading,
-    error,
-    saving,
-    handleUpdateProfile,
-    handleUpdatePreferences,
-    handleChangePassword,
-  } = useSettings();
+  const { profile, loading, error, saving, handleUpdateProfile, handleChangePassword } =
+    useSettings();
 
   if (loading) {
     return (
@@ -33,7 +24,7 @@ export const SettingsPage: FC = () => {
     );
   }
 
-  if (error || !profile || !preferences) {
+  if (error || !profile) {
     return (
       <div className={styles.pageContainer}>
         <Alert
@@ -56,22 +47,6 @@ export const SettingsPage: FC = () => {
         </span>
       ),
       children: <ProfileForm profile={profile} saving={saving} onSubmit={handleUpdateProfile} />,
-    },
-    {
-      key: "preferences",
-      label: (
-        <span>
-          <SettingOutlined />
-          Preferences
-        </span>
-      ),
-      children: (
-        <PreferencesForm
-          preferences={preferences}
-          saving={saving}
-          onSubmit={handleUpdatePreferences}
-        />
-      ),
     },
     {
       key: "security",

@@ -1,11 +1,10 @@
 import type { FC } from "react";
 
 import {
-  ArrowRightOutlined,
+  ArrowLeftOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
   LockOutlined,
-  ReloadOutlined,
+  MinusCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
@@ -20,17 +19,15 @@ export const ResetPasswordForm: FC = () => {
   return (
     <section className={styles.resetPasswordPanel} aria-labelledby="reset-password-title">
       <div className={styles.card}>
-        <div className={styles.iconWrapper}>
-          <ReloadOutlined className={styles.icon} />
-        </div>
+        <Link to="/login" className={styles.backLink}>
+          <ArrowLeftOutlined /> Back to Sign In
+        </Link>
 
         <h1 id="reset-password-title" className={styles.title}>
           Reset Password
         </h1>
 
-        <p className={styles.description}>
-          Please enter your current password and choose a new one.
-        </p>
+        <p className={styles.description}>Create a new password for your account.</p>
 
         <Form
           form={resetPasswordForm.form}
@@ -40,7 +37,7 @@ export const ResetPasswordForm: FC = () => {
           requiredMark={false}
         >
           <Form.Item
-            label="CURRENT PASSWORD"
+            label="Current Password"
             name="currentPassword"
             className={styles.formItem}
             rules={resetPasswordForm.currentPasswordFieldRules}
@@ -54,56 +51,36 @@ export const ResetPasswordForm: FC = () => {
             />
           </Form.Item>
 
-          <div className={styles.passwordSection}>
-            <Form.Item
-              label="NEW PASSWORD"
-              name="newPassword"
-              className={styles.formItem}
-              rules={resetPasswordForm.newPasswordFieldRules}
-            >
-              <Input.Password
-                size="large"
-                prefix={<LockOutlined className={styles.inputIcon} />}
-                placeholder="••••••••"
-                autoComplete="new-password"
-                className={styles.input}
-              />
-            </Form.Item>
+          <Form.Item
+            label="New Password"
+            name="newPassword"
+            className={styles.formItem}
+            rules={resetPasswordForm.newPasswordFieldRules}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className={styles.inputIcon} />}
+              placeholder="••••••••"
+              autoComplete="new-password"
+              className={styles.input}
+            />
+          </Form.Item>
 
-            {resetPasswordForm.hasPasswordInput && (
-              <ul className={styles.passwordRules} aria-label="Password requirements">
-                {resetPasswordForm.passwordRuleStatuses.map((rule) => (
-                  <li
-                    key={rule.id}
-                    className={rule.isMet ? styles.passwordRuleMet : styles.passwordRulePending}
-                  >
-                    {rule.isMet ? (
-                      <CheckCircleOutlined className={styles.ruleIcon} />
-                    ) : (
-                      <CloseCircleOutlined className={styles.ruleIcon} />
-                    )}
-                    <span>{rule.label}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <Form.Item
-              label="CONFIRM NEW PASSWORD"
-              name="confirmPassword"
-              className={styles.formItem}
-              rules={resetPasswordForm.confirmPasswordFieldRules}
-              dependencies={["newPassword"]}
-            >
-              <Input.Password
-                size="large"
-                prefix={<LockOutlined className={styles.inputIcon} />}
-                placeholder="••••••••"
-                autoComplete="new-password"
-                className={styles.input}
-              />
-            </Form.Item>
-          </div>
+          <Form.Item
+            label="Confirm New Password"
+            name="confirmPassword"
+            className={styles.formItem}
+            rules={resetPasswordForm.confirmPasswordFieldRules}
+            dependencies={["newPassword"]}
+          >
+            <Input.Password
+              size="large"
+              prefix={<LockOutlined className={styles.inputIcon} />}
+              placeholder="••••••••"
+              autoComplete="new-password"
+              className={styles.input}
+            />
+          </Form.Item>
 
           <Button
             type="primary"
@@ -112,16 +89,31 @@ export const ResetPasswordForm: FC = () => {
             block
             className={styles.submitButton}
             loading={resetPasswordForm.isSubmitting}
-            icon={<ArrowRightOutlined />}
-            iconPosition="end"
           >
             Update Password
           </Button>
         </Form>
 
-        <Link to="/login" className={styles.backLink}>
-          Back to Sign In
-        </Link>
+        {resetPasswordForm.hasPasswordInput && (
+          <div className={styles.rulesSection}>
+            <span className={styles.rulesTitle}>Requirement Checklist</span>
+            <ul className={styles.passwordRules} aria-label="Password requirements">
+              {resetPasswordForm.passwordRuleStatuses.map((rule) => (
+                <li
+                  key={rule.id}
+                  className={rule.isMet ? styles.passwordRuleMet : styles.passwordRulePending}
+                >
+                  {rule.isMet ? (
+                    <CheckCircleOutlined className={styles.ruleIconMet} />
+                  ) : (
+                    <MinusCircleOutlined className={styles.ruleIconPending} />
+                  )}
+                  <span>{rule.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );
