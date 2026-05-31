@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Typography, Button, Space, Spin, Alert } from "antd";
-import { PlusOutlined, FileMarkdownOutlined } from "@ant-design/icons";
+import { FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
 import { BacklogFiltersBar } from "@/features/backlog/components/backlog-filters";
@@ -38,26 +38,17 @@ export const BacklogPage: FC = () => {
               Backlog
             </Title>
             <Text className={styles.pageSubtitle}>
-              AI-generated user stories ({filteredStories.length} items)
+              Generated user stories ({filteredStories.length} items)
             </Text>
           </div>
           <Space>
             <Button
-              type="default"
+              type="primary"
               size="large"
               icon={<FileMarkdownOutlined />}
               onClick={handleExportMarkdown}
-              className={styles.actionButton}
             >
               Export Markdown
-            </Button>
-            <Button
-              type="primary"
-              size="large"
-              icon={<PlusOutlined />}
-              className={styles.createButton}
-            >
-              New Story
             </Button>
           </Space>
         </div>
