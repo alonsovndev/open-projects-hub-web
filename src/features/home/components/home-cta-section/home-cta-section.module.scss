@@ -1,7 +1,7 @@
 @use "@/styles/variables.scss" as *;
 
 .ctaSection {
-  background-color: $surface-inverted;
+  background-color: $primary-base;
   padding: 6rem 2rem;
 
   @media (max-width: 1024px) {
@@ -29,7 +29,7 @@
   font-family: $font-headline;
   font-size: 3.5rem;
   font-weight: 700;
-  color: $text-inverted;
+  color: $surface-white;
   margin: 0;
   letter-spacing: -0.02em;
 
@@ -50,7 +50,7 @@
   font-family: $font-body;
   font-size: 1.125rem;
   line-height: 1.6;
-  color: $text-inverted;
+  color: $surface-white;
   opacity: 0.8;
   margin: 0;
 
@@ -74,6 +74,7 @@
   font-weight: 600;
   font-size: 1rem;
   background-color: $primary-base;
+  color: $surface-white; /* Added this line */
   border: none;
   border-radius: $radius-sm;
   padding: 0 2rem;
@@ -93,16 +94,16 @@
   font-weight: 500;
   font-size: 1rem;
   background-color: transparent;
-  color: $text-inverted;
-  border: 1px solid $border-inverted;
+  color: $surface-white;
+  border: 1px solid $surface-white;
   border-radius: $radius-sm;
   padding: 0 2rem;
   transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: $text-inverted;
-    color: $text-inverted;
-    background-color: rgba(var(--color-text-inverted-rgb), 0.1);
+    border-color: $surface-white;
+    color: $surface-white;
+    background-color: rgba(var(--color-surface-white-rgb), 0.1);
   }
 
   @media (max-width: 480px) {
