@@ -38,7 +38,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ profile, saving, onSubmit })
           <Descriptions.Item
             label={
               <>
-                <MailOutlined /> Email
+                <MailOutlined className={styles.labelIcon} /> Email
               </>
             }
           >
@@ -47,7 +47,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ profile, saving, onSubmit })
           <Descriptions.Item
             label={
               <>
-                <UserOutlined /> Role
+                <UserOutlined className={styles.labelIcon} /> Role
               </>
             }
           >
