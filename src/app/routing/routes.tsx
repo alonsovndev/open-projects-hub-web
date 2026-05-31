@@ -12,6 +12,7 @@ import { viewerRoutes } from "@/features/viewer/routes";
 import { refinementRoutes } from "@/features/refinement/routes";
 import { backlogRoutes } from "@/features/backlog/routes";
 import { settingsRoutes } from "@/features/settings/routes";
+import { legalRoutes } from "@/features/legal/routes";
 
 const UnauthorizedPage = lazyWithRetry(() => import("@/shared/pages/unauthorized"));
 
@@ -34,7 +35,7 @@ export const appRoutes: AppRoute[] = [
   ...backlogRoutes,
   ...settingsRoutes,
   ...viewerRoutes,
-  // Error routes
+  ...legalRoutes,
   {
     path: "/unauthorized",
     element: (
