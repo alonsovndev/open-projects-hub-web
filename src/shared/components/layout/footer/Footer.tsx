@@ -15,7 +15,7 @@ export const Footer: FC = () => {
     <footer className={styles.footer}>
       <div className={styles.footerContainer}>
         <div className={styles.footerBrand}>
-          <Text className={styles.brandName}>Open Hub.</Text>
+          <Text className={styles.brandName}>Open Projects Hub.</Text>
           <p className={styles.brandTagline}>
             Empowering freelancers through structural clarity and architectural design systems.
           </p>
@@ -54,7 +54,7 @@ export const Footer: FC = () => {
         </div>
 
         <div className={styles.footerBottom}>
-          <span className={styles.copyright}>&copy; {currentYear} Project Hub</span>
+          <span className={styles.copyright}>&copy; {currentYear} Open Projects Hub</span>
           <a
             href="https://github.com/NaranjoSolutions/open-projects-hub-web"
             target="_blank"
