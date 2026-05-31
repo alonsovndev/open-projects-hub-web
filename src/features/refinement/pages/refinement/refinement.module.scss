@@ -6,18 +6,7 @@
 }
 
 .pageHeader {
-  margin-bottom: $spacing-2xl;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: $spacing-lg;
-  flex-wrap: wrap;
-}
-
-.projectSelector {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
+  margin-bottom: $spacing-lg;
 }
 
 .pageTitle {
@@ -25,7 +14,7 @@
   font-size: 2rem;
   font-weight: 700;
   color: $text-primary;
-  margin: 0;
+  margin: 0 !important;
 }
 
 .pageSubtitle {
@@ -36,8 +25,73 @@
   margin-top: $spacing-sm;
 }
 
+.projectSection {
+  margin-bottom: $spacing-md;
+}
+
+.projectSelector {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+}
+
+.selectorLabel {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: $text-secondary;
+  flex-shrink: 0;
+}
+
+.projectSummaryCard {
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+
+  :global(.ant-card-body) {
+    padding: $spacing-md $spacing-lg;
+  }
+}
+
+.projectName {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.summaryIcon {
+  color: $primary-base;
+  font-size: 1rem;
+}
+
+.projectCode {
+  font-size: 0.75rem;
+}
+
+.projectClient {
+  font-size: 0.875rem;
+  color: $text-secondary;
+
+  :global(.anticon) {
+    margin-right: $spacing-xs;
+  }
+}
+
 .disclaimerAlert {
   margin-bottom: $spacing-lg;
+
+  :global {
+    .ant-alert-body {
+      padding: $spacing-sm $spacing-md;
+    }
+    .ant-alert-message {
+      font-size: 0.8125rem;
+      margin-bottom: 0;
+    }
+  }
 }
 
 .workspaceGrid {
@@ -47,4 +101,13 @@
       flex-direction: column;
     }
   }
+}
+
+.workspaceCol {
+  min-height: 550px;
+}
+
+.generatedStoriesCol {
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
 }

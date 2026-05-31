@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import { Typography, Row, Col, Select, Alert } from "antd";
+import { Typography, Row, Col, Select, Alert, Card } from "antd";
+import { ProjectOutlined, UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 import { RawNotesEditor } from "@/features/refinement/components/raw-notes-editor";
 import { GeneratedStoriesList } from "@/features/refinement/components/generated-stories-list";
@@ -16,6 +17,7 @@ export const RefinementPage: FC = () => {
 
   const {
     selectedProjectId,
+    selectedProject,
     rawNotes,
     generatedStories,
     approvingIds,
@@ -40,20 +42,19 @@ export const RefinementPage: FC = () => {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
-        <div>
-          <Title level={1} className={styles.pageTitle}>
-            AI Refinement Workspace
-          </Title>
-          <Text className={styles.pageSubtitle}>
-            Collaborate with AI to refine user stories and acceptance criteria
-          </Text>
-        </div>
+        <Title level={1} className={styles.pageTitle}>
+          AI Refinement Workspace
+        </Title>
+        <Text className={styles.pageSubtitle}>
+          Collaborate with AI to refine user stories and acceptance criteria
+        </Text>
+      </div>
+
+      <div className={styles.projectSection}>
         <div className={styles.projectSelector}>
-          <Text strong style={{ marginRight: 8 }}>
-            Project:
-          </Text>
+          <Text className={styles.selectorLabel}>Project</Text>
           <Select
-            style={{ width: 300 }}
+            style={{ width: 500 }}
             placeholder="Select a project"
             options={projectOptions}
             value={selectedProjectId || undefined}
@@ -66,20 +67,42 @@ export const RefinementPage: FC = () => {
                 .includes(input.toLowerCase())
             }
             allowClear
+            size="large"
           />
         </div>
+
+        {selectedProject && (
+          <Card className={styles.projectSummaryCard} size="small">
+            <Row gutter={16} align="middle">
+              <Col>
+                <div className={styles.projectName}>
+                  <ProjectOutlined className={styles.summaryIcon} />
+                  <Text strong>{selectedProject.name}</Text>
+                  <Text code className={styles.projectCode}>
+                    {selectedProject.code}
+                  </Text>
+                </div>
+              </Col>
+              <Col flex="auto">
+                <Text className={styles.projectClient}>
+                  <UserOutlined /> {selectedProject.clientName}
+                </Text>
+              </Col>
+            </Row>
+          </Card>
+        )}
       </div>
 
       <Alert
         type="info"
-        message="AI-Generated Content"
-        description="AI can make mistakes. Story refinements are sent to a third-party AI service for processing. Do not include sensitive or personal information. Review all generated content before use."
         showIcon
+        icon={<InfoCircleOutlined />}
+        message="AI can make mistakes. Story refinements use a third-party AI service. Do not include sensitive information. Review before use."
         className={styles.disclaimerAlert}
       />
 
       <Row gutter={[24, 24]} className={styles.workspaceGrid}>
-        <Col xs={24} lg={10}>
+        <Col xs={24} lg={10} className={styles.workspaceCol}>
           <RawNotesEditor
             rawNotes={rawNotes}
             onChange={handleNotesChange}
@@ -87,7 +110,7 @@ export const RefinementPage: FC = () => {
             loading={isGenerating}
           />
         </Col>
-        <Col xs={24} lg={14}>
+        <Col xs={24} lg={14} className={`${styles.workspaceCol} ${styles.generatedStoriesCol}`}>
           <GeneratedStoriesList
             stories={generatedStories}
             onApprove={handleApprove}

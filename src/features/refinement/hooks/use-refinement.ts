@@ -34,6 +34,8 @@ export const useRefinement = () => {
       value: p.id,
     })) ?? [];
 
+  const selectedProject = projectsData?.projects.find((p) => p.id === selectedProjectId) ?? null;
+
   const handleProjectChange = (projectId: string) => {
     setSelectedProjectId(projectId);
   };
@@ -153,6 +155,7 @@ export const useRefinement = () => {
 
   return {
     selectedProjectId,
+    selectedProject,
     rawNotes,
     generatedStories,
     approvingIds,
