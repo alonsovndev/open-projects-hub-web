@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Row, Col, Select } from "antd";
+import { Typography, Row, Col, Select, Alert } from "antd";
 
 import { RawNotesEditor } from "@/features/refinement/components/raw-notes-editor";
 import { GeneratedStoriesList } from "@/features/refinement/components/generated-stories-list";
@@ -69,6 +69,14 @@ export const RefinementPage: FC = () => {
           />
         </div>
       </div>
+
+      <Alert
+        type="info"
+        message="AI-Generated Content"
+        description="AI can make mistakes. Story refinements are sent to a third-party AI service for processing. Do not include sensitive or personal information. Review all generated content before use."
+        showIcon
+        className={styles.disclaimerAlert}
+      />
 
       <Row gutter={[24, 24]} className={styles.workspaceGrid}>
         <Col xs={24} lg={10}>
