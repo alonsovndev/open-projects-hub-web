@@ -42,6 +42,16 @@
   height: 32px; // Slightly smaller for collapsed sider
 }
 
+.brandName {
+  color: $text-primary;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.2s ease;
+}
+
 .collapseButton {
   margin: 0 $spacing-md $spacing-lg;
   color: $text-secondary;
@@ -107,11 +117,25 @@
 .userSection {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
+  justify-content: space-between;
   padding: $spacing-lg;
   margin-top: auto;
   border-top: 1px solid $surface-base;
   position: relative;
+}
+
+.userSectionLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.userSectionRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
 }
 
 .avatar {
@@ -119,14 +143,6 @@
   font-family: $font-headline;
   font-weight: 700;
   flex-shrink: 0;
-}
-
-.userInfo {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .userName {
@@ -137,15 +153,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.userEmail {
-  font-family: $font-body;
-  font-size: 0.75rem;
-  color: $text-secondary;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .logoutButton {

@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from "react";
 import { useState } from "react";
-import { Layout, Menu, Button, Typography, Avatar } from "antd";
+import { Layout, Menu, Button, Avatar, Typography } from "antd";
 import {
   DashboardOutlined,
   ProjectOutlined,
@@ -33,7 +33,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth.session);
   const { theme: activeTheme } = useActiveTheme();
-  const logoSrc = activeTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
+  const logoSrc = activeTheme === "dark" ? "/favicon-dark.svg" : "/favicon.svg";
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -92,7 +92,8 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       >
         <div className={styles.siderContent}>
           <div className={styles.logo}>
-            <img src={logoSrc} alt="Open Project Hub" className={styles.logoImage} />
+            <img src={logoSrc} alt="Open Projects Hub" className={styles.logoImage} />
+            {!collapsed && <span className={styles.brandName}>Open Projects Hub</span>}
           </div>
 
           <Button
@@ -110,23 +111,22 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
           />
 
           <div className={styles.userSection}>
-            <Avatar size={collapsed ? 32 : 40} className={styles.avatar}>
-              {session?.displayName?.[0]?.toUpperCase() || "A"}
-            </Avatar>
-            {!collapsed && (
-              <div className={styles.userInfo}>
-                <Text className={styles.userName}>{session?.displayName || "Admin"}</Text>
-                <Text className={styles.userEmail}>{session?.email || ""}</Text>
-              </div>
-            )}
-            <ThemeToggle />
-            <Button
-              type="text"
-              icon={<LogoutOutlined />}
-              onClick={handleSignOut}
-              className={styles.logoutButton}
-              title="Sign Out"
-            />
+            <div className={styles.userSectionLeft}>
+              <Avatar size={collapsed ? 32 : 40} className={styles.avatar}>
+                {session?.displayName?.[0]?.toUpperCase() || "A"}
+              </Avatar>
+              {!collapsed && <Text className={styles.userName}>{session?.displayName}</Text>}
+            </div>
+            <div className={styles.userSectionRight}>
+              <ThemeToggle />
+              <Button
+                type="text"
+                icon={<LogoutOutlined />}
+                onClick={handleSignOut}
+                className={styles.logoutButton}
+                title="Sign Out"
+              />
+            </div>
           </div>
         </div>
       </Sider>

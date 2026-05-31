@@ -23,7 +23,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme: activeTheme } = useActiveTheme();
-  const logoSrc = activeTheme === "dark" ? "/logo-dark.svg" : "/logo.svg";
+  const logoSrc = activeTheme === "dark" ? "/favicon-dark.svg" : "/favicon.svg";
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -38,7 +38,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
             {/* Left: Brand + Links */}
             <div className={styles.leftSection}>
               <Link to="/" className={styles.brandSection}>
-                <img src={logoSrc} alt="Open Freelancer Hub" className={styles.brandLogo} />
+                <img src={logoSrc} alt="Open Projects Hub" className={styles.brandLogo} />
+                <span className={styles.brandName}>Open Projects Hub</span>
               </Link>
 
               <nav className={styles.navLinks}>
@@ -146,8 +147,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
   return (
     <header className={styles.header}>
       <Link to="/" className={styles.brandSection}>
-        <img src={logoSrc} alt="Open Freelancer Project Hub logo" className={styles.brandLogo} />
-
+        <img src={logoSrc} alt="Open Projects Hub logo" className={styles.brandLogo} />
+        <span className={styles.brandName}>Open Projects Hub</span>
         {children}
       </Link>
 
