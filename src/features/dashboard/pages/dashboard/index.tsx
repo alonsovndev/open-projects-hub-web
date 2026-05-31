@@ -43,9 +43,7 @@ export const DashboardPage: FC = () => {
             <Title level={1} className={styles.pageTitle}>
               Welcome back, {user?.displayName || "Admin"}
             </Title>
-            <Text className={styles.subtitle}>
-              Here's an overview of your projects and team activity
-            </Text>
+            <Text className={styles.subtitle}>Here's an overview of your projects</Text>
           </div>
           <Button
             type="primary"

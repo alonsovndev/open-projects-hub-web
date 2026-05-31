@@ -16,7 +16,7 @@ export const AdminWelcome: FC = () => {
     <section className={styles.dashboard} aria-labelledby="admin-welcome-title">
       <div className={styles.content}>
         <section className={styles.hero}>
-          <Tag className={styles.statusTag}>Placeholder Dashboard</Tag>
+          <Tag className={styles.statusTag}>Dashboard</Tag>
 
           <Title level={1} id="admin-welcome-title" className={styles.title}>
             Welcome back, Admin
