@@ -24,12 +24,22 @@ export const Footer: FC = () => {
         <div className={styles.footerColumns}>
           <div className={styles.footerColumn}>
             <h2 className={styles.columnTitle}>Directories</h2>
-            <Link to="/documentation" className={styles.footerLink}>
+            <a
+              href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.footerLink}
+            >
               Documentation
-            </Link>
-            <Link to="/changelog" className={styles.footerLink}>
-              Changelog
-            </Link>
+            </a>
+            <a
+              href="https://github.com/alonsovndev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.footerLink}
+            >
+              Code
+            </a>
           </div>
 
           <div className={styles.footerColumn}>

@@ -25,7 +25,13 @@ export const HomeCtaSection: FC = () => {
             >
               Create Account
             </Button>
-            <Button size="large" className={styles.ctaSecondaryButton}>
+            <Button
+              size="large"
+              className={styles.ctaSecondaryButton}
+              href="https://github.com/alonsovndev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Contact
             </Button>
           </div>
