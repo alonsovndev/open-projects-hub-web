@@ -23,6 +23,24 @@
   }
 }
 
+.backLink {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $color-link;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-xl;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-dark;
+  }
+}
+
 .iconWrapper {
   width: 56px;
   height: 56px;

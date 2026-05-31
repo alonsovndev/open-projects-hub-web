@@ -14,8 +14,8 @@ export const ForgotPasswordForm: FC = () => {
   return (
     <section className={styles.forgotPasswordPanel} aria-labelledby="forgot-password-title">
       <div className={styles.card}>
-        <Link to="/login" className={styles.backLink}>
-          <ArrowLeftOutlined /> Back to Sign In
+        <Link to="/" className={styles.backLink}>
+          <ArrowLeftOutlined /> Back to Home
         </Link>
 
         <h1 id="forgot-password-title" className={styles.title}>

@@ -7,6 +7,7 @@ import {
   MailOutlined,
   SafetyOutlined,
   UserOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 import { Link } from "react-router-dom";
@@ -21,6 +22,10 @@ export const RegisterForm: FC = () => {
   return (
     <section className={styles.registerPanel} aria-labelledby="admin-register-title">
       <div className={styles.card}>
+        <Link to="/" className={styles.backLink}>
+          <ArrowLeftOutlined /> Back to Home
+        </Link>
+
         <div className={styles.iconWrapper}>
           <SafetyOutlined className={styles.icon} />
         </div>
@@ -49,7 +54,7 @@ export const RegisterForm: FC = () => {
             <Input
               size="large"
               prefix={<UserOutlined className={styles.inputIcon} />}
-              placeholder="John Smith"
+              placeholder="User Name"
               autoComplete="name"
               className={styles.input}
             />
