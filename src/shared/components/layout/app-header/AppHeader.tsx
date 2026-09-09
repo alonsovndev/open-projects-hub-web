@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { MenuOutlined, CloseOutlined, FileTextOutlined, GithubOutlined } from "@ant-design/icons";
 
-import { useActiveTheme } from "@/app/hooks/use-active-theme";
-import { ThemeToggle } from "@/shared/components/theme-toggle";
 import styles from "./app-header.module.scss";
 
 interface AppHeaderProps {
@@ -22,8 +20,6 @@ export const AppHeader: FC<AppHeaderProps> = ({
   variant = "default",
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme: activeTheme } = useActiveTheme();
-  const logoSrc = activeTheme === "dark" ? "/favicon-dark.svg" : "/favicon.svg";
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -38,7 +34,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
             {/* Left: Brand + Links */}
             <div className={styles.leftSection}>
               <Link to="/" className={styles.brandSection}>
-                <img src={logoSrc} alt="Open Projects Hub" className={styles.brandLogo} />
+                <img src="/favicon.svg" alt="Open Projects Hub logo" className={styles.brandLogo} />
                 <span className={styles.brandName}>Open Projects Hub</span>
               </Link>
 
@@ -66,7 +62,6 @@ export const AppHeader: FC<AppHeaderProps> = ({
 
             {/* Right: Actions */}
             <div className={styles.landingActions}>
-              <ThemeToggle />
               <Button type="text" size="large" href="/login" className={styles.signInButton}>
                 Log In
               </Button>
@@ -117,7 +112,6 @@ export const AppHeader: FC<AppHeaderProps> = ({
               </a>
             </nav>
             <div className={styles.mobileActions}>
-              <ThemeToggle />
               <Button
                 type="text"
                 size="large"
@@ -147,7 +141,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
   return (
     <header className={styles.header}>
       <Link to="/" className={styles.brandSection}>
-        <img src={logoSrc} alt="Open Projects Hub logo" className={styles.brandLogo} />
+        <img src="/favicon.svg" alt="Open Projects Hub logo" className={styles.brandLogo} />
         <span className={styles.brandName}>Open Projects Hub</span>
         {children}
       </Link>

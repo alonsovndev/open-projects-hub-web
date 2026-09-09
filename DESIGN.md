@@ -119,27 +119,27 @@ The palette is built on a high-contrast neutral foundation with a single blue pr
 
 ### Brand Palette
 
-| Token              | Light   | Dark    | Usage                                                           |
-| ------------------ | ------- | ------- | --------------------------------------------------------------- |
-| **Primary**        | #0057c2 | #4a8fd9 | Buttons, links, selected menu items, interactive elements       |
-| **Primary Light**  | #4a8fd9 | #6ba8e8 | Hover states, disabled interactions, subtle backgrounds         |
-| **Primary Dark**   | #006ef2 | #3a7ac4 | Button active press, focus rings                                |
-| **Surface White**  | #ffffff | #1e1e1e | Card backgrounds, modals, sidebars                              |
-| **Surface Light**  | #f9f9f9 | #141414 | Page backgrounds, section dividers                              |
-| **Surface Base**   | #eeeeee | #2d2d2d | Borders, dividers, disabled states, skeletons                   |
-| **Text Primary**   | #1a1a1a | #e8e8e8 | Headlines, body copy, labels. AA on white: 14.9:1               |
-| **Text Secondary** | #666666 | #a0a0a0 | Captions, metadata, placeholders, help text. AA on white: 5.4:1 |
+| Token              | Value    | Usage                                                           |
+| ------------------ | -------- | --------------------------------------------------------------- |
+| **Primary**        | #0057c2  | Buttons, links, selected menu items, interactive elements       |
+| **Primary Light**  | #4a8fd9  | Hover states, disabled interactions, subtle backgrounds        |
+| **Primary Dark**   | #006ef2  | Button active press, focus rings                                |
+| **Surface White**  | #ffffff  | Card backgrounds, modals, sidebars                              |
+| **Surface Light**  | #f9f9f9  | Page backgrounds, section dividers                              |
+| **Surface Base**   | #eeeeee  | Borders, dividers, disabled states, skeletons                   |
+| **Text Primary**   | #1a1a1a  | Headlines, body copy, labels. AA on white: 14.9:1               |
+| **Text Secondary** | #666666  | Captions, metadata, placeholders, help text. AA on white: 5.4:1 |
 
 ### Semantic Colors
 
 Use Ant Design's built-in semantic tokens. Do NOT define custom semantic colors.
 
-| Purpose | Ant Design Token | Light   | Dark    |
-| ------- | ---------------- | ------- | ------- |
-| Success | `colorSuccess`   | #52c41a | #49aa19 |
-| Warning | `colorWarning`   | #faad14 | #d89614 |
-| Error   | `colorError`     | #ff4d4f | #d84e55 |
-| Info    | `colorInfo`      | #1677ff | #1668dc |
+| Purpose | Ant Design Token | Value    |
+| ------- | ---------------- | -------- |
+| Success | `colorSuccess`   | #52c41a  |
+| Warning | `colorWarning`   | #faad14  |
+| Error   | `colorError`     | #ff4d4f  |
+| Info    | `colorInfo`      | #1677ff  |
 
 ### Text Contrast Requirements
 
@@ -170,54 +170,34 @@ All text must meet WCAG AA contrast ratios:
 - ❌ Never hardcode hex values in components or SCSS — use the token system only
 - ❌ Never use color alone to convey state — pair with icons or text labels
 
-### Dark Mode Colors
-
-| Token                | Light              | Dark                   | Usage                     |
-| -------------------- | ------------------ | ---------------------- | ------------------------- |
-| **Primary**          | #0057c2            | #4a8fd9                | Interactive elements      |
-| **Surface White**    | #ffffff            | #1e1e1e                | Card backgrounds          |
-| **Surface Light**    | #f9f9f9            | #141414                | Page backgrounds          |
-| **Surface Base**     | #eeeeee            | #2d2d2d                | Borders, dividers         |
-| **Surface Dark**     | #1a1a1a            | #2d2d2d                | Inverted sections (CTA)   |
-| **Text Primary**     | #1a1a1a            | #e8e8e8                | Headlines, body           |
-| **Text Secondary**   | #666666            | #a0a0a0                | Captions, metadata        |
-| **Text on Dark**     | #f0f0f0            | #f0f0f0                | Text on dark backgrounds  |
-| **Border Light**     | #d0d0d0            | #4a4a4a                | Light borders             |
-| **Border Medium**    | #b0b0b0            | #5a5a5a                | Medium borders            |
-| **Border Subtle**    | rgba(0,0,0,0.06)   | rgba(255,255,255,0.1)  | Subtle borders            |
-| **Hover Overlay**    | rgba(0,0,0,0.04)   | rgba(255,255,255,0.08) | Hover state backgrounds   |
-| **Primary BG Light** | rgba(0,87,194,0.1) | rgba(74,143,217,0.15)  | Primary color backgrounds |
-| **Success Base**     | #52c41a            | #73d13d                | Semantic success color    |
-
 ### Shadow System
 
-| Token                | Light                          | Dark                            | Usage             |
-| -------------------- | ------------------------------ | ------------------------------- | ----------------- |
-| `$shadow-sm`         | 0 1px 2px rgba(0,0,0,0.05)     | 0 1px 2px rgba(0,0,0,0.2)       | Small UI elements |
-| `$shadow-md`         | 0 2px 8px rgba(0,0,0,0.06)     | 0 2px 8px rgba(0,0,0,0.3)       | Medium elevation  |
-| `$shadow-lg`         | 0 4px 16px rgba(0,0,0,0.08)    | 0 4px 16px rgba(0,0,0,0.4)      | High elevation    |
-| `$shadow-card`       | 0 2px 8px rgba(0,0,0,0.06)     | 0 2px 8px rgba(0,0,0,0.3)       | Card components   |
-| `$shadow-card-hover` | 0 4px 16px rgba(0,87,194,0.12) | 0 4px 16px rgba(74,143,217,0.2) | Card hover state  |
+| Token                | Value                          | Usage             |
+| -------------------- | ------------------------------ | ----------------- |
+| `$shadow-sm`         | 0 1px 2px rgba(0,0,0,0.05)     | Small UI elements |
+| `$shadow-md`         | 0 2px 8px rgba(0,0,0,0.06)     | Medium elevation  |
+| `$shadow-lg`         | 0 4px 16px rgba(0,0,0,0.08)    | High elevation    |
+| `$shadow-card`       | 0 2px 8px rgba(0,0,0,0.06)     | Card components   |
+| `$shadow-card-hover` | 0 4px 16px rgba(0,87,194,0.12) | Card hover state  |
 
-### Dark Mode Implementation Rules
+### Extended Palette
 
-1. ✅ **Always use design tokens** — Never hardcode colors
-2. ✅ **Test in both themes** — Every component must work in light and dark
-3. ✅ **Use RGB variants for opacity** — `rgba(var(--color-*-rgb), opacity)`
-4. ✅ **Verify contrast** — Maintain WCAG AA compliance in both themes
-5. ❌ **Never use hardcoded shadows** — Use shadow tokens
-6. ❌ **Never use hardcoded borders** — Use border tokens
-7. ❌ **Never use rgba($scss-var, opacity)** — Doesn't work with CSS custom properties
-
-### Dark Mode
-
-When user selects "Dark" or system matches `prefers-color-scheme: dark`:
-
-- Surfaces invert: white → #1e1e1e, light → #141414, base → #2d2d2d
-- Text flips: primary → #e8e8e8, secondary → #a0a0a0
-- Primary blue lightens for dark-background contrast (#0057c2 → #4a8fd9)
-- Shadows soften (lower opacity, smaller blur)
-- All contrast ratios must still pass WCAG AA on dark backgrounds
+| Token                | Value                          | Usage                     |
+| -------------------- | ------------------------------ | ------------------------- |
+| **Primary**          | #0057c2                        | Interactive elements      |
+| **Surface White**    | #ffffff                        | Card backgrounds          |
+| **Surface Light**    | #f9f9f9                        | Page backgrounds          |
+| **Surface Base**     | #eeeeee                        | Borders, dividers         |
+| **Surface Dark**     | #1a1a1a                        | Inverted sections (CTA)   |
+| **Text Primary**     | #1a1a1a                        | Headlines, body           |
+| **Text Secondary**   | #666666                        | Captions, metadata        |
+| **Text on Dark**     | #f0f0f0                        | Text on dark backgrounds  |
+| **Border Light**     | #d0d0d0                        | Light borders             |
+| **Border Medium**    | #b0b0b0                        | Medium borders            |
+| **Border Subtle**    | rgba(0,0,0,0.06)               | Subtle borders            |
+| **Hover Overlay**    | rgba(0,0,0,0.04)               | Hover state backgrounds   |
+| **Primary BG Light** | rgba(0,87,194,0.1)             | Primary color backgrounds |
+| **Success Base**     | #52c41a                        | Semantic success color    |
 
 ---
 
@@ -811,8 +791,8 @@ All design tokens are defined in three synchronized locations:
 | Location                        | Purpose                                                         |
 | ------------------------------- | --------------------------------------------------------------- |
 | `src/styles/variables.scss`     | SCSS variables for CSS Modules (links to CSS custom properties) |
-| `src/styles/global.scss`        | CSS custom properties on `:root` and `[data-theme="dark"]`      |
-| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light + dark)        |
+| `src/styles/global.scss`        | CSS custom properties on `:root`                                 |
+| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light)              |
 | `DESIGN.md`                     | Single source of truth documentation                            |
 
 ### Rules for Token Management
@@ -925,3 +905,4 @@ import { useProjectsOverview } from "@/features/projects/hooks/use-projects-over
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 2025-01 | Initial design system                                                                                                                                                                                                                                                                |
 | 2026-05 | Major revision: added form standards, empty/loading/error states, accessibility requirements, responsive guidelines, animation rules, semantic colors, navigation patterns, performance guidelines, and design token management. Standardized file structure and naming conventions. |
+| 2026-07 | Removed dark theme. Application now supports light theme only. Deleted theme toggle, `useActiveTheme` hook, `darkTokens`, dark CSS variables, dark favicon, and pre-hydration favicon init script. |

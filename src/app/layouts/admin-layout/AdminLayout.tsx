@@ -15,8 +15,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
-import { ThemeToggle } from "@/shared/components/theme-toggle";
-import { useActiveTheme } from "@/app/hooks/use-active-theme";
 
 import styles from "./admin-layout.module.scss";
 
@@ -32,8 +30,6 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth.session);
-  const { theme: activeTheme } = useActiveTheme();
-  const logoSrc = activeTheme === "dark" ? "/favicon-dark.svg" : "/favicon.svg";
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -92,7 +88,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       >
         <div className={styles.siderContent}>
           <div className={styles.logo}>
-            <img src={logoSrc} alt="Open Projects Hub" className={styles.logoImage} />
+            <img src="/favicon.svg" alt="Open Projects Hub" className={styles.logoImage} />
             {!collapsed && <span className={styles.brandName}>Open Projects Hub</span>}
           </div>
 
@@ -118,7 +114,6 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
               {!collapsed && <Text className={styles.userName}>{session?.displayName}</Text>}
             </div>
             <div className={styles.userSectionRight}>
-              <ThemeToggle />
               <Button
                 type="text"
                 icon={<LogoutOutlined />}
