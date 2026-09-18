@@ -28,6 +28,11 @@
       "headers": {
         "X-Goog-Api-Key": "..."
       }
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "chrome-devtools-mcp@latest"],
+      "enabled": true
     }
   }
 }

@@ -134,5 +134,3 @@ export const lightTokens: ThemeConfig = {
     },
   },
 };
-
-

@@ -1,54 +1,57 @@
 import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import type { ReactNode } from "react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 
 import { useProjectsOverview } from "@/features/projects/hooks/use-projects-overview";
+import { TestProviders as wrapper } from "@/test/utils/render-with-providers";
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <BrowserRouter>{children}</BrowserRouter>
-);
+// The initial project list comes from an RTK Query fetch (mocked via MSW),
+// so every test must wait for it to resolve before asserting on `projects`.
+async function renderOverviewHook() {
+  const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+  await waitFor(() => expect(result.current.isLoading).toBe(false));
+  return result;
+}
 
 describe("useProjectsOverview", () => {
   describe("initial state", () => {
-    it("should load all projects initially", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should load all projects initially", async () => {
+      const result = await renderOverviewHook();
 
       expect(result.current.projects.length).toBeGreaterThan(0);
       expect(result.current.totalCount).toBe(result.current.projects.length);
     });
 
-    it("should have default filters", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should have default filters", async () => {
+      const result = await renderOverviewHook();
 
       expect(result.current.filters.search).toBe("");
       expect(result.current.filters.status).toBe("all");
       expect(result.current.filters.priority).toBe("all");
     });
 
-    it("should have default sort", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should have default sort", async () => {
+      const result = await renderOverviewHook();
 
       expect(result.current.sort.field).toBe("lastUpdated");
       expect(result.current.sort.order).toBe("desc");
     });
 
-    it("should have default view", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should have default view", async () => {
+      const result = await renderOverviewHook();
 
       expect(result.current.view).toBe("grid");
     });
 
-    it("should have zero active filters initially", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should have zero active filters initially", async () => {
+      const result = await renderOverviewHook();
 
       expect(result.current.activeFilterCount).toBe(0);
     });
   });
 
   describe("search filtering", () => {
-    it("should filter projects by name", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter projects by name", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("clinic");
@@ -61,8 +64,8 @@ describe("useProjectsOverview", () => {
       );
     });
 
-    it("should filter projects by code", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter projects by code", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("PRJ-2024-001");
@@ -72,8 +75,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects[0].code).toBe("PRJ-2024-001");
     });
 
-    it("should return empty array for no matches", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should return empty array for no matches", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("nonexistent");
@@ -82,8 +85,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.length).toBe(0);
     });
 
-    it("should be case insensitive", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should be case insensitive", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("CLINIC");
@@ -94,8 +97,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("status filtering", () => {
-    it("should filter by active status", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter by active status", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleStatusFilter("active");
@@ -104,8 +107,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
     });
 
-    it("should filter by completed status", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter by completed status", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleStatusFilter("completed");
@@ -114,8 +117,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.every((p) => p.status === "completed")).toBe(true);
     });
 
-    it("should show all when status is all", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should show all when status is all", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleStatusFilter("active");
@@ -132,8 +135,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("priority filtering", () => {
-    it("should filter by high priority", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter by high priority", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handlePriorityFilter("high");
@@ -142,8 +145,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.every((p) => p.priority === "high")).toBe(true);
     });
 
-    it("should filter by medium priority", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter by medium priority", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handlePriorityFilter("medium");
@@ -152,8 +155,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.every((p) => p.priority === "medium")).toBe(true);
     });
 
-    it("should filter by low priority", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should filter by low priority", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handlePriorityFilter("low");
@@ -164,8 +167,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("combined filtering", () => {
-    it("should apply search and status filter together", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should apply search and status filter together", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("e-commerce");
@@ -176,8 +179,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
     });
 
-    it("should count active filters correctly", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should count active filters correctly", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("test");
@@ -197,8 +200,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("sorting", () => {
-    it("should sort by name ascending", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should sort by name ascending", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSortChange("name");
@@ -209,8 +212,8 @@ describe("useProjectsOverview", () => {
       expect(names).toEqual(sortedNames);
     });
 
-    it("should toggle sort order", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should toggle sort order", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSortChange("name");
@@ -223,8 +226,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.sort.order).toBe("desc");
     });
 
-    it("should sort by priority correctly", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should sort by priority correctly", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSortChange("priority");
@@ -240,8 +243,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("view toggle", () => {
-    it("should switch to list view", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should switch to list view", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleViewChange("list");
@@ -250,8 +253,8 @@ describe("useProjectsOverview", () => {
       expect(result.current.view).toBe("list");
     });
 
-    it("should switch back to grid view", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should switch back to grid view", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleViewChange("list");
@@ -263,8 +266,8 @@ describe("useProjectsOverview", () => {
   });
 
   describe("clear filters", () => {
-    it("should reset all filters", () => {
-      const { result } = renderHook(() => useProjectsOverview(), { wrapper });
+    it("should reset all filters", async () => {
+      const result = await renderOverviewHook();
 
       act(() => {
         result.current.handleSearchChange("test");

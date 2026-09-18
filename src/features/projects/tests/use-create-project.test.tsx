@@ -1,11 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
 import { message } from "antd";
-import type { ReactNode } from "react";
 
 import { useCreateProject } from "@/features/projects/hooks/use-create-project";
 import type { ProjectFormData } from "@/features/projects/components/project-form";
+import { TestProviders as wrapper } from "@/test/utils/render-with-providers";
 
 // Mock antd message
 vi.mock("antd", async () => {
@@ -33,10 +32,6 @@ describe("useCreateProject", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <BrowserRouter>{children}</BrowserRouter>
-  );
 
   it("should initialize with loading false", () => {
     const { result } = renderHook(() => useCreateProject(), { wrapper });

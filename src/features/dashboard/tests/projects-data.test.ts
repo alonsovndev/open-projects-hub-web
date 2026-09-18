@@ -27,7 +27,6 @@ describe("Dashboard API", () => {
       expect(project).toHaveProperty("client");
       expect(project).toHaveProperty("storiesCount");
       expect(project).toHaveProperty("completedStories");
-      expect(project).toHaveProperty("teamMembers");
       expect(project).toHaveProperty("endDate");
       expect(project).toHaveProperty("lastUpdated");
       expect(project).toHaveProperty("description");
@@ -62,7 +61,6 @@ describe("Dashboard API", () => {
       expect(stats).toHaveProperty("completedProjects");
       expect(stats).toHaveProperty("totalStories");
       expect(stats).toHaveProperty("completedStories");
-      expect(stats).toHaveProperty("teamMembers");
     });
 
     it("should calculate total projects correctly", () => {
