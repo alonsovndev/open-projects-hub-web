@@ -18,6 +18,7 @@ export const useCreateProject = () => {
         name: values.name,
         code: values.code,
         clientId: values.clientId,
+        phase: values.phase,
         description: values.description,
         priority: values.priority,
         startDate: values.startDate,

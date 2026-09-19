@@ -50,10 +50,16 @@ export const useProjectsOverview = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Fetch projects using RTK Query
+  // Fetch projects using RTK Query — filters are forwarded to the server so pagination
+  // and results stay consistent once the dataset exceeds a single page.
   const { data, isLoading, error } = useGetProjectsQuery({
     page: currentPage,
     limit: pageSize,
+    status: filters.status !== "all" ? filters.status : undefined,
+    clientId: filters.clientId !== "all" ? filters.clientId : undefined,
+    search: filters.search || undefined,
+    startDate: filters.dateRange?.[0],
+    endDate: filters.dateRange?.[1],
   });
 
   // Fetch project details for editing
@@ -61,58 +67,23 @@ export const useProjectsOverview = () => {
     skip: !editingProjectId,
   });
 
-  const totalCount = data?.total ?? 0;
+  // Active count for the limit guard must reflect ALL active projects, independent of the
+  // main list's filters/pagination above — otherwise filtering (e.g. by status=archived)
+  // would make activeCount read as 0 and silently bypass the create-limit guard.
+  const { data: activeCountData } = useGetProjectsQuery({ status: "active", limit: 1 });
 
-  // Derived counts — needed for limit guard
+  const totalCount = data?.total ?? 0;
   const allProjects = useMemo(() => data?.projects ?? [], [data?.projects]);
-  const activeCount = useMemo(
-    () => allProjects.filter((p) => p.status === "active").length,
-    [allProjects]
-  );
+  const activeCount = activeCountData?.total ?? 0;
   const canCreate = activeCount < MAX_ACTIVE_PROJECTS;
 
-  // Filter projects
+  // Priority filtering stays client-side — the backend's filter endpoint (BE-004) supports
+  // status/client/date/search only, not priority. Every other filter is forwarded to the
+  // server above so it applies across the full dataset, not just the current page.
   const filteredProjects = useMemo(() => {
-    return allProjects.filter((project) => {
-      // Search filter
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        const matchesSearch =
-          project.name.toLowerCase().includes(searchLower) ||
-          project.code.toLowerCase().includes(searchLower) ||
-          project.client.toLowerCase().includes(searchLower) ||
-          project.description.toLowerCase().includes(searchLower);
-
-        if (!matchesSearch) return false;
-      }
-
-      // Status filter
-      if (filters.status !== "all" && project.status !== filters.status) {
-        return false;
-      }
-
-      // Priority filter
-      if (filters.priority !== "all" && project.priority !== filters.priority) {
-        return false;
-      }
-
-      // Client filter
-      if (filters.clientId !== "all" && project.clientId !== filters.clientId) {
-        return false;
-      }
-
-      // Date filter (on createdAt, inclusive)
-      if (filters.dateRange) {
-        const [start, end] = filters.dateRange;
-        const created = new Date(project.createdAt).getTime();
-        const startTime = new Date(start).getTime();
-        const endTime = new Date(end).getTime();
-        if (created < startTime || created > endTime) return false;
-      }
-
-      return true;
-    });
-  }, [allProjects, filters]);
+    if (filters.priority === "all") return allProjects;
+    return allProjects.filter((project) => project.priority === filters.priority);
+  }, [allProjects, filters.priority]);
 
   // Sort projects
   const sortedProjects = useMemo(() => {

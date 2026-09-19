@@ -52,16 +52,17 @@ describe("useProjectsOverview", () => {
   describe("search filtering", () => {
     it("should filter projects by name", async () => {
       const result = await renderOverviewHook();
+      const baselineTotal = result.current.totalCount;
 
       act(() => {
         result.current.handleSearchChange("clinic");
       });
 
-      expect(result.current.projects.length).toBeGreaterThan(0);
-      expect(result.current.projects.length).toBeLessThan(result.current.totalCount);
-      expect(result.current.projects.every((p) => p.name.toLowerCase().includes("clinic"))).toBe(
-        true
-      );
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(0);
+        expect(result.current.projects.every((p) => p.name.toLowerCase().includes("clinic"))).toBe(true);
+      });
+      expect(result.current.projects.length).toBeLessThan(baselineTotal);
     });
 
     it("should filter projects by code", async () => {
@@ -71,7 +72,9 @@ describe("useProjectsOverview", () => {
         result.current.handleSearchChange("PRJ-2024-001");
       });
 
-      expect(result.current.projects.length).toBe(1);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBe(1);
+      });
       expect(result.current.projects[0].code).toBe("PRJ-2024-001");
     });
 
@@ -82,7 +85,9 @@ describe("useProjectsOverview", () => {
         result.current.handleSearchChange("nonexistent");
       });
 
-      expect(result.current.projects.length).toBe(0);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBe(0);
+      });
     });
 
     it("should be case insensitive", async () => {
@@ -92,7 +97,9 @@ describe("useProjectsOverview", () => {
         result.current.handleSearchChange("CLINIC");
       });
 
-      expect(result.current.projects.length).toBeGreaterThan(0);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(0);
+      });
     });
   });
 
@@ -104,7 +111,10 @@ describe("useProjectsOverview", () => {
         result.current.handleStatusFilter("active");
       });
 
-      expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(0);
+        expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
+      });
     });
 
     it("should filter by completed status", async () => {
@@ -114,7 +124,10 @@ describe("useProjectsOverview", () => {
         result.current.handleStatusFilter("completed");
       });
 
-      expect(result.current.projects.every((p) => p.status === "completed")).toBe(true);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(0);
+        expect(result.current.projects.every((p) => p.status === "completed")).toBe(true);
+      });
     });
 
     it("should show all when status is all", async () => {
@@ -124,13 +137,18 @@ describe("useProjectsOverview", () => {
         result.current.handleStatusFilter("active");
       });
 
+      await waitFor(() => {
+        expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
+      });
       const filteredCount = result.current.projects.length;
 
       act(() => {
         result.current.handleStatusFilter("all");
       });
 
-      expect(result.current.projects.length).toBeGreaterThan(filteredCount);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(filteredCount);
+      });
     });
   });
 
@@ -175,8 +193,10 @@ describe("useProjectsOverview", () => {
         result.current.handleStatusFilter("active");
       });
 
-      expect(result.current.projects.length).toBeGreaterThan(0);
-      expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
+      await waitFor(() => {
+        expect(result.current.projects.length).toBeGreaterThan(0);
+        expect(result.current.projects.every((p) => p.status === "active")).toBe(true);
+      });
     });
 
     it("should count active filters correctly", async () => {

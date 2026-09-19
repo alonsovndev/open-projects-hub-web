@@ -16,6 +16,7 @@ const mockProjects = [
     clientName: "Metro Health",
     status: "active",
     priority: "high",
+    phase: "discovery",
     startDate: "2026-01-01",
     endDate: "2026-06-01",
     createdAt: "2026-01-01T00:00:00.000Z",
@@ -33,6 +34,7 @@ const mockProjects = [
     clientName: "ShopCo",
     status: "active",
     priority: "high",
+    phase: "discovery",
     startDate: "2026-01-05",
     endDate: "2026-07-01",
     createdAt: "2026-01-05T00:00:00.000Z",
@@ -50,6 +52,7 @@ const mockProjects = [
     clientName: "Acme Robotics",
     status: "completed",
     priority: "medium",
+    phase: "discovery",
     startDate: "2025-09-01",
     endDate: "2025-12-01",
     createdAt: "2025-09-01T00:00:00.000Z",
@@ -67,6 +70,7 @@ const mockProjects = [
     clientName: "Blue Harbor Logistics",
     status: "completed",
     priority: "low",
+    phase: "discovery",
     startDate: "2025-08-01",
     endDate: "2025-11-01",
     createdAt: "2025-08-01T00:00:00.000Z",
@@ -84,6 +88,7 @@ const mockProjects = [
     clientName: "Metro Health",
     status: "active",
     priority: "medium",
+    phase: "discovery",
     startDate: "2026-02-01",
     endDate: "2026-08-01",
     createdAt: "2026-02-01T00:00:00.000Z",
@@ -101,6 +106,7 @@ const mockProjects = [
     clientName: "Acme Robotics",
     status: "active",
     priority: "low",
+    phase: "discovery",
     startDate: "2026-02-15",
     endDate: "2026-05-15",
     createdAt: "2026-02-15T00:00:00.000Z",
@@ -118,6 +124,7 @@ const mockProjects = [
     clientName: "Blue Harbor Logistics",
     status: "archived",
     priority: "low",
+    phase: "discovery",
     startDate: "2024-01-01",
     endDate: "2024-03-01",
     createdAt: "2024-01-01T00:00:00.000Z",
@@ -127,13 +134,36 @@ const mockProjects = [
   },
 ];
 
+// Mirrors the backend's project list filters (status, clientId, search on name/code,
+// createdFrom/createdTo) so tests that forward query params exercise real filtering
+// instead of always getting the full fixture set back.
+const applyProjectFilters = (url: URL) => {
+  const status = url.searchParams.get("status");
+  const clientId = url.searchParams.get("clientId");
+  const search = url.searchParams.get("search")?.toLowerCase();
+  const createdFrom = url.searchParams.get("createdFrom");
+  const createdTo = url.searchParams.get("createdTo");
+
+  return mockProjects.filter((project) => {
+    if (status && project.status !== status) return false;
+    if (clientId && project.clientId !== clientId) return false;
+    if (search && !project.name.toLowerCase().includes(search) && !project.code.toLowerCase().includes(search)) {
+      return false;
+    }
+    if (createdFrom && new Date(project.createdAt).getTime() < new Date(createdFrom).getTime()) return false;
+    if (createdTo && new Date(project.createdAt).getTime() > new Date(createdTo).getTime()) return false;
+    return true;
+  });
+};
+
 export const projectsHandlers = [
-  http.get(`${adminAuthConfig.apiBaseUrl}/v1/projects`, () => {
+  http.get(`${adminAuthConfig.apiBaseUrl}/v1/projects`, ({ request }) => {
+    const filtered = applyProjectFilters(new URL(request.url));
     return HttpResponse.json({
-      items: mockProjects,
-      total: mockProjects.length,
+      items: filtered,
+      total: filtered.length,
       page: 1,
-      per_page: mockProjects.length,
+      per_page: filtered.length,
     });
   }),
 
@@ -154,12 +184,9 @@ export const projectsHandlers = [
     const isLimitTest = String(body.code ?? "").includes("LIMIT");
     if (isLimitTest && activeCount >= 3) {
       return HttpResponse.json(
-        { message: "Active project limit reached (3). Archive a project before creating a new one." },
+        { detail: "Active project limit reached (3). Archive a project before creating a new one." },
         { status: 409 }
       );
-    }
-    if (!isLimitTest && activeCount >= 4 && Math.random() < 0) {
-      // unreachable guard kept for docs; client guard handles 3-limit in practice
     }
     return HttpResponse.json(
       {
@@ -172,6 +199,7 @@ export const projectsHandlers = [
         clientName: "Mock Client",
         status: "active",
         priority: body.priority ?? "medium",
+        phase: body.phase ?? "discovery",
         startDate: body.startDate ?? null,
         endDate: body.endDate ?? null,
         createdAt: new Date().toISOString(),
@@ -183,16 +211,13 @@ export const projectsHandlers = [
     );
   }),
 
+  // PATCH no longer accepts `status` (BE-002 fix) — only the dedicated /archive endpoint
+  // below can transition status, so it merges whatever non-status fields are sent.
   http.patch(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id`, async ({ params, request }) => {
     const body = (await request.json()) as Record<string, unknown>;
     const project = mockProjects.find((p) => p.id === params.id);
     if (!project) {
-      return HttpResponse.json({ message: "Project not found" }, { status: 404 });
-    }
-    // Archive path
-    if (body.status === "archived") {
-      const updated = { ...project, status: "archived" as const, updatedAt: new Date().toISOString() };
-      return HttpResponse.json(updated);
+      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
     }
     const updated = {
       ...project,
@@ -202,10 +227,11 @@ export const projectsHandlers = [
     return HttpResponse.json(updated);
   }),
 
-  http.delete(`${adminAuthConfig.apiBaseUrl}/v1/clients/:id`, () => {
-    return HttpResponse.json(
-      { message: "Cannot delete client with active projects. Archive or reassign projects first." },
-      { status: 409 }
-    );
+  http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/archive`, ({ params }) => {
+    const project = mockProjects.find((p) => p.id === params.id);
+    if (!project) {
+      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+    }
+    return HttpResponse.json({ ...project, status: "archived", updatedAt: new Date().toISOString() });
   }),
 ];

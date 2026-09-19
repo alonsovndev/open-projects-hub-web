@@ -5,6 +5,7 @@
 
 export type ProjectStatus = "active" | "completed" | "on-hold" | "planning" | "archived";
 export type ProjectPriority = "high" | "medium" | "low";
+export type ProjectPhase = "discovery" | "planning";
 
 export interface Client {
   id: string;
@@ -31,6 +32,7 @@ export interface ProjectSummary {
   code: string;
   status: ProjectStatus;
   priority: ProjectPriority;
+  phase: ProjectPhase;
   clientId: string;
   clientName: string;
   /** @deprecated Use clientName instead */

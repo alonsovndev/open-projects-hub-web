@@ -12,6 +12,7 @@ interface ProjectResponse {
   clientName: string;
   status: string;
   priority: string;
+  phase: string;
   startDate: string | null;
   endDate: string | null;
   createdAt: string;
@@ -58,6 +59,7 @@ interface CreateProjectRequest {
   name: string;
   code: string;
   clientId: string;
+  phase: string;
   description?: string;
   priority?: string;
   startDate?: string;
@@ -73,6 +75,7 @@ const transformProject = (backendProject: ProjectResponse & { archived?: boolean
     code: backendProject.code,
     status: statusValue as ProjectSummary["status"],
     priority: backendProject.priority as ProjectSummary["priority"],
+    phase: backendProject.phase as ProjectSummary["phase"],
     clientId: backendProject.clientId,
     clientName: backendProject.clientName,
     client: backendProject.clientName, // For backwards compatibility
@@ -88,7 +91,8 @@ const transformProject = (backendProject: ProjectResponse & { archived?: boolean
 
 export const projectsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get all projects — supports server-side filtering when backend enables it (MVP uses client-side fallback)
+    // Get all projects — filters are forwarded to the backend (status/client/date/search),
+    // which is the source of truth for pagination totals matching filtered results.
     getProjects: builder.query<
       GetProjectsResponse,
       {
@@ -109,8 +113,9 @@ export const projectsApi = baseApi.injectEndpoints({
           ...(status && status !== "all" ? { status } : {}),
           ...(clientId && clientId !== "all" ? { clientId } : {}),
           ...(search ? { search } : {}),
-          ...(startDate ? { startDate } : {}),
-          ...(endDate ? { endDate } : {}),
+          // Backend expects createdFrom/createdTo (see project_routes.py), not startDate/endDate.
+          ...(startDate ? { createdFrom: startDate } : {}),
+          ...(endDate ? { createdTo: endDate } : {}),
         },
       }),
       transformResponse: (response: PaginatedProjectsResponse) => ({
@@ -157,11 +162,9 @@ export const projectsApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: "Projects", id: "LIST" }, "DashboardStats"],
     }),
 
-    // Update project
-    updateProject: builder.mutation<
-      ProjectSummary,
-      { id: string; data: Partial<CreateProjectRequest & { status?: string }> }
-    >({
+    // Update project — status is not updatable here; use archiveProject/reactivateProject instead,
+    // which are the only paths that enforce the active-project limit on status transitions.
+    updateProject: builder.mutation<ProjectSummary, { id: string; data: Partial<CreateProjectRequest> }>({
       query: ({ id, data }) => ({
         url: `/v1/projects/${id}`,
         method: "PATCH",
@@ -175,12 +178,12 @@ export const projectsApi = baseApi.injectEndpoints({
       ],
     }),
 
-    // Archive project — status transition to archived
+    // Archive project — uses the dedicated archive endpoint, which is the only path
+    // (besides reactivate) allowed to transition project status.
     archiveProject: builder.mutation<ProjectSummary, string>({
       query: (id) => ({
-        url: `/v1/projects/${id}`,
-        method: "PATCH",
-        body: { status: "archived" },
+        url: `/v1/projects/${id}/archive`,
+        method: "POST",
       }),
       transformResponse: (response: ProjectResponse) => transformProject(response),
       invalidatesTags: (result, error, id) => [

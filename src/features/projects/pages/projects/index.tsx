@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { useState } from "react";
 import { Typography, Button, Empty, Alert, Tooltip } from "antd";
 import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 
@@ -48,8 +47,6 @@ export const ProjectsOverview: FC = () => {
     handleDeleteProject,
     handleArchiveProject,
   } = useProjectsOverview();
-  const [clientDeleteError, setClientDeleteError] = useState<string | null>(null);
-  void setClientDeleteError;
 
   return (
     <div className={styles.pageContainer}>
@@ -86,18 +83,6 @@ export const ProjectsOverview: FC = () => {
           role="alert"
           message="Active project limit reached"
           description="You have reached the maximum of 3 active projects. Archive a project before creating a new one."
-          style={{ marginBottom: 16 }}
-        />
-      )}
-      {clientDeleteError && (
-        <Alert
-          type="error"
-          showIcon
-          closable
-          onClose={() => setClientDeleteError(null)}
-          message="Cannot delete client"
-          description={clientDeleteError}
-          role="alert"
           style={{ marginBottom: 16 }}
         />
       )}
