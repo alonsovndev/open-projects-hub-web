@@ -12,7 +12,7 @@ import {
   validatePasswordRequirements,
 } from "@/features/auth/model/password-policy";
 import { getPasswordStrength } from "@/features/auth/model/password-strength";
-import type { AdminLoginValues } from "@/features/auth/types";
+import type { AdminLoginValues, AuthLocationState } from "@/features/auth/types";
 
 export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
@@ -51,6 +51,11 @@ export const useAdminLoginForm = () => {
     return errorData?.data?.message ?? "";
   }, [error]);
 
+  // Set by useSessionExpiryWarning's redirect when an active session actually
+  // lapses, so the reason for landing back on /login is explained. Note:
+  // GuardResolver's plain "auth" redirect (no prior session) does not set this.
+  const sessionMessage = (location.state as AuthLocationState | null)?.message ?? "";
+
   const handleSubmit = async (values: AdminLoginValues) => {
     try {
       const response = await login(values).unwrap();
@@ -63,8 +68,7 @@ export const useAdminLoginForm = () => {
       );
 
       // Redirect to the page they were trying to access, or dashboard
-      const from =
-        (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
+      const from = (location.state as AuthLocationState | null)?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
     } catch (error) {
       const nextError = error as { data?: { message?: string } } | undefined;
@@ -113,6 +117,7 @@ export const useAdminLoginForm = () => {
   return {
     form,
     authError,
+    sessionMessage,
     isSubmitting: isLoading,
     passwordRuleStatuses,
     passwordStrength,

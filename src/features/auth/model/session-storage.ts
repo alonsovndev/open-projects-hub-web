@@ -24,16 +24,33 @@ export const sessionStorage = {
   },
 
   load: (): Omit<AdminSession, "token"> | null => {
+    const rememberMe = window.localStorage.getItem(REMEMBER_ME_KEY) === "true";
+    const storageType = rememberMe ? window.localStorage : window.sessionStorage;
+
     try {
-      const rememberMe = window.localStorage.getItem(REMEMBER_ME_KEY) === "true";
-      const storageType = rememberMe ? window.localStorage : window.sessionStorage;
       const stored = storageType.getItem(adminAuthConfig.sessionStorageKey);
       return stored ? JSON.parse(stored) : null;
     } catch (error) {
       if (isDev) {
-        console.error("Failed to load session:", error);
+        console.error("Failed to load session, clearing corrupt entry:", error);
+      }
+      // Malformed/corrupt entry would otherwise fail to parse on every future
+      // load (including the one computing isBootstrapping on every app boot)
+      // — remove it so the app self-heals instead of getting stuck.
+      try {
+        storageType.removeItem(adminAuthConfig.sessionStorageKey);
+      } catch {
+        // Storage inaccessible entirely (e.g. private mode) — nothing more we can do.
       }
       return null;
+    }
+  },
+
+  isRemembered: (): boolean => {
+    try {
+      return window.localStorage.getItem(REMEMBER_ME_KEY) === "true";
+    } catch {
+      return false;
     }
   },
 
