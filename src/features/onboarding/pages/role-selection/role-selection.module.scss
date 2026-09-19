@@ -1,0 +1,187 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $surface-light;
+  padding: $spacing-xl;
+}
+
+.selectionSection {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.selectionContent {
+  text-align: center;
+}
+
+.title {
+  font-family: $font-headline;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 $spacing-sm;
+  color: $text-primary;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 1.75rem;
+  }
+}
+
+.subtitle {
+  font-family: $font-body;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 $spacing-2xl;
+  color: $text-secondary;
+}
+
+.roleCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.roleCard {
+  background: $surface-white;
+  border: 1px solid $surface-base;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  box-shadow: $shadow-card;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary-base;
+    box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.12);
+  }
+}
+
+.roleIconWrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  border-radius: $radius-md;
+  color: $text-inverted;
+  margin-bottom: $spacing-sm;
+}
+
+.roleIcon {
+  font-size: 28px;
+}
+
+.roleTitle {
+  font-family: $font-headline;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: $spacing-xs 0 0;
+  color: $text-primary;
+}
+
+.roleBadge {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $primary-base;
+  background-color: rgba(var(--color-primary-rgb), 0.08);
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: $spacing-sm 0 $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.featureItem {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  color: $text-primary;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  justify-content: center;
+}
+
+.checkIcon {
+  font-size: 0.75rem;
+  color: $success-base;
+}
+
+.primaryButton {
+  height: 44px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  background-color: $primary-base;
+  border: none;
+  border-radius: $radius-sm;
+  box-shadow: none;
+
+  &:hover {
+    background-color: $primary-dark;
+  }
+}
+
+.outlineButton {
+  height: 44px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: 1px solid $primary-base;
+  color: $primary-base;
+  border-radius: $radius-sm;
+  box-shadow: none;
+
+  &:hover {
+    color: $primary-dark;
+    border-color: $primary-dark;
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+  }
+}
+
+.footer {
+  margin-top: $spacing-lg;
+}
+
+.footerLink {
+  font-family: $font-body;
+  font-size: 0.9375rem;
+  color: $primary-base;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+}

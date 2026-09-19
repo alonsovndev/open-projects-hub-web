@@ -1,0 +1,98 @@
+@use "@/styles/variables.scss" as *;
+
+.footer {
+  background-color: $surface-inverted;
+  padding: $spacing-2xl 2rem $spacing-xl;
+  font-family: $font-body;
+  border-top: 1px solid $border-inverted;
+  margin-top: 0;
+}
+
+.footerContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
+}
+
+.footerBrand {
+  max-width: 360px;
+}
+
+.brandName {
+  font-family: $font-headline;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $text-inverted;
+}
+
+.brandTagline {
+  font-size: 0.875rem;
+  color: rgba(var(--color-text-inverted-rgb), 0.8);
+  margin: $spacing-sm 0 0;
+  line-height: 1.5;
+}
+
+.footerColumns {
+  display: flex;
+  gap: $spacing-2xl;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+}
+
+.footerColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  min-width: 140px;
+}
+
+.columnTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(var(--color-text-inverted-rgb), 0.7);
+  margin: 0 0 $spacing-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footerLink {
+  font-size: 0.875rem;
+  color: $text-inverted;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $text-inverted;
+    text-decoration: underline;
+  }
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-inverted;
+}
+
+.copyright {
+  font-size: 0.8125rem;
+  color: rgba(var(--color-text-inverted-rgb), 0.6);
+}
+
+.githubLink {
+  font-size: 1.25rem;
+  color: rgba(var(--color-text-inverted-rgb), 0.7);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: $text-inverted;
+  }
+}

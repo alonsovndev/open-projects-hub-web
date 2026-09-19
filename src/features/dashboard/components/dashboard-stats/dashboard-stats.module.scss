@@ -1,0 +1,36 @@
+@use "@/styles/variables.scss" as *;
+
+.statsGrid {
+  margin-bottom: $spacing-2xl;
+}
+
+.statCard {
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  box-shadow: $shadow-card;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(var(--color-primary-rgb), 0.12);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.iconPrimary {
+  color: $primary-base;
+  font-size: 1.5rem;
+}
+
+.iconSuccess {
+  color: $success-base;
+  font-size: 1.5rem;
+}

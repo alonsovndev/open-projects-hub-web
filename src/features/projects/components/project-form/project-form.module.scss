@@ -1,0 +1,121 @@
+@use "@/styles/variables.scss" as *;
+
+.formCard {
+  max-width: 900px;
+  margin: 0 auto;
+  background: $surface-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+}
+
+.formTitle {
+  font-family: $font-headline;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0 0 $spacing-xl;
+}
+
+.form {
+  :global {
+    .ant-form-item-label > label {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker {
+      font-family: $font-body;
+      border-radius: $radius-sm;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        border-color: $primary-base;
+      }
+
+      &:focus,
+      &:focus-within {
+        border-color: $primary-base;
+        box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+      }
+    }
+
+    .ant-input-number {
+      width: 100%;
+    }
+
+    .ant-form-item-explain-error {
+      font-family: $font-body;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global {
+      .ant-input,
+      .ant-input-number,
+      .ant-select-selector,
+      .ant-picker {
+        transition: none;
+      }
+    }
+  }
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md $spacing-lg;
+  margin-bottom: $spacing-md;
+
+  > :global(.ant-form-item) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $surface-base;
+}
+
+.submitButton {
+  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  border: none;
+  font-family: $font-body;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover:not(:disabled) {
+      transform: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}

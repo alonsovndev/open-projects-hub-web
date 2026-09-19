@@ -1,0 +1,122 @@
+@use "@/styles/variables.scss" as *;
+
+.dashboard {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.headerAction {
+  color: $text-secondary;
+}
+
+.userEmail {
+  color: $text-primary;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.roleTag,
+.statusTag,
+.panelTag {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.roleTag {
+  color: $text-primary;
+  background: $surface-base;
+  border: none;
+}
+
+.content {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.hero {
+  margin-bottom: 24px;
+  padding: 28px;
+  border: 1px solid $surface-base;
+  border-radius: 20px;
+  background: linear-gradient(135deg, $surface-white 0%, $primary-bg-light 100%);
+}
+
+.statusTag {
+  margin-bottom: 14px;
+  color: $primary-base;
+  background: $primary-bg-light;
+  border: none;
+}
+
+.title {
+  margin: 0 0 12px !important;
+  color: $text-primary !important;
+}
+
+.sessionMeta {
+  margin-bottom: 10px;
+  color: $primary-base;
+  font-size: 0.95rem;
+}
+
+.description {
+  max-width: 720px;
+  margin-bottom: 24px;
+  color: $text-secondary;
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.panelGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  border-radius: 16px;
+  border-color: $surface-base;
+  box-shadow: $shadow-lg;
+}
+
+.panelTag {
+  margin-bottom: 14px;
+  color: $text-primary;
+  background: $surface-light;
+  border: none;
+}
+
+.panelTitle {
+  margin: 0 0 10px !important;
+  color: $text-primary !important;
+}
+
+.panelDescription {
+  margin-bottom: 0;
+  color: $text-secondary;
+}
+
+@media (max-width: 900px) {
+  .panelGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 24px 16px 36px;
+  }
+
+  .hero {
+    padding: 22px 18px;
+  }
+}

@@ -1,0 +1,67 @@
+@use "@/styles/variables.scss" as *;
+
+.filtersBar {
+  background: $surface-white;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-xl;
+  box-shadow: $shadow-card;
+}
+
+.filtersContent {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  min-width: 280px;
+  flex: 1;
+
+  :global {
+    .ant-input {
+      font-family: $font-body;
+      border-radius: $radius-sm;
+    }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    min-width: 100%;
+  }
+}
+
+.filterSelect {
+  min-width: 180px;
+
+  :global {
+    .ant-select-selector {
+      font-family: $font-body;
+      border-radius: $radius-sm;
+    }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    min-width: 100%;
+  }
+}
+
+.clearLink {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  color: $primary-base;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

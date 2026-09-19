@@ -1,0 +1,59 @@
+// Design tokens — reference CSS custom properties defined in global.scss under :root
+
+// Colors
+$primary-base: var(--color-primary);
+$primary-light: var(--color-primary-light);
+$primary-dark: var(--color-primary-dark);
+$color-link: var(--color-link);
+
+$surface-white: var(--color-surface-white);
+$surface-light: var(--color-surface-light);
+$surface-base: var(--color-surface-base);
+
+$text-primary: var(--color-text-primary);
+$text-secondary: var(--color-text-secondary);
+
+$surface-dark: var(--color-surface-dark);
+$text-on-dark: var(--color-text-on-dark);
+$border-light: var(--color-border-light);
+$border-medium: var(--color-border-medium);
+$border-subtle: var(--color-border-subtle);
+$hover-overlay: var(--color-hover-overlay);
+$primary-bg-light: var(--color-primary-bg-light);
+$success-base: var(--color-success);
+
+// Inverted Surface (always-dark sections like CTA, footer)
+$surface-inverted: var(--color-surface-inverted);
+$text-inverted: var(--color-text-inverted);
+$border-inverted: var(--color-border-inverted);
+
+// Shadows
+$shadow-sm: var(--shadow-sm);
+$shadow-md: var(--shadow-md);
+$shadow-lg: var(--shadow-lg);
+$shadow-card: var(--shadow-card);
+$shadow-card-hover: var(--shadow-card-hover);
+
+// Typography
+$font-headline: var(--font-family);
+$font-body: var(--font-family);
+
+// Spacing
+$spacing-xs: 0.25rem; // 4px
+$spacing-sm: 0.5rem; // 8px
+$spacing-md: 1rem; // 16px
+$spacing-lg: 1.5rem; // 24px
+$spacing-xl: 2rem; // 32px
+$spacing-2xl: 3rem; // 48px
+$spacing-3xl: 4rem; // 64px
+
+// Border Radius
+$radius-sm: 0.5rem; // 8px
+$radius-md: 1rem; // 16px
+$radius-lg: 1.5rem; // 24px
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1280px;

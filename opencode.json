@@ -1,6 +1,38 @@
 {
-  "contextProviders": {
-    "jira": "http://localhost:8080/jira/issues/:issueId",
-    "confluence": "http://localhost:8080/confluence/pages/:pageId"
+  "$schema": "https://opencode.ai/config.json",
+  "small_model": "anthropic/claude-haiku-4-20250514",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 8000
+  },
+  "instructions": [
+    "./AGENTS.md",
+    "./DESIGN.md",
+    "./.opencode/knowledge/repo-standards.md",
+    "./.opencode/knowledge/stitch.md",
+    "./.opencode/workflows/ui-ux-workflows.md"
+  ],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
+    },
+    "stitch": {
+      "type": "remote",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "..."
+      }
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "chrome-devtools-mcp@latest"],
+      "enabled": true
+    }
   }
 }

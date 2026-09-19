@@ -1,0 +1,89 @@
+import type { ProjectRequirementsRecord } from "@/features/viewer/types";
+
+export const projectRequirementsData: ProjectRequirementsRecord = {
+  code: "PRJ-2024-XXXX",
+  projectTitle: "Clinic Management System",
+  stories: [
+    {
+      id: "appointment-scheduling",
+      title: "Appointment Scheduling System",
+      userStory: {
+        userRole: "clinic patient",
+        goal: "schedule an appointment with my doctor online",
+        benefit: "I can book a convenient time without calling the clinic",
+      },
+      status: "Approved",
+      acceptanceCriteria: [
+        {
+          given: "I am logged into the clinic portal",
+          when: "I select a doctor and a time slot",
+          then: "the appointment is successfully booked and I receive a confirmation email",
+        },
+        {
+          given: "I try to book an appointment",
+          when: "the selected time slot is already taken",
+          then: "I see an error message and can choose a different time",
+        },
+        {
+          given: "I have an existing appointment",
+          when: "I want to reschedule to a different time",
+          then: "I can modify my appointment and receive an updated confirmation",
+        },
+      ],
+    },
+    {
+      id: "medical-records-access",
+      title: "Access to Medical Records",
+      userStory: {
+        userRole: "clinic patient",
+        goal: "view my medical history and lab results",
+        benefit: "I can stay informed about my health without visiting the clinic",
+      },
+      status: "Approved",
+      acceptanceCriteria: [
+        {
+          given: "I am logged into the clinic portal",
+          when: "I navigate to the medical records section",
+          then: "I can see a list of my past appointments and lab results",
+        },
+        {
+          given: "I view a lab result",
+          when: "I click on a specific test",
+          then: "I see detailed information about the test and its results",
+        },
+        {
+          given: "I want to download my medical records",
+          when: "I click the download button",
+          then: "I receive a PDF copy of my complete medical history",
+        },
+      ],
+    },
+    {
+      id: "prescription-management",
+      title: "Prescription Management",
+      userStory: {
+        userRole: "clinic patient",
+        goal: "request prescription refills online",
+        benefit: "I can get my medications without having to visit the clinic or make a phone call",
+      },
+      status: "Approved",
+      acceptanceCriteria: [
+        {
+          given: "I am logged into the clinic portal",
+          when: "I navigate to my active prescriptions",
+          then: "I see a list of all my current medications with refill status",
+        },
+        {
+          given: "I have a prescription that needs refill",
+          when: "I click the request refill button",
+          then: "the request is sent to my doctor and I receive a confirmation notification",
+        },
+        {
+          given: "my refill request is approved",
+          when: "the doctor processes my request",
+          then: "I receive a notification and can pick up my medication at the pharmacy",
+        },
+      ],
+    },
+  ],
+};

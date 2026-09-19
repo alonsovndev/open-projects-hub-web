@@ -1,0 +1,12 @@
+@use "@/styles/variables.scss" as *;
+
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $surface-light;
+}
+
+.mainContent {
+  flex: 1;
+}

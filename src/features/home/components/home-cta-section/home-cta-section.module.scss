@@ -1,0 +1,112 @@
+@use "@/styles/variables.scss" as *;
+
+.ctaSection {
+  background-color: $primary-base;
+  padding: 6rem 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 4rem 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1.5rem;
+  }
+}
+
+.ctaContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  max-width: 700px;
+}
+
+.ctaTitle {
+  font-family: $font-headline;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: $surface-white;
+  margin: 0;
+  letter-spacing: -0.02em;
+
+  @media (max-width: 1024px) {
+    font-size: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
+}
+
+.ctaDescription {
+  font-family: $font-body;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: $surface-white;
+  opacity: 0.8;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+.ctaActions {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+}
+
+.ctaPrimaryButton {
+  height: 48px;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: $primary-base;
+  color: $surface-white; /* Added this line */
+  border: none;
+  border-radius: $radius-sm;
+  padding: 0 2rem;
+  transition: background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+}
+
+.ctaSecondaryButton {
+  height: 48px;
+  font-weight: 500;
+  font-size: 1rem;
+  background-color: transparent;
+  color: $surface-white;
+  border: 1px solid $surface-white;
+  border-radius: $radius-sm;
+  padding: 0 2rem;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: $surface-white;
+    color: $surface-white;
+    background-color: rgba(var(--color-surface-white-rgb), 0.1);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+}

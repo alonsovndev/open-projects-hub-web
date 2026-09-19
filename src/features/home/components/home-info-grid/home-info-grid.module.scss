@@ -1,0 +1,109 @@
+@use "@/styles/variables.scss" as *;
+
+.gridSection {
+  background-color: $surface-light;
+  padding: 6rem 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 4rem 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1.5rem;
+  }
+}
+
+.gridContainer {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+
+  @media (max-width: 1024px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.gridColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.columnTitle {
+  font-family: $font-headline;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.featureCard {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background-color: $surface-white;
+  border-radius: $radius-md;
+  border: 1px solid $surface-base;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: $primary-base;
+    box-shadow: $shadow-card;
+  }
+}
+
+.featureIcon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: $primary-base;
+  background-color: $primary-bg-light;
+  border-radius: $radius-sm;
+}
+
+.featureContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.featureTitle {
+  font-family: $font-headline;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0;
+}
+
+.featureDescription {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $text-secondary;
+  margin: 0;
+}
