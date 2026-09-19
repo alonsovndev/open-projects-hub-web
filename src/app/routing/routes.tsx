@@ -8,6 +8,7 @@ import { authRoutes } from "@/features/auth/routes";
 import { onboardingRoutes } from "@/features/onboarding/routes";
 import { dashboardRoutes } from "@/features/dashboard/routes";
 import { projectsRoutes } from "@/features/projects/routes";
+import { clientsRoutes } from "@/features/clients/routes";
 import { viewerRoutes } from "@/features/viewer/routes";
 import { refinementRoutes } from "@/features/refinement/routes";
 import { backlogRoutes } from "@/features/backlog/routes";
@@ -31,6 +32,7 @@ export const appRoutes: AppRoute[] = [
   ...authRoutes,
   ...dashboardRoutes,
   ...projectsRoutes,
+  ...clientsRoutes,
   ...refinementRoutes,
   ...backlogRoutes,
   ...settingsRoutes,

@@ -4,6 +4,7 @@ import { Layout, Menu, Button, Avatar, Typography } from "antd";
 import {
   DashboardOutlined,
   ProjectOutlined,
+  TeamOutlined,
   ExperimentOutlined,
   UnorderedListOutlined,
   SettingOutlined,
@@ -50,6 +51,12 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       icon: <ProjectOutlined />,
       label: "Projects",
       onClick: () => navigate("/projects"),
+    },
+    {
+      key: "/clients",
+      icon: <TeamOutlined />,
+      label: "Clients",
+      onClick: () => navigate("/clients"),
     },
     {
       key: "/refinement",
