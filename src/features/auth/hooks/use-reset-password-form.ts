@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 
 import { Form, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import type { ResetPasswordValues } from "@/features/auth/types";
-import { useResetPasswordMutation } from "@/features/auth/api/admin-auth-api";
+import type { AuthLocationState, ResetPasswordValues } from "@/features/auth/types";
+import { useResendResetCodeMutation, useResetPasswordMutation } from "@/features/auth/api/admin-auth-api";
 import {
   getPasswordRuleStatuses,
   validatePasswordRequirements,
@@ -14,7 +14,13 @@ import { getPasswordStrength } from "@/features/auth/model/password-strength";
 export const useResetPasswordForm = () => {
   const [form] = Form.useForm<ResetPasswordValues>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const [resendResetCode, { isLoading: isResending }] = useResendResetCodeMutation();
+
+  // Carried from the Forgot Password step (same-session flow: the user reads
+  // the code from their inbox and types it back into the app they still have open).
+  const email = (location.state as AuthLocationState | null)?.email ?? "";
 
   const newPasswordValue = Form.useWatch("newPassword", form) ?? "";
 
@@ -31,17 +37,29 @@ export const useResetPasswordForm = () => {
 
   const handleSubmit = async (values: ResetPasswordValues) => {
     try {
-      await resetPassword(values).unwrap();
-      message.success("Password updated successfully! Please sign in.");
+      await resetPassword({ ...values, email }).unwrap();
+      message.success("Password reset successfully! Please sign in.");
       navigate("/login");
     } catch (error) {
       const err = error as { data?: { message?: string } };
-      message.error(err?.data?.message ?? "Unable to update password. Please try again.");
+      message.error(err?.data?.message ?? "Unable to reset password. Please try again.");
     }
   };
 
-  const currentPasswordFieldRules = [
-    { required: true, message: "Please enter your current password." },
+  const handleResendCode = async () => {
+    if (!email) return;
+    try {
+      await resendResetCode({ email }).unwrap();
+      message.success("A new code has been sent to your email.");
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
+      message.error(err?.data?.message ?? "Unable to resend the code right now.");
+    }
+  };
+
+  const codeFieldRules = [
+    { required: true, message: "Please enter the 6-digit code from your email." },
+    { len: 6, message: "The code must be 6 characters." },
   ];
 
   const newPasswordFieldRules = [
@@ -67,14 +85,17 @@ export const useResetPasswordForm = () => {
 
   return {
     form,
+    email,
     isSubmitting: isLoading,
+    isResending,
     passwordRuleStatuses,
     passwordStrength,
     hasPasswordInput,
     isPasswordValid,
-    currentPasswordFieldRules,
+    codeFieldRules,
     newPasswordFieldRules,
     confirmPasswordFieldRules,
     handleSubmit,
+    handleResendCode,
   };
 };
