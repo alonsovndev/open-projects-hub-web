@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { Alert } from "antd";
 
 import { ProjectForm } from "@/features/projects/components/project-form";
 import { useCreateProject } from "@/features/projects/hooks/use-create-project";
@@ -8,10 +9,13 @@ import styles from "./project-new.module.scss";
 
 export const ProjectNewPage: FC = () => {
   usePageTitle("New Project");
-  const { loading, handleSubmit, handleCancel } = useCreateProject();
+  const { loading, limitError, handleSubmit, handleCancel } = useCreateProject();
 
   return (
     <div className={styles.pageContainer}>
+      {limitError && (
+        <Alert type="error" showIcon message="Cannot create project" description={limitError} role="alert" style={{ marginBottom: 16 }} />
+      )}
       <ProjectForm
         onSubmit={handleSubmit}
         onCancel={handleCancel}

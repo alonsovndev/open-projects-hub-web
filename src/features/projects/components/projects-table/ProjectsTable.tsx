@@ -3,12 +3,18 @@ import { memo, useMemo } from "react";
 import { Table, Tag, Progress, Button, Space, Typography } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
-import { EyeOutlined, EditOutlined, DeleteOutlined, CalendarOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  CalendarOutlined,
+  InboxOutlined,
+} from "@ant-design/icons";
 
 import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/shared/types/domain";
 import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
 import type { ProjectSort } from "@/features/projects/types";
-import { formatDate } from "@/shared/utils/date";
+import { formatDate, formatRelativeTime } from "@/shared/utils/date";
 
 import styles from "./projects-table.module.scss";
 
@@ -23,6 +29,7 @@ interface ProjectsTableProps {
   onViewProject: (projectCode: string) => void;
   onEditProject: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
+  onArchiveProject?: (projectId: string, projectName: string) => void;
 }
 
 const { Text } = Typography;
@@ -38,6 +45,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   onViewProject,
   onEditProject,
   onDeleteProject,
+  onArchiveProject,
 }) => {
   const columns: ColumnsType<ProjectSummary> = useMemo(
     () => [
@@ -114,6 +122,34 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         },
       },
       {
+        title: "Description",
+        dataIndex: "description",
+        key: "description",
+        ellipsis: true,
+        width: 260,
+        render: (text: string) => (
+          <Text type="secondary" ellipsis={{ tooltip: text }}>
+            {text || "—"}
+          </Text>
+        ),
+      },
+      {
+        title: "Created",
+        dataIndex: "createdAt",
+        key: "createdAt",
+        sorter: true,
+        sortOrder: sort.field === "createdAt" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (value: string) => <Text>{formatDate(value)}</Text>,
+      },
+      {
+        title: "Updated",
+        dataIndex: "lastUpdated",
+        key: "lastUpdated",
+        sorter: true,
+        sortOrder: sort.field === "lastUpdated" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        render: (value: string) => <Text>{formatRelativeTime(value)}</Text>,
+      },
+      {
         title: "Timeline",
         key: "timeline",
         sorter: true,
@@ -137,12 +173,13 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         title: "Actions",
         key: "actions",
         render: (_, record) => (
-          <Space size="small">
+          <Space size="small" wrap>
             <Button
               type="link"
               icon={<EyeOutlined />}
               onClick={() => onViewProject(record.code)}
               className={styles.actionButton}
+              aria-label={`View ${record.name}`}
             >
               View
             </Button>
@@ -151,9 +188,21 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
               icon={<EditOutlined />}
               onClick={() => onEditProject(record.id)}
               className={styles.actionButton}
+              aria-label={`Edit ${record.name}`}
             >
               Edit
             </Button>
+            {onArchiveProject && record.status !== "archived" && (
+              <Button
+                type="link"
+                icon={<InboxOutlined />}
+                onClick={() => onArchiveProject(record.id, record.name)}
+                className={styles.actionButton}
+                aria-label={`Archive ${record.name}`}
+              >
+                Archive
+              </Button>
+            )}
             {onDeleteProject && (
               <Button
                 type="link"
@@ -161,6 +210,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
                 icon={<DeleteOutlined />}
                 onClick={() => onDeleteProject(record.id, record.name)}
                 className={styles.actionButton}
+                aria-label={`Delete ${record.name}`}
               >
                 Delete
               </Button>
@@ -169,7 +219,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         ),
       },
     ],
-    [sort, onViewProject, onEditProject, onDeleteProject]
+    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject]
   );
 
   const handleTableChange = (

@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
   CalendarOutlined,
   UnorderedListOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 
 import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
@@ -24,6 +25,7 @@ interface ProjectListProps {
   onViewProject: (projectCode: string) => void;
   onEditProject?: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
+  onArchiveProject?: (projectId: string, projectName: string) => void;
   onViewAllProjects?: () => void;
 }
 
@@ -38,6 +40,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
   onViewProject,
   onEditProject,
   onDeleteProject,
+  onArchiveProject,
   onViewAllProjects,
 }) => {
   return (
@@ -127,10 +130,13 @@ const ProjectListComponent: FC<ProjectListProps> = ({
 
                 <div className={styles.metaRow}>
                   <Text className={styles.client}>Client: {project.client}</Text>
-                  <Text className={styles.lastUpdated}>
-                    Updated {formatRelativeTime(project.lastUpdated)}
+                  <Text className={styles.lastUpdated} title={project.createdAt}>
+                    Created {formatDate(project.createdAt)} · Updated {formatRelativeTime(project.lastUpdated)}
                   </Text>
                 </div>
+                <Text type="secondary" className={styles.lastUpdated} style={{ fontSize: 12 }}>
+                  Created {formatDate(project.createdAt)} · Updated {formatDate(project.lastUpdated)}
+                </Text>
               </div>
 
               <div className={styles.cardFooter}>
@@ -153,6 +159,16 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                       Edit
                     </Button>
                   )}
+                  {onArchiveProject && project.status !== "archived" && (
+                    <Button
+                      type="default"
+                      icon={<InboxOutlined />}
+                      onClick={() => onArchiveProject(project.id, project.name)}
+                      aria-label={`Archive ${project.name}`}
+                    >
+                      Archive
+                    </Button>
+                  )}
                   {onDeleteProject && (
                     <Button
                       type="default"
@@ -160,6 +176,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                       icon={<DeleteOutlined />}
                       onClick={() => onDeleteProject(project.id, project.name)}
                       className={styles.deleteButton}
+                      aria-label={`Delete ${project.name}`}
                     >
                       Delete
                     </Button>

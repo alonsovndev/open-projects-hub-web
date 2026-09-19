@@ -39,9 +39,11 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
       fullError: JSON.stringify(result.error, null, 2),
     });
 
-    const errorData = result.error.data as { message?: string } | undefined;
+    // FastAPI (and this app's exception handlers) return errors as { detail: "..." },
+    // not { message: "..." } — read detail first, falling back to message for resilience.
+    const errorData = result.error.data as { detail?: string; message?: string } | undefined;
     const normalizedMessage =
-      errorData?.message ?? "Something went wrong while communicating with the API.";
+      errorData?.detail ?? errorData?.message ?? "Something went wrong while communicating with the API.";
 
     if (typeof result.error.status === "number") {
       return {

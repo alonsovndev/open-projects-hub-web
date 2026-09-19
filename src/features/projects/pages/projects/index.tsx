@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Button, Empty } from "antd";
+import { Typography, Button, Empty, Alert, Tooltip } from "antd";
 import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 
 import { ProjectList } from "@/features/dashboard/components/project-list";
@@ -25,12 +25,16 @@ export const ProjectsOverview: FC = () => {
     totalCount,
     filteredCount,
     activeFilterCount,
+    activeCount,
+    canCreate,
     isUpdating,
     editModalOpen,
     editingProject,
     handleSearchChange,
     handleStatusFilter,
     handlePriorityFilter,
+    handleClientFilter,
+    handleDateRangeChange,
     handleSortChange,
     handleViewChange,
     handleClearFilters,
@@ -41,6 +45,7 @@ export const ProjectsOverview: FC = () => {
     handleCancelEdit,
     handleCreateProject,
     handleDeleteProject,
+    handleArchiveProject,
   } = useProjectsOverview();
 
   return (
@@ -55,18 +60,32 @@ export const ProjectsOverview: FC = () => {
               Showing {filteredCount} of {totalCount} projects
             </Text>
           </div>
-          <Button
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={handleCreateProject}
-            className={styles.createButton}
-          >
-            New Project
-          </Button>
+          <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={handleCreateProject}
+              className={styles.createButton}
+              aria-label="Create new project"
+              disabled={!canCreate}
+            >
+              New Project
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
+      {!canCreate && (
+        <Alert
+          type="warning"
+          showIcon
+          role="alert"
+          message="Active project limit reached"
+          description="You have reached the maximum of 3 active projects. Archive a project before creating a new one."
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <ProjectsFilterBar
         filters={filters}
         view={view}
@@ -74,6 +93,8 @@ export const ProjectsOverview: FC = () => {
         onSearchChange={handleSearchChange}
         onStatusFilter={handleStatusFilter}
         onPriorityFilter={handlePriorityFilter}
+        onClientFilter={handleClientFilter}
+        onDateRangeChange={handleDateRangeChange}
         onViewChange={handleViewChange}
         onClearFilters={handleClearFilters}
       />
@@ -114,6 +135,7 @@ export const ProjectsOverview: FC = () => {
           onViewProject={handleViewProject}
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
+          onArchiveProject={handleArchiveProject}
         />
       ) : (
         <ProjectsTable
@@ -127,6 +149,7 @@ export const ProjectsOverview: FC = () => {
           onViewProject={handleViewProject}
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
+          onArchiveProject={handleArchiveProject}
         />
       )}
 

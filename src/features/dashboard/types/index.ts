@@ -7,6 +7,7 @@
 export type {
   ProjectStatus,
   ProjectPriority,
+  ProjectPhase,
   ProjectSummary,
   DashboardStats,
 } from "@/shared/types/domain";

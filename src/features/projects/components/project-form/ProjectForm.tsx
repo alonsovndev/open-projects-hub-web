@@ -3,7 +3,7 @@ import { Form, Input, Select, DatePicker, Button, Card, Typography, Spin } from 
 import { SaveOutlined, CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
-import type { ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
+import type { ProjectPhase, ProjectPriority } from "@/features/dashboard/types";
 import { useGetClientsQuery, selectClientSummaries } from "@/features/clients/api/clients-api";
 
 import styles from "./project-form.module.scss";
@@ -16,7 +16,7 @@ export interface ProjectFormData {
   code: string;
   clientId: string;
   description: string;
-  status: ProjectStatus;
+  phase: ProjectPhase;
   priority: ProjectPriority;
   startDate: string;
   endDate: string;
@@ -30,11 +30,9 @@ interface ProjectFormProps {
   submitText?: string;
 }
 
-const statusOptions = [
+const phaseOptions = [
+  { label: "Discovery", value: "discovery" },
   { label: "Planning", value: "planning" },
-  { label: "Active", value: "active" },
-  { label: "On Hold", value: "on-hold" },
-  { label: "Completed", value: "completed" },
 ];
 
 const priorityOptions = [
@@ -76,7 +74,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
         endDate: initialValues.endDate ? dayjs(initialValues.endDate) : undefined,
       }
     : {
-        status: "planning" as ProjectStatus,
+        phase: "discovery" as ProjectPhase,
         priority: "medium" as ProjectPriority,
       };
 
@@ -163,11 +161,11 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           </Form.Item>
 
           <Form.Item
-            name="status"
-            label="Status"
-            rules={[{ required: true, message: "Please select project status" }]}
+            name="phase"
+            label="Phase"
+            rules={[{ required: true, message: "Please select project phase" }]}
           >
-            <Select options={statusOptions} placeholder="Select status" size="large" />
+            <Select options={phaseOptions} placeholder="Select phase" size="large" />
           </Form.Item>
 
           <Form.Item
