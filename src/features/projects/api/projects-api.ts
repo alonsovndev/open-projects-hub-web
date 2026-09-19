@@ -64,31 +64,54 @@ interface CreateProjectRequest {
   endDate?: string;
 }
 
-// Transform backend project to frontend format
-const transformProject = (backendProject: ProjectResponse): ProjectSummary => ({
-  id: backendProject.id,
-  name: backendProject.name,
-  code: backendProject.code,
-  status: backendProject.status as ProjectSummary["status"],
-  priority: backendProject.priority as ProjectSummary["priority"],
-  clientId: backendProject.clientId,
-  clientName: backendProject.clientName,
-  client: backendProject.clientName, // For backwards compatibility
-  storiesCount: backendProject.storiesCount,
-  completedStories: backendProject.completedStories,
-  startDate: backendProject.startDate ?? new Date().toISOString(),
-  endDate: backendProject.endDate ?? new Date().toISOString(),
-  lastUpdated: backendProject.updatedAt,
-  description: backendProject.description ?? "",
-});
+// Transform backend project to frontend format — tolerant to archived boolean
+const transformProject = (backendProject: ProjectResponse & { archived?: boolean }): ProjectSummary => {
+  const statusValue = backendProject.archived ? "archived" : backendProject.status;
+  return {
+    id: backendProject.id,
+    name: backendProject.name,
+    code: backendProject.code,
+    status: statusValue as ProjectSummary["status"],
+    priority: backendProject.priority as ProjectSummary["priority"],
+    clientId: backendProject.clientId,
+    clientName: backendProject.clientName,
+    client: backendProject.clientName, // For backwards compatibility
+    storiesCount: backendProject.storiesCount,
+    completedStories: backendProject.completedStories,
+    startDate: backendProject.startDate ?? new Date().toISOString(),
+    endDate: backendProject.endDate ?? new Date().toISOString(),
+    createdAt: backendProject.createdAt,
+    lastUpdated: backendProject.updatedAt,
+    description: backendProject.description ?? "",
+  };
+};
 
 export const projectsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get all projects
-    getProjects: builder.query<GetProjectsResponse, { page?: number; limit?: number }>({
-      query: ({ page = 1, limit = 10 }) => ({
+    // Get all projects — supports server-side filtering when backend enables it (MVP uses client-side fallback)
+    getProjects: builder.query<
+      GetProjectsResponse,
+      {
+        page?: number;
+        limit?: number;
+        status?: string;
+        clientId?: string;
+        search?: string;
+        startDate?: string;
+        endDate?: string;
+      }
+    >({
+      query: ({ page = 1, limit = 10, status, clientId, search, startDate, endDate }) => ({
         url: "/v1/projects",
-        params: { offset: (page - 1) * limit, limit },
+        params: {
+          offset: (page - 1) * limit,
+          limit,
+          ...(status && status !== "all" ? { status } : {}),
+          ...(clientId && clientId !== "all" ? { clientId } : {}),
+          ...(search ? { search } : {}),
+          ...(startDate ? { startDate } : {}),
+          ...(endDate ? { endDate } : {}),
+        },
       }),
       transformResponse: (response: PaginatedProjectsResponse) => ({
         projects: response.items.map(transformProject),
@@ -137,7 +160,7 @@ export const projectsApi = baseApi.injectEndpoints({
     // Update project
     updateProject: builder.mutation<
       ProjectSummary,
-      { id: string; data: Partial<CreateProjectRequest> }
+      { id: string; data: Partial<CreateProjectRequest & { status?: string }> }
     >({
       query: ({ id, data }) => ({
         url: `/v1/projects/${id}`,
@@ -146,6 +169,21 @@ export const projectsApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response: ProjectResponse) => transformProject(response),
       invalidatesTags: (result, error, { id }) => [
+        { type: "Projects", id },
+        { type: "Projects", id: "LIST" },
+        "DashboardStats",
+      ],
+    }),
+
+    // Archive project — status transition to archived
+    archiveProject: builder.mutation<ProjectSummary, string>({
+      query: (id) => ({
+        url: `/v1/projects/${id}`,
+        method: "PATCH",
+        body: { status: "archived" },
+      }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
+      invalidatesTags: (result, error, id) => [
         { type: "Projects", id },
         { type: "Projects", id: "LIST" },
         "DashboardStats",
@@ -173,5 +211,6 @@ export const {
   useGetDashboardStatsQuery,
   useCreateProjectMutation,
   useUpdateProjectMutation,
+  useArchiveProjectMutation,
   useDeleteProjectMutation,
 } = projectsApi;

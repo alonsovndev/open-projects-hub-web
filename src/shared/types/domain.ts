@@ -3,7 +3,7 @@
  * Extracted to avoid duplication and maintain consistency
  */
 
-export type ProjectStatus = "active" | "completed" | "on-hold" | "planning";
+export type ProjectStatus = "active" | "completed" | "on-hold" | "planning" | "archived";
 export type ProjectPriority = "high" | "medium" | "low";
 
 export interface Client {
@@ -39,6 +39,7 @@ export interface ProjectSummary {
   completedStories: number;
   startDate: string;
   endDate: string;
+  createdAt: string;
   lastUpdated: string;
   description: string;
 }
@@ -60,6 +61,7 @@ export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {
   completed: "success",
   "on-hold": "warning",
   planning: "default",
+  archived: "default",
 };
 
 /**

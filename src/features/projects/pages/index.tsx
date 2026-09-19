@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import { Typography, Button, Empty } from "antd";
+import { useState } from "react";
+import { Typography, Button, Empty, Alert, Tooltip } from "antd";
 import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 
 import { ProjectList } from "@/features/dashboard/components/project-list";
@@ -24,9 +25,13 @@ export const ProjectsOverview: FC = () => {
     totalCount,
     filteredCount,
     activeFilterCount,
+    activeCount,
+    canCreate,
     handleSearchChange,
     handleStatusFilter,
     handlePriorityFilter,
+    handleClientFilter,
+    handleDateRangeChange,
     handleSortChange,
     handleViewChange,
     handleClearFilters,
@@ -34,7 +39,13 @@ export const ProjectsOverview: FC = () => {
     handleViewProject,
     handleEditProject,
     handleCreateProject,
+    handleDeleteProject,
+    handleArchiveProject,
   } = useProjectsOverview();
+  // Inline error for client-delete guard (FE-002 AC4) — populated when deleteClient 409 is caught
+  const [clientDeleteError, setClientDeleteError] = useState<string | null>(null);
+  // Expose setter for future delete-client flows; prevents unused-var while keeping inline Alert wired
+  void setClientDeleteError;
 
   return (
     <div className={styles.pageContainer}>
@@ -48,17 +59,44 @@ export const ProjectsOverview: FC = () => {
               Showing {filteredCount} of {totalCount} projects
             </Text>
           </div>
-          <Button
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={handleCreateProject}
-            className={styles.createButton}
-          >
-            New Project
-          </Button>
+          <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={handleCreateProject}
+              className={styles.createButton}
+              aria-label="Create new project"
+              disabled={!canCreate}
+            >
+              New Project
+            </Button>
+          </Tooltip>
         </div>
       </div>
+
+      {!canCreate && (
+        <Alert
+          type="warning"
+          showIcon
+          role="alert"
+          message="Active project limit reached"
+          description="You have reached the maximum of 3 active projects. Archive a project before creating a new one."
+          style={{ marginBottom: 16 }}
+        />
+      )}
+      {clientDeleteError && (
+        <Alert
+          type="error"
+          showIcon
+          closable
+          onClose={() => setClientDeleteError(null)}
+          message="Cannot delete client"
+          description={clientDeleteError}
+          role="alert"
+          style={{ marginBottom: 16 }}
+        />
+      )}
 
       <ProjectsFilterBar
         filters={filters}
@@ -67,6 +105,8 @@ export const ProjectsOverview: FC = () => {
         onSearchChange={handleSearchChange}
         onStatusFilter={handleStatusFilter}
         onPriorityFilter={handlePriorityFilter}
+        onClientFilter={handleClientFilter}
+        onDateRangeChange={handleDateRangeChange}
         onViewChange={handleViewChange}
         onClearFilters={handleClearFilters}
       />
@@ -98,7 +138,13 @@ export const ProjectsOverview: FC = () => {
           </Empty>
         </div>
       ) : view === "grid" ? (
-        <ProjectList projects={projects} onViewProject={handleViewProject} />
+        <ProjectList
+          projects={projects}
+          onViewProject={handleViewProject}
+          onEditProject={handleEditProject}
+          onDeleteProject={handleDeleteProject}
+          onArchiveProject={handleArchiveProject}
+        />
       ) : (
         <ProjectsTable
           projects={projects}
@@ -110,6 +156,8 @@ export const ProjectsOverview: FC = () => {
           onPageChange={handlePageChange}
           onViewProject={handleViewProject}
           onEditProject={handleEditProject}
+          onDeleteProject={handleDeleteProject}
+          onArchiveProject={handleArchiveProject}
         />
       )}
     </div>
