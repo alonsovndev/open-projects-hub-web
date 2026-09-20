@@ -11,10 +11,11 @@ import type {
   UserRole,
 } from "@/features/auth/types";
 
-interface AdminLoginApiResponse {
+export interface AdminLoginApiResponse {
   token?: string;
   accessToken?: string;
   refreshToken?: string;
+  sessionExpiresAt?: string;
   email?: string;
   displayName?: string;
   loggedInAt?: string;
@@ -38,7 +39,17 @@ interface RefreshTokenRequest {
 interface RefreshTokenResponse {
   accessToken: string;
   refreshToken: string;
+  sessionExpiresAt?: string;
 }
+
+/** forgotPassword and resendResetCode both just POST { email } to their own endpoint. */
+const postEmail =
+  (endpoint: string) =>
+  (data: ForgotPasswordValues): { url: string; method: "POST"; body: ForgotPasswordValues } => ({
+    url: endpoint,
+    method: "POST",
+    body: data,
+  });
 
 const getDisplayNameFromEmail = (email: string) => {
   const nameFromEmail = email.split("@")[0] ?? "admin";
@@ -46,7 +57,11 @@ const getDisplayNameFromEmail = (email: string) => {
   return nameFromEmail.replace(/[._-]+/g, " ");
 };
 
-const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string): AdminSession => {
+/** Exported for tests: this is the single point at which a role enters the app. */
+export const mapAdminSession = (
+  response: AdminLoginApiResponse,
+  fallbackEmail: string
+): AdminSession => {
   const normalizedEmail = (response.user?.email ?? response.email ?? fallbackEmail)
     .trim()
     .toLowerCase();
@@ -59,6 +74,7 @@ const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string)
   return {
     token,
     refreshToken: response.refreshToken,
+    sessionExpiresAt: response.sessionExpiresAt,
     email: normalizedEmail,
     displayName:
       response.user?.displayName ??
@@ -66,7 +82,10 @@ const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string)
       response.displayName ??
       getDisplayNameFromEmail(normalizedEmail),
     loggedInAt: response.loggedInAt ?? new Date().toISOString(),
-    role: response.user?.role ?? response.role ?? "admin",
+    // Every role check in the app reads this one field, so an absent role must fall back
+    // to the least privilege rather than the most: a malformed response should cost a
+    // viewer nothing, not hand them the admin shell.
+    role: response.user?.role ?? response.role ?? "viewer",
   };
 };
 
@@ -76,7 +95,11 @@ export const adminAuthApi = baseApi.injectEndpoints({
       query: (credentials) => ({
         url: adminAuthConfig.loginEndpoint,
         method: "POST",
-        body: credentials,
+        body: {
+          email: credentials.email,
+          password: credentials.password,
+          rememberMe: credentials.remember ?? false,
+        },
       }),
 
       transformResponse: (response: AdminLoginApiResponse, _meta, credentials) => {
@@ -113,16 +136,24 @@ export const adminAuthApi = baseApi.injectEndpoints({
     }),
 
     forgotPassword: builder.mutation<MessageResponse, ForgotPasswordValues>({
-      query: (data) => ({
-        url: adminAuthConfig.forgotPasswordEndpoint,
-        method: "POST",
-        body: data,
-      }),
+      query: postEmail(adminAuthConfig.forgotPasswordEndpoint),
     }),
 
     resetPassword: builder.mutation<MessageResponse, ResetPasswordValues>({
-      query: (data) => ({
+      query: ({ email, code, newPassword }) => ({
         url: adminAuthConfig.resetPasswordEndpoint,
+        method: "POST",
+        body: { email, code, newPassword },
+      }),
+    }),
+
+    resendResetCode: builder.mutation<MessageResponse, ForgotPasswordValues>({
+      query: postEmail(adminAuthConfig.resendResetCodeEndpoint),
+    }),
+
+    logout: builder.mutation<MessageResponse, RefreshTokenRequest>({
+      query: (data) => ({
+        url: adminAuthConfig.logoutEndpoint,
         method: "POST",
         body: data,
       }),
@@ -136,4 +167,6 @@ export const {
   useRefreshTokenMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useResendResetCodeMutation,
+  useLogoutMutation,
 } = adminAuthApi;

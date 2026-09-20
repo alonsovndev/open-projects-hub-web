@@ -12,10 +12,12 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import { useAppSelector } from "@/app/store/hooks";
+import { useLogout } from "@/features/auth/hooks/use-logout";
+import { useRole } from "@/features/auth/hooks/use-role";
+import { SessionExpiryWarning } from "@/features/auth/components/session-expiry-warning";
 
 import styles from "./admin-layout.module.scss";
 
@@ -29,17 +31,15 @@ interface AdminLayoutProps {
 export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth.session);
+  const { logout } = useLogout();
+  const { isAdmin } = useRole();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleSignOut = () => {
-    dispatch(clearAdminSessionState());
-    navigate("/login");
-  };
-
-  const menuItems = [
+  // Admin-only destinations are left out of the menu entirely rather than disabled: a
+  // Viewer cannot open them, so advertising them only invites a trip to /unauthorized.
+  const allMenuItems = [
     {
       key: "/dashboard",
       icon: <DashboardOutlined />,
@@ -57,12 +57,14 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       icon: <TeamOutlined />,
       label: "Clients",
       onClick: () => navigate("/clients"),
+      adminOnly: true,
     },
     {
       key: "/refinement",
       icon: <ExperimentOutlined />,
       label: "AI Refinement",
       onClick: () => navigate("/refinement"),
+      adminOnly: true,
     },
     {
       key: "/backlog",
@@ -78,12 +80,17 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
     },
   ];
 
+  const menuItems = allMenuItems
+    .filter((item) => isAdmin || !item.adminOnly)
+    .map(({ adminOnly: _adminOnly, ...item }) => item);
+
   // Determine selected key based on current path
   const selectedKey =
     menuItems.find((item) => location.pathname.startsWith(item.key))?.key || "/dashboard";
 
   return (
     <Layout className={styles.layout}>
+      <SessionExpiryWarning />
       <Sider
         collapsible
         collapsed={collapsed}
@@ -124,7 +131,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
               <Button
                 type="text"
                 icon={<LogoutOutlined />}
-                onClick={handleSignOut}
+                onClick={logout}
                 className={styles.logoutButton}
                 title="Sign Out"
               />

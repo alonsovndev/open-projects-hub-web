@@ -5,8 +5,9 @@ import {
   CheckCircleOutlined,
   LockOutlined,
   MinusCircleOutlined,
+  NumberOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
@@ -27,7 +28,25 @@ export const ResetPasswordForm: FC = () => {
           Reset Password
         </h1>
 
-        <p className={styles.description}>Create a new password for your account.</p>
+        {resetPasswordForm.email ? (
+          <p className={styles.description}>
+            Enter the 6-digit code sent to <strong>{resetPasswordForm.email}</strong> and choose a
+            new password.
+          </p>
+        ) : (
+          <Alert
+            type="warning"
+            showIcon
+            className={styles.formItem}
+            message="Start from Forgot Password"
+            description={
+              <>
+                We couldn't find which account you're resetting. Please{" "}
+                <Link to="/forgot-password">request a new code</Link> first.
+              </>
+            }
+          />
+        )}
 
         <Form
           form={resetPasswordForm.form}
@@ -37,16 +56,17 @@ export const ResetPasswordForm: FC = () => {
           requiredMark={false}
         >
           <Form.Item
-            label="Current Password"
-            name="currentPassword"
+            label="Reset Code"
+            name="code"
             className={styles.formItem}
-            rules={resetPasswordForm.currentPasswordFieldRules}
+            rules={resetPasswordForm.codeFieldRules}
           >
-            <Input.Password
+            <Input
               size="large"
-              prefix={<LockOutlined className={styles.inputIcon} />}
-              placeholder="••••••••"
-              autoComplete="current-password"
+              prefix={<NumberOutlined className={styles.inputIcon} />}
+              placeholder="ABC234"
+              maxLength={6}
+              autoComplete="one-time-code"
               className={styles.input}
             />
           </Form.Item>
@@ -89,6 +109,7 @@ export const ResetPasswordForm: FC = () => {
             block
             className={styles.submitButton}
             loading={resetPasswordForm.isSubmitting}
+            disabled={!resetPasswordForm.email}
           >
             Update Password
           </Button>
@@ -112,6 +133,20 @@ export const ResetPasswordForm: FC = () => {
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {resetPasswordForm.email && (
+          <div className={styles.footer}>
+            Didn't get a code?{" "}
+            <Button
+              type="link"
+              className={styles.footerLink}
+              onClick={resetPasswordForm.handleResendCode}
+              loading={resetPasswordForm.isResending}
+            >
+              Resend code
+            </Button>
           </div>
         )}
       </div>

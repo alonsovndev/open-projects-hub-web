@@ -30,6 +30,17 @@ export const refinementApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: "Refinement", id: "LIST" }],
     }),
 
+    deleteDraft: builder.mutation<void, string>({
+      query: (draftId) => ({
+        url: `/v1/refinement/drafts/${draftId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, draftId) => [
+        { type: "Refinement", id: draftId },
+        { type: "Refinement", id: "LIST" },
+      ],
+    }),
+
     approveDraft: builder.mutation<{ id: string; title: string }, string>({
       query: (draftId) => ({
         url: `/v1/refinement/drafts/${draftId}/approve`,
@@ -55,6 +66,7 @@ export const refinementApi = baseApi.injectEndpoints({
 export const {
   useUpdateDraftMutation,
   useGenerateStoriesMutation,
+  useDeleteDraftMutation,
   useApproveDraftMutation,
   useApproveDraftsBulkMutation,
 } = refinementApi;

@@ -27,6 +27,8 @@ interface ProjectListProps {
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
   onViewAllProjects?: () => void;
+  /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
+  canManage?: boolean;
 }
 
 const { Text, Title, Paragraph } = Typography;
@@ -42,6 +44,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
   onDeleteProject,
   onArchiveProject,
   onViewAllProjects,
+  canManage = false,
 }) => {
   return (
     <div className={styles.projectList}>
@@ -149,7 +152,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                   >
                     View
                   </Button>
-                  {onEditProject && (
+                  {canManage && onEditProject && (
                     <Button
                       type="default"
                       icon={<EditOutlined />}
@@ -159,7 +162,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                       Edit
                     </Button>
                   )}
-                  {onArchiveProject && project.status !== "archived" && (
+                  {canManage && onArchiveProject && project.status !== "archived" && (
                     <Button
                       type="default"
                       icon={<InboxOutlined />}
@@ -169,7 +172,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                       Archive
                     </Button>
                   )}
-                  {onDeleteProject && (
+                  {canManage && onDeleteProject && (
                     <Button
                       type="default"
                       danger

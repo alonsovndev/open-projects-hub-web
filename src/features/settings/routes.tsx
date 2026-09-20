@@ -12,6 +12,8 @@ export const settingsRoutes: AppRoute[] = [
         <SettingsPage />
       </AdminLayout>
     ),
-    guards: ["auth", { role: "admin" }],
+    // Profile and password are per-account, and the API allows both roles, so a Viewer
+    // needs this page to change their own password.
+    guards: ["auth"],
   },
 ];

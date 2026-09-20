@@ -3,6 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "@/app/store/hooks";
 import type { GuardType } from "@/app/routing/types";
+import type { UserRole } from "@/features/auth/types";
 
 interface GuardResolverProps {
   children: ReactNode;
@@ -53,11 +54,14 @@ export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["pub
 
     // Check role-based guards if present
     const roleGuard = guards.find(
-      (guard): guard is { role: string } => typeof guard === "object" && "role" in guard
+      (guard): guard is { role: UserRole | UserRole[] } =>
+        typeof guard === "object" && "role" in guard
     );
 
     if (roleGuard) {
-      if (session.role !== roleGuard.role) {
+      const allowedRoles = Array.isArray(roleGuard.role) ? roleGuard.role : [roleGuard.role];
+
+      if (!allowedRoles.includes(session.role)) {
         return <Navigate to="/unauthorized" replace />;
       }
     }
@@ -65,6 +69,8 @@ export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["pub
     return <>{children}</>;
   }
 
-  // Fallback: render children for unknown guard types
-  return <>{children}</>;
+  // Fallback for a guard array that names no access level — e.g. `[{ role: "admin" }]`
+  // with the "auth" guard left off. Rendering the page would make the omission invisible,
+  // so an incomplete guard fails closed instead.
+  return <Navigate to="/unauthorized" replace />;
 };

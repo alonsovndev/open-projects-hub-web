@@ -91,13 +91,36 @@ export const authHandlers = [
     });
   }),
 
-  // Forgot password
+  // Forgot password — always the same generic response (FR-009-01)
   http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.forgotPasswordEndpoint}`, async () => {
-    return HttpResponse.json({ message: "Password reset link sent" });
+    return HttpResponse.json({
+      message: "If an account exists for this email, a reset code has been sent.",
+    });
   }),
 
-  // Reset password
-  http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resetPasswordEndpoint}`, async () => {
-    return HttpResponse.json({ message: "Password updated successfully" });
+  // Resend reset code
+  http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resendResetCodeEndpoint}`, async () => {
+    return HttpResponse.json({
+      message: "If an account exists for this email, a reset code has been sent.",
+    });
+  }),
+
+  // Reset password — mock code is fixed for local testing without real email delivery
+  http.post(
+    `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resetPasswordEndpoint}`,
+    async ({ request }) => {
+      const body = (await request.json()) as { email: string; code: string; newPassword: string };
+
+      if (body.code !== "ABC234") {
+        return HttpResponse.json({ message: "Invalid or expired reset code" }, { status: 404 });
+      }
+
+      return HttpResponse.json({ message: "Password has been reset successfully." });
+    }
+  ),
+
+  // Logout
+  http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.logoutEndpoint}`, async () => {
+    return HttpResponse.json({ message: "Logged out successfully." });
   }),
 ];

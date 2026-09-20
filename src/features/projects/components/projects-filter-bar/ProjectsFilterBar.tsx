@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import type { ProjectFilters, ProjectView } from "@/features/projects/types";
 import type { ProjectStatus, ProjectPriority } from "@/features/dashboard/types";
 import { useGetClientsQuery, selectClientSummaries } from "@/features/clients/api/clients-api";
+import { useRole } from "@/features/auth/hooks/use-role";
 
 import styles from "./projects-filter-bar.module.scss";
 
@@ -41,7 +42,11 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
   onViewChange,
   onClearFilters,
 }) => {
-  const { data: clientsData } = useGetClientsQuery();
+  // The client list is admin-only server-side, so a Viewer must not issue the request at
+  // all — firing it just to swallow a 403 would be noise, and the filter it feeds has no
+  // options to offer them.
+  const { isAdmin } = useRole();
+  const { data: clientsData } = useGetClientsQuery(undefined, { skip: !isAdmin });
   const clientOptions = [
     { label: "All Clients", value: "all" },
     ...(clientsData ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id })) : []),
@@ -91,17 +96,21 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           ]}
         />
 
-        <Select
-          placeholder="Client"
-          size="large"
-          value={filters.clientId}
-          onChange={onClientFilter}
-          className={styles.filterSelect}
-          options={clientOptions}
-          showSearch
-          filterOption={(input, option) => (option?.label as string).toLowerCase().includes(input.toLowerCase())}
-          aria-label="Filter by client"
-        />
+        {isAdmin && (
+          <Select
+            placeholder="Client"
+            size="large"
+            value={filters.clientId}
+            onChange={onClientFilter}
+            className={styles.filterSelect}
+            options={clientOptions}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label as string).toLowerCase().includes(input.toLowerCase())
+            }
+            aria-label="Filter by client"
+          />
+        )}
 
         <DatePicker.RangePicker
           size="large"
