@@ -6,12 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useLoginMutation } from "@/features/auth/api/admin-auth-api";
 import { setAdminSession } from "@/features/auth/state/admin-auth-slice";
-import {
-  getPasswordRuleStatuses,
-  isValidEmail,
-  validatePasswordRequirements,
-} from "@/features/auth/model/password-policy";
-import { getPasswordStrength } from "@/features/auth/model/password-strength";
+import { isValidEmail } from "@/features/auth/model/password-policy";
 import type { AdminLoginValues, AuthLocationState } from "@/features/auth/types";
 
 export const useAdminLoginForm = () => {
@@ -25,25 +20,11 @@ export const useAdminLoginForm = () => {
   const emailValue = Form.useWatch("email", form) ?? "";
   const passwordValue = Form.useWatch("password", form) ?? "";
 
-  const passwordRuleStatuses = useMemo(() => {
-    return getPasswordRuleStatuses(passwordValue);
-  }, [passwordValue]);
-
-  const passwordStrength = useMemo(() => {
-    return getPasswordStrength(passwordValue);
-  }, [passwordValue]);
-
-  const hasPasswordInput = passwordValue.length > 0;
-
   const isEmailValid = useMemo(() => {
     return isValidEmail(emailValue);
   }, [emailValue]);
 
-  const isPasswordValid = useMemo(() => {
-    return validatePasswordRequirements(passwordValue);
-  }, [passwordValue]);
-
-  const isSubmitEnabled = isEmailValid && isPasswordValid && !isLoading;
+  const isSubmitEnabled = isEmailValid && passwordValue.length > 0 && !isLoading;
 
   const authError = useMemo(() => {
     const errorData = error as { data?: { message?: string } } | undefined;
@@ -92,25 +73,14 @@ export const useAdminLoginForm = () => {
     },
   ];
 
+  // Deliberately no password-policy validation here. Sign-in must submit
+  // whatever the user actually has — an account created before the current
+  // policy would otherwise be locked out client-side, with the server never
+  // seeing the attempt. It also keeps the policy off a public login screen.
   const passwordFieldRules = [
     {
       required: true,
       message: "Please enter your password.",
-    },
-    {
-      validator: async (_: unknown, value: string | undefined) => {
-        const password = value ?? "";
-
-        if (!password) {
-          return;
-        }
-
-        if (validatePasswordRequirements(password)) {
-          return;
-        }
-
-        throw new Error("Password must meet all listed requirements.");
-      },
     },
   ];
 
@@ -119,9 +89,6 @@ export const useAdminLoginForm = () => {
     authError,
     sessionMessage,
     isSubmitting: isLoading,
-    passwordRuleStatuses,
-    passwordStrength,
-    hasPasswordInput,
     isSubmitEnabled,
     emailFieldRules,
     passwordFieldRules,
