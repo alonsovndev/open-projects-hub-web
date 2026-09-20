@@ -5,6 +5,7 @@ import { FileMarkdownOutlined } from "@ant-design/icons";
 import { StoryList } from "@/features/backlog/components/story-list";
 import { BacklogFiltersBar } from "@/features/backlog/components/backlog-filters";
 import { useBacklog } from "@/features/backlog/hooks/use-backlog";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./backlog.module.scss";
@@ -28,6 +29,7 @@ export const BacklogPage: FC = () => {
     handleClearFilters,
     handleExportMarkdown,
   } = useBacklog();
+  const { isAdmin } = useRole();
 
   return (
     <div className={styles.pageContainer}>
@@ -41,16 +43,18 @@ export const BacklogPage: FC = () => {
               Generated user stories ({filteredStories.length} items)
             </Text>
           </div>
-          <Space>
-            <Button
-              type="primary"
-              size="large"
-              icon={<FileMarkdownOutlined />}
-              onClick={handleExportMarkdown}
-            >
-              Export Markdown
-            </Button>
-          </Space>
+          {isAdmin && (
+            <Space>
+              <Button
+                type="primary"
+                size="large"
+                icon={<FileMarkdownOutlined />}
+                onClick={handleExportMarkdown}
+              >
+                Export Markdown
+              </Button>
+            </Space>
+          )}
         </div>
       </div>
 
@@ -80,7 +84,7 @@ export const BacklogPage: FC = () => {
               <Spin size="large" tip="Loading stories..." />
             </div>
           ) : (
-            <StoryList stories={filteredStories} onDelete={handleDeleteStory} />
+            <StoryList stories={filteredStories} onDelete={handleDeleteStory} canManage={isAdmin} />
           )}
         </>
       )}

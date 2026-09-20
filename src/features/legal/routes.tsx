@@ -9,9 +9,11 @@ export const legalRoutes: AppRoute[] = [
   {
     path: "/privacy",
     element: <PrivacyPage />,
+    guards: ["public"],
   },
   {
     path: "/terms",
     element: <TermsPage />,
+    guards: ["public"],
   },
 ];

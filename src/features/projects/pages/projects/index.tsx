@@ -7,6 +7,7 @@ import { ProjectsFilterBar } from "@/features/projects/components/projects-filte
 import { ProjectsTable } from "@/features/projects/components/projects-table";
 import { EditProjectModal } from "@/features/projects/components/edit-project-modal";
 import { useProjectsOverview } from "@/features/projects/hooks/use-projects-overview";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./projects.module.scss";
@@ -47,6 +48,7 @@ export const ProjectsOverview: FC = () => {
     handleDeleteProject,
     handleArchiveProject,
   } = useProjectsOverview();
+  const { isAdmin } = useRole();
 
   return (
     <div className={styles.pageContainer}>
@@ -60,23 +62,25 @@ export const ProjectsOverview: FC = () => {
               Showing {filteredCount} of {totalCount} projects
             </Text>
           </div>
-          <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
-            <Button
-              type="primary"
-              size="large"
-              icon={<PlusOutlined />}
-              onClick={handleCreateProject}
-              className={styles.createButton}
-              aria-label="Create new project"
-              disabled={!canCreate}
-            >
-              New Project
-            </Button>
-          </Tooltip>
+          {isAdmin && (
+            <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
+              <Button
+                type="primary"
+                size="large"
+                icon={<PlusOutlined />}
+                onClick={handleCreateProject}
+                className={styles.createButton}
+                aria-label="Create new project"
+                disabled={!canCreate}
+              >
+                New Project
+              </Button>
+            </Tooltip>
+          )}
         </div>
       </div>
 
-      {!canCreate && (
+      {isAdmin && !canCreate && (
         <Alert
           type="warning"
           showIcon
@@ -109,7 +113,9 @@ export const ProjectsOverview: FC = () => {
                 <Text className={styles.emptySubtitle}>
                   {activeFilterCount > 0
                     ? "Try adjusting your filters to see more results"
-                    : "Get started by creating your first project"}
+                    : isAdmin
+                      ? "Get started by creating your first project"
+                      : "No projects have been shared with you yet"}
                 </Text>
               </div>
             }
@@ -119,9 +125,11 @@ export const ProjectsOverview: FC = () => {
                 Clear Filters
               </Button>
             ) : (
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateProject}>
-                Create Project
-              </Button>
+              isAdmin && (
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateProject}>
+                  Create Project
+                </Button>
+              )
             )}
           </Empty>
         </div>
@@ -136,6 +144,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
+          canManage={isAdmin}
         />
       ) : (
         <ProjectsTable
@@ -150,6 +159,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
+          canManage={isAdmin}
         />
       )}
 

@@ -5,6 +5,7 @@ import { ArrowLeftOutlined, FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
 import { useProjectStories } from "@/features/backlog/hooks/use-project-stories";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 import type { ProjectSummary } from "@/shared/types/domain";
@@ -41,6 +42,8 @@ export const ProjectBacklogPage: FC = () => {
     })) ?? [];
 
   const selectedProject = projectsData?.projects.find((p: ProjectSummary) => p.id === projectId);
+
+  const { isAdmin } = useRole();
 
   const handleProjectChange = (newProjectId: string) => {
     navigate(`/backlog/project/${newProjectId}`);
@@ -155,16 +158,18 @@ export const ProjectBacklogPage: FC = () => {
                 }
               />
             </div>
-            <Button
-              type="default"
-              size="large"
-              icon={<FileMarkdownOutlined />}
-              onClick={handleExportMarkdown}
-              disabled={stories.length === 0}
-              className={styles.actionButton}
-            >
-              Export
-            </Button>
+            {isAdmin && (
+              <Button
+                type="default"
+                size="large"
+                icon={<FileMarkdownOutlined />}
+                onClick={handleExportMarkdown}
+                disabled={stories.length === 0}
+                className={styles.actionButton}
+              >
+                Export
+              </Button>
+            )}
           </Space>
         </div>
       </div>
@@ -174,7 +179,7 @@ export const ProjectBacklogPage: FC = () => {
           <Spin size="large" tip="Loading stories..." />
         </div>
       ) : (
-        <StoryList stories={stories} onDelete={handleDeleteStory} />
+        <StoryList stories={stories} onDelete={handleDeleteStory} canManage={isAdmin} />
       )}
     </div>
   );

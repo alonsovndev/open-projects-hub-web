@@ -200,6 +200,56 @@ describe("GuardResolver", () => {
       expect(screen.getByTestId("login-page")).toBeInTheDocument();
     });
 
+    it("should redirect a viewer away from an admin-only route", () => {
+      const viewerSession: AdminSession = {
+        ...mockSession,
+        role: "viewer",
+      };
+
+      renderWithRouter(
+        <GuardResolver guards={["auth", { role: "admin" }]}>
+          <TestChild />
+        </GuardResolver>,
+        { session: viewerSession }
+      );
+
+      expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
+      expect(screen.getByTestId("unauthorized-page")).toBeInTheDocument();
+    });
+
+    it("should admit any role listed when the guard names several", () => {
+      const viewerSession: AdminSession = {
+        ...mockSession,
+        role: "viewer",
+      };
+
+      renderWithRouter(
+        <GuardResolver guards={["auth", { role: ["admin", "viewer"] }]}>
+          <TestChild />
+        </GuardResolver>,
+        { session: viewerSession }
+      );
+
+      expect(screen.getByTestId("protected-content")).toBeInTheDocument();
+    });
+
+    it("should reject a role that is not in the guard's list", () => {
+      const userSession: AdminSession = {
+        ...mockSession,
+        role: "user",
+      };
+
+      renderWithRouter(
+        <GuardResolver guards={["auth", { role: ["admin", "viewer"] }]}>
+          <TestChild />
+        </GuardResolver>,
+        { session: userSession }
+      );
+
+      expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
+      expect(screen.getByTestId("unauthorized-page")).toBeInTheDocument();
+    });
+
     it("should render children for viewer role when role matches", () => {
       const viewerSession: AdminSession = {
         ...mockSession,

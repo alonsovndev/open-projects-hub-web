@@ -5,6 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DashboardStats } from "@/features/dashboard/components/dashboard-stats";
 import { ProjectList } from "@/features/dashboard/components/project-list";
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./dashboard.module.scss";
@@ -23,6 +24,7 @@ export const DashboardPage: FC = () => {
     handleCreateProject,
     handleViewAllProjects,
   } = useDashboard();
+  const { isAdmin } = useRole();
 
   if (loading) {
     return (
@@ -41,19 +43,21 @@ export const DashboardPage: FC = () => {
         <div className={styles.headerContent}>
           <div className={styles.welcomeSection}>
             <Title level={1} className={styles.pageTitle}>
-              Welcome back, {user?.displayName || "Admin"}
+              Welcome back, {user?.displayName || "there"}
             </Title>
             <Text className={styles.subtitle}>Here's an overview of your projects</Text>
           </div>
-          <Button
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
-            onClick={handleCreateProject}
-            className={styles.createButton}
-          >
-            New Project
-          </Button>
+          {isAdmin && (
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={handleCreateProject}
+              className={styles.createButton}
+            >
+              New Project
+            </Button>
+          )}
         </div>
       </div>
 
