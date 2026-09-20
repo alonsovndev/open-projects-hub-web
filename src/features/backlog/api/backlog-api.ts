@@ -1,4 +1,5 @@
 import { baseApi } from "@/app/api/base-api";
+import { mapStoryStatus } from "@/features/backlog/api/map-story-status";
 import type { Story, StoryStatus } from "@/features/backlog/types";
 import type { ProjectPriority } from "@/features/dashboard/types";
 
@@ -30,7 +31,8 @@ export interface ProjectBacklog {
 export interface BacklogExport {
   blob: Blob;
   filename: string;
-  storyCount: number;
+  /** Undefined when the server did not report a count, which is not the same as zero. */
+  storyCount: number | undefined;
   warning?: string;
 }
 
@@ -46,19 +48,12 @@ const BACKLOG_PAGE_SIZE = 100;
 
 const FALLBACK_EXPORT_FILENAME = "backlog.md";
 
-const statusMap: Record<string, StoryStatus> = {
-  todo: "backlog",
-  in_progress: "in-progress",
-  blocked: "review",
-  done: "done",
-};
-
 const transformBacklogStory = (story: BacklogStoryResponse, projectId: string): Story => ({
   id: story.id,
   title: story.title,
   description: story.description ?? "",
   acceptanceCriteria: story.acceptanceCriteria,
-  status: statusMap[story.status] ?? "backlog",
+  status: mapStoryStatus(story.status),
   priority: story.priority as ProjectPriority,
   storyPoints: story.points ?? undefined,
   projectId,
@@ -103,11 +98,15 @@ export const backlogApi = baseApi.injectEndpoints({
       }),
       transformResponse: (blob: Blob, meta) => {
         const headers = meta?.response?.headers;
+        // A missing count header means "unknown", not "zero" — CORS can strip it. Reading
+        // it as zero would warn "no approved stories" over a perfectly full export.
+        const rawCount = headers?.get("X-Export-Story-Count");
+        const storyCount = rawCount === null || rawCount === undefined ? undefined : Number(rawCount);
 
         return {
           blob,
           filename: parseFilename(headers?.get("Content-Disposition")),
-          storyCount: Number(headers?.get("X-Export-Story-Count") ?? 0),
+          storyCount: Number.isNaN(storyCount) ? undefined : storyCount,
           warning: headers?.get("X-Export-Warning") ?? undefined,
         };
       },

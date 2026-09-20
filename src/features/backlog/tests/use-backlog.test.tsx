@@ -344,6 +344,61 @@ describe("useBacklog", () => {
       expect(mockExportFn).not.toHaveBeenCalled();
     });
 
+    it("should hold the export while browser-only filters narrow the list", async () => {
+      // The server cannot apply search or priority, so exporting under them would hand
+      // back the whole project while the screen shows something smaller.
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handlePriorityFilter("high");
+      });
+
+      expect(result.current.canExport).toBe(false);
+      expect(result.current.exportBlockedReason).toMatch(/clear the search and priority filters/i);
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(mockExportFn).not.toHaveBeenCalled();
+    });
+
+    it("should hold the export while a search term narrows the list", async () => {
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handleSearchChange("Authentication");
+      });
+
+      expect(result.current.canExport).toBe(false);
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(mockExportFn).not.toHaveBeenCalled();
+    });
+
+    it("should allow the export once the browser-only filters are cleared", async () => {
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handlePriorityFilter("high");
+      });
+      act(() => {
+        result.current.handlePriorityFilter("all");
+      });
+
+      expect(result.current.canExport).toBe(true);
+      expect(result.current.exportBlockedReason).toBeNull();
+    });
+
     it("should export the project named by the filter bar", async () => {
       mockExportFn.mockReturnValue(exportResult());
       const { result } = renderHook(() => useBacklog());

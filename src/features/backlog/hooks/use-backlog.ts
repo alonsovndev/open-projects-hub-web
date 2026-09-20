@@ -99,7 +99,28 @@ export const useBacklog = () => {
   // project the filter bar currently names.
   const exportProjectId = filters.project === "all" ? null : filters.project;
 
-  const handleExportMarkdown = () => exportBacklog(exportProjectId);
+  // Search and priority are applied in the browser; the server knows nothing about them.
+  // Exporting under those filters would hand back the whole project backlog while the
+  // screen shows a narrowed list, so the export is held until they are cleared rather than
+  // quietly returning something other than what the Admin is looking at.
+  const hasClientOnlyFilters = filters.search !== "" || filters.priority !== "all";
+
+  const exportBlockedReason = !exportProjectId
+    ? "Select a project to export its backlog"
+    : hasClientOnlyFilters
+      ? "Exports cover a whole project. Clear the search and priority filters first."
+      : null;
+
+  const handleExportMarkdown = async () => {
+    // The button is disabled in this state, so this is the keyboard/programmatic path —
+    // still say why rather than appearing to do nothing.
+    if (exportBlockedReason) {
+      message.warning(exportBlockedReason);
+      return;
+    }
+
+    await exportBacklog(exportProjectId);
+  };
 
   return {
     filteredStories,
@@ -108,7 +129,8 @@ export const useBacklog = () => {
     isLoading,
     isLoadingProjects,
     isExporting,
-    canExport: exportProjectId !== null,
+    canExport: exportBlockedReason === null,
+    exportBlockedReason,
     error,
     projectOptions,
     handleDeleteStory,

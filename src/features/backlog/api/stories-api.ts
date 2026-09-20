@@ -1,5 +1,6 @@
 import { baseApi } from "@/app/api/base-api";
-import type { Story, StoryStatus, BacklogFilters } from "@/features/backlog/types";
+import { mapStoryStatus } from "@/features/backlog/api/map-story-status";
+import type { Story, BacklogFilters } from "@/features/backlog/types";
 
 // Backend API response types
 interface StoryResponse {
@@ -29,24 +30,13 @@ interface GetStoriesResponse {
   total: number;
 }
 
-// Map backend status to frontend status
-const mapStatus = (backendStatus: string): StoryStatus => {
-  const statusMap: Record<string, StoryStatus> = {
-    todo: "backlog",
-    in_progress: "in-progress",
-    blocked: "review",
-    done: "done",
-  };
-  return (statusMap[backendStatus] || "backlog") as StoryStatus;
-};
-
 // Transform backend story to frontend format
 const transformStory = (backendStory: StoryResponse): Story => ({
   id: backendStory.id,
   title: backendStory.title,
   description: backendStory.description ?? "",
   acceptanceCriteria: backendStory.acceptanceCriteria ?? [],
-  status: mapStatus(backendStory.status),
+  status: mapStoryStatus(backendStory.status),
   priority: backendStory.priority as Story["priority"],
   storyPoints: backendStory.points ?? undefined,
   assignee: backendStory.assignedTo ?? undefined,
@@ -57,28 +47,6 @@ const transformStory = (backendStory: StoryResponse): Story => ({
 
 export const storiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Get stories by project ID with pagination
-    getStoriesByProject: builder.query<
-      GetStoriesResponse,
-      { projectId: string; limit?: number; offset?: number }
-    >({
-      query: ({ projectId, limit = 50, offset = 0 }) => ({
-        url: `/v1/stories/by-project/${projectId}`,
-        params: { limit, offset },
-      }),
-      transformResponse: (response: PaginatedStoriesResponse) => ({
-        stories: response.items.map(transformStory),
-        total: response.total,
-      }),
-      providesTags: (result, error, { projectId }) =>
-        result
-          ? [
-              ...result.stories.map(({ id }) => ({ type: "Stories" as const, id })),
-              { type: "Stories", id: `PROJECT-${projectId}` },
-            ]
-          : [{ type: "Stories", id: `PROJECT-${projectId}` }],
-    }),
-
     // Get all stories with optional filters
     getStories: builder.query<GetStoriesResponse, Partial<BacklogFilters> & { projectId?: string }>(
       {
@@ -119,5 +87,4 @@ export const storiesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetStoriesByProjectQuery, useGetStoriesQuery, useDeleteStoryMutation } =
-  storiesApi;
+export const { useGetStoriesQuery, useDeleteStoryMutation } = storiesApi;

@@ -7,6 +7,18 @@ import type {
 } from "@/features/refinement/types";
 import { baseApi } from "@/app/api/base-api";
 
+/**
+ * Caches that go stale when a draft is approved.
+ *
+ * Approval is the only path that writes a row into `stories`, so it changes the project
+ * backlog, the story lists and the dashboard counts — not just the draft list it came from.
+ */
+const APPROVAL_SIDE_EFFECTS = [
+  "Backlog",
+  { type: "Stories", id: "LIST" },
+  "DashboardStats",
+] as const;
+
 export const refinementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     updateDraft: builder.mutation<{ id: string }, { id: string; data: UpdateDraftPayload }>({
@@ -49,6 +61,7 @@ export const refinementApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error, draftId) => [
         { type: "Refinement", id: draftId },
         { type: "Refinement", id: "LIST" },
+        ...APPROVAL_SIDE_EFFECTS,
       ],
     }),
 
@@ -58,7 +71,7 @@ export const refinementApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "Refinement", id: "LIST" }],
+      invalidatesTags: [{ type: "Refinement", id: "LIST" }, ...APPROVAL_SIDE_EFFECTS],
     }),
   }),
 });

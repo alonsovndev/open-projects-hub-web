@@ -23,6 +23,7 @@ export const BacklogPage: FC = () => {
     isLoadingProjects,
     isExporting,
     canExport,
+    exportBlockedReason,
     projectOptions,
     handleDeleteStory,
     handleSearchChange,
@@ -47,7 +48,7 @@ export const BacklogPage: FC = () => {
           </div>
           {isAdmin && (
             <Space>
-              <Tooltip title={canExport ? "" : "Select a project to export its backlog"}>
+              <Tooltip title={exportBlockedReason ?? ""}>
                 <Button
                   type="primary"
                   size="large"

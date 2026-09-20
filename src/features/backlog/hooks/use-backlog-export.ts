@@ -32,6 +32,7 @@ export const useBacklogExport = (): UseBacklogExportReturn => {
       // and only the message changes.
       downloadBlob(blob, filename);
 
+      // Only an explicit zero is empty; an absent count is unknown and must not warn.
       if (storyCount === 0) {
         message.warning(warning ?? "No approved stories to export");
         return;
