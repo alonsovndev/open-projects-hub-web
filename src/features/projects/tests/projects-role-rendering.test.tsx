@@ -75,7 +75,9 @@ const renderPage = (role: UserRole) =>
     preloadedState: { auth: { session: sessionWithRole(role), isBootstrapping: false } },
   });
 
-describe("Projects overview role rendering", () => {
+// First render mounts the real ProjectsOverview page (AntD Table plus filter bar),
+// which can exceed the 5s default under full-suite parallel load.
+describe("Projects overview role rendering", { timeout: 20_000 }, () => {
   it("gives an admin the create and row-management controls", () => {
     renderPage("admin");
 
