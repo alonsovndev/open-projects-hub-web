@@ -6,6 +6,7 @@ interface StoryResponse {
   id: string;
   title: string;
   description: string | null;
+  acceptanceCriteria: string[];
   projectId: string;
   createdBy: string;
   assignedTo: string | null;
@@ -33,6 +34,7 @@ const mapStatus = (backendStatus: string): StoryStatus => {
   const statusMap: Record<string, StoryStatus> = {
     todo: "backlog",
     in_progress: "in-progress",
+    blocked: "review",
     done: "done",
   };
   return (statusMap[backendStatus] || "backlog") as StoryStatus;
@@ -43,7 +45,7 @@ const transformStory = (backendStory: StoryResponse): Story => ({
   id: backendStory.id,
   title: backendStory.title,
   description: backendStory.description ?? "",
-  acceptanceCriteria: [], // Backend doesn't have this
+  acceptanceCriteria: backendStory.acceptanceCriteria ?? [],
   status: mapStatus(backendStory.status),
   priority: backendStory.priority as Story["priority"],
   storyPoints: backendStory.points ?? undefined,
@@ -113,16 +115,6 @@ export const storiesApi = baseApi.injectEndpoints({
         "Backlog",
         "DashboardStats",
       ],
-    }),
-
-    // Export stories (CSV/Markdown)
-    exportStories: builder.mutation<Blob, { projectId?: string; format: "csv" | "markdown" }>({
-      query: ({ projectId, format }) => ({
-        url: "/v1/stories/export",
-        method: "POST",
-        params: { projectId, format },
-        responseHandler: (response) => response.blob(),
-      }),
     }),
   }),
 });

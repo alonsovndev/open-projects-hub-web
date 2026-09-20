@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Button, Space, Spin, Alert } from "antd";
+import { Typography, Button, Space, Spin, Alert, Tooltip } from "antd";
 import { FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
@@ -21,6 +21,8 @@ export const BacklogPage: FC = () => {
     isLoading,
     error,
     isLoadingProjects,
+    isExporting,
+    canExport,
     projectOptions,
     handleDeleteStory,
     handleSearchChange,
@@ -45,14 +47,19 @@ export const BacklogPage: FC = () => {
           </div>
           {isAdmin && (
             <Space>
-              <Button
-                type="primary"
-                size="large"
-                icon={<FileMarkdownOutlined />}
-                onClick={handleExportMarkdown}
-              >
-                Export Markdown
-              </Button>
+              <Tooltip title={canExport ? "" : "Select a project to export its backlog"}>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<FileMarkdownOutlined />}
+                  aria-label="Export Markdown"
+                  onClick={handleExportMarkdown}
+                  disabled={!canExport}
+                  loading={isExporting}
+                >
+                  Export Markdown
+                </Button>
+              </Tooltip>
             </Space>
           )}
         </div>
