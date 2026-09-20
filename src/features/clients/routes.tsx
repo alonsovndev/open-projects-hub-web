@@ -12,6 +12,8 @@ export const clientsRoutes: AppRoute[] = [
         <ClientsOverview />
       </AdminLayout>
     ),
-    guards: ["auth"],
+    // Clients are an internal record a Viewer has no read path to (Admin-only in the API
+    // contract), so the whole route is gated rather than individual controls.
+    guards: ["auth", { role: "admin" }],
   },
 ];

@@ -18,6 +18,8 @@ const { Text, Paragraph } = Typography;
 interface StoryListProps {
   stories: Story[];
   onDelete: (storyId: string) => void;
+  /** Whether the viewer may change the backlog. Defaults to false so a caller that forgets it fails closed. */
+  canManage?: boolean;
 }
 
 const priorityColors: Record<ProjectPriority, string> = {
@@ -34,7 +36,7 @@ const statusColors: Record<string, string> = {
   done: "success",
 };
 
-const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
+const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete, canManage = false }) => {
   return (
     <List
       className={styles.storyList}
@@ -62,20 +64,23 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete }) => {
                   )}
                 </Space>
               </div>
-              <Popconfirm
-                title="Delete story"
-                description="Are you sure you want to delete this story?"
-                onConfirm={() => onDelete(story.id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  type="text"
-                  danger
-                  icon={<DeleteOutlined />}
-                  className={styles.deleteButton}
-                />
-              </Popconfirm>
+              {canManage && (
+                <Popconfirm
+                  title="Delete story"
+                  description="Are you sure you want to delete this story?"
+                  onConfirm={() => onDelete(story.id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    type="text"
+                    danger
+                    icon={<DeleteOutlined />}
+                    className={styles.deleteButton}
+                    aria-label={`Delete ${story.title}`}
+                  />
+                </Popconfirm>
+              )}
             </div>
 
             <Paragraph className={styles.description}>{story.description}</Paragraph>

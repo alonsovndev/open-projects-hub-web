@@ -30,6 +30,8 @@ interface ProjectsTableProps {
   onEditProject: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
+  /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
+  canManage?: boolean;
 }
 
 const { Text } = Typography;
@@ -46,6 +48,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   onEditProject,
   onDeleteProject,
   onArchiveProject,
+  canManage = false,
 }) => {
   const columns: ColumnsType<ProjectSummary> = useMemo(
     () => [
@@ -183,16 +186,18 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             >
               View
             </Button>
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => onEditProject(record.id)}
-              className={styles.actionButton}
-              aria-label={`Edit ${record.name}`}
-            >
-              Edit
-            </Button>
-            {onArchiveProject && record.status !== "archived" && (
+            {canManage && (
+              <Button
+                type="link"
+                icon={<EditOutlined />}
+                onClick={() => onEditProject(record.id)}
+                className={styles.actionButton}
+                aria-label={`Edit ${record.name}`}
+              >
+                Edit
+              </Button>
+            )}
+            {canManage && onArchiveProject && record.status !== "archived" && (
               <Button
                 type="link"
                 icon={<InboxOutlined />}
@@ -203,7 +208,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
                 Archive
               </Button>
             )}
-            {onDeleteProject && (
+            {canManage && onDeleteProject && (
               <Button
                 type="link"
                 danger
@@ -219,7 +224,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         ),
       },
     ],
-    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject]
+    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject, canManage]
   );
 
   const handleTableChange = (
