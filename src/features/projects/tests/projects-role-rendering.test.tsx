@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { screen } from "@testing-library/react";
 
 import ProjectsOverview from "@/features/projects/pages/projects";
@@ -25,7 +25,7 @@ const project: ProjectSummary = {
   lastUpdated: "2026-02-01",
 };
 
-const overview = {
+const overview: Record<string, unknown> = {
   projects: [project],
   filters: {},
   sort: { field: "name", order: "asc" },
@@ -103,5 +103,44 @@ describe("Projects overview role rendering", () => {
 
     expect(screen.getByRole("button", { name: /view open projects hub/i })).toBeInTheDocument();
     expect(screen.getByText("Open Projects Hub")).toBeInTheDocument();
+  });
+
+  it("hides the client filter from a viewer", () => {
+    renderPage("viewer");
+
+    expect(screen.queryByLabelText(/filter by client/i)).not.toBeInTheDocument();
+  });
+
+  describe("grid view", () => {
+    // The same page renders ProjectList instead of ProjectsTable in grid view, so the
+    // gating has to hold there too.
+    beforeEach(() => {
+      overview.view = "grid";
+    });
+
+    afterEach(() => {
+      overview.view = "table";
+    });
+
+    it("gives an admin the row-management controls", () => {
+      renderPage("admin");
+
+      expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /archive open projects hub/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /delete open projects hub/i })).toBeInTheDocument();
+    });
+
+    it("removes them for a viewer", () => {
+      renderPage("viewer");
+
+      expect(screen.queryByRole("button", { name: /edit/i })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /archive open projects hub/i })
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /delete open projects hub/i })
+      ).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /view/i })).toBeInTheDocument();
+    });
   });
 });

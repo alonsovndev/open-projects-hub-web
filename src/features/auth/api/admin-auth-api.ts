@@ -11,7 +11,7 @@ import type {
   UserRole,
 } from "@/features/auth/types";
 
-interface AdminLoginApiResponse {
+export interface AdminLoginApiResponse {
   token?: string;
   accessToken?: string;
   refreshToken?: string;
@@ -57,7 +57,11 @@ const getDisplayNameFromEmail = (email: string) => {
   return nameFromEmail.replace(/[._-]+/g, " ");
 };
 
-const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string): AdminSession => {
+/** Exported for tests: this is the single point at which a role enters the app. */
+export const mapAdminSession = (
+  response: AdminLoginApiResponse,
+  fallbackEmail: string
+): AdminSession => {
   const normalizedEmail = (response.user?.email ?? response.email ?? fallbackEmail)
     .trim()
     .toLowerCase();
@@ -78,7 +82,10 @@ const mapAdminSession = (response: AdminLoginApiResponse, fallbackEmail: string)
       response.displayName ??
       getDisplayNameFromEmail(normalizedEmail),
     loggedInAt: response.loggedInAt ?? new Date().toISOString(),
-    role: response.user?.role ?? response.role ?? "admin",
+    // Every role check in the app reads this one field, so an absent role must fall back
+    // to the least privilege rather than the most: a malformed response should cost a
+    // viewer nothing, not hand them the admin shell.
+    role: response.user?.role ?? response.role ?? "viewer",
   };
 };
 

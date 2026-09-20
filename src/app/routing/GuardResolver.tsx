@@ -69,6 +69,8 @@ export const GuardResolver: FC<GuardResolverProps> = ({ children, guards = ["pub
     return <>{children}</>;
   }
 
-  // Fallback: render children for unknown guard types
-  return <>{children}</>;
+  // Fallback for a guard array that names no access level — e.g. `[{ role: "admin" }]`
+  // with the "auth" guard left off. Rendering the page would make the omission invisible,
+  // so an incomplete guard fails closed instead.
+  return <Navigate to="/unauthorized" replace />;
 };
