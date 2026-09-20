@@ -40,5 +40,6 @@ const adminAuthSlice = createSlice({
   },
 });
 
-export const { setAdminSession, clearAdminSessionState, sessionBootstrapFinished } = adminAuthSlice.actions;
+export const { setAdminSession, clearAdminSessionState, sessionBootstrapFinished } =
+  adminAuthSlice.actions;
 export const adminAuthReducer = adminAuthSlice.reducer;

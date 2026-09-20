@@ -4,7 +4,10 @@ import { Form, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import type { AuthLocationState, ResetPasswordValues } from "@/features/auth/types";
-import { useResendResetCodeMutation, useResetPasswordMutation } from "@/features/auth/api/admin-auth-api";
+import {
+  useResendResetCodeMutation,
+  useResetPasswordMutation,
+} from "@/features/auth/api/admin-auth-api";
 import {
   getPasswordRuleStatuses,
   validatePasswordRequirements,

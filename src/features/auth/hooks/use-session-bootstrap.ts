@@ -4,7 +4,10 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
 import { sessionStorage } from "@/features/auth/model/session-storage";
-import { clearAdminSessionState, sessionBootstrapFinished } from "@/features/auth/state/admin-auth-slice";
+import {
+  clearAdminSessionState,
+  sessionBootstrapFinished,
+} from "@/features/auth/state/admin-auth-slice";
 
 /**
  * Resumes a persisted session on app boot by exchanging the stored refresh

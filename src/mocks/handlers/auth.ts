@@ -106,15 +106,18 @@ export const authHandlers = [
   }),
 
   // Reset password — mock code is fixed for local testing without real email delivery
-  http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resetPasswordEndpoint}`, async ({ request }) => {
-    const body = (await request.json()) as { email: string; code: string; newPassword: string };
+  http.post(
+    `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resetPasswordEndpoint}`,
+    async ({ request }) => {
+      const body = (await request.json()) as { email: string; code: string; newPassword: string };
 
-    if (body.code !== "ABC234") {
-      return HttpResponse.json({ message: "Invalid or expired reset code" }, { status: 404 });
+      if (body.code !== "ABC234") {
+        return HttpResponse.json({ message: "Invalid or expired reset code" }, { status: 404 });
+      }
+
+      return HttpResponse.json({ message: "Password has been reset successfully." });
     }
-
-    return HttpResponse.json({ message: "Password has been reset successfully." });
-  }),
+  ),
 
   // Logout
   http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.logoutEndpoint}`, async () => {
