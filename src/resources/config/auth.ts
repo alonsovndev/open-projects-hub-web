@@ -7,5 +7,7 @@ export const adminAuthConfig = {
   refreshEndpoint: "/v1/auth/refresh",
   forgotPasswordEndpoint: "/v1/auth/forgot-password",
   resetPasswordEndpoint: "/v1/auth/reset-password",
+  resendResetCodeEndpoint: "/v1/auth/resend-reset-code",
+  logoutEndpoint: "/v1/auth/logout",
   sessionStorageKey: "open-projects-hub.admin-session",
 } as const;

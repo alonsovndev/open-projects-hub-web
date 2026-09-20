@@ -10,11 +10,15 @@ test.describe("Forgot Password Flow", () => {
     await forgotPasswordPage.goto();
   });
 
-  test("should successfully request password reset", async ({ page }) => {
+  test("should request a reset code and land on the reset-password step", async ({ page }) => {
+    // The backend always returns the same generic response regardless of
+    // whether the email exists (FR-009-01), so this only verifies the
+    // request/redirect UX — not real code delivery, which needs a test
+    // mailbox this repo doesn't have yet.
     await forgotPasswordPage.requestReset(testUsers.admin.email);
 
-    await expect(page).toHaveURL(/\/login/);
-    await expect(page.getByText(/reset link sent/i)).toBeVisible();
+    await expect(page).toHaveURL(/\/reset-password/);
+    await expect(page.getByText(/reset code sent/i)).toBeVisible();
   });
 
   test("should show validation for invalid email", async () => {

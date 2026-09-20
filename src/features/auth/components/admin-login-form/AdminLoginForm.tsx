@@ -73,6 +73,15 @@ export const AdminLoginForm: FC = () => {
             </Link>
           </div>
 
+          {adminLoginForm.sessionMessage ? (
+            <Alert
+              className={styles.errorAlert}
+              type="info"
+              showIcon
+              message={adminLoginForm.sessionMessage}
+            />
+          ) : null}
+
           {adminLoginForm.authError ? (
             <Alert
               className={styles.errorAlert}

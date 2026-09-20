@@ -12,10 +12,11 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import { useAppSelector } from "@/app/store/hooks";
+import { useLogout } from "@/features/auth/hooks/use-logout";
+import { SessionExpiryWarning } from "@/features/auth/components/session-expiry-warning";
 
 import styles from "./admin-layout.module.scss";
 
@@ -29,15 +30,10 @@ interface AdminLayoutProps {
 export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
   const session = useAppSelector((state) => state.auth.session);
+  const { logout } = useLogout();
 
   const [collapsed, setCollapsed] = useState(false);
-
-  const handleSignOut = () => {
-    dispatch(clearAdminSessionState());
-    navigate("/login");
-  };
 
   const menuItems = [
     {
@@ -84,6 +80,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
 
   return (
     <Layout className={styles.layout}>
+      <SessionExpiryWarning />
       <Sider
         collapsible
         collapsed={collapsed}
@@ -124,7 +121,7 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
               <Button
                 type="text"
                 icon={<LogoutOutlined />}
-                onClick={handleSignOut}
+                onClick={logout}
                 className={styles.logoutButton}
                 title="Sign Out"
               />

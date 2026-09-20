@@ -6,13 +6,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useLoginMutation } from "@/features/auth/api/admin-auth-api";
 import { setAdminSession } from "@/features/auth/state/admin-auth-slice";
-import {
-  getPasswordRuleStatuses,
-  isValidEmail,
-  validatePasswordRequirements,
-} from "@/features/auth/model/password-policy";
-import { getPasswordStrength } from "@/features/auth/model/password-strength";
-import type { AdminLoginValues } from "@/features/auth/types";
+import { isValidEmail } from "@/features/auth/model/password-policy";
+import type { AdminLoginValues, AuthLocationState } from "@/features/auth/types";
 
 export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
@@ -25,31 +20,22 @@ export const useAdminLoginForm = () => {
   const emailValue = Form.useWatch("email", form) ?? "";
   const passwordValue = Form.useWatch("password", form) ?? "";
 
-  const passwordRuleStatuses = useMemo(() => {
-    return getPasswordRuleStatuses(passwordValue);
-  }, [passwordValue]);
-
-  const passwordStrength = useMemo(() => {
-    return getPasswordStrength(passwordValue);
-  }, [passwordValue]);
-
-  const hasPasswordInput = passwordValue.length > 0;
-
   const isEmailValid = useMemo(() => {
     return isValidEmail(emailValue);
   }, [emailValue]);
 
-  const isPasswordValid = useMemo(() => {
-    return validatePasswordRequirements(passwordValue);
-  }, [passwordValue]);
-
-  const isSubmitEnabled = isEmailValid && isPasswordValid && !isLoading;
+  const isSubmitEnabled = isEmailValid && passwordValue.length > 0 && !isLoading;
 
   const authError = useMemo(() => {
     const errorData = error as { data?: { message?: string } } | undefined;
 
     return errorData?.data?.message ?? "";
   }, [error]);
+
+  // Set by useSessionExpiryWarning's redirect when an active session actually
+  // lapses, so the reason for landing back on /login is explained. Note:
+  // GuardResolver's plain "auth" redirect (no prior session) does not set this.
+  const sessionMessage = (location.state as AuthLocationState | null)?.message ?? "";
 
   const handleSubmit = async (values: AdminLoginValues) => {
     try {
@@ -63,8 +49,7 @@ export const useAdminLoginForm = () => {
       );
 
       // Redirect to the page they were trying to access, or dashboard
-      const from =
-        (location.state as { from?: { pathname: string } })?.from?.pathname || "/dashboard";
+      const from = (location.state as AuthLocationState | null)?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
     } catch (error) {
       const nextError = error as { data?: { message?: string } } | undefined;
@@ -88,35 +73,22 @@ export const useAdminLoginForm = () => {
     },
   ];
 
+  // Deliberately no password-policy validation here. Sign-in must submit
+  // whatever the user actually has — an account created before the current
+  // policy would otherwise be locked out client-side, with the server never
+  // seeing the attempt. It also keeps the policy off a public login screen.
   const passwordFieldRules = [
     {
       required: true,
       message: "Please enter your password.",
-    },
-    {
-      validator: async (_: unknown, value: string | undefined) => {
-        const password = value ?? "";
-
-        if (!password) {
-          return;
-        }
-
-        if (validatePasswordRequirements(password)) {
-          return;
-        }
-
-        throw new Error("Password must meet all listed requirements.");
-      },
     },
   ];
 
   return {
     form,
     authError,
+    sessionMessage,
     isSubmitting: isLoading,
-    passwordRuleStatuses,
-    passwordStrength,
-    hasPasswordInput,
     isSubmitEnabled,
     emailFieldRules,
     passwordFieldRules,

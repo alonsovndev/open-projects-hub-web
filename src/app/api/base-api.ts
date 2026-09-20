@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type { BaseQueryApi, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import { adminAuthConfig } from "@/resources/config/auth";
-import type { RootState } from "@/app/store/store";
+import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
+import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import type { AppDispatch, RootState } from "@/app/store/store";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
@@ -21,12 +23,62 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
+// Access tokens are short-lived (15 min) by design, so a 401 mid-session is
+// expected routine behavior, not a sign the session is over — the refresh
+// token (and sessionExpiresAt) can still be well within its 24h/7d window.
+// Shared across concurrent requests so a burst of parallel queries doesn't
+// each kick off their own refresh call.
+let refreshPromise: Promise<boolean> | null = null;
+
+const refreshSession = (api: BaseQueryApi): Promise<boolean> => {
+  refreshPromise ??= (async () => {
+    const session = (api.getState() as RootState).auth.session;
+    if (!session?.refreshToken) return false;
+
+    const refreshResult = await rawBaseQuery(
+      { url: adminAuthConfig.refreshEndpoint, method: "POST", body: { refreshToken: session.refreshToken } },
+      api,
+      {}
+    );
+
+    if (refreshResult.error || !refreshResult.data) return false;
+
+    applyRefreshedSession(
+      api.dispatch as AppDispatch,
+      session,
+      refreshResult.data as { accessToken: string; refreshToken: string; sessionExpiresAt?: string }
+    );
+    return true;
+  })().finally(() => {
+    refreshPromise = null;
+  });
+
+  return refreshPromise;
+};
+
 export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
   extraOptions
 ) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
+  let result = await rawBaseQuery(args, api, extraOptions);
+
+  if (result.error?.status === 401) {
+    const isRefreshCall = typeof args === "object" && args.url === adminAuthConfig.refreshEndpoint;
+    const hadSession = (api.getState() as RootState).auth.session?.token != null;
+
+    if (hadSession && !isRefreshCall) {
+      // Try a silent refresh once, then retry the original request with the new token.
+      const refreshed = await refreshSession(api);
+      result = refreshed ? await rawBaseQuery(args, api, extraOptions) : result;
+      if (!refreshed) {
+        api.dispatch(clearAdminSessionState());
+      }
+    } else if (hadSession) {
+      // The refresh call itself came back 401 — the refresh token is dead too.
+      api.dispatch(clearAdminSessionState());
+    }
+  }
 
   if (result.error) {
     // Log full error for debugging

@@ -23,7 +23,7 @@ export const ForgotPasswordForm: FC = () => {
         </h1>
 
         <p className={styles.description}>
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a 6-digit code to reset your password.
         </p>
 
         <Form
@@ -56,7 +56,7 @@ export const ForgotPasswordForm: FC = () => {
             className={styles.submitButton}
             loading={forgotPasswordForm.isSubmitting}
           >
-            Send Reset Link
+            Send Reset Code
           </Button>
         </Form>
 
