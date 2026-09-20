@@ -34,6 +34,25 @@ vi.mock("@/features/projects/api/projects-api", () => ({
   useGetProjectsQuery: vi.fn(() => mockGetProjectsData),
 }));
 
+// Mock only the export endpoint, so useBacklogExport itself — the download and the
+// success/warning/error messages — runs for real.
+const mockExportFn = vi.fn();
+
+vi.mock("@/features/backlog/api/backlog-api", () => ({
+  useExportProjectBacklogMutation: vi.fn(() => [mockExportFn, { isLoading: false }]),
+}));
+
+const exportResult = (overrides: Record<string, unknown> = {}) => ({
+  unwrap: () =>
+    Promise.resolve({
+      blob: new Blob(["# Backlog"], { type: "text/markdown" }),
+      filename: "acme-portal-backlog-2026-09-20.md",
+      storyCount: 3,
+      warning: undefined,
+      ...overrides,
+    }),
+});
+
 const mockStories: Story[] = [
   {
     id: "story-1",
@@ -306,97 +325,175 @@ describe("useBacklog", () => {
   });
 
   describe("Export Markdown", () => {
-    it("should show warning when no stories to export", () => {
+    const stubAnchor = () => {
+      const anchor = { href: "", download: "", click: vi.fn() } as unknown as HTMLAnchorElement;
+      vi.spyOn(document, "createElement").mockReturnValue(anchor);
+      vi.spyOn(document.body, "appendChild").mockImplementation(() => anchor);
+      vi.spyOn(document.body, "removeChild").mockImplementation(() => anchor);
+      return anchor;
+    };
+
+    it("should refuse to export until a project is chosen", async () => {
       const { result } = renderHook(() => useBacklog());
 
-      act(() => {
-        result.current.handleSearchChange("NonExistentStory");
+      await act(async () => {
+        await result.current.handleExportMarkdown();
       });
 
-      act(() => {
-        result.current.handleExportMarkdown();
-      });
-
-      expect(message.warning).toHaveBeenCalledWith("No stories to export");
+      expect(message.warning).toHaveBeenCalledWith("Select a project to export its backlog");
+      expect(mockExportFn).not.toHaveBeenCalled();
     });
 
-    it("should create markdown file with filtered stories", () => {
+    it("should hold the export while browser-only filters narrow the list", async () => {
+      // The server cannot apply search or priority, so exporting under them would hand
+      // back the whole project while the screen shows something smaller.
+      mockExportFn.mockReturnValue(exportResult());
       const { result } = renderHook(() => useBacklog());
 
-      // Mock DOM methods after renderHook
-      const createElementSpy = vi.spyOn(document, "createElement");
-      const appendChildSpy = vi.spyOn(document.body, "appendChild");
-      const removeChildSpy = vi.spyOn(document.body, "removeChild");
-
-      const mockAnchor = {
-        href: "",
-        download: "",
-        click: vi.fn(),
-      } as unknown as HTMLAnchorElement;
-
-      createElementSpy.mockReturnValue(mockAnchor);
-      appendChildSpy.mockImplementation(() => mockAnchor);
-      removeChildSpy.mockImplementation(() => mockAnchor);
-
       act(() => {
-        result.current.handleExportMarkdown();
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handlePriorityFilter("high");
       });
 
+      expect(result.current.canExport).toBe(false);
+      expect(result.current.exportBlockedReason).toMatch(/clear the search and priority filters/i);
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(mockExportFn).not.toHaveBeenCalled();
+    });
+
+    it("should hold the export while a search term narrows the list", async () => {
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handleSearchChange("Authentication");
+      });
+
+      expect(result.current.canExport).toBe(false);
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(mockExportFn).not.toHaveBeenCalled();
+    });
+
+    it("should allow the export once the browser-only filters are cleared", async () => {
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+        result.current.handlePriorityFilter("high");
+      });
+      act(() => {
+        result.current.handlePriorityFilter("all");
+      });
+
+      expect(result.current.canExport).toBe(true);
+      expect(result.current.exportBlockedReason).toBeNull();
+    });
+
+    it("should export the project named by the filter bar", async () => {
+      mockExportFn.mockReturnValue(exportResult());
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+      });
+
+      const anchor = stubAnchor();
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(mockExportFn).toHaveBeenCalledWith({ projectId: "PROJ-2024" });
       expect(global.URL.createObjectURL).toHaveBeenCalled();
-      expect(mockAnchor.click).toHaveBeenCalled();
+      expect(anchor.click).toHaveBeenCalled();
+      expect(anchor.download).toBe("acme-portal-backlog-2026-09-20.md");
       expect(global.URL.revokeObjectURL).toHaveBeenCalledWith("mock-url");
-      expect(message.success).toHaveBeenCalledWith("Backlog exported successfully!");
-
-      createElementSpy.mockRestore();
-      appendChildSpy.mockRestore();
-      removeChildSpy.mockRestore();
     });
 
-    it("should include story details in markdown export", () => {
+    it("should name the downloaded file in the success message", async () => {
+      mockExportFn.mockReturnValue(exportResult());
       const { result } = renderHook(() => useBacklog());
 
-      // Mock DOM methods after renderHook
-      const createElementSpy = vi.spyOn(document, "createElement");
-      const appendChildSpy = vi.spyOn(document.body, "appendChild");
-      const removeChildSpy = vi.spyOn(document.body, "removeChild");
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+      });
+      stubAnchor();
 
-      // Override the global mock for this specific test to verify content
-      const originalCreateObjectURL = global.URL.createObjectURL;
-      global.URL.createObjectURL = vi.fn((blob) => {
-        // Read blob content to verify markdown structure
-        const reader = new FileReader();
-        reader.onload = () => {
-          const content = reader.result as string;
-          expect(content).toContain("# User Stories Backlog");
-          expect(content).toContain("User Authentication");
-          expect(content).toContain("**Status:**");
-          expect(content).toContain("**Priority:**");
-        };
-        reader.readAsText(blob as Blob);
-        return "mock-url";
+      await act(async () => {
+        await result.current.handleExportMarkdown();
       });
 
-      const mockAnchor = {
-        href: "",
-        download: "",
-        click: vi.fn(),
-      } as unknown as HTMLAnchorElement;
+      expect(message.success).toHaveBeenCalledWith("Exported acme-portal-backlog-2026-09-20.md");
+    });
 
-      createElementSpy.mockReturnValue(mockAnchor);
-      appendChildSpy.mockImplementation(() => mockAnchor);
-      removeChildSpy.mockImplementation(() => mockAnchor);
+    it("should warn but still deliver the file when the scope is empty", async () => {
+      mockExportFn.mockReturnValue(
+        exportResult({ storyCount: 0, warning: "No approved stories match this scope." })
+      );
+      const { result } = renderHook(() => useBacklog());
 
       act(() => {
-        result.current.handleExportMarkdown();
+        result.current.handleProjectFilter("PROJ-2024");
+      });
+      const anchor = stubAnchor();
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
       });
 
-      expect(mockAnchor.click).toHaveBeenCalled();
-      expect(message.success).toHaveBeenCalledWith("Backlog exported successfully!");
+      expect(anchor.click).toHaveBeenCalled();
+      expect(message.warning).toHaveBeenCalledWith("No approved stories match this scope.");
+      expect(message.success).not.toHaveBeenCalled();
+    });
 
-      createElementSpy.mockRestore();
-      appendChildSpy.mockRestore();
-      removeChildSpy.mockRestore();
-      global.URL.createObjectURL = originalCreateObjectURL;
+    it("should surface the server message when the export is refused", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      mockExportFn.mockReturnValue({
+        unwrap: () => Promise.reject({ status: 403, data: { message: "Insufficient permissions" } }),
+      });
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+      });
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(message.error).toHaveBeenCalledWith("Insufficient permissions");
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("should fall back to a generic message when the failure carries none", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      mockExportFn.mockReturnValue({ unwrap: () => Promise.reject(new Error("network down")) });
+      const { result } = renderHook(() => useBacklog());
+
+      act(() => {
+        result.current.handleProjectFilter("PROJ-2024");
+      });
+
+      await act(async () => {
+        await result.current.handleExportMarkdown();
+      });
+
+      expect(message.error).toHaveBeenCalledWith(
+        "Unable to export the backlog. Please try again."
+      );
+
+      consoleErrorSpy.mockRestore();
     });
   });
 

@@ -4,12 +4,14 @@ import { message } from "antd";
 import type { BacklogFilters } from "@/features/backlog/types";
 import type { ProjectPriority } from "@/features/dashboard/types";
 import { useGetStoriesQuery, useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
+import { useBacklogExport } from "@/features/backlog/hooks/use-backlog-export";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import type { ProjectSummary } from "@/shared/types/domain";
 
 export const useBacklog = () => {
   const { data, isLoading, error } = useGetStoriesQuery({});
   const [deleteStoryMutation] = useDeleteStoryMutation();
+  const { exportBacklog, isExporting } = useBacklogExport();
 
   const { data: projectsData, isLoading: isLoadingProjects } = useGetProjectsQuery({
     limit: 100,
@@ -93,52 +95,31 @@ export const useBacklog = () => {
     });
   };
 
-  const handleExportMarkdown = () => {
-    if (filteredStories.length === 0) {
-      message.warning("No stories to export");
+  // The export endpoint is project-scoped, so the all-projects view can only export the
+  // project the filter bar currently names.
+  const exportProjectId = filters.project === "all" ? null : filters.project;
+
+  // Search and priority are applied in the browser; the server knows nothing about them.
+  // Exporting under those filters would hand back the whole project backlog while the
+  // screen shows a narrowed list, so the export is held until they are cleared rather than
+  // quietly returning something other than what the Admin is looking at.
+  const hasClientOnlyFilters = filters.search !== "" || filters.priority !== "all";
+
+  const exportBlockedReason = !exportProjectId
+    ? "Select a project to export its backlog"
+    : hasClientOnlyFilters
+      ? "Exports cover a whole project. Clear the search and priority filters first."
+      : null;
+
+  const handleExportMarkdown = async () => {
+    // The button is disabled in this state, so this is the keyboard/programmatic path —
+    // still say why rather than appearing to do nothing.
+    if (exportBlockedReason) {
+      message.warning(exportBlockedReason);
       return;
     }
 
-    let markdown = "# User Stories Backlog\n\n";
-    markdown += `Generated on: ${new Date().toLocaleDateString()}\n\n`;
-    markdown += `Total Stories: ${filteredStories.length}\n\n`;
-    markdown += "---\n\n";
-
-    filteredStories.forEach((story, index) => {
-      markdown += `## ${index + 1}. ${story.title}\n\n`;
-      markdown += `**Status:** ${story.status}\n\n`;
-      markdown += `**Priority:** ${story.priority}\n\n`;
-      if (story.assignee) {
-        markdown += `**Assignee:** ${story.assignee}\n\n`;
-      }
-      if (story.storyPoints) {
-        markdown += `**Story Points:** ${story.storyPoints}\n\n`;
-      }
-      markdown += `### Description\n\n${story.description}\n\n`;
-
-      if (story.acceptanceCriteria && story.acceptanceCriteria.length > 0) {
-        markdown += `### Acceptance Criteria\n\n`;
-        story.acceptanceCriteria.forEach((criteria, i) => {
-          markdown += `${i + 1}. ${criteria}\n`;
-        });
-        markdown += "\n";
-      }
-
-      markdown += "---\n\n";
-    });
-
-    // Create and download file
-    const blob = new Blob([markdown], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `backlog-${new Date().toISOString().split("T")[0]}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    message.success("Backlog exported successfully!");
+    await exportBacklog(exportProjectId);
   };
 
   return {
@@ -147,6 +128,9 @@ export const useBacklog = () => {
     activeFilterCount,
     isLoading,
     isLoadingProjects,
+    isExporting,
+    canExport: exportBlockedReason === null,
+    exportBlockedReason,
     error,
     projectOptions,
     handleDeleteStory,

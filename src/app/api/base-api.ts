@@ -1,5 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { BaseQueryApi, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type {
+  BaseQueryApi,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query";
 
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
@@ -56,11 +62,15 @@ const refreshSession = (api: BaseQueryApi): Promise<boolean> => {
   return refreshPromise;
 };
 
-export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions
-) => {
+// FetchBaseQueryMeta is declared so endpoints can read response headers in
+// transformResponse — the export endpoint takes its filename from Content-Disposition.
+export const baseQuery: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  object,
+  FetchBaseQueryMeta
+> = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
