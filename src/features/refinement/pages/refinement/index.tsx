@@ -5,6 +5,7 @@ import { ProjectOutlined, UserOutlined, InfoCircleOutlined } from "@ant-design/i
 import { RawNotesEditor } from "@/features/refinement/components/raw-notes-editor";
 import { GeneratedStoriesList } from "@/features/refinement/components/generated-stories-list";
 import { EditStoryModal } from "@/features/refinement/components/edit-story-modal";
+import { ApproveStoryModal } from "@/features/refinement/components/approve-story-modal";
 import { useRefinement } from "@/features/refinement/hooks/use-refinement";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -23,6 +24,9 @@ export const RefinementPage: FC = () => {
     approvingIds,
     editingStory,
     isEditModalOpen,
+    pendingApproval,
+    generationError,
+    redactionCount,
     projectOptions,
     isLoadingProjects,
     isGenerating,
@@ -31,7 +35,11 @@ export const RefinementPage: FC = () => {
     handleProjectChange,
     handleNotesChange,
     handleGenerate,
-    handleApprove,
+    handleRetryGeneration,
+    handleDismissError,
+    handleRequestApproval,
+    handleConfirmApproval,
+    handleCancelApproval,
     handleApproveAll,
     handleEdit,
     handleSaveEdit,
@@ -108,16 +116,21 @@ export const RefinementPage: FC = () => {
             onChange={handleNotesChange}
             onGenerate={handleGenerate}
             loading={isGenerating}
+            error={generationError}
+            redactionCount={redactionCount}
+            onRetry={handleRetryGeneration}
+            onDismissError={handleDismissError}
           />
         </Col>
         <Col xs={24} lg={14} className={`${styles.workspaceCol} ${styles.generatedStoriesCol}`}>
           <GeneratedStoriesList
             stories={generatedStories}
-            onApprove={handleApprove}
+            onApprove={handleRequestApproval}
             onApproveAll={handleApproveAll}
             onEdit={handleEdit}
             onDelete={handleDelete}
             loading={isApprovingAll}
+            generating={isGenerating}
             approvingIds={approvingIds}
           />
         </Col>
@@ -129,6 +142,14 @@ export const RefinementPage: FC = () => {
         onCancel={handleCancelEdit}
         onSave={handleSaveEdit}
         loading={isUpdating}
+      />
+
+      <ApproveStoryModal
+        open={Boolean(pendingApproval)}
+        story={pendingApproval}
+        onCancel={handleCancelApproval}
+        onConfirm={handleConfirmApproval}
+        loading={Boolean(pendingApproval && approvingIds.includes(pendingApproval.id))}
       />
     </div>
   );
