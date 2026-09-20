@@ -1,5 +1,6 @@
 import type { FC } from "react";
-import { Card, Button, Space, Typography, Checkbox, Empty, Divider } from "antd";
+import { useEffect, useState } from "react";
+import { Card, Button, Space, Typography, Empty, Divider, Tag, Progress } from "antd";
 import { CheckOutlined, EditOutlined, DeleteOutlined, BulbOutlined } from "@ant-design/icons";
 
 import type { GeneratedStory } from "@/features/refinement/types";
@@ -8,15 +9,40 @@ import styles from "./generated-stories-list.module.scss";
 
 const { Title, Text, Paragraph } = Typography;
 
+/** How long a refinement may look inert before the UI explains itself (NFR-002-02). */
+const SLOW_GENERATION_MS = 3000;
+
 interface GeneratedStoriesListProps {
   stories: GeneratedStory[];
   onApprove: (draftId: string) => void;
   onApproveAll: () => void;
-  onEdit: (index: number) => void;
-  onDelete: (index: number) => void;
+  onEdit: (draftId: string) => void;
+  onDelete: (draftId: string) => void;
   loading?: boolean;
+  generating?: boolean;
   approvingIds?: string[];
 }
+
+const GeneratingState: FC = () => {
+  const [isSlow, setIsSlow] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIsSlow(true), SLOW_GENERATION_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className={styles.generatingState} role="status" aria-live="polite">
+      <Progress percent={100} status="active" showInfo={false} className={styles.generatingBar} />
+      <Text className={styles.generatingTitle}>Refining your notes into draft stories…</Text>
+      <Text className={styles.generatingHint}>
+        {isSlow
+          ? "Still working. Longer notes take more time — this page will update as soon as the drafts are ready."
+          : "This usually takes a few seconds."}
+      </Text>
+    </div>
+  );
+};
 
 export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
   stories,
@@ -25,8 +51,98 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
   onEdit,
   onDelete,
   loading = false,
+  generating = false,
   approvingIds = [],
 }) => {
+  const renderBody = () => {
+    if (generating) return <GeneratingState />;
+
+    if (stories.length === 0) {
+      return (
+        <Empty
+          image={<BulbOutlined className={styles.emptyIcon} />}
+          description={
+            <Space direction="vertical" size="small">
+              <Text className={styles.emptyTitle}>No stories generated yet</Text>
+              <Text className={styles.emptyText}>
+                Enter discovery notes and click "Generate Stories" to create user stories with AI
+              </Text>
+            </Space>
+          }
+          className={styles.empty}
+        />
+      );
+    }
+
+    return (
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        {stories.map((story) => (
+          <div key={story.id} className={styles.storyCard}>
+            <div className={styles.storyHeader}>
+              <div className={styles.storyTitleRow}>
+                {/* Labelled in words, not by color alone, per WCAG 1.4.1. */}
+                <Tag color="gold" className={styles.statusTag}>
+                  Draft — not in backlog
+                </Tag>
+                <Text strong className={styles.storyTitle}>
+                  {story.title}
+                </Text>
+              </div>
+              <div className={styles.storyActions}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<EditOutlined />}
+                  onClick={() => onEdit(story.id)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<CheckOutlined />}
+                  className={styles.approveBtn}
+                  onClick={() => onApprove(story.id)}
+                  loading={approvingIds.includes(story.id)}
+                >
+                  Approve
+                </Button>
+                <Button
+                  type="text"
+                  size="small"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => onDelete(story.id)}
+                >
+                  Discard
+                </Button>
+              </div>
+            </div>
+
+            <Paragraph className={styles.storyDescription} italic>
+              {story.description}
+            </Paragraph>
+
+            <Divider className={styles.divider} />
+
+            <div className={styles.criteriaSection}>
+              <Text strong className={styles.criteriaLabel}>
+                ACCEPTANCE CRITERIA
+              </Text>
+              <ul className={styles.criteriaList}>
+                {story.acceptanceCriteria.map((criteria) => (
+                  <li key={criteria} className={styles.criteriaItem}>
+                    <Text className={styles.criteriaText}>{criteria}</Text>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </Space>
+    );
+  };
+
   return (
     <Card className={styles.listCard}>
       <div className={styles.cardHeader}>
@@ -38,7 +154,7 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
             {stories.length} {stories.length === 1 ? "draft" : "drafts"} pending approval
           </Text>
         </div>
-        {stories.length > 0 && (
+        {stories.length > 0 && !generating && (
           <Button
             type="primary"
             size="large"
@@ -52,83 +168,7 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
         )}
       </div>
 
-      {stories.length === 0 ? (
-        <Empty
-          image={<BulbOutlined className={styles.emptyIcon} />}
-          description={
-            <Space direction="vertical" size="small">
-              <Text className={styles.emptyTitle}>No stories generated yet</Text>
-              <Text className={styles.emptyText}>
-                Enter discovery notes and click "Generate Stories" to create user stories with AI
-              </Text>
-            </Space>
-          }
-          className={styles.empty}
-        />
-      ) : (
-        <Space direction="vertical" size="large" style={{ width: "100%" }}>
-          {stories.map((story, index) => (
-            <div key={index} className={styles.storyCard}>
-              <div className={styles.storyHeader}>
-                <div className={styles.storyTitleRow}>
-                  <Text strong className={styles.storyTitle}>
-                    {story.title}
-                  </Text>
-                </div>
-                <div className={styles.storyActions}>
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<EditOutlined />}
-                    onClick={() => onEdit(index)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<CheckOutlined />}
-                    className={styles.approveBtn}
-                    onClick={() => onApprove(story.id)}
-                    loading={approvingIds.includes(story.id)}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    type="text"
-                    size="small"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => onDelete(index)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-
-              <Paragraph className={styles.storyDescription} italic>
-                {story.description}
-              </Paragraph>
-
-              <Divider className={styles.divider} />
-
-              <div className={styles.criteriaSection}>
-                <Text strong className={styles.criteriaLabel}>
-                  ACCEPTANCE CRITERIA
-                </Text>
-                <Space direction="vertical" size="small" style={{ width: "100%" }}>
-                  {story.acceptanceCriteria.map((criteria, idx) => (
-                    <div key={idx} className={styles.criteriaItem}>
-                      <Checkbox className={styles.criteriaCheckbox} />
-                      <Text className={styles.criteriaText}>{criteria}</Text>
-                    </div>
-                  ))}
-                </Space>
-              </div>
-            </div>
-          ))}
-        </Space>
-      )}
+      {renderBody()}
     </Card>
   );
 };
