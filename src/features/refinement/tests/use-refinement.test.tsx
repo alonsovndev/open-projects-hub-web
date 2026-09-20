@@ -67,7 +67,9 @@ const generate = async (result: { current: ReturnType<typeof useRefinement> }) =
 describe("useRefinement", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGenerateStories.mockReturnValue(unwrapped({ stories: [draft], rawNotes: RAW_NOTES }));
+    mockGenerateStories.mockReturnValue(
+      unwrapped({ stories: [draft], rawNotes: RAW_NOTES, redactionCount: 0 })
+    );
     mockApproveDraft.mockReturnValue(unwrapped({ id: draft.id, title: draft.title }));
     mockDeleteDraft.mockReturnValue(unwrapped(undefined));
     mockUpdateDraft.mockReturnValue(unwrapped({ id: draft.id }));
@@ -164,6 +166,63 @@ describe("useRefinement", () => {
       await waitFor(() => expect(result.current.generationError).toBeNull());
       expect(result.current.generatedStories).toEqual([draft]);
     });
+
+    it("ignores an error body that is not the documented 502 failure", async () => {
+      // A 500 carrying a rawNotes-shaped body must not drive the retry path.
+      mockGenerateStories.mockReturnValueOnce(
+        rejected({
+          status: 500,
+          data: {
+            detail: "boom",
+            failureClass: "timeout",
+            provider: "gemini",
+            rawNotes: "attacker supplied",
+          },
+        })
+      );
+
+      const { result } = renderHook(() => useRefinement());
+
+      await generate(result);
+
+      expect(result.current.rawNotes).toBe(RAW_NOTES);
+      expect(result.current.generationError).toContain("Your notes were kept");
+    });
+
+    it("clears a stale failure as soon as the notes change", async () => {
+      mockGenerateStories.mockReturnValueOnce(
+        rejected({
+          status: 502,
+          data: {
+            detail: "The AI provider took too long to respond.",
+            failureClass: "timeout",
+            provider: "gemini",
+            rawNotes: RAW_NOTES,
+          },
+        })
+      );
+
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+      expect(result.current.generationError).not.toBeNull();
+
+      act(() => {
+        result.current.handleNotesChange("Completely different discovery notes for the team.");
+      });
+
+      expect(result.current.generationError).toBeNull();
+    });
+
+    it("reports how many payloads were stripped from the notes", async () => {
+      mockGenerateStories.mockReturnValueOnce(
+        unwrapped({ stories: [draft], rawNotes: RAW_NOTES, redactionCount: 2 })
+      );
+
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      expect(result.current.redactionCount).toBe(2);
+    });
   });
 
   describe("approval gate", () => {
@@ -192,6 +251,41 @@ describe("useRefinement", () => {
 
       expect(mockApproveDraft).toHaveBeenCalledWith(draft.id);
       expect(result.current.generatedStories).toEqual([]);
+      expect(result.current.pendingApproval).toBeNull();
+    });
+
+    it("keeps the dialog open and marks the draft in flight while approving", async () => {
+      let settle: (value: { id: string; title: string }) => void = () => {};
+      mockApproveDraft.mockReturnValueOnce({
+        unwrap: () =>
+          new Promise<{ id: string; title: string }>((resolve) => {
+            settle = resolve;
+          }),
+      });
+
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleRequestApproval(draft.id);
+      });
+
+      let confirmed: Promise<void> = Promise.resolve();
+      act(() => {
+        confirmed = result.current.handleConfirmApproval();
+      });
+
+      // Mid-flight the dialog is still up and the draft is flagged, which is what the
+      // list uses to disable Edit, Discard, and Approve All.
+      expect(result.current.approvingIds).toEqual([draft.id]);
+      expect(result.current.pendingApproval).toEqual(draft);
+
+      await act(async () => {
+        settle({ id: draft.id, title: draft.title });
+        await confirmed;
+      });
+
+      expect(result.current.approvingIds).toEqual([]);
       expect(result.current.pendingApproval).toBeNull();
     });
 

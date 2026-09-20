@@ -76,69 +76,77 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
 
     return (
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
-        {stories.map((story) => (
-          <div key={story.id} className={styles.storyCard}>
-            <div className={styles.storyHeader}>
-              <div className={styles.storyTitleRow}>
-                {/* Labelled in words, not by color alone, per WCAG 1.4.1. */}
-                <Tag color="gold" className={styles.statusTag}>
-                  Draft — not in backlog
-                </Tag>
-                <Text strong className={styles.storyTitle}>
-                  {story.title}
+        {stories.map((story) => {
+          // While a draft's approval is in flight it must not also be edited or
+          // discarded: either would race the approval and report the wrong outcome.
+          const isApproving = approvingIds.includes(story.id);
+
+          return (
+            <div key={story.id} className={styles.storyCard}>
+              <div className={styles.storyHeader}>
+                <div className={styles.storyTitleRow}>
+                  {/* Labelled in words, not by color alone, per WCAG 1.4.1. */}
+                  <Tag color="gold" className={styles.statusTag}>
+                    Draft — not in backlog
+                  </Tag>
+                  <Text strong className={styles.storyTitle}>
+                    {story.title}
+                  </Text>
+                </div>
+                <div className={styles.storyActions}>
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<EditOutlined />}
+                    onClick={() => onEdit(story.id)}
+                    disabled={isApproving}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<CheckOutlined />}
+                    className={styles.approveBtn}
+                    onClick={() => onApprove(story.id)}
+                    loading={isApproving}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    type="text"
+                    size="small"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => onDelete(story.id)}
+                    disabled={isApproving}
+                  >
+                    Discard
+                  </Button>
+                </div>
+              </div>
+
+              <Paragraph className={styles.storyDescription} italic>
+                {story.description}
+              </Paragraph>
+
+              <Divider className={styles.divider} />
+
+              <div className={styles.criteriaSection}>
+                <Text strong className={styles.criteriaLabel}>
+                  ACCEPTANCE CRITERIA
                 </Text>
-              </div>
-              <div className={styles.storyActions}>
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<EditOutlined />}
-                  onClick={() => onEdit(story.id)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<CheckOutlined />}
-                  className={styles.approveBtn}
-                  onClick={() => onApprove(story.id)}
-                  loading={approvingIds.includes(story.id)}
-                >
-                  Approve
-                </Button>
-                <Button
-                  type="text"
-                  size="small"
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => onDelete(story.id)}
-                >
-                  Discard
-                </Button>
+                <ul className={styles.criteriaList}>
+                  {story.acceptanceCriteria.map((criteria, index) => (
+                    <li key={`${story.id}-${index}`} className={styles.criteriaItem}>
+                      <Text className={styles.criteriaText}>{criteria}</Text>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-
-            <Paragraph className={styles.storyDescription} italic>
-              {story.description}
-            </Paragraph>
-
-            <Divider className={styles.divider} />
-
-            <div className={styles.criteriaSection}>
-              <Text strong className={styles.criteriaLabel}>
-                ACCEPTANCE CRITERIA
-              </Text>
-              <ul className={styles.criteriaList}>
-                {story.acceptanceCriteria.map((criteria) => (
-                  <li key={criteria} className={styles.criteriaItem}>
-                    <Text className={styles.criteriaText}>{criteria}</Text>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </Space>
     );
   };
@@ -161,6 +169,9 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
             icon={<CheckOutlined />}
             onClick={onApproveAll}
             loading={loading}
+            // A bulk approve would resubmit a draft that is already being approved
+            // individually, creating it in the backlog twice.
+            disabled={approvingIds.length > 0}
             className={styles.approveButton}
           >
             Approve All Stories

@@ -19,6 +19,7 @@ interface RawNotesEditorProps {
   onGenerate: () => void;
   loading?: boolean;
   error?: string | null;
+  redactionCount?: number;
   onRetry?: () => void;
   onDismissError?: () => void;
 }
@@ -29,6 +30,7 @@ export const RawNotesEditor: FC<RawNotesEditorProps> = ({
   onGenerate,
   loading = false,
   error = null,
+  redactionCount = 0,
   onRetry,
   onDismissError,
 }) => {
@@ -63,6 +65,20 @@ export const RawNotesEditor: FC<RawNotesEditorProps> = ({
               </Button>
             )
           }
+        />
+      )}
+
+      {redactionCount > 0 && !error && (
+        <Alert
+          type="warning"
+          showIcon
+          className={styles.errorAlert}
+          message={
+            redactionCount === 1
+              ? "One part of your notes was removed before refining"
+              : `${redactionCount} parts of your notes were removed before refining`
+          }
+          description="Markup and instruction-like phrases are stripped for safety, so the drafts may not reflect those passages. Rephrase them as plain prose if they mattered."
         />
       )}
 

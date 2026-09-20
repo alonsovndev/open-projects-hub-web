@@ -38,6 +38,8 @@ export interface GenerateStoriesPayload {
 export interface GenerateStoriesResponse {
   stories: GeneratedStory[];
   rawNotes: string;
+  /** How many markup or injection payloads the API neutralized before refining. */
+  redactionCount: number;
 }
 
 export interface ApproveDraftsBulkPayload {

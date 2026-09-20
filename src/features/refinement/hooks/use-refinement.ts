@@ -15,6 +15,7 @@ import {
   RAW_NOTES_MIN_LENGTH,
   type GeneratedStory,
   type RefinementFailure,
+  type RefinementFailureClass,
 } from "@/features/refinement/types";
 
 /**
@@ -23,14 +24,24 @@ import {
  * Returns null for any other error shape so the caller can fall back to a generic
  * message rather than showing a retry button that would resubmit nothing.
  */
-const toRefinementFailure = (error: unknown): RefinementFailure | null => {
-  if (!error || typeof error !== "object" || !("data" in error)) return null;
+const FAILURE_CLASSES: readonly RefinementFailureClass[] = [
+  "timeout",
+  "provider_error",
+  "invalid_response",
+];
 
-  const data = (error as { data?: unknown }).data;
-  if (!data || typeof data !== "object") return null;
+const toRefinementFailure = (error: unknown): RefinementFailure | null => {
+  if (!error || typeof error !== "object") return null;
+
+  // Only the documented 502 body carries preserved notes; anything else that happens to
+  // have a `rawNotes` field must not be allowed to drive the retry path.
+  const { status, data } = error as { status?: unknown; data?: unknown };
+  if (status !== 502 || !data || typeof data !== "object") return null;
 
   const body = data as Partial<RefinementFailure>;
-  return typeof body.rawNotes === "string" && typeof body.detail === "string"
+  const isFailureClass = FAILURE_CLASSES.includes(body.failureClass as RefinementFailureClass);
+
+  return typeof body.rawNotes === "string" && typeof body.detail === "string" && isFailureClass
     ? (body as RefinementFailure)
     : null;
 };
@@ -44,6 +55,7 @@ export const useRefinement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pendingApproval, setPendingApproval] = useState<GeneratedStory | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [redactionCount, setRedactionCount] = useState(0);
 
   const { data: projectsData, isLoading: isLoadingProjects } = useGetProjectsQuery({
     limit: 100,
@@ -63,16 +75,21 @@ export const useRefinement = () => {
 
   const selectedProject = projectsData?.projects.find((p) => p.id === selectedProjectId) ?? null;
 
+  // A past failure says nothing about notes the Admin has since changed, so the alert and
+  // its Retry button clear as soon as the input does.
   const handleProjectChange = (projectId: string) => {
     setSelectedProjectId(projectId);
+    setGenerationError(null);
   };
 
   const handleNotesChange = (notes: string) => {
     setRawNotes(notes);
+    setGenerationError(null);
   };
 
   const runGeneration = async (notes: string) => {
     setGenerationError(null);
+    setRedactionCount(0);
 
     try {
       const result = await generateStories({
@@ -81,6 +98,7 @@ export const useRefinement = () => {
       }).unwrap();
 
       setGeneratedStories(result.stories);
+      setRedactionCount(result.redactionCount ?? 0);
       message.success(`Generated ${result.stories.length} stories successfully!`);
     } catch (error) {
       const failure = toRefinementFailure(error);
@@ -137,7 +155,6 @@ export const useRefinement = () => {
     if (!pendingApproval) return;
 
     const draftId = pendingApproval.id;
-    setPendingApproval(null);
     setApprovingIds((prev) => [...prev, draftId]);
 
     try {
@@ -149,6 +166,9 @@ export const useRefinement = () => {
       message.error("Failed to approve story. Please try again.");
       console.error("Approve draft error:", error);
     } finally {
+      // The dialog stays open until the request settles, so its confirm button can show
+      // progress and a second click cannot land while the first is in flight.
+      setPendingApproval(null);
       setApprovingIds((prev) => prev.filter((id) => id !== draftId));
     }
   };
@@ -237,6 +257,7 @@ export const useRefinement = () => {
     isEditModalOpen,
     pendingApproval,
     generationError,
+    redactionCount,
     projectOptions,
     isLoadingProjects,
     isGenerating,

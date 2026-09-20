@@ -26,6 +26,7 @@ export const RefinementPage: FC = () => {
     isEditModalOpen,
     pendingApproval,
     generationError,
+    redactionCount,
     projectOptions,
     isLoadingProjects,
     isGenerating,
@@ -116,6 +117,7 @@ export const RefinementPage: FC = () => {
             onGenerate={handleGenerate}
             loading={isGenerating}
             error={generationError}
+            redactionCount={redactionCount}
             onRetry={handleRetryGeneration}
             onDismissError={handleDismissError}
           />
@@ -147,6 +149,7 @@ export const RefinementPage: FC = () => {
         story={pendingApproval}
         onCancel={handleCancelApproval}
         onConfirm={handleConfirmApproval}
+        loading={Boolean(pendingApproval && approvingIds.includes(pendingApproval.id))}
       />
     </div>
   );
