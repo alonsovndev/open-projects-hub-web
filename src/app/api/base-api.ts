@@ -12,6 +12,16 @@ import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-ses
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
 import type { AppDispatch, RootState } from "@/app/store/store";
 
+/** The error shapes this API returns: a FastAPI `detail`, plus any handler-specific fields. */
+interface ApiErrorBody {
+  detail?: string;
+  message?: string;
+  code?: string;
+  provider?: string;
+  reason?: string;
+  promptsKeyUpdate?: boolean;
+}
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
   prepareHeaders: (headers, { getState }) => {
@@ -103,9 +113,19 @@ export const baseQuery: BaseQueryFn<
 
     // FastAPI (and this app's exception handlers) return errors as { detail: "..." },
     // not { message: "..." } — read detail first, falling back to message for resilience.
-    const errorData = result.error.data as { detail?: string; message?: string } | undefined;
+    const errorData = result.error.data as ApiErrorBody | undefined;
     const normalizedMessage =
       errorData?.detail ?? errorData?.message ?? "Something went wrong while communicating with the API.";
+
+    // Some handlers attach fields the caller must act on rather than just display — the
+    // provider-key errors carry `promptsKeyUpdate`, which decides whether the user is
+    // sent to Settings (F-010 FR-010-11). Normalizing to `message` alone would drop them.
+    const structured = {
+      ...(errorData?.code !== undefined && { code: errorData.code }),
+      ...(errorData?.provider !== undefined && { provider: errorData.provider }),
+      ...(errorData?.reason !== undefined && { reason: errorData.reason }),
+      ...(errorData?.promptsKeyUpdate !== undefined && { promptsKeyUpdate: errorData.promptsKeyUpdate }),
+    };
 
     if (typeof result.error.status === "number") {
       return {
@@ -113,6 +133,7 @@ export const baseQuery: BaseQueryFn<
           status: result.error.status,
           data: {
             message: normalizedMessage,
+            ...structured,
           },
         },
       };
@@ -124,6 +145,7 @@ export const baseQuery: BaseQueryFn<
         error: normalizedMessage,
         data: {
           message: normalizedMessage,
+          ...structured,
         },
       },
     };
@@ -144,6 +166,8 @@ export const baseApi = createApi({
     "Backlog",
     "Refinement",
     "UserProfile",
+    "AiProviderKeys",
+    "CreditBalance",
   ],
   endpoints: () => ({}),
 });

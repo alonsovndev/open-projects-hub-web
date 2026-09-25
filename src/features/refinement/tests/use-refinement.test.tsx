@@ -31,6 +31,18 @@ vi.mock("@/features/refinement/api/refinement-api", () => ({
   useDeleteDraftMutation: vi.fn(() => [mockDeleteDraft, { isLoading: false }]),
 }));
 
+// Mocked like the other RTK Query hooks: these tests render the hook without a Provider,
+// so a real query would have no store to subscribe to. Credits and keys are set to the
+// common case (credits available, no user key), which is the state the generation tests
+// below assume.
+const mockCreditBalance = vi.fn(() => ({ data: { credits: 3, totalGranted: 5 } }));
+const mockApiKeys = vi.fn(() => ({ data: [] }));
+
+vi.mock("@/features/settings/api/ai-providers-api", () => ({
+  useGetCreditBalanceQuery: () => mockCreditBalance(),
+  useGetApiKeysQuery: () => mockApiKeys(),
+}));
+
 vi.mock("@/features/projects/api/projects-api", () => ({
   useGetProjectsQuery: vi.fn(() => ({
     data: {
@@ -162,6 +174,7 @@ describe("useRefinement", () => {
       expect(mockGenerateStories).toHaveBeenLastCalledWith({
         projectId: "project-1",
         rawNotes: RAW_NOTES,
+        provider: "platform",
       });
       await waitFor(() => expect(result.current.generationError).toBeNull());
       expect(result.current.generatedStories).toEqual([draft]);

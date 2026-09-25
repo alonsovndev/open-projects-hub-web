@@ -1,3 +1,5 @@
+import type { RefinementProvider } from "@/shared/types/ai";
+
 /** Mirrors the backend's documented refinement input bounds (FR-002-06). */
 export const RAW_NOTES_MIN_LENGTH = 20;
 export const RAW_NOTES_MAX_LENGTH = 5000;
@@ -33,6 +35,8 @@ export interface GeneratedStory {
 export interface GenerateStoriesPayload {
   projectId: string;
   rawNotes: string;
+  /** Which provider serves this run. Omitted means the platform's free credits. */
+  provider?: RefinementProvider;
 }
 
 export interface GenerateStoriesResponse {
@@ -40,6 +44,9 @@ export interface GenerateStoriesResponse {
   rawNotes: string;
   /** How many markup or injection payloads the API neutralized before refining. */
   redactionCount: number;
+  provider: RefinementProvider;
+  /** Null when the user's own key served the run and no credit was spent (FR-010-08). */
+  creditsRemaining: number | null;
 }
 
 export interface ApproveDraftsBulkPayload {

@@ -1,10 +1,12 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, RobotOutlined } from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
+import { AiProvidersPanel } from "@/features/settings/components/ai-providers";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./settings.module.scss";
@@ -15,6 +17,10 @@ export const SettingsPage: FC = () => {
   usePageTitle("Settings");
   const { profile, loading, error, saving, handleUpdateProfile, handleChangePassword } =
     useSettings();
+  // Refinement — and therefore credits and provider keys — is admin-only, and the
+  // backend guards these endpoints with require_admin. Rendering the tab for a Viewer
+  // would only produce 403s.
+  const { isAdmin } = useRole();
 
   if (loading) {
     return (
@@ -58,6 +64,20 @@ export const SettingsPage: FC = () => {
       ),
       children: <PasswordForm saving={saving} onSubmit={handleChangePassword} />,
     },
+    ...(isAdmin
+      ? [
+          {
+            key: "ai-providers",
+            label: (
+              <span>
+                <RobotOutlined />
+                AI Providers
+              </span>
+            ),
+            children: <AiProvidersPanel />,
+          },
+        ]
+      : []),
   ];
 
   return (
