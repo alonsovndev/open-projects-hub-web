@@ -9,6 +9,11 @@ import {
   useDeleteDraftMutation,
 } from "@/features/refinement/api/refinement-api";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
+import {
+  useGetApiKeysQuery,
+  useGetCreditBalanceQuery,
+} from "@/features/settings/api/ai-providers-api";
+import type { AiProvider, ProviderErrorDetail, RefinementProvider } from "@/shared/types/ai";
 import type { ProjectSummary } from "@/shared/types/domain";
 import {
   RAW_NOTES_MAX_LENGTH,
@@ -46,6 +51,26 @@ const toRefinementFailure = (error: unknown): RefinementFailure | null => {
     : null;
 };
 
+/**
+ * Read the 422 body the API returns when a provider refuses a key.
+ *
+ * `promptsKeyUpdate` is the part that matters: it separates a key the user must replace
+ * in Settings (FR-010-11) from a spent quota or an outage, which replacing would not fix.
+ */
+const toProviderKeyError = (error: unknown): ProviderErrorDetail | null => {
+  if (!error || typeof error !== "object") return null;
+
+  const { status, data } = error as { status?: unknown; data?: unknown };
+  if (status !== 422 || !data || typeof data !== "object") return null;
+
+  const body = data as ProviderErrorDetail;
+  return body.code === "API_KEY_INVALID" ? body : null;
+};
+
+/** True when the API refused the run because the free credits are gone (FR-010-03). */
+const isCreditsExhausted = (error: unknown): boolean =>
+  typeof error === "object" && error !== null && (error as { status?: unknown }).status === 402;
+
 export const useRefinement = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [rawNotes, setRawNotes] = useState<string>("");
@@ -56,10 +81,17 @@ export const useRefinement = () => {
   const [pendingApproval, setPendingApproval] = useState<GeneratedStory | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [redactionCount, setRedactionCount] = useState(0);
+  // Session-scoped only: Q-031 rules out remembering the last provider across visits.
+  const [selectedProvider, setSelectedProvider] = useState<RefinementProvider | null>(null);
+  const [creditsExhausted, setCreditsExhausted] = useState(false);
+  const [invalidKeyProvider, setInvalidKeyProvider] = useState<AiProvider | null>(null);
 
   const { data: projectsData, isLoading: isLoadingProjects } = useGetProjectsQuery({
     limit: 100,
   });
+
+  const { data: creditBalance } = useGetCreditBalanceQuery();
+  const { data: apiKeys } = useGetApiKeysQuery();
 
   const [generateStories, { isLoading: isGenerating }] = useGenerateStoriesMutation();
   const [approveDraft] = useApproveDraftMutation();
@@ -74,6 +106,29 @@ export const useRefinement = () => {
     })) ?? [];
 
   const selectedProject = projectsData?.projects.find((p) => p.id === selectedProjectId) ?? null;
+
+  const configuredProviders: AiProvider[] = (apiKeys ?? [])
+    .map((key) => key.provider)
+    .sort((left, right) => left.localeCompare(right));
+  const hasCredits = (creditBalance?.credits ?? 0) > 0;
+
+  // "Platform" is offered only while credits remain; the rest are the providers the user
+  // actually holds a key for (FR-010-06).
+  const providerOptions: RefinementProvider[] = [
+    ...(hasCredits ? (["platform"] as const) : []),
+    ...configuredProviders,
+  ];
+
+  // Default: Platform when there are credits, otherwise the first configured provider
+  // alphabetically. Held as a derived value rather than seeded into state so it tracks a
+  // key being added or deleted in another tab without a stale selection surviving.
+  const effectiveProvider: RefinementProvider | null =
+    selectedProvider !== null && providerOptions.includes(selectedProvider)
+      ? selectedProvider
+      : (providerOptions[0] ?? null);
+
+  // FR-010-03: no credits and no key means there is nothing to run the refinement on.
+  const isRefinementBlocked = providerOptions.length === 0;
 
   // A past failure says nothing about notes the Admin has since changed, so the alert and
   // its Retry button clear as soon as the input does.
@@ -95,12 +150,26 @@ export const useRefinement = () => {
       const result = await generateStories({
         projectId: selectedProjectId,
         rawNotes: notes,
+        ...(effectiveProvider !== null && { provider: effectiveProvider }),
       }).unwrap();
 
       setGeneratedStories(result.stories);
       setRedactionCount(result.redactionCount ?? 0);
       message.success(`Generated ${result.stories.length} stories successfully!`);
     } catch (error) {
+      if (isCreditsExhausted(error)) {
+        // Not shown as a generic failure: this one has a specific remedy, so it gets the
+        // add-a-key prompt instead of a Retry button that would fail the same way.
+        setCreditsExhausted(true);
+        return;
+      }
+
+      const keyError = toProviderKeyError(error);
+      if (keyError?.promptsKeyUpdate && keyError.provider) {
+        setInvalidKeyProvider(keyError.provider);
+        return;
+      }
+
       const failure = toRefinementFailure(error);
 
       if (failure) {
@@ -118,6 +187,11 @@ export const useRefinement = () => {
   const handleGenerate = async () => {
     if (!selectedProjectId) {
       message.error("Please select a project first");
+      return;
+    }
+
+    if (isRefinementBlocked) {
+      setCreditsExhausted(true);
       return;
     }
 
@@ -248,6 +322,15 @@ export const useRefinement = () => {
   };
 
   return {
+    creditBalance: creditBalance ?? null,
+    providerOptions,
+    selectedProvider: effectiveProvider,
+    setSelectedProvider,
+    isRefinementBlocked,
+    creditsExhausted,
+    dismissCreditsExhausted: () => setCreditsExhausted(false),
+    invalidKeyProvider,
+    dismissInvalidKey: () => setInvalidKeyProvider(null),
     selectedProjectId,
     selectedProject,
     rawNotes,

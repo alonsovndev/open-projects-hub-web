@@ -1,0 +1,123 @@
+@use "@/styles/variables.scss" as *;
+
+.aiProviders {
+  max-width: 720px;
+}
+
+.card {
+  background: $surface-white;
+  border: 1px solid $surface-base;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border-bottom: 1px solid $surface-base;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: $primary-base;
+  margin-top: 2px;
+}
+
+.title {
+  font-family: $font-headline;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $text-primary;
+  display: block;
+}
+
+.subtitle {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  display: block;
+  margin-top: 2px;
+}
+
+.creditSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+  background: $primary-bg-light;
+  border-radius: $radius-sm;
+}
+
+.creditCopy {
+  font-family: $font-body;
+  font-size: 0.875rem;
+}
+
+.providerList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.providerCard {
+  border: 1px solid $surface-base;
+  border-radius: $radius-sm;
+}
+
+.providerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.providerIdentity {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.providerIcon {
+  font-size: 1.125rem;
+  color: $primary-base;
+  margin-top: 4px;
+}
+
+.providerName {
+  font-family: $font-headline;
+  font-weight: 600;
+  color: $text-primary;
+  display: block;
+}
+
+.providerStatus {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin-top: $spacing-xs;
+  font-size: 0.875rem;
+}
+
+.providerMeta {
+  display: block;
+  margin-top: $spacing-sm;
+  font-size: 0.75rem;
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .providerHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .creditSummary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

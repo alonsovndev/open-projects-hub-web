@@ -1,0 +1,31 @@
+@use "@/styles/variables.scss" as *;
+
+.providerControls {
+  margin-top: $spacing-md;
+}
+
+.creditGroup,
+.providerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $text-secondary;
+}
+
+.providerSelect {
+  min-width: 180px;
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .providerSelect {
+    min-width: 100%;
+  }
+}
