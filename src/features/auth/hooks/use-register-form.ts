@@ -49,6 +49,8 @@ export const useRegisterForm = () => {
     { min: 2, message: "Name must be at least 2 characters." },
   ];
 
+  const workspaceNameFieldRules = [{ max: 100, message: "Keep it under 100 characters." }];
+
   const emailFieldRules = [
     { required: true, message: "Please enter your work email address." },
     { type: "email" as const, message: "Please enter a valid email address." },
@@ -92,6 +94,7 @@ export const useRegisterForm = () => {
     hasPasswordInput,
     isPasswordValid,
     fullNameFieldRules,
+    workspaceNameFieldRules,
     emailFieldRules,
     passwordFieldRules,
     confirmPasswordFieldRules,

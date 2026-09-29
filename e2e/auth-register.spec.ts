@@ -10,7 +10,7 @@ test.describe("Register Flow", () => {
   });
 
   test("should send a new account to email verification", async ({ page }) => {
-    // Mocked: the real endpoint only accepts the instance's first account and emails a code.
+    // Mocked: the real endpoint creates a new workspace for the account and emails a code.
     await page.route("**/v1/auth/register", (route) =>
       route.fulfill({
         status: 201,

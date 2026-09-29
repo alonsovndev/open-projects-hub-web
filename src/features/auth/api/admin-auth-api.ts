@@ -11,6 +11,7 @@ import type {
   ResetPasswordValues,
   AdminSession,
   UserRole,
+  WorkspaceSummary,
 } from "@/features/auth/types";
 
 export interface AdminLoginApiResponse {
@@ -27,6 +28,7 @@ export interface AdminLoginApiResponse {
     displayName?: string;
     name?: string;
     role?: UserRole;
+    workspace?: WorkspaceSummary | null;
   };
 }
 
@@ -95,6 +97,7 @@ export const mapAdminSession = (
     // to the least privilege rather than the most: a malformed response should cost a
     // viewer nothing, not hand them the admin shell.
     role: response.user?.role ?? response.role ?? "viewer",
+    workspace: response.user?.workspace ?? undefined,
   };
 };
 
@@ -127,6 +130,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
           displayName: userData.fullName,
           email: userData.email,
           password: userData.password,
+          ...(userData.workspaceName?.trim() ? { workspaceName: userData.workspaceName.trim() } : {}),
         },
       }),
       transformResponse: (response: RegisterApiResponse): RegisterResult => ({

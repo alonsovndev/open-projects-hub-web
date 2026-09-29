@@ -39,7 +39,7 @@ describe("useRole", () => {
 
     expect(result.current.role).toBeUndefined();
     expect(result.current.isAdmin).toBe(false);
-    expect(result.current.isUser).toBe(false);
+    expect(result.current.isMember).toBe(false);
     expect(result.current.isViewer).toBe(false);
   });
 
@@ -62,11 +62,11 @@ describe("useRole", () => {
 
     expect(result.current.role).toBe("admin");
     expect(result.current.isAdmin).toBe(true);
-    expect(result.current.isUser).toBe(false);
+    expect(result.current.isMember).toBe(false);
     expect(result.current.isViewer).toBe(false);
   });
 
-  it("should return user role and isUser true", () => {
+  it("should return member role and isMember true", () => {
     const store = configureStore({
       reducer: {
         auth: adminAuthReducer,
@@ -75,7 +75,7 @@ describe("useRole", () => {
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
 
-    store.dispatch(setAdminSession({ session: { ...mockSession, role: "user" } }));
+    store.dispatch(setAdminSession({ session: { ...mockSession, role: "member" } }));
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider store={store}>{children}</Provider>
@@ -83,10 +83,12 @@ describe("useRole", () => {
 
     const { result } = renderHook(() => useRole(), { wrapper });
 
-    expect(result.current.role).toBe("user");
+    expect(result.current.role).toBe("member");
     expect(result.current.isAdmin).toBe(false);
-    expect(result.current.isUser).toBe(true);
+    expect(result.current.isMember).toBe(true);
     expect(result.current.isViewer).toBe(false);
+    expect(result.current.canEdit).toBe(true);
+    expect(result.current.canManageTeam).toBe(false);
   });
 
   it("should check hasRole correctly", () => {
@@ -107,7 +109,7 @@ describe("useRole", () => {
     const { result } = renderHook(() => useRole(), { wrapper });
 
     expect(result.current.hasRole("admin")).toBe(true);
-    expect(result.current.hasRole("user")).toBe(false);
+    expect(result.current.hasRole("member")).toBe(false);
     expect(result.current.hasRole("viewer")).toBe(false);
   });
 
@@ -128,8 +130,8 @@ describe("useRole", () => {
 
     const { result } = renderHook(() => useRole(), { wrapper });
 
-    expect(result.current.hasAnyRole(["admin", "user"])).toBe(true);
-    expect(result.current.hasAnyRole(["user", "viewer"])).toBe(false);
+    expect(result.current.hasAnyRole(["admin", "member"])).toBe(true);
+    expect(result.current.hasAnyRole(["member", "viewer"])).toBe(false);
     expect(result.current.hasAnyRole([])).toBe(false);
   });
 });

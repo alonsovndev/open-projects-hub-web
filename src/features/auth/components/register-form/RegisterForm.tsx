@@ -1,6 +1,7 @@
 import type { FC } from "react";
 
 import {
+  AppstoreOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   LockOutlined,
@@ -31,11 +32,11 @@ export const RegisterForm: FC = () => {
         </div>
 
         <h1 id="admin-register-title" className={styles.title}>
-          Create Admin Account
+          Create Your Workspace
         </h1>
 
         <p className={styles.description}>
-          Only Admin users create and manage planning workspaces.
+          You&apos;ll be the Admin of a new workspace and can add teammates later.
         </p>
 
         <Form
@@ -56,6 +57,21 @@ export const RegisterForm: FC = () => {
               prefix={<UserOutlined className={styles.inputIcon} />}
               placeholder="User Name"
               autoComplete="name"
+              className={styles.input}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Workspace Name (optional)"
+            name="workspaceName"
+            rules={registerForm.workspaceNameFieldRules}
+            className={styles.formItem}
+          >
+            <Input
+              size="large"
+              prefix={<AppstoreOutlined className={styles.inputIcon} />}
+              placeholder="Your studio or business name"
+              autoComplete="organization"
               className={styles.input}
             />
           </Form.Item>

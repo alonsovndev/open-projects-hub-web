@@ -9,10 +9,10 @@ const mockUsers = [
     role: "admin" as const,
   },
   {
-    email: "user@test.com",
-    password: "User123!",
-    displayName: "Regular User",
-    role: "user" as const,
+    email: "member@test.com",
+    password: "Member123!",
+    displayName: "Team Member",
+    role: "member" as const,
   },
 ];
 
@@ -41,6 +41,7 @@ export const authHandlers = [
           displayName: user.displayName,
           name: user.displayName,
           role: user.role,
+          workspace: { id: "ws-1", name: "Admin User's workspace" },
         },
       });
     }

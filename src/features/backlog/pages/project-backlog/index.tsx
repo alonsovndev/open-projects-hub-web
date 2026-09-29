@@ -42,7 +42,7 @@ export const ProjectBacklogPage: FC = () => {
 
   const selectedProject = projectsData?.projects.find((p: ProjectSummary) => p.id === projectId);
 
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   const handleProjectChange = (newProjectId: string) => {
     navigate(`/backlog/project/${newProjectId}`);
@@ -114,7 +114,7 @@ export const ProjectBacklogPage: FC = () => {
                 }
               />
             </div>
-            {isAdmin && (
+            {canEdit && (
               <Button
                 type="default"
                 size="large"
@@ -137,7 +137,7 @@ export const ProjectBacklogPage: FC = () => {
           <Spin size="large" tip="Loading stories..." />
         </div>
       ) : (
-        <StoryList stories={stories} onDelete={handleDeleteStory} canManage={isAdmin} />
+        <StoryList stories={stories} onDelete={handleDeleteStory} canManage={canEdit} />
       )}
     </div>
   );

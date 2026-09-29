@@ -6,6 +6,8 @@ export interface AdminLoginValues {
 
 export interface AdminRegisterValues {
   fullName: string;
+  /** Optional; the API names the workspace after the display name when blank. */
+  workspaceName?: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -33,7 +35,12 @@ export interface VerifyEmailValues {
   code: string;
 }
 
-export type UserRole = "admin" | "user" | "viewer";
+export type UserRole = "admin" | "member" | "viewer";
+
+export interface WorkspaceSummary {
+  id: string;
+  name: string;
+}
 
 export interface AdminSession {
   token: string;
@@ -44,6 +51,7 @@ export interface AdminSession {
   displayName: string;
   loggedInAt: string;
   role: UserRole;
+  workspace?: WorkspaceSummary;
 }
 
 export interface AdminAuthResponse {
