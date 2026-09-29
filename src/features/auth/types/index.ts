@@ -23,6 +23,16 @@ export interface ResetPasswordValues {
   confirmPassword: string;
 }
 
+/** Registration succeeded; the account signs in only after its email is verified. */
+export interface RegisterResult {
+  codeExpiresAt: string;
+}
+
+export interface VerifyEmailValues {
+  email: string;
+  code: string;
+}
+
 export type UserRole = "admin" | "user" | "viewer";
 
 export interface AdminSession {
@@ -49,6 +59,8 @@ export interface AuthLocationState {
   from?: { pathname: string };
   email?: string;
   message?: string;
+  /** ISO timestamp the emailed verification code expires at (register -> verify-email). */
+  codeExpiresAt?: string;
 }
 
 export interface PasswordStrengthState {

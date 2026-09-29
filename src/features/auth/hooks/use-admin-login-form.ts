@@ -9,6 +9,10 @@ import { setAdminSession } from "@/features/auth/state/admin-auth-slice";
 import { isValidEmail } from "@/features/auth/model/password-policy";
 import type { AdminLoginValues, AuthLocationState } from "@/features/auth/types";
 
+type LoginErrorShape = { data?: { message?: string; code?: string } } | undefined;
+
+const EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
+
 export const useAdminLoginForm = () => {
   const [form] = Form.useForm<AdminLoginValues>();
 
@@ -27,10 +31,13 @@ export const useAdminLoginForm = () => {
   const isSubmitEnabled = isEmailValid && passwordValue.length > 0 && !isLoading;
 
   const authError = useMemo(() => {
-    const errorData = error as { data?: { message?: string } } | undefined;
-
-    return errorData?.data?.message ?? "";
+    return (error as LoginErrorShape)?.data?.message ?? "";
   }, [error]);
+
+  // The API only reports this after the password matched, so offering the
+  // verification step here reveals nothing to someone guessing at emails.
+  const needsEmailVerification = (error as LoginErrorShape)?.data?.code === EMAIL_NOT_VERIFIED;
+  const verifyEmailState: AuthLocationState = { email: emailValue };
 
   // Set by useSessionExpiryWarning's redirect when an active session actually
   // lapses, so the reason for landing back on /login is explained. Note:
@@ -52,7 +59,8 @@ export const useAdminLoginForm = () => {
       const from = (location.state as AuthLocationState | null)?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
     } catch (error) {
-      const nextError = error as { data?: { message?: string } } | undefined;
+      const nextError = error as LoginErrorShape;
+      if (nextError?.data?.code === EMAIL_NOT_VERIFIED) return;
 
       message.error(nextError?.data?.message ?? "Unable to sign in right now. Please try again.");
     }
@@ -87,6 +95,8 @@ export const useAdminLoginForm = () => {
   return {
     form,
     authError,
+    needsEmailVerification,
+    verifyEmailState,
     sessionMessage,
     isSubmitting: isLoading,
     isSubmitEnabled,

@@ -9,12 +9,24 @@ test.describe("Register Flow", () => {
     await registerPage.goto();
   });
 
-  test("should successfully register with valid data", async ({ page }) => {
-    const timestamp = Date.now();
-    await registerPage.register("Test User", `testuser${timestamp}@test.com`, "Test123!@#");
+  test("should send a new account to email verification", async ({ page }) => {
+    // Mocked: the real endpoint only accepts the instance's first account and emails a code.
+    await page.route("**/v1/auth/register", (route) =>
+      route.fulfill({
+        status: 201,
+        json: {
+          email: "te***@test.com",
+          verificationRequired: true,
+          nextStep: "verify-email",
+          codeExpiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
+        },
+      })
+    );
 
-    await expect(page).toHaveURL(/\/login/);
-    await expect(page.getByText(/account created successfully/i)).toBeVisible();
+    await registerPage.register("Test User", "testuser@test.com", "Test123!@#");
+
+    await expect(page).toHaveURL(/\/verify-email/);
+    await expect(page.getByText("testuser@test.com")).toBeVisible();
   });
 
   test("should show validation for weak password", async () => {

@@ -88,6 +88,13 @@ export const AdminLoginForm: FC = () => {
               type="error"
               showIcon
               message={adminLoginForm.authError}
+              description={
+                adminLoginForm.needsEmailVerification ? (
+                  <Link to="/verify-email" state={adminLoginForm.verifyEmailState}>
+                    Verify your email
+                  </Link>
+                ) : undefined
+              }
             />
           ) : null}
 

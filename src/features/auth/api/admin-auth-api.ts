@@ -6,6 +6,8 @@ import type {
   AdminLoginValues,
   AdminRegisterValues,
   ForgotPasswordValues,
+  RegisterResult,
+  VerifyEmailValues,
   ResetPasswordValues,
   AdminSession,
   UserRole,
@@ -32,6 +34,13 @@ interface MessageResponse {
   message: string;
 }
 
+interface RegisterApiResponse {
+  email: string;
+  verificationRequired: boolean;
+  nextStep: string;
+  codeExpiresAt: string;
+}
+
 interface RefreshTokenRequest {
   refreshToken: string;
 }
@@ -42,7 +51,7 @@ interface RefreshTokenResponse {
   sessionExpiresAt?: string;
 }
 
-/** forgotPassword and resendResetCode both just POST { email } to their own endpoint. */
+/** forgotPassword, resendResetCode and resendVerification all just POST { email } to their own endpoint. */
 const postEmail =
   (endpoint: string) =>
   (data: ForgotPasswordValues): { url: string; method: "POST"; body: ForgotPasswordValues } => ({
@@ -110,7 +119,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
       invalidatesTags: ["AdminAuth"],
     }),
 
-    register: builder.mutation<AdminAuthResponse, AdminRegisterValues>({
+    register: builder.mutation<RegisterResult, AdminRegisterValues>({
       query: (userData) => ({
         url: adminAuthConfig.registerEndpoint,
         method: "POST",
@@ -120,11 +129,21 @@ export const adminAuthApi = baseApi.injectEndpoints({
           password: userData.password,
         },
       }),
-      transformResponse: (response: AdminLoginApiResponse, _meta, credentials) => {
-        return {
-          session: mapAdminSession(response, credentials.email),
-        };
-      },
+      transformResponse: (response: RegisterApiResponse): RegisterResult => ({
+        codeExpiresAt: response.codeExpiresAt,
+      }),
+    }),
+
+    verifyEmail: builder.mutation<{ verified: boolean }, VerifyEmailValues>({
+      query: ({ email, code }) => ({
+        url: adminAuthConfig.verifyEmailEndpoint,
+        method: "POST",
+        body: { email, code },
+      }),
+    }),
+
+    resendVerification: builder.mutation<MessageResponse, ForgotPasswordValues>({
+      query: postEmail(adminAuthConfig.resendVerificationEndpoint),
     }),
 
     refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
@@ -168,5 +187,7 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useResendResetCodeMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
   useLogoutMutation,
 } = adminAuthApi;
