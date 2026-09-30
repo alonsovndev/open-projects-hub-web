@@ -5,17 +5,17 @@ import type { GuardType } from "@/app/routing/types";
 import type { UserRole } from "@/features/auth/types";
 
 /**
- * Route-level half of the Admin/Viewer boundary (US-EP4-FE-001).
+ * Route-level half of the editor/Viewer boundary (US-EP4-FE-001).
  *
  * The per-page tests prove controls disappear for a Viewer; this one proves a Viewer
- * cannot reach an admin-only page by typing its URL. It enumerates `appRoutes` rather
+ * cannot reach an editor-only page (admins and members) by typing its URL. It enumerates `appRoutes` rather
  * than a list of paths to check, so a new route added with no guards fails the suite
  * instead of shipping public by default.
  *
  * Moving a path between these lists is an access-control decision, so it should show up
  * in review as one.
  */
-const ADMIN_ONLY_PATHS = ["/clients", "/refinement", "/projects/new"];
+const EDITOR_ONLY_PATHS = ["/clients", "/refinement", "/projects/new"];
 
 const AUTHENTICATED_PATHS = [
   "/dashboard",
@@ -34,6 +34,7 @@ const PUBLIC_PATHS = [
   "/register",
   "/forgot-password",
   "/reset-password",
+  "/verify-email",
   "/viewer",
   "/viewer/:projectId",
   "/privacy",
@@ -57,18 +58,18 @@ const allowedRoles = (guards: GuardType[]): UserRole[] | null => {
 
 describe("route access policy", () => {
   it("classifies every registered route", () => {
-    const classified = new Set([...ADMIN_ONLY_PATHS, ...AUTHENTICATED_PATHS, ...PUBLIC_PATHS]);
+    const classified = new Set([...EDITOR_ONLY_PATHS, ...AUTHENTICATED_PATHS, ...PUBLIC_PATHS]);
 
     const unclassified = appRoutes.map((route) => route.path).filter((path) => !classified.has(path));
 
     expect(unclassified).toEqual([]);
   });
 
-  it.each(ADMIN_ONLY_PATHS)("%s is restricted to admins", (path) => {
+  it.each(EDITOR_ONLY_PATHS)("%s is restricted to admins and members", (path) => {
     const guards = guardsFor(path);
 
     expect(guards).toContain("auth");
-    expect(allowedRoles(guards)).toEqual(["admin"]);
+    expect(allowedRoles(guards)).toEqual(["admin", "member"]);
   });
 
   it.each(AUTHENTICATED_PATHS)("%s is open to any signed-in role", (path) => {

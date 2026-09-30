@@ -168,6 +168,7 @@ export const baseApi = createApi({
     "UserProfile",
     "AiProviderKeys",
     "CreditBalance",
+    "TeamMembers",
   ],
   endpoints: () => ({}),
 });

@@ -13,7 +13,7 @@ export const useRole = () => {
   };
 
   const isAdmin = hasRole("admin");
-  const isUser = hasRole("user");
+  const isMember = hasRole("member");
   const isViewer = hasRole("viewer");
 
   return {
@@ -21,7 +21,11 @@ export const useRole = () => {
     hasRole,
     hasAnyRole,
     isAdmin,
-    isUser,
+    isMember,
     isViewer,
+    /** Admins and members create and change workspace data; viewers only read it. */
+    canEdit: isAdmin || isMember,
+    /** Only the workspace Admin adds teammates and viewers. */
+    canManageTeam: isAdmin,
   };
 };

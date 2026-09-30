@@ -8,6 +8,8 @@ export {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useResendResetCodeMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
   useLogoutMutation,
 } from "./api/admin-auth-api";
 
@@ -22,6 +24,7 @@ export { AdminLoginForm } from "./components/admin-login-form";
 export { RegisterForm } from "./components/register-form";
 export { ForgotPasswordForm } from "./components/forgot-password-form";
 export { ResetPasswordForm } from "./components/reset-password-form";
+export { VerifyEmailForm } from "./components/verify-email-form";
 export { SessionExpiryWarning } from "./components/session-expiry-warning";
 
 export { useAuth } from "./hooks/use-auth";
@@ -37,6 +40,8 @@ export type {
   AdminRegisterValues,
   ForgotPasswordValues,
   ResetPasswordValues,
+  RegisterResult,
+  VerifyEmailValues,
   AdminSession,
   AdminAuthResponse,
   UserRole,

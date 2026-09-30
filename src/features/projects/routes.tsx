@@ -23,6 +23,6 @@ export const projectsRoutes: AppRoute[] = [
       </AdminLayout>
     ),
     // The page is one big create form, so there is nothing left to show a Viewer.
-    guards: ["auth", { role: "admin" }],
+    guards: ["auth", { role: ["admin", "member"] }],
   },
 ];

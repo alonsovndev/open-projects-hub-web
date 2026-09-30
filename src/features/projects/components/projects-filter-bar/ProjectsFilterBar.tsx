@@ -42,11 +42,11 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
   onViewChange,
   onClearFilters,
 }) => {
-  // The client list is admin-only server-side, so a Viewer must not issue the request at
-  // all — firing it just to swallow a 403 would be noise, and the filter it feeds has no
-  // options to offer them.
-  const { isAdmin } = useRole();
-  const { data: clientsData } = useGetClientsQuery(undefined, { skip: !isAdmin });
+  // The client list is limited to admins and members server-side, so a Viewer must not
+  // issue the request at all — firing it just to swallow a 403 would be noise, and the
+  // filter it feeds has no options to offer them.
+  const { canEdit } = useRole();
+  const { data: clientsData } = useGetClientsQuery(undefined, { skip: !canEdit });
   const clientOptions = [
     { label: "All Clients", value: "all" },
     ...(clientsData ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id })) : []),
@@ -96,7 +96,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           ]}
         />
 
-        {isAdmin && (
+        {canEdit && (
           <Select
             placeholder="Client"
             size="large"

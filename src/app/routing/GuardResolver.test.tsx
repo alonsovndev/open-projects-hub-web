@@ -171,7 +171,7 @@ describe("GuardResolver", () => {
     it("should redirect to /unauthorized when role does not match", () => {
       const userSession: AdminSession = {
         ...mockSession,
-        role: "user",
+        role: "member",
       };
 
       renderWithRouter(
@@ -236,7 +236,7 @@ describe("GuardResolver", () => {
     it("should reject a role that is not in the guard's list", () => {
       const userSession: AdminSession = {
         ...mockSession,
-        role: "user",
+        role: "member",
       };
 
       renderWithRouter(

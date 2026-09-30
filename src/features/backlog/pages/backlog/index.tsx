@@ -32,7 +32,7 @@ export const BacklogPage: FC = () => {
     handleClearFilters,
     handleExportMarkdown,
   } = useBacklog();
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   return (
     <div className={styles.pageContainer}>
@@ -46,7 +46,7 @@ export const BacklogPage: FC = () => {
               Generated user stories ({filteredStories.length} items)
             </Text>
           </div>
-          {isAdmin && (
+          {canEdit && (
             <Space>
               <Tooltip title={exportBlockedReason ?? ""}>
                 <Button
@@ -92,7 +92,7 @@ export const BacklogPage: FC = () => {
               <Spin size="large" tip="Loading stories..." />
             </div>
           ) : (
-            <StoryList stories={filteredStories} onDelete={handleDeleteStory} canManage={isAdmin} />
+            <StoryList stories={filteredStories} onDelete={handleDeleteStory} canManage={canEdit} />
           )}
         </>
       )}

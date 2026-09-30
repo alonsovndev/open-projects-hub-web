@@ -157,6 +157,19 @@
   min-width: 0;
 }
 
+.userText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.workspaceName {
+  font-family: $font-body;
+  font-size: 0.75rem;
+  max-width: 100%;
+}
+
 .logoutButton {
   color: $text-secondary;
   padding: $spacing-xs;

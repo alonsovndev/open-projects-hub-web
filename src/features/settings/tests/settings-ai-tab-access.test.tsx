@@ -6,8 +6,10 @@ import { renderWithProviders } from "@/test/utils/render-with-providers";
 import type { AdminSession, UserRole } from "@/features/auth/types";
 
 /**
- * Credits and provider keys are admin-only on the server (`require_admin`), so showing a
- * Viewer the tab would only produce 403s. This pins the client gate to that contract.
+ * Credits and provider keys are for admins and members on the server (`require_editor`),
+ * and adding people is the Admin's alone (`require_admin`), so showing either tab to a
+ * role the server refuses would only produce 403s. This pins the client gates to that
+ * contract.
  */
 
 const sessionFor = (role: UserRole): AdminSession => ({
@@ -45,11 +47,25 @@ describe("Settings AI Providers tab access", () => {
     expect(await screen.findByText("AI Providers")).toBeInTheDocument();
   });
 
+  it("shows the AI tab but not the Team tab to a member", async () => {
+    renderAs("member");
+
+    expect(await screen.findByText("AI Providers")).toBeInTheDocument();
+    expect(screen.queryByText("Team")).not.toBeInTheDocument();
+  });
+
+  it("shows the Team tab to an admin", async () => {
+    renderAs("admin");
+
+    expect(await screen.findByText("Team")).toBeInTheDocument();
+  });
+
   it("hides the tab from a viewer", async () => {
     renderAs("viewer");
 
     expect(await screen.findByText("Profile")).toBeInTheDocument();
     expect(screen.queryByText("AI Providers")).not.toBeInTheDocument();
+    expect(screen.queryByText("Team")).not.toBeInTheDocument();
   });
 
   it("still shows a viewer their own profile and security tabs", async () => {

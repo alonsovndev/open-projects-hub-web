@@ -54,8 +54,33 @@ describe("AdminLayout navigation", () => {
     expect(screen.getByRole("menuitem", { name: /settings/i })).toBeInTheDocument();
   });
 
-  it("treats an unrecognised non-admin role as read-only", () => {
-    renderMenu("user");
+  it("shows the editing destinations to a member", () => {
+    renderMenu("member");
+
+    expect(screen.getByRole("menuitem", { name: /clients/i })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: /ai refinement/i })).toBeInTheDocument();
+  });
+
+  it("shows the workspace name under the user", () => {
+    renderWithProviders(
+      <AdminLayout>
+        <div>content</div>
+      </AdminLayout>,
+      {
+        preloadedState: {
+          auth: {
+            session: { ...sessionWithRole("admin"), workspace: { id: "ws-1", name: "Acme Studio" } },
+            isBootstrapping: false,
+          },
+        },
+      }
+    );
+
+    expect(screen.getByText("Acme Studio")).toBeInTheDocument();
+  });
+
+  it("treats an unrecognised role as read-only", () => {
+    renderMenu("user" as UserRole);
 
     expect(screen.queryByRole("menuitem", { name: /clients/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("menuitem", { name: /ai refinement/i })).not.toBeInTheDocument();

@@ -1,11 +1,12 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined, RobotOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, RobotOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
 import { AiProvidersPanel } from "@/features/settings/components/ai-providers";
+import { TeamPanel } from "@/features/settings/components/team-panel";
 import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -17,10 +18,10 @@ export const SettingsPage: FC = () => {
   usePageTitle("Settings");
   const { profile, loading, error, saving, handleUpdateProfile, handleChangePassword } =
     useSettings();
-  // Refinement — and therefore credits and provider keys — is admin-only, and the
-  // backend guards these endpoints with require_admin. Rendering the tab for a Viewer
-  // would only produce 403s.
-  const { isAdmin } = useRole();
+  // Refinement — and therefore credits and provider keys — is for admins and members; the
+  // backend guards these endpoints with require_editor. Rendering the tab for a Viewer
+  // would only produce 403s. Adding people is the Admin's alone (require_admin).
+  const { canEdit, canManageTeam } = useRole();
 
   if (loading) {
     return (
@@ -64,7 +65,7 @@ export const SettingsPage: FC = () => {
       ),
       children: <PasswordForm saving={saving} onSubmit={handleChangePassword} />,
     },
-    ...(isAdmin
+    ...(canEdit
       ? [
           {
             key: "ai-providers",
@@ -75,6 +76,20 @@ export const SettingsPage: FC = () => {
               </span>
             ),
             children: <AiProvidersPanel />,
+          },
+        ]
+      : []),
+    ...(canManageTeam
+      ? [
+          {
+            key: "team",
+            label: (
+              <span>
+                <TeamOutlined />
+                Team
+              </span>
+            ),
+            children: <TeamPanel />,
           },
         ]
       : []),

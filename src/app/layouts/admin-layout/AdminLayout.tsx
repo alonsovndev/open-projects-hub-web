@@ -33,11 +33,11 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   const location = useLocation();
   const session = useAppSelector((state) => state.auth.session);
   const { logout } = useLogout();
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   const [collapsed, setCollapsed] = useState(false);
 
-  // Admin-only destinations are left out of the menu entirely rather than disabled: a
+  // Editor-only destinations are left out of the menu entirely rather than disabled: a
   // Viewer cannot open them, so advertising them only invites a trip to /unauthorized.
   const allMenuItems = [
     {
@@ -57,14 +57,14 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       icon: <TeamOutlined />,
       label: "Clients",
       onClick: () => navigate("/clients"),
-      adminOnly: true,
+      editorOnly: true,
     },
     {
       key: "/refinement",
       icon: <ExperimentOutlined />,
       label: "AI Refinement",
       onClick: () => navigate("/refinement"),
-      adminOnly: true,
+      editorOnly: true,
     },
     {
       key: "/backlog",
@@ -81,8 +81,8 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
   ];
 
   const menuItems = allMenuItems
-    .filter((item) => isAdmin || !item.adminOnly)
-    .map(({ adminOnly: _adminOnly, ...item }) => item);
+    .filter((item) => canEdit || !item.editorOnly)
+    .map(({ editorOnly: _editorOnly, ...item }) => item);
 
   // Determine selected key based on current path
   const selectedKey =
@@ -125,7 +125,16 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
               <Avatar size={collapsed ? 32 : 40} className={styles.avatar}>
                 {session?.displayName?.[0]?.toUpperCase() || "A"}
               </Avatar>
-              {!collapsed && <Text className={styles.userName}>{session?.displayName}</Text>}
+              {!collapsed && (
+                <div className={styles.userText}>
+                  <Text className={styles.userName}>{session?.displayName}</Text>
+                  {session?.workspace && (
+                    <Text type="secondary" className={styles.workspaceName} ellipsis>
+                      {session.workspace.name}
+                    </Text>
+                  )}
+                </div>
+              )}
             </div>
             <div className={styles.userSectionRight}>
               <Button

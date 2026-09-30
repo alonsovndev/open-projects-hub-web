@@ -48,7 +48,7 @@ export const ProjectsOverview: FC = () => {
     handleDeleteProject,
     handleArchiveProject,
   } = useProjectsOverview();
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   return (
     <div className={styles.pageContainer}>
@@ -62,7 +62,7 @@ export const ProjectsOverview: FC = () => {
               Showing {filteredCount} of {totalCount} projects
             </Text>
           </div>
-          {isAdmin && (
+          {canEdit && (
             <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
               <Button
                 type="primary"
@@ -80,7 +80,7 @@ export const ProjectsOverview: FC = () => {
         </div>
       </div>
 
-      {isAdmin && !canCreate && (
+      {canEdit && !canCreate && (
         <Alert
           type="warning"
           showIcon
@@ -113,7 +113,7 @@ export const ProjectsOverview: FC = () => {
                 <Text className={styles.emptySubtitle}>
                   {activeFilterCount > 0
                     ? "Try adjusting your filters to see more results"
-                    : isAdmin
+                    : canEdit
                       ? "Get started by creating your first project"
                       : "No projects have been shared with you yet"}
                 </Text>
@@ -125,7 +125,7 @@ export const ProjectsOverview: FC = () => {
                 Clear Filters
               </Button>
             ) : (
-              isAdmin && (
+              canEdit && (
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateProject}>
                   Create Project
                 </Button>
@@ -144,7 +144,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
-          canManage={isAdmin}
+          canManage={canEdit}
         />
       ) : (
         <ProjectsTable
@@ -159,7 +159,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
-          canManage={isAdmin}
+          canManage={canEdit}
         />
       )}
 

@@ -6,6 +6,7 @@ const LoginPage = lazyWithRetry(() => import("@/features/auth/pages/login"));
 const RegisterPage = lazyWithRetry(() => import("@/features/auth/pages/register"));
 const ForgotPasswordPage = lazyWithRetry(() => import("@/features/auth/pages/forgot-password"));
 const ResetPasswordPage = lazyWithRetry(() => import("@/features/auth/pages/reset-password"));
+const VerifyEmailPage = lazyWithRetry(() => import("@/features/auth/pages/verify-email"));
 
 export const authRoutes: AppRoute[] = [
   {
@@ -40,6 +41,15 @@ export const authRoutes: AppRoute[] = [
     element: (
       <PublicLayout>
         <ResetPasswordPage />
+      </PublicLayout>
+    ),
+    guards: ["guest"],
+  },
+  {
+    path: "/verify-email",
+    element: (
+      <PublicLayout>
+        <VerifyEmailPage />
       </PublicLayout>
     ),
     guards: ["guest"],

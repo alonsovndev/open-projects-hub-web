@@ -6,9 +6,12 @@ import type {
   AdminLoginValues,
   AdminRegisterValues,
   ForgotPasswordValues,
+  RegisterResult,
+  VerifyEmailValues,
   ResetPasswordValues,
   AdminSession,
   UserRole,
+  WorkspaceSummary,
 } from "@/features/auth/types";
 
 export interface AdminLoginApiResponse {
@@ -25,11 +28,19 @@ export interface AdminLoginApiResponse {
     displayName?: string;
     name?: string;
     role?: UserRole;
+    workspace?: WorkspaceSummary | null;
   };
 }
 
 interface MessageResponse {
   message: string;
+}
+
+interface RegisterApiResponse {
+  email: string;
+  verificationRequired: boolean;
+  nextStep: string;
+  codeExpiresAt: string;
 }
 
 interface RefreshTokenRequest {
@@ -42,7 +53,7 @@ interface RefreshTokenResponse {
   sessionExpiresAt?: string;
 }
 
-/** forgotPassword and resendResetCode both just POST { email } to their own endpoint. */
+/** forgotPassword, resendResetCode and resendVerification all just POST { email } to their own endpoint. */
 const postEmail =
   (endpoint: string) =>
   (data: ForgotPasswordValues): { url: string; method: "POST"; body: ForgotPasswordValues } => ({
@@ -86,6 +97,7 @@ export const mapAdminSession = (
     // to the least privilege rather than the most: a malformed response should cost a
     // viewer nothing, not hand them the admin shell.
     role: response.user?.role ?? response.role ?? "viewer",
+    workspace: response.user?.workspace ?? undefined,
   };
 };
 
@@ -110,7 +122,7 @@ export const adminAuthApi = baseApi.injectEndpoints({
       invalidatesTags: ["AdminAuth"],
     }),
 
-    register: builder.mutation<AdminAuthResponse, AdminRegisterValues>({
+    register: builder.mutation<RegisterResult, AdminRegisterValues>({
       query: (userData) => ({
         url: adminAuthConfig.registerEndpoint,
         method: "POST",
@@ -118,13 +130,24 @@ export const adminAuthApi = baseApi.injectEndpoints({
           displayName: userData.fullName,
           email: userData.email,
           password: userData.password,
+          ...(userData.workspaceName?.trim() ? { workspaceName: userData.workspaceName.trim() } : {}),
         },
       }),
-      transformResponse: (response: AdminLoginApiResponse, _meta, credentials) => {
-        return {
-          session: mapAdminSession(response, credentials.email),
-        };
-      },
+      transformResponse: (response: RegisterApiResponse): RegisterResult => ({
+        codeExpiresAt: response.codeExpiresAt,
+      }),
+    }),
+
+    verifyEmail: builder.mutation<{ verified: boolean }, VerifyEmailValues>({
+      query: ({ email, code }) => ({
+        url: adminAuthConfig.verifyEmailEndpoint,
+        method: "POST",
+        body: { email, code },
+      }),
+    }),
+
+    resendVerification: builder.mutation<MessageResponse, ForgotPasswordValues>({
+      query: postEmail(adminAuthConfig.resendVerificationEndpoint),
     }),
 
     refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
@@ -168,5 +191,7 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useResendResetCodeMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
   useLogoutMutation,
 } = adminAuthApi;
