@@ -193,6 +193,19 @@ export const projectsApi = baseApi.injectEndpoints({
       ],
     }),
 
+    reactivateProject: builder.mutation<ProjectSummary, string>({
+      query: (id) => ({
+        url: `/v1/projects/${id}/reactivate`,
+        method: "POST",
+      }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
+      invalidatesTags: (result, error, id) => [
+        { type: "Projects", id },
+        { type: "Projects", id: "LIST" },
+        "DashboardStats",
+      ],
+    }),
+
     // Delete project
     deleteProject: builder.mutation<void, string>({
       query: (id) => ({
@@ -215,5 +228,6 @@ export const {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useArchiveProjectMutation,
+  useReactivateProjectMutation,
   useDeleteProjectMutation,
 } = projectsApi;

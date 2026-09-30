@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import type { FC } from "react";
 import { Form, Input, Select, DatePicker, Button, Card, Typography, Spin } from "antd";
 import { SaveOutlined, CloseOutlined } from "@ant-design/icons";
@@ -5,6 +6,7 @@ import dayjs from "dayjs";
 
 import type { ProjectPhase, ProjectPriority } from "@/features/dashboard/types";
 import { useGetClientsQuery, selectClientSummaries } from "@/features/clients/api/clients-api";
+import { generateProjectCode } from "@/features/projects/utils/generate-project-code";
 
 import styles from "./project-form.module.scss";
 
@@ -49,6 +51,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
   submitText = "Create Project",
 }) => {
   const [form] = Form.useForm<ProjectFormData>();
+  const isCodeEditedManually = useRef(false);
 
   // Fetch clients for dropdown
   const {
@@ -65,6 +68,13 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
       endDate: dayjs(values.endDate).format("YYYY-MM-DD"),
     };
     await onSubmit(formattedValues);
+  };
+
+  const handleValuesChange = (changedValues: Partial<ProjectFormData>) => {
+    // Tracked via the input's onChange: setFieldValue marks the field touched, so isFieldTouched
+    // can't tell our own suggestion from a user edit.
+    if (initialValues || changedValues.name === undefined || isCodeEditedManually.current) return;
+    form.setFieldValue("code", generateProjectCode(changedValues.name));
   };
 
   const formInitialValues = initialValues
@@ -99,6 +109,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
         layout="vertical"
         initialValues={formInitialValues}
         onFinish={handleSubmit}
+        onValuesChange={handleValuesChange}
         className={styles.form}
         disabled={loading}
       >
@@ -118,6 +129,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           <Form.Item
             name="code"
             label="Project Code"
+            extra={initialValues ? undefined : "Suggested from the name — you can edit it"}
             rules={[
               { required: true, message: "Please enter project code" },
               {
@@ -128,7 +140,13 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
               { max: 20, message: "Code must not exceed 20 characters" },
             ]}
           >
-            <Input placeholder="e.g., PROJ-2024" size="large" />
+            <Input
+              placeholder="e.g., PROJ-2024"
+              size="large"
+              onChange={() => {
+                isCodeEditedManually.current = true;
+              }}
+            />
           </Form.Item>
 
           <Form.Item

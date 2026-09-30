@@ -8,6 +8,7 @@ import {
   CalendarOutlined,
   UnorderedListOutlined,
   InboxOutlined,
+  UndoOutlined,
 } from "@ant-design/icons";
 
 import { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
@@ -26,6 +27,7 @@ interface ProjectListProps {
   onEditProject?: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
+  onReactivateProject?: (projectId: string, projectName: string) => void;
   onViewAllProjects?: () => void;
   /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
   canManage?: boolean;
@@ -43,6 +45,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
   onEditProject,
   onDeleteProject,
   onArchiveProject,
+  onReactivateProject,
   onViewAllProjects,
   canManage = false,
 }) => {
@@ -170,6 +173,16 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                       aria-label={`Archive ${project.name}`}
                     >
                       Archive
+                    </Button>
+                  )}
+                  {canManage && onReactivateProject && project.status === "archived" && (
+                    <Button
+                      type="default"
+                      icon={<UndoOutlined />}
+                      onClick={() => onReactivateProject(project.id, project.name)}
+                      aria-label={`Reactivate ${project.name}`}
+                    >
+                      Reactivate
                     </Button>
                   )}
                   {canManage && onDeleteProject && (

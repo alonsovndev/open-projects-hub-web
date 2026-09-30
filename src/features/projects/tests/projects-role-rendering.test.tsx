@@ -56,6 +56,7 @@ const overview: Record<string, unknown> = {
   handleCreateProject: vi.fn(),
   handleDeleteProject: vi.fn(),
   handleArchiveProject: vi.fn(),
+  handleReactivateProject: vi.fn(),
 };
 
 vi.mock("@/features/projects/hooks/use-projects-overview", () => ({
@@ -111,6 +112,35 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
     renderPage("viewer");
 
     expect(screen.queryByLabelText(/filter by client/i)).not.toBeInTheDocument();
+  });
+
+  describe("archived project", () => {
+    beforeEach(() => {
+      overview.projects = [{ ...project, status: "archived" }];
+    });
+
+    afterEach(() => {
+      overview.projects = [project];
+      overview.view = "table";
+    });
+
+    it.each(["table", "grid"])("offers reactivate instead of archive to an admin in %s view", (view) => {
+      overview.view = view;
+      renderPage("admin");
+
+      expect(screen.getByRole("button", { name: /reactivate open projects hub/i })).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: /archive open projects hub/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it("hides reactivate from a viewer", () => {
+      renderPage("viewer");
+
+      expect(
+        screen.queryByRole("button", { name: /reactivate open projects hub/i })
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe("grid view", () => {

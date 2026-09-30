@@ -47,6 +47,7 @@ export const ProjectsOverview: FC = () => {
     handleCreateProject,
     handleDeleteProject,
     handleArchiveProject,
+    handleReactivateProject,
   } = useProjectsOverview();
   const { canEdit } = useRole();
 
@@ -144,6 +145,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
+          onReactivateProject={handleReactivateProject}
           canManage={canEdit}
         />
       ) : (
@@ -159,6 +161,7 @@ export const ProjectsOverview: FC = () => {
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onArchiveProject={handleArchiveProject}
+          onReactivateProject={handleReactivateProject}
           canManage={canEdit}
         />
       )}

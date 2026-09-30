@@ -7,6 +7,7 @@ import {
   useGetProjectsQuery,
   useGetProjectByIdQuery,
   useArchiveProjectMutation,
+  useReactivateProjectMutation,
 } from "@/features/projects/api/projects-api";
 import { useDeleteProject } from "@/features/projects/hooks/use-delete-project";
 import { useUpdateProject } from "@/features/projects/hooks/use-update-project";
@@ -27,6 +28,7 @@ export const useProjectsOverview = () => {
     },
   });
   const [archiveProject, { isLoading: isArchiving }] = useArchiveProjectMutation();
+  const [reactivateProject, { isLoading: isReactivating }] = useReactivateProjectMutation();
 
   const [filters, setFilters] = useState<ProjectFilters>({
     search: "",
@@ -235,6 +237,29 @@ export const useProjectsOverview = () => {
     });
   };
 
+  const handleReactivateProject = (projectId: string, projectName: string) => {
+    Modal.confirm({
+      title: "Reactivate Project",
+      icon: <ExclamationCircleOutlined />,
+      content: `Reactivate "${projectName}"? It will count toward your ${MAX_ACTIVE_PROJECTS} active projects.`,
+      okText: "Reactivate",
+      cancelText: "Cancel",
+      onOk: async () => {
+        try {
+          await reactivateProject(projectId).unwrap();
+          message.success(`Project "${projectName}" reactivated`);
+        } catch (error) {
+          const apiError = error as { status?: number };
+          message.error(
+            apiError?.status === 409
+              ? "You have reached the maximum of 3 active projects. Archive another project before reactivating this one."
+              : "Failed to reactivate project"
+          );
+        }
+      },
+    });
+  };
+
   const activeFilterCount = [
     filters.search !== "",
     filters.status !== "all",
@@ -259,6 +284,7 @@ export const useProjectsOverview = () => {
     isDeleting,
     isUpdating,
     isArchiving,
+    isReactivating,
     error,
     editModalOpen,
     editingProject,
@@ -278,5 +304,6 @@ export const useProjectsOverview = () => {
     handleCreateProject,
     handleDeleteProject,
     handleArchiveProject,
+    handleReactivateProject,
   };
 };

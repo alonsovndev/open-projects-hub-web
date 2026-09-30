@@ -9,6 +9,7 @@ import {
   DeleteOutlined,
   CalendarOutlined,
   InboxOutlined,
+  UndoOutlined,
 } from "@ant-design/icons";
 
 import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/shared/types/domain";
@@ -30,6 +31,7 @@ interface ProjectsTableProps {
   onEditProject: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
+  onReactivateProject?: (projectId: string, projectName: string) => void;
   /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
   canManage?: boolean;
 }
@@ -48,6 +50,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   onEditProject,
   onDeleteProject,
   onArchiveProject,
+  onReactivateProject,
   canManage = false,
 }) => {
   const columns: ColumnsType<ProjectSummary> = useMemo(
@@ -208,6 +211,17 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
                 Archive
               </Button>
             )}
+            {canManage && onReactivateProject && record.status === "archived" && (
+              <Button
+                type="link"
+                icon={<UndoOutlined />}
+                onClick={() => onReactivateProject(record.id, record.name)}
+                className={styles.actionButton}
+                aria-label={`Reactivate ${record.name}`}
+              >
+                Reactivate
+              </Button>
+            )}
             {canManage && onDeleteProject && (
               <Button
                 type="link"
@@ -224,7 +238,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         ),
       },
     ],
-    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject, canManage]
+    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject, onReactivateProject, canManage]
   );
 
   const handleTableChange = (

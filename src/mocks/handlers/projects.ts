@@ -234,4 +234,12 @@ export const projectsHandlers = [
     }
     return HttpResponse.json({ ...project, status: "archived", updatedAt: new Date().toISOString() });
   }),
+
+  http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/reactivate`, ({ params }) => {
+    const project = mockProjects.find((p) => p.id === params.id);
+    if (!project) {
+      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+    }
+    return HttpResponse.json({ ...project, status: "active", updatedAt: new Date().toISOString() });
+  }),
 ];

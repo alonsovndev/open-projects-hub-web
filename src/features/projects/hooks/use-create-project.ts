@@ -31,6 +31,10 @@ export const useCreateProject = () => {
       console.error("Failed to create project:", error);
       const apiError = error as { status?: number; data?: { message?: string } };
       const msg = apiError?.data?.message ?? "";
+      if (apiError?.status === 409 && /already exists/i.test(msg)) {
+        message.error(msg);
+        return;
+      }
       const isLimit = apiError?.status === 409 || apiError?.status === 422 || /limit|maximum.*3/i.test(msg);
       if (isLimit) {
         const friendly = msg.includes("Archive") ? msg : ACTIVE_LIMIT_MESSAGE;

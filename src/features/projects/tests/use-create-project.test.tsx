@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { message } from "antd";
+import { http, HttpResponse } from "msw";
 
 import { useCreateProject } from "@/features/projects/hooks/use-create-project";
 import type { ProjectFormData } from "@/features/projects/components/project-form";
 import { TestProviders as wrapper } from "@/test/utils/render-with-providers";
+import { server } from "@/mocks/server";
+import { adminAuthConfig } from "@/resources/config/auth";
 
 // Mock antd message
 vi.mock("antd", async () => {
@@ -106,6 +109,46 @@ describe("useCreateProject", () => {
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
+    });
+  });
+  describe("conflict responses", () => {
+    const formData: ProjectFormData = {
+      name: "Test Project",
+      code: "TEST",
+      clientId: "client-001",
+      description: "A test project description",
+      phase: "discovery",
+      priority: "medium",
+      startDate: "2024-01-01",
+      endDate: "2024-12-31",
+    };
+
+    const respondWithConflict = (detail: string) =>
+      server.use(
+        http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects`, () =>
+          HttpResponse.json({ detail }, { status: 409 })
+        )
+      );
+
+    it("shows the duplicate code message instead of the limit message", async () => {
+      respondWithConflict("A project with code 'TEST' already exists");
+      const { result } = renderHook(() => useCreateProject(), { wrapper });
+
+      await result.current.handleSubmit(formData);
+
+      await waitFor(() =>
+        expect(message.error).toHaveBeenCalledWith("A project with code 'TEST' already exists")
+      );
+      expect(result.current.limitError).toBeNull();
+    });
+
+    it("keeps the limit message for active project limit conflicts", async () => {
+      respondWithConflict("Maximum of 3 active projects reached");
+      const { result } = renderHook(() => useCreateProject(), { wrapper });
+
+      await result.current.handleSubmit(formData);
+
+      await waitFor(() => expect(result.current.limitError).not.toBeNull());
     });
   });
 });
