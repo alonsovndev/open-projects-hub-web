@@ -39,7 +39,16 @@ export const refinementApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "Refinement", id: "LIST" }],
+      invalidatesTags: (result, error, { provider }) => {
+        const refreshCredits =
+          (result !== undefined && (provider ?? "platform") === "platform") ||
+          error?.status === 402;
+
+        return [
+          { type: "Refinement", id: "LIST" },
+          ...(refreshCredits ? (["CreditBalance"] as const) : []),
+        ];
+      },
     }),
 
     deleteDraft: builder.mutation<void, string>({
