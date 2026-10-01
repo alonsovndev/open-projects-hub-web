@@ -19,17 +19,16 @@ export interface RefinementFailure {
   rawNotes: string;
 }
 
-export interface UpdateDraftPayload {
-  title?: string;
-  description?: string;
-  acceptanceCriteria?: string[];
-}
-
-export interface GeneratedStory {
-  id: string; // Draft ID
+/** A refined story as the API returns it: content only, since nothing is stored yet. */
+export interface RefinedStory {
   title: string;
   description: string;
   acceptanceCriteria: string[];
+}
+
+/** A refined story held in the client until approved; `id` is a local key, not a server id. */
+export interface GeneratedStory extends RefinedStory {
+  id: string;
 }
 
 export interface GenerateStoriesPayload {
@@ -40,7 +39,7 @@ export interface GenerateStoriesPayload {
 }
 
 export interface GenerateStoriesResponse {
-  stories: GeneratedStory[];
+  stories: RefinedStory[];
   rawNotes: string;
   /** How many markup or injection payloads the API neutralized before refining. */
   redactionCount: number;
@@ -49,11 +48,16 @@ export interface GenerateStoriesResponse {
   creditsRemaining: number | null;
 }
 
-export interface ApproveDraftsBulkPayload {
-  draftIds: string[];
+/** Approval carries the content because refined stories are not stored before approval. */
+export interface ApproveStoryPayload extends RefinedStory {
+  projectId: string;
 }
 
-export interface ApproveDraftsBulkResponse {
+export interface ApproveStoriesBulkPayload {
+  stories: ApproveStoryPayload[];
+}
+
+export interface ApproveStoriesBulkResponse {
   approvedCount: number;
   stories: Array<{ id: string; title: string }>;
 }

@@ -164,7 +164,6 @@ export const baseApi = createApi({
     "DashboardStats",
     "Stories",
     "Backlog",
-    "Refinement",
     "UserProfile",
     "AiProviderKeys",
     "CreditBalance",

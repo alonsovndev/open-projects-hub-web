@@ -23,10 +23,8 @@ const mockGenerateStories = vi.fn();
 
 vi.mock("@/features/refinement/api/refinement-api", () => ({
   useGenerateStoriesMutation: () => [mockGenerateStories, { isLoading: false }],
-  useApproveDraftMutation: () => [vi.fn(), { isLoading: false }],
-  useApproveDraftsBulkMutation: () => [vi.fn(), { isLoading: false }],
-  useUpdateDraftMutation: () => [vi.fn(), { isLoading: false }],
-  useDeleteDraftMutation: () => [vi.fn(), { isLoading: false }],
+  useApproveStoryMutation: () => [vi.fn(), { isLoading: false }],
+  useApproveStoriesBulkMutation: () => [vi.fn(), { isLoading: false }],
 }));
 
 vi.mock("@/features/projects/api/projects-api", () => ({

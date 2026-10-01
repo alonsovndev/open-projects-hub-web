@@ -14,10 +14,10 @@ const SLOW_GENERATION_MS = 3000;
 
 interface GeneratedStoriesListProps {
   stories: GeneratedStory[];
-  onApprove: (draftId: string) => void;
+  onApprove: (storyId: string) => void;
   onApproveAll: () => void;
-  onEdit: (draftId: string) => void;
-  onDelete: (draftId: string) => void;
+  onEdit: (storyId: string) => void;
+  onDelete: (storyId: string) => void;
   loading?: boolean;
   generating?: boolean;
   approvingIds?: string[];

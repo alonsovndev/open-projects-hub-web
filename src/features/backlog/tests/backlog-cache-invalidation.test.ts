@@ -8,7 +8,7 @@ import type { AdminSession } from "@/features/auth/types";
 
 /**
  * The backlog is a cached read, and three mutations change what it should show: deleting a
- * story, approving a draft, and bulk-approving drafts. Approval in particular is the only
+ * story, approving a refined story, and bulk-approving refined stories. Approval in particular is the only
  * path that creates a story, so a backlog that does not refetch after it shows a
  * stakeholder a list missing the work that was just approved.
  */
@@ -76,18 +76,28 @@ describe("backlog cache invalidation", () => {
     expect(after).toBeGreaterThan(before);
   });
 
-  it("refetches the backlog after a draft is approved", async () => {
+  it("refetches the backlog after a refined story is approved", async () => {
     const { before, after } = await loadBacklogThen(
-      refinementApi.endpoints.approveDraft.initiate("draft-1")
+      refinementApi.endpoints.approveStory.initiate({
+        projectId: "project-1",
+        title: "Story",
+        description: "",
+        acceptanceCriteria: [],
+      })
     );
 
     expect(before).toBe(1);
     expect(after).toBeGreaterThan(before);
   });
 
-  it("refetches the backlog after drafts are bulk-approved", async () => {
+  it("refetches the backlog after refined stories are bulk-approved", async () => {
     const { before, after } = await loadBacklogThen(
-      refinementApi.endpoints.approveDraftsBulk.initiate({ draftIds: ["draft-1", "draft-2"] })
+      refinementApi.endpoints.approveStoriesBulk.initiate({
+        stories: [
+          { projectId: "project-1", title: "One", description: "", acceptanceCriteria: [] },
+          { projectId: "project-1", title: "Two", description: "", acceptanceCriteria: [] },
+        ],
+      })
     );
 
     expect(before).toBe(1);

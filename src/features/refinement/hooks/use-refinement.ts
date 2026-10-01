@@ -3,10 +3,8 @@ import { message } from "antd";
 
 import {
   useGenerateStoriesMutation,
-  useApproveDraftMutation,
-  useApproveDraftsBulkMutation,
-  useUpdateDraftMutation,
-  useDeleteDraftMutation,
+  useApproveStoryMutation,
+  useApproveStoriesBulkMutation,
 } from "@/features/refinement/api/refinement-api";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import {
@@ -75,6 +73,9 @@ export const useRefinement = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [rawNotes, setRawNotes] = useState<string>("");
   const [generatedStories, setGeneratedStories] = useState<GeneratedStory[]>([]);
+  // The project the stories were generated for. Approval must target it, not whatever the
+  // project dropdown shows by then.
+  const [generatedProjectId, setGeneratedProjectId] = useState<string>("");
   const [approvingIds, setApprovingIds] = useState<string[]>([]);
   const [editingStory, setEditingStory] = useState<GeneratedStory | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -94,10 +95,8 @@ export const useRefinement = () => {
   const { data: apiKeys } = useGetApiKeysQuery();
 
   const [generateStories, { isLoading: isGenerating }] = useGenerateStoriesMutation();
-  const [approveDraft] = useApproveDraftMutation();
-  const [approveDraftsBulk, { isLoading: isApprovingAll }] = useApproveDraftsBulkMutation();
-  const [updateDraft, { isLoading: isUpdating }] = useUpdateDraftMutation();
-  const [deleteDraft] = useDeleteDraftMutation();
+  const [approveStory] = useApproveStoryMutation();
+  const [approveStoriesBulk, { isLoading: isApprovingAll }] = useApproveStoriesBulkMutation();
 
   const projectOptions =
     projectsData?.projects.map((p: ProjectSummary) => ({
@@ -153,7 +152,12 @@ export const useRefinement = () => {
         ...(effectiveProvider !== null && { provider: effectiveProvider }),
       }).unwrap();
 
-      setGeneratedStories(result.stories);
+      // The API stores nothing, so the ids are only list keys for this session.
+      const batchKey = Date.now();
+      setGeneratedStories(
+        result.stories.map((story, index) => ({ ...story, id: `${batchKey}-${index}` }))
+      );
+      setGeneratedProjectId(selectedProjectId);
       setRedactionCount(result.redactionCount ?? 0);
       message.success(`Generated ${result.stories.length} stories successfully!`);
     } catch (error) {
@@ -216,8 +220,8 @@ export const useRefinement = () => {
     setGenerationError(null);
   };
 
-  const handleRequestApproval = (draftId: string) => {
-    const story = generatedStories.find((candidate) => candidate.id === draftId);
+  const handleRequestApproval = (storyId: string) => {
+    const story = generatedStories.find((candidate) => candidate.id === storyId);
     if (story) setPendingApproval(story);
   };
 
@@ -228,22 +232,22 @@ export const useRefinement = () => {
   const handleConfirmApproval = async () => {
     if (!pendingApproval) return;
 
-    const draftId = pendingApproval.id;
-    setApprovingIds((prev) => [...prev, draftId]);
+    const { id: storyId, ...content } = pendingApproval;
+    setApprovingIds((prev) => [...prev, storyId]);
 
     try {
-      const result = await approveDraft(draftId).unwrap();
+      const result = await approveStory({ projectId: generatedProjectId, ...content }).unwrap();
 
-      setGeneratedStories((prev) => prev.filter((story) => story.id !== draftId));
+      setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
       message.success(`Story "${result.title}" approved and added to backlog!`);
     } catch (error) {
       message.error("Failed to approve story. Please try again.");
-      console.error("Approve draft error:", error);
+      console.error("Approve story error:", error);
     } finally {
       // The dialog stays open until the request settles, so its confirm button can show
       // progress and a second click cannot land while the first is in flight.
       setPendingApproval(null);
-      setApprovingIds((prev) => prev.filter((id) => id !== draftId));
+      setApprovingIds((prev) => prev.filter((id) => id !== storyId));
     }
   };
 
@@ -254,8 +258,11 @@ export const useRefinement = () => {
     }
 
     try {
-      const draftIds = generatedStories.map((story) => story.id);
-      const result = await approveDraftsBulk({ draftIds }).unwrap();
+      const stories = generatedStories.map(({ id: _localId, ...content }) => ({
+        projectId: generatedProjectId,
+        ...content,
+      }));
+      const result = await approveStoriesBulk({ stories }).unwrap();
 
       setGeneratedStories([]);
 
@@ -270,36 +277,23 @@ export const useRefinement = () => {
     }
   };
 
-  const handleEdit = (draftId: string) => {
-    const story = generatedStories.find((candidate) => candidate.id === draftId);
+  const handleEdit = (storyId: string) => {
+    const story = generatedStories.find((candidate) => candidate.id === storyId);
     if (!story) return;
 
     setEditingStory(story);
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = async (updatedStory: GeneratedStory) => {
-    try {
-      await updateDraft({
-        id: updatedStory.id,
-        data: {
-          title: updatedStory.title,
-          description: updatedStory.description,
-          acceptanceCriteria: updatedStory.acceptanceCriteria,
-        },
-      }).unwrap();
+  // Edits stay in the browser: the story is saved only when it is approved.
+  const handleSaveEdit = (updatedStory: GeneratedStory) => {
+    setGeneratedStories((prev) =>
+      prev.map((story) => (story.id === updatedStory.id ? updatedStory : story))
+    );
 
-      setGeneratedStories((prev) =>
-        prev.map((story) => (story.id === updatedStory.id ? updatedStory : story))
-      );
-
-      setIsEditModalOpen(false);
-      setEditingStory(null);
-      message.success("Story updated successfully!");
-    } catch (error) {
-      message.error("Failed to update story. Please try again.");
-      console.error("Update draft error:", error);
-    }
+    setIsEditModalOpen(false);
+    setEditingStory(null);
+    message.success("Story updated successfully!");
   };
 
   const handleCancelEdit = () => {
@@ -307,18 +301,9 @@ export const useRefinement = () => {
     setEditingStory(null);
   };
 
-  const handleDelete = async (draftId: string) => {
-    try {
-      // Deleted server-side, not just dropped from the list: an abandoned draft must not
-      // linger where a later session could approve it.
-      await deleteDraft(draftId).unwrap();
-
-      setGeneratedStories((prev) => prev.filter((story) => story.id !== draftId));
-      message.success("Draft discarded");
-    } catch (error) {
-      message.error("Failed to discard draft. Please try again.");
-      console.error("Delete draft error:", error);
-    }
+  const handleDelete = (storyId: string) => {
+    setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
+    message.success("Draft discarded");
   };
 
   return {
@@ -345,7 +330,6 @@ export const useRefinement = () => {
     isLoadingProjects,
     isGenerating,
     isApprovingAll,
-    isUpdating,
     handleProjectChange,
     handleNotesChange,
     handleGenerate,
