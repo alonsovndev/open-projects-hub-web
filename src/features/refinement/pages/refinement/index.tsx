@@ -46,7 +46,6 @@ export const RefinementPage: FC = () => {
     isLoadingProjects,
     isGenerating,
     isApprovingAll,
-    isUpdating,
     handleProjectChange,
     handleNotesChange,
     handleGenerate,
@@ -230,7 +229,6 @@ export const RefinementPage: FC = () => {
         story={editingStory}
         onCancel={handleCancelEdit}
         onSave={handleSaveEdit}
-        loading={isUpdating}
       />
 
       <ApproveStoryModal
