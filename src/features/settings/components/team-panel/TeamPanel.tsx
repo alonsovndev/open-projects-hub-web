@@ -1,9 +1,10 @@
-import type { FC } from "react";
+import { useState, type FC } from "react";
 import { Alert, Button, Card, Form, Input, Select, Table, Tag, Typography } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
+import { ReloadOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useTeam } from "@/features/settings/hooks/use-team";
 import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
+import { generateTemporaryPassword } from "@/shared/utils/generate-password";
 
 import styles from "./team-panel.module.scss";
 
@@ -35,9 +36,14 @@ export const TeamPanel: FC = () => {
   const [form] = Form.useForm<AddTeamMemberValues>();
   const { members, isLoading, isError, adding, addTeamMember } = useTeam();
 
+  const [initialPassword] = useState(() => generateTemporaryPassword());
+
+  const regeneratePassword = () => form.setFieldValue("password", generateTemporaryPassword());
+
   const handleFinish = async (values: AddTeamMemberValues) => {
     if (await addTeamMember(values)) {
       form.resetFields();
+      regeneratePassword();
     }
   };
 
@@ -71,7 +77,7 @@ export const TeamPanel: FC = () => {
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={{ role: "member" }}
+        initialValues={{ role: "member", password: initialPassword }}
         className={`${styles.form} ${styles.section}`}
       >
         <Text className={styles.title}>Add someone</Text>
@@ -102,7 +108,7 @@ export const TeamPanel: FC = () => {
           <Form.Item
             label="Temporary password"
             name="password"
-            extra="Share it with them privately; they can change it in Settings → Security."
+            extra="Generated for you — edit it if you like. Share it privately; they can change it in Settings → Security."
             rules={[
               { required: true, message: "Please set a temporary password" },
               { min: 8, message: "Password must be at least 8 characters" },
@@ -112,7 +118,19 @@ export const TeamPanel: FC = () => {
               },
             ]}
           >
-            <Input.Password size="large" autoComplete="new-password" />
+            <Input
+              size="large"
+              autoComplete="off"
+              suffix={
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<ReloadOutlined />}
+                  aria-label="Generate a new password"
+                  onClick={regeneratePassword}
+                />
+              }
+            />
           </Form.Item>
         </div>
         <Button type="primary" htmlType="submit" loading={adding} size="large">
