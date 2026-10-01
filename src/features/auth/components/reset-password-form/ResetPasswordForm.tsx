@@ -53,6 +53,7 @@ export const ResetPasswordForm: FC = () => {
           layout="vertical"
           className={styles.form}
           onFinish={resetPasswordForm.handleSubmit}
+          initialValues={{ code: resetPasswordForm.initialCode }}
           requiredMark={false}
         >
           <Form.Item

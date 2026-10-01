@@ -13,6 +13,18 @@ test.describe("Reset Password Flow", () => {
     await expect(resetPasswordPage.submitButton).toBeDisabled();
   });
 
+  test("should prefill the email and code from the emailed link and hide the code from the address", async ({
+    page,
+  }) => {
+    const resetPasswordPage = new ResetPasswordPage(page);
+    await page.goto("/reset-password?email=admin%40example.com&code=ABC234");
+
+    await expect(page.getByText("admin@example.com")).toBeVisible();
+    await expect(resetPasswordPage.codeInput).toHaveValue("ABC234");
+    await expect(page).not.toHaveURL(/code=/);
+    await expect(resetPasswordPage.submitButton).toBeEnabled();
+  });
+
   test.describe("after requesting a code", () => {
     // The reset-password form is only enabled with an email carried via
     // router state from the Forgot Password step (same-session flow — see

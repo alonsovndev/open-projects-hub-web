@@ -1,4 +1,4 @@
-import { useState, type FC } from "react";
+import type { FC } from "react";
 import {
   Alert,
   Button,
@@ -13,11 +13,10 @@ import {
   Typography,
   type TableColumnsType,
 } from "antd";
-import { DeleteOutlined, ReloadOutlined, TeamOutlined } from "@ant-design/icons";
+import { DeleteOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useTeam } from "@/features/settings/hooks/use-team";
 import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
-import { generateTemporaryPassword } from "@/shared/utils/generate-password";
 
 import styles from "./team-panel.module.scss";
 
@@ -119,14 +118,9 @@ export const TeamPanel: FC = () => {
     },
   ];
 
-  const [initialPassword] = useState(() => generateTemporaryPassword());
-
-  const regeneratePassword = () => form.setFieldValue("password", generateTemporaryPassword());
-
   const handleFinish = async (values: AddTeamMemberValues) => {
     if (await addTeamMember(values)) {
       form.resetFields();
-      regeneratePassword();
     }
   };
 
@@ -160,10 +154,14 @@ export const TeamPanel: FC = () => {
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={{ role: "member", password: initialPassword }}
+        initialValues={{ role: "member" }}
         className={`${styles.form} ${styles.section}`}
       >
         <Text className={styles.title}>Add someone</Text>
+        <Text type="secondary">
+          We email them a link, valid for 24 hours, to verify their address and choose their own
+          password.
+        </Text>
         <div className={styles.formRow}>
           <Form.Item
             label="Full name"
@@ -187,33 +185,6 @@ export const TeamPanel: FC = () => {
           </Form.Item>
           <Form.Item label="Role" name="role" rules={[{ required: true }]}>
             <Select size="large" options={ROLE_OPTIONS} />
-          </Form.Item>
-          <Form.Item
-            label="Temporary password"
-            name="password"
-            extra="Generated for you — edit it if you like. Share it privately; they can change it in Settings → Security."
-            rules={[
-              { required: true, message: "Please set a temporary password" },
-              { min: 8, message: "Password must be at least 8 characters" },
-              {
-                pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/,
-                message: "Use at least one letter and one number",
-              },
-            ]}
-          >
-            <Input
-              size="large"
-              autoComplete="off"
-              suffix={
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<ReloadOutlined />}
-                  aria-label="Generate a new password"
-                  onClick={regeneratePassword}
-                />
-              }
-            />
           </Form.Item>
         </div>
         <Button type="primary" htmlType="submit" loading={adding} size="large">

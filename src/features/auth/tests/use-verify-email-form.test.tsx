@@ -20,12 +20,15 @@ vi.mock("antd", async () => {
 });
 
 const mockNavigate = vi.fn();
+const mockSetSearchParams = vi.fn();
+let mockSearch = "";
 let mockLocationState: AuthLocationState | null = null;
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useSearchParams: () => [new URLSearchParams(mockSearch), mockSetSearchParams],
     useLocation: () => ({ ...actual.useLocation(), state: mockLocationState }),
   };
 });
@@ -36,6 +39,7 @@ const resendUrl = `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resendVerifica
 describe("useVerifyEmailForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSearch = "";
     mockLocationState = {
       email: "new.user@example.com",
       codeExpiresAt: "2026-09-28T20:35:00.000Z",
@@ -127,5 +131,66 @@ describe("useVerifyEmailForm", () => {
     const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
 
     expect(result.current.email).toBe("");
+  });
+
+  describe("opened from the emailed link", () => {
+    beforeEach(() => {
+      mockLocationState = null;
+      mockSearch = "email=mate%40example.com&code=ABC234";
+    });
+
+    it("takes the email and code from the link and removes the code from the address", () => {
+      const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
+
+      expect(result.current.email).toBe("mate@example.com");
+      expect(result.current.initialCode).toBe("ABC234");
+      expect(result.current.isInvite).toBe(false);
+      const remaining = mockSetSearchParams.mock.calls[0][0] as URLSearchParams;
+      expect(remaining.has("code")).toBe(false);
+      expect(remaining.get("email")).toBe("mate@example.com");
+    });
+
+    it("sends the password chosen by an invited member", async () => {
+      mockSearch += "&setPassword=1";
+      let sentBody: unknown;
+      server.use(
+        http.post(verifyUrl, async ({ request }) => {
+          sentBody = await request.json();
+          return HttpResponse.json({ verified: true });
+        })
+      );
+      const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
+
+      await act(async () => {
+        await result.current.handleSubmit({ code: "ABC234", password: "MyOwn#Pass1" });
+      });
+
+      expect(result.current.isInvite).toBe(true);
+      expect(sentBody).toEqual({
+        email: "mate@example.com",
+        code: "ABC234",
+        password: "MyOwn#Pass1",
+      });
+      expect(mockNavigate).toHaveBeenCalledWith("/login", {
+        state: { message: "Email verified and password set. Please sign in." },
+      });
+    });
+
+    it("does not send a password for a self-registered account", async () => {
+      let sentBody: unknown;
+      server.use(
+        http.post(verifyUrl, async ({ request }) => {
+          sentBody = await request.json();
+          return HttpResponse.json({ verified: true });
+        })
+      );
+      const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
+
+      await act(async () => {
+        await result.current.handleSubmit({ code: "ABC234", password: "ignored" });
+      });
+
+      expect(sentBody).toEqual({ email: "mate@example.com", code: "ABC234" });
+    });
   });
 });

@@ -28,7 +28,9 @@ export const useTeam = () => {
     async (values: AddTeamMemberValues): Promise<boolean> => {
       try {
         await addTeamMemberMutation(values).unwrap();
-        message.success(`${values.displayName} was added. Share the temporary password with them.`);
+        message.success(
+          `${values.displayName} was added. We emailed them a link to verify their address and choose a password.`
+        );
         return true;
       } catch (error) {
         message.error(getErrorMessage(error, "Unable to add this person. Please try again."));

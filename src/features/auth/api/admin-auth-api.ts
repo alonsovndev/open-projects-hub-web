@@ -139,10 +139,10 @@ export const adminAuthApi = baseApi.injectEndpoints({
     }),
 
     verifyEmail: builder.mutation<{ verified: boolean }, VerifyEmailValues>({
-      query: ({ email, code }) => ({
+      query: ({ email, code, password }) => ({
         url: adminAuthConfig.verifyEmailEndpoint,
         method: "POST",
-        body: { email, code },
+        body: { email, code, password },
       }),
     }),
 

@@ -23,11 +23,10 @@ const renderPanel = () =>
 const fillForm = async (user: ReturnType<typeof userEvent.setup>, email: string) => {
   await user.type(screen.getByLabelText("Full name"), "Alex Doe");
   await user.type(screen.getByLabelText("Email"), email);
-  await user.type(screen.getByLabelText("Temporary password"), "TempPass123");
   await user.click(screen.getByRole("button", { name: "Add to workspace" }));
 };
 
-// Form-filling interactions (4 typed fields + a submit round-trip) run close to the
+// Form-filling interactions (typed fields + a submit round-trip) run close to the
 // default 5s budget under full-suite contention, matching the precedent in
 // projects-role-rendering.test.tsx.
 describe("TeamPanel", { timeout: 20_000 }, () => {

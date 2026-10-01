@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { ArrowLeftOutlined, NumberOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, LockOutlined, NumberOutlined } from "@ant-design/icons";
 import { Alert, Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 
@@ -49,6 +49,7 @@ export const VerifyEmailForm: FC = () => {
           layout="vertical"
           className={styles.form}
           onFinish={verifyEmailForm.handleSubmit}
+          initialValues={{ code: verifyEmailForm.initialCode }}
           requiredMark={false}
         >
           <Form.Item
@@ -66,6 +67,39 @@ export const VerifyEmailForm: FC = () => {
               className={styles.input}
             />
           </Form.Item>
+
+          {verifyEmailForm.isInvite && (
+            <>
+              <Form.Item
+                label="Choose a Password"
+                name="password"
+                className={styles.formItem}
+                rules={verifyEmailForm.passwordFieldRules}
+                extra="At least 8 characters, with upper and lower case letters, a number and a symbol."
+              >
+                <Input.Password
+                  size="large"
+                  prefix={<LockOutlined className={styles.inputIcon} />}
+                  autoComplete="new-password"
+                  className={styles.input}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Confirm Password"
+                name="confirmPassword"
+                className={styles.formItem}
+                dependencies={["password"]}
+                rules={verifyEmailForm.confirmPasswordFieldRules}
+              >
+                <Input.Password
+                  size="large"
+                  prefix={<LockOutlined className={styles.inputIcon} />}
+                  autoComplete="new-password"
+                  className={styles.input}
+                />
+              </Form.Item>
+            </>
+          )}
 
           {verifyEmailForm.verifyError && (
             <Alert role="alert" type="error" showIcon message={verifyEmailForm.verifyError} />

@@ -25,5 +25,4 @@ export interface AddTeamMemberValues {
   displayName: string;
   email: string;
   role: AssignableRole;
-  password: string;
 }
