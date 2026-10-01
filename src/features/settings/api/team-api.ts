@@ -1,6 +1,6 @@
 import { baseApi } from "@/app/api/base-api";
 
-import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
 
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,7 +18,36 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["TeamMembers"],
     }),
+
+    updateTeamMemberRole: builder.mutation<TeamMember, { id: string; role: AssignableRole }>({
+      query: ({ id, role }) => ({
+        url: `/v1/users/${id}/role`,
+        method: "PATCH",
+        body: { role },
+      }),
+      invalidatesTags: ["TeamMembers"],
+    }),
+
+    setTeamMemberStatus: builder.mutation<TeamMember, { id: string; active: boolean }>({
+      query: ({ id, active }) => ({
+        url: `/v1/users/${id}/status`,
+        method: "PATCH",
+        body: { active },
+      }),
+      invalidatesTags: ["TeamMembers"],
+    }),
+
+    removeTeamMember: builder.mutation<void, string>({
+      query: (id) => ({ url: `/v1/users/${id}`, method: "DELETE" }),
+      invalidatesTags: ["TeamMembers"],
+    }),
   }),
 });
 
-export const { useGetTeamMembersQuery, useAddTeamMemberMutation } = teamApi;
+export const {
+  useGetTeamMembersQuery,
+  useAddTeamMemberMutation,
+  useUpdateTeamMemberRoleMutation,
+  useSetTeamMemberStatusMutation,
+  useRemoveTeamMemberMutation,
+} = teamApi;

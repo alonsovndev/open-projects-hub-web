@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TeamPanel } from "@/features/settings/components/team-panel";
@@ -76,5 +76,66 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
 
     expect(await screen.findByText(/already exists/i)).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toHaveValue("Alex Doe");
+  });
+
+  it("shows the Admin's role as a fixed tag", async () => {
+    renderPanel();
+    await screen.findByText("admin@test.com");
+
+    expect(screen.getByText("admin")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Role for Admin User")).not.toBeInTheDocument();
+  });
+
+  it("lets the Admin change a member's role", async () => {
+    const user = userEvent.setup();
+    renderPanel();
+    await screen.findByText("sam@test.com");
+
+    await user.click(screen.getByLabelText("Role for Sam Member"));
+    await user.click(await screen.findByTitle("viewer"));
+
+    expect(await screen.findByText(/Role updated/)).toBeInTheDocument();
+    const row = screen.getByText("sam@test.com").closest("tr") as HTMLElement;
+    await waitFor(() => expect(within(row).getByTitle("viewer")).toBeInTheDocument());
+  });
+
+  it("does not offer to delete the Admin", async () => {
+    renderPanel();
+    await screen.findByText("admin@test.com");
+
+    expect(screen.queryByLabelText("Delete Admin User")).not.toBeInTheDocument();
+  });
+
+  it("deletes a member after confirming it is permanent", async () => {
+    const user = userEvent.setup();
+    renderPanel();
+    await screen.findByText("sam@test.com");
+
+    await user.click(screen.getByLabelText("Delete Sam Member"));
+    expect(await screen.findByText(/This can't be undone/)).toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: "Delete" }));
+
+    await waitFor(() => expect(screen.queryByText("sam@test.com")).not.toBeInTheDocument());
+  });
+
+  it("switches a member inactive and back on", async () => {
+    const user = userEvent.setup();
+    renderPanel();
+    await screen.findByText("sam@test.com");
+    const statusSwitch = screen.getByRole("switch", { name: "Active: Sam Member" });
+    expect(statusSwitch).toBeChecked();
+
+    await user.click(statusSwitch);
+    await waitFor(() => expect(statusSwitch).not.toBeChecked());
+
+    await user.click(statusSwitch);
+    await waitFor(() => expect(statusSwitch).toBeChecked());
+  });
+
+  it("gives the Admin no status switch", async () => {
+    renderPanel();
+    await screen.findByText("admin@test.com");
+
+    expect(screen.queryByRole("switch", { name: "Active: Admin User" })).not.toBeInTheDocument();
   });
 });

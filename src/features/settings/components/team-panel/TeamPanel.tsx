@@ -1,9 +1,22 @@
 import { useState, type FC } from "react";
-import { Alert, Button, Card, Form, Input, Select, Table, Tag, Typography } from "antd";
-import { ReloadOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  Input,
+  Popconfirm,
+  Select,
+  Switch,
+  Table,
+  Tag,
+  Typography,
+  type TableColumnsType,
+} from "antd";
+import { DeleteOutlined, ReloadOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useTeam } from "@/features/settings/hooks/use-team";
-import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
 import { generateTemporaryPassword } from "@/shared/utils/generate-password";
 
 import styles from "./team-panel.module.scss";
@@ -21,20 +34,90 @@ const ROLE_COLORS: Record<TeamMember["role"], string> = {
   viewer: "default",
 };
 
-const columns = [
-  { title: "Name", dataIndex: "displayName", key: "displayName" },
-  { title: "Email", dataIndex: "email", key: "email" },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-    render: (role: TeamMember["role"]) => <Tag color={ROLE_COLORS[role]}>{role}</Tag>,
-  },
+const ROLE_CHANGE_OPTIONS = [
+  { value: "member", label: "member" },
+  { value: "viewer", label: "viewer" },
 ];
 
 export const TeamPanel: FC = () => {
   const [form] = Form.useForm<AddTeamMemberValues>();
-  const { members, isLoading, isError, adding, addTeamMember } = useTeam();
+  const {
+    members,
+    isLoading,
+    isError,
+    adding,
+    addTeamMember,
+    changeRole,
+    updatingRoleMemberId,
+    setMemberActive,
+    togglingStatusMemberId,
+    removeMember,
+    removingMemberId,
+  } = useTeam();
+
+  const columns: TableColumnsType<TeamMember> = [
+    { title: "Name", dataIndex: "displayName", key: "displayName" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      render: (role: TeamMember["role"], member) =>
+        role === "admin" ? (
+          <Tag color={ROLE_COLORS[role]}>{role}</Tag>
+        ) : (
+          <Select
+            size="small"
+            value={role}
+            options={ROLE_CHANGE_OPTIONS}
+            loading={updatingRoleMemberId === member.id}
+            disabled={updatingRoleMemberId === member.id}
+            aria-label={`Role for ${member.displayName}`}
+            onChange={(nextRole: AssignableRole) => changeRole(member.id, nextRole)}
+          />
+        ),
+    },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (isActive: boolean, member) =>
+        member.role === "admin" ? (
+          <Tag color="blue">active</Tag>
+        ) : (
+          <Switch
+            size="small"
+            checked={isActive}
+            loading={togglingStatusMemberId === member.id}
+            aria-label={`Active: ${member.displayName}`}
+            onChange={(active) => setMemberActive(member, active)}
+          />
+        ),
+    },
+    {
+      title: "",
+      key: "actions",
+      width: 64,
+      render: (_, member) =>
+        member.role === "admin" ? null : (
+          <Popconfirm
+            title={`Delete ${member.displayName} permanently?`}
+            description="Everything they created or were assigned moves to you. This can't be undone. To keep their account, switch them to inactive instead."
+            okText="Delete"
+            okButtonProps={{ danger: true }}
+            onConfirm={() => removeMember(member)}
+          >
+            <Button
+              type="text"
+              danger
+              icon={<DeleteOutlined />}
+              loading={removingMemberId === member.id}
+              aria-label={`Delete ${member.displayName}`}
+            />
+          </Popconfirm>
+        ),
+    },
+  ];
 
   const [initialPassword] = useState(() => generateTemporaryPassword());
 
