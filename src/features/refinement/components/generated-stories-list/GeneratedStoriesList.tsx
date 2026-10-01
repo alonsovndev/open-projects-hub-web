@@ -159,7 +159,8 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
             Generated Stories (Draft)
           </Title>
           <Text className={styles.cardSubtitle}>
-            {stories.length} {stories.length === 1 ? "draft" : "drafts"} pending approval
+            {stories.length} {stories.length === 1 ? "draft" : "drafts"} pending approval · saved in
+            this tab only, lost when you close it
           </Text>
         </div>
         {stories.length > 0 && !generating && (

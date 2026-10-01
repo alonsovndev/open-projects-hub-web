@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
 
 import {
@@ -6,6 +6,8 @@ import {
   useApproveStoryMutation,
   useApproveStoriesBulkMutation,
 } from "@/features/refinement/api/refinement-api";
+import { useAuth } from "@/features/auth/hooks/use-auth";
+import { pendingStoriesStorage } from "@/features/refinement/model/pending-stories-storage";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import {
   useGetApiKeysQuery,
@@ -70,12 +72,22 @@ const isCreditsExhausted = (error: unknown): boolean =>
   typeof error === "object" && error !== null && (error as { status?: unknown }).status === 402;
 
 export const useRefinement = () => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const { user } = useAuth();
+  const storageOwner = user?.email ?? null;
+
+  // Read once on mount: stories left over from a reload of this tab (see the storage module).
+  const [restored] = useState(() =>
+    storageOwner ? pendingStoriesStorage.load(storageOwner) : null
+  );
+
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(restored?.projectId ?? "");
   const [rawNotes, setRawNotes] = useState<string>("");
-  const [generatedStories, setGeneratedStories] = useState<GeneratedStory[]>([]);
+  const [generatedStories, setGeneratedStories] = useState<GeneratedStory[]>(
+    restored?.stories ?? []
+  );
   // The project the stories were generated for. Approval must target it, not whatever the
   // project dropdown shows by then.
-  const [generatedProjectId, setGeneratedProjectId] = useState<string>("");
+  const [generatedProjectId, setGeneratedProjectId] = useState<string>(restored?.projectId ?? "");
   const [approvingIds, setApprovingIds] = useState<string[]>([]);
   const [editingStory, setEditingStory] = useState<GeneratedStory | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -97,6 +109,36 @@ export const useRefinement = () => {
   const [generateStories, { isLoading: isGenerating }] = useGenerateStoriesMutation();
   const [approveStory] = useApproveStoryMutation();
   const [approveStoriesBulk, { isLoading: isApprovingAll }] = useApproveStoriesBulkMutation();
+
+  useEffect(() => {
+    if (!storageOwner) return;
+
+    if (generatedStories.length === 0) {
+      pendingStoriesStorage.clear(storageOwner);
+      return;
+    }
+
+    pendingStoriesStorage.save(storageOwner, {
+      projectId: generatedProjectId,
+      stories: generatedStories,
+    });
+  }, [storageOwner, generatedStories, generatedProjectId]);
+
+  const hasUnapprovedStories = generatedStories.length > 0;
+
+  // Closing the tab discards the persisted stories, and a reload interrupts the review, so
+  // the browser asks first. In-app navigation needs no guard: the stories are restored.
+  useEffect(() => {
+    if (!hasUnapprovedStories) return;
+
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [hasUnapprovedStories]);
 
   const projectOptions =
     projectsData?.projects.map((p: ProjectSummary) => ({

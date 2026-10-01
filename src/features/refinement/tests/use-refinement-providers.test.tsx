@@ -19,6 +19,12 @@ vi.mock("antd", async () => {
   };
 });
 
+const mockUserEmail = "admin@test.com";
+
+vi.mock("@/features/auth/hooks/use-auth", () => ({
+  useAuth: () => ({ user: { email: mockUserEmail } }),
+}));
+
 const mockGenerateStories = vi.fn();
 
 vi.mock("@/features/refinement/api/refinement-api", () => ({

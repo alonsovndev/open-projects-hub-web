@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { message } from "antd";
 
 import { useRefinement } from "@/features/refinement/hooks/use-refinement";
+import { pendingStoriesStorage } from "@/features/refinement/model/pending-stories-storage";
 import type { RefinedStory } from "@/features/refinement/types";
 
 vi.mock("antd", async () => {
@@ -16,6 +17,12 @@ vi.mock("antd", async () => {
     },
   };
 });
+
+let mockUserEmail: string | null = "admin@test.com";
+
+vi.mock("@/features/auth/hooks/use-auth", () => ({
+  useAuth: () => ({ user: mockUserEmail ? { email: mockUserEmail } : null }),
+}));
 
 const mockGenerateStories = vi.fn();
 const mockApproveStory = vi.fn();
@@ -75,8 +82,14 @@ const generate = async (result: { current: ReturnType<typeof useRefinement> }) =
 };
 
 describe("useRefinement", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
+    window.sessionStorage.clear();
+    mockUserEmail = "admin@test.com";
     mockGenerateStories.mockReturnValue(
       unwrapped({ stories: [draft], rawNotes: RAW_NOTES, redactionCount: 0 })
     );
@@ -407,6 +420,128 @@ describe("useRefinement", () => {
 
       expect(result.current.generatedStories).toEqual([]);
       expect(mockApproveStory).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("keeping unapproved stories across a reload", () => {
+    const OWNER = "admin@test.com";
+
+    it("persists generated stories with the project they were generated for", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      expect(pendingStoriesStorage.load(OWNER)).toEqual({
+        projectId: "project-1",
+        stories: result.current.generatedStories,
+      });
+    });
+
+    it("restores stories and the project on mount", () => {
+      const stories = [heldStory("kept-1")];
+      pendingStoriesStorage.save(OWNER, { projectId: "project-1", stories });
+
+      const { result } = renderHook(() => useRefinement());
+
+      expect(result.current.generatedStories).toEqual(stories);
+      expect(result.current.selectedProjectId).toBe("project-1");
+    });
+
+    it("approves a restored story into the project it was generated for", async () => {
+      pendingStoriesStorage.save(OWNER, { projectId: "project-1", stories: [heldStory("kept-1")] });
+
+      const { result } = renderHook(() => useRefinement());
+      act(() => {
+        result.current.handleProjectChange("project-2");
+      });
+      act(() => {
+        result.current.handleRequestApproval("kept-1");
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
+    });
+
+    it("persists edits", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleSaveEdit({ ...result.current.generatedStories[0], title: "Edited" });
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)?.stories[0].title).toBe("Edited");
+    });
+
+    it("clears storage once the last story is approved", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleRequestApproval(result.current.generatedStories[0].id);
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)).toBeNull();
+    });
+
+    it("clears storage once the last story is discarded", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleDelete(result.current.generatedStories[0].id);
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)).toBeNull();
+    });
+
+    it("does not restore another account's stories", () => {
+      pendingStoriesStorage.save("someone-else@test.com", {
+        projectId: "project-1",
+        stories: [heldStory("theirs")],
+      });
+
+      const { result } = renderHook(() => useRefinement());
+
+      expect(result.current.generatedStories).toEqual([]);
+    });
+
+    it("warns before the page is left only while stories are unapproved", async () => {
+      const { result } = renderHook(() => useRefinement());
+
+      const idleEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(idleEvent);
+      expect(idleEvent.defaultPrevented).toBe(false);
+
+      await generate(result);
+
+      const pendingEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(pendingEvent);
+      expect(pendingEvent.defaultPrevented).toBe(true);
+
+      act(() => {
+        result.current.handleDelete(result.current.generatedStories[0].id);
+      });
+
+      const clearedEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(clearedEvent);
+      expect(clearedEvent.defaultPrevented).toBe(false);
+    });
+
+    it("still works when storage throws", async () => {
+      const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+        throw new Error("quota exceeded");
+      });
+
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      expect(result.current.generatedStories).toHaveLength(1);
+      expect(setItem).toHaveBeenCalled();
     });
   });
 });
