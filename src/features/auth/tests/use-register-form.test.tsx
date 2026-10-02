@@ -59,7 +59,7 @@ describe("useRegisterForm", () => {
   it("stays on the form and shows the server's reason when registration is refused", async () => {
     server.use(
       http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.registerEndpoint}`, () =>
-        HttpResponse.json({ detail: "Email already registered" }, { status: 409 })
+        HttpResponse.json({ detail: "Password is too common" }, { status: 400 })
       )
     );
     const { result } = renderHook(() => useRegisterForm(), { wrapper });
@@ -69,6 +69,6 @@ describe("useRegisterForm", () => {
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(message.error).toHaveBeenCalledWith("Email already registered");
+    expect(message.error).toHaveBeenCalledWith("Password is too common");
   });
 });
