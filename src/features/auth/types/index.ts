@@ -33,6 +33,8 @@ export interface RegisterResult {
 export interface VerifyEmailValues {
   email: string;
   code: string;
+  /** Set by invited members, who choose their own password while verifying. */
+  password?: string;
 }
 
 export type UserRole = "admin" | "member" | "viewer";

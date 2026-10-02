@@ -72,4 +72,41 @@ test.describe("Verify Email Flow", () => {
       await expect(page.getByText(/too many code requests/i)).toBeVisible();
     });
   });
+
+  test.describe("from the emailed invite link", () => {
+    const inviteLink = "/verify-email?email=mate%40example.com&code=ABC234&setPassword=1";
+
+    test("should prefill the code, hide it from the address and ask for a new password", async ({
+      page,
+    }) => {
+      const verifyEmailPage = new VerifyEmailPage(page);
+      await page.goto(inviteLink);
+
+      await expect(page.getByText("mate@example.com")).toBeVisible();
+      await expect(verifyEmailPage.codeInput).toHaveValue("ABC234");
+      await expect(page).not.toHaveURL(/code=/);
+      await expect(page.getByLabel(/choose a password/i)).toBeVisible();
+    });
+
+    test("should send the chosen password and send the member to sign in", async ({ page }) => {
+      let sentBody: unknown;
+      await page.route("**/v1/auth/verify-email", async (route) => {
+        sentBody = route.request().postDataJSON();
+        await route.fulfill({ status: 200, json: { verified: true } });
+      });
+      await page.goto(inviteLink);
+
+      await page.getByLabel(/choose a password/i).fill("MyOwn#Pass1");
+      await page.getByLabel(/confirm password/i).fill("MyOwn#Pass1");
+      await page.getByRole("button", { name: /verify email/i }).click();
+
+      await expect(page).toHaveURL(/\/login/);
+      await expect(page.getByText(/email verified and password set/i)).toBeVisible();
+      expect(sentBody).toEqual({
+        email: "mate@example.com",
+        code: "ABC234",
+        password: "MyOwn#Pass1",
+      });
+    });
+  });
 });
