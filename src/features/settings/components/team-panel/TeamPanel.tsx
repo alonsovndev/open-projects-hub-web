@@ -22,6 +22,9 @@ import styles from "./team-panel.module.scss";
 
 const { Text } = Typography;
 
+// Mirrors the API's workspace_limits.max_users; the API enforces it and rejects the extra add.
+const MAX_WORKSPACE_USERS = 5;
+
 const ROLE_OPTIONS = [
   { value: "member", label: "Member — manages clients, projects and stories" },
   { value: "viewer", label: "Viewer — read-only access" },
@@ -118,6 +121,8 @@ export const TeamPanel: FC = () => {
     },
   ];
 
+  const atUserLimit = members.length >= MAX_WORKSPACE_USERS;
+
   const handleFinish = async (values: AddTeamMemberValues) => {
     if (await addTeamMember(values)) {
       form.resetFields();
@@ -160,7 +165,11 @@ export const TeamPanel: FC = () => {
         <Text className={styles.title}>Add someone</Text>
         <Text type="secondary">
           We email them a link, valid for 24 hours, to verify their address and choose their own
-          password.
+          password. Members get free AI credits once they verify; viewers don't.
+        </Text>
+        <Text type={atUserLimit ? "danger" : "secondary"}>
+          {members.length} of {MAX_WORKSPACE_USERS} users in this workspace.
+          {atUserLimit ? " Remove someone to add another." : ""}
         </Text>
         <div className={styles.formRow}>
           <Form.Item
@@ -187,7 +196,13 @@ export const TeamPanel: FC = () => {
             <Select size="large" options={ROLE_OPTIONS} />
           </Form.Item>
         </div>
-        <Button type="primary" htmlType="submit" loading={adding} size="large">
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={adding}
+          disabled={atUserLimit}
+          size="large"
+        >
           Add to workspace
         </Button>
       </Form>

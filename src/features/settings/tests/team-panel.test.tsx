@@ -1,9 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
 
 import { TeamPanel } from "@/features/settings/components/team-panel";
 import { resetTeamFixtures } from "@/mocks/handlers/team";
+import { server } from "@/mocks/server";
+import { adminAuthConfig } from "@/resources/config/auth";
 import { renderWithProviders } from "@/test/utils/render-with-providers";
 import type { AdminSession } from "@/features/auth/types";
 
@@ -64,6 +67,30 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
 
     expect(await screen.findByText("alex@example.com")).toBeInTheDocument();
     expect(screen.getByLabelText("Full name")).toHaveValue("");
+  });
+
+  it("shows how many of the five workspace seats are used", async () => {
+    renderPanel();
+    await screen.findByText("admin@test.com");
+
+    expect(screen.getByText(/2 of 5 users in this workspace/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add to workspace" })).toBeEnabled();
+  });
+
+  it("blocks adding someone once the workspace is full", async () => {
+    const fullTeam = Array.from({ length: 5 }, (_, index) => ({
+      id: `user-${index + 1}`,
+      email: `user${index + 1}@test.com`,
+      displayName: `User ${index + 1}`,
+      role: index === 0 ? "admin" : "member",
+      isActive: true,
+    }));
+    server.use(http.get(`${adminAuthConfig.apiBaseUrl}/v1/users`, () => HttpResponse.json(fullTeam)));
+    renderPanel();
+    await screen.findByText("user5@test.com");
+
+    expect(screen.getByText(/5 of 5 users in this workspace/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add to workspace" })).toBeDisabled();
   });
 
   it("keeps the form filled when the email is already taken", async () => {
