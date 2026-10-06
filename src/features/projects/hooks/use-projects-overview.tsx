@@ -8,10 +8,12 @@ import {
   useGetProjectByIdQuery,
   useArchiveProjectMutation,
   useReactivateProjectMutation,
+  useRegenerateAccessCodeMutation,
 } from "@/features/projects/api/projects-api";
 import { useDeleteProject } from "@/features/projects/hooks/use-delete-project";
 import { useUpdateProject } from "@/features/projects/hooks/use-update-project";
 import type { ProjectFilters, ProjectSort, ProjectView } from "@/features/projects/types";
+import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link";
 
 /** Maximum number of concurrently active projects allowed (MVP constraint). */
 export const MAX_ACTIVE_PROJECTS = 3;
@@ -29,6 +31,8 @@ export const useProjectsOverview = () => {
   });
   const [archiveProject, { isLoading: isArchiving }] = useArchiveProjectMutation();
   const [reactivateProject, { isLoading: isReactivating }] = useReactivateProjectMutation();
+  const [regenerateAccessCode, { isLoading: isRegeneratingAccessCode }] =
+    useRegenerateAccessCodeMutation();
 
   const [filters, setFilters] = useState<ProjectFilters>({
     search: "",
@@ -178,8 +182,18 @@ export const useProjectsOverview = () => {
     }
   };
 
-  const handleViewProject = (projectCode: string) => {
-    navigate(`/viewer/${projectCode}`);
+  const handleViewProject = (accessCode: string) => {
+    window.open(buildClientReviewUrl(accessCode), "_blank", "noopener,noreferrer");
+  };
+
+  const handleRegenerateAccessCode = async () => {
+    if (!editingProjectId) return;
+    try {
+      await regenerateAccessCode(editingProjectId).unwrap();
+      message.success("New access code generated. The previous code no longer works.");
+    } catch {
+      message.error("Failed to generate a new access code");
+    }
   };
 
   const handleEditProject = (projectId: string) => {
@@ -285,6 +299,7 @@ export const useProjectsOverview = () => {
     isUpdating,
     isArchiving,
     isReactivating,
+    isRegeneratingAccessCode,
     error,
     editModalOpen,
     editingProject,
@@ -298,6 +313,7 @@ export const useProjectsOverview = () => {
     handleClearFilters,
     handlePageChange,
     handleViewProject,
+    handleRegenerateAccessCode,
     handleEditProject,
     handleUpdateProject,
     handleCancelEdit,

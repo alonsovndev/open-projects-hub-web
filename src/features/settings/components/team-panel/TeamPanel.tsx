@@ -6,7 +6,6 @@ import {
   Form,
   Input,
   Popconfirm,
-  Select,
   Switch,
   Table,
   Tag,
@@ -16,7 +15,7 @@ import {
 import { DeleteOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useTeam } from "@/features/settings/hooks/use-team";
-import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
 
 import styles from "./team-panel.module.scss";
 
@@ -25,21 +24,10 @@ const { Text } = Typography;
 // Mirrors the API's workspace_limits.max_users; the API enforces it and rejects the extra add.
 const MAX_WORKSPACE_USERS = 5;
 
-const ROLE_OPTIONS = [
-  { value: "member", label: "Member — manages clients, projects and stories" },
-  { value: "viewer", label: "Viewer — read-only access" },
-];
-
 const ROLE_COLORS: Record<TeamMember["role"], string> = {
   admin: "blue",
   member: "green",
-  viewer: "default",
 };
-
-const ROLE_CHANGE_OPTIONS = [
-  { value: "member", label: "member" },
-  { value: "viewer", label: "viewer" },
-];
 
 export const TeamPanel: FC = () => {
   const [form] = Form.useForm<AddTeamMemberValues>();
@@ -49,8 +37,6 @@ export const TeamPanel: FC = () => {
     isError,
     adding,
     addTeamMember,
-    changeRole,
-    updatingRoleMemberId,
     setMemberActive,
     togglingStatusMemberId,
     removeMember,
@@ -64,20 +50,7 @@ export const TeamPanel: FC = () => {
       title: "Role",
       dataIndex: "role",
       key: "role",
-      render: (role: TeamMember["role"], member) =>
-        role === "admin" ? (
-          <Tag color={ROLE_COLORS[role]}>{role}</Tag>
-        ) : (
-          <Select
-            size="small"
-            value={role}
-            options={ROLE_CHANGE_OPTIONS}
-            loading={updatingRoleMemberId === member.id}
-            disabled={updatingRoleMemberId === member.id}
-            aria-label={`Role for ${member.displayName}`}
-            onChange={(nextRole: AssignableRole) => changeRole(member.id, nextRole)}
-          />
-        ),
+      render: (role: TeamMember["role"]) => <Tag color={ROLE_COLORS[role]}>{role}</Tag>,
     },
     {
       title: "Status",
@@ -136,8 +109,8 @@ export const TeamPanel: FC = () => {
         <div>
           <Text className={styles.title}>Team</Text>
           <Text type="secondary" className={styles.subtitle}>
-            People in your workspace. Members work on your clients and projects; viewers can only
-            read them.
+            People in your workspace. Members work on your clients and projects alongside you.
+            Your clients don't need an account: share a project's access code with them instead.
           </Text>
         </div>
       </div>
@@ -159,13 +132,12 @@ export const TeamPanel: FC = () => {
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={{ role: "member" }}
         className={`${styles.form} ${styles.section}`}
       >
         <Text className={styles.title}>Add someone</Text>
         <Text type="secondary">
           We email them a link, valid for 24 hours, to verify their address and choose their own
-          password. Members get free AI credits once they verify; viewers don't.
+          password. They get free AI credits once they verify.
         </Text>
         <Text type={atUserLimit ? "danger" : "secondary"}>
           {members.length} of {MAX_WORKSPACE_USERS} users in this workspace.
@@ -191,9 +163,6 @@ export const TeamPanel: FC = () => {
             ]}
           >
             <Input size="large" placeholder="alex@example.com" autoComplete="off" />
-          </Form.Item>
-          <Form.Item label="Role" name="role" rules={[{ required: true }]}>
-            <Select size="large" options={ROLE_OPTIONS} />
           </Form.Item>
         </div>
         <Button

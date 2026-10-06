@@ -27,12 +27,12 @@ interface ProjectsTableProps {
   totalCount: number;
   onSortChange: (field: ProjectSort["field"]) => void;
   onPageChange: (page: number, pageSize?: number) => void;
-  onViewProject: (projectCode: string) => void;
+  onViewProject: (accessCode: string) => void;
   onEditProject: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
   onReactivateProject?: (projectId: string, projectName: string) => void;
-  /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
+  /** Whether the caller may change projects. Defaults to false so a caller that forgets it fails closed. */
   canManage?: boolean;
 }
 
@@ -183,7 +183,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             <Button
               type="link"
               icon={<EyeOutlined />}
-              onClick={() => onViewProject(record.code)}
+              onClick={() => onViewProject(record.accessCode)}
               className={styles.actionButton}
               aria-label={`View ${record.name}`}
             >

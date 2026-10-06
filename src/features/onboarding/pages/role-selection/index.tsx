@@ -62,14 +62,11 @@ export const RoleSelection: FC = () => {
                   <EyeOutlined className={styles.roleIcon} />
                 </div>
                 <h2 className={styles.roleTitle}>I&apos;m a Client</h2>
-                <span className={styles.roleBadge}>Story Review &amp; Feedback</span>
+                <span className={styles.roleBadge}>Requirements Review</span>
 
                 <ul className={styles.featureList}>
                   <li className={styles.featureItem}>
                     <CheckOutlined className={styles.checkIcon} /> View approved stories
-                  </li>
-                  <li className={styles.featureItem}>
-                    <CheckOutlined className={styles.checkIcon} /> Provide feedback
                   </li>
                   <li className={styles.featureItem}>
                     <CheckOutlined className={styles.checkIcon} /> Track progress
@@ -81,16 +78,16 @@ export const RoleSelection: FC = () => {
                   size="large"
                   block
                   className={styles.outlineButton}
-                  onClick={() => navigate("/project-entry")}
+                  onClick={() => navigate("/viewer")}
                 >
-                  Continue as Client
+                  Enter Access Code
                 </Button>
               </div>
             </div>
 
             <div className={styles.footer}>
-              <Link to="/project-entry" className={styles.footerLink}>
-                Have a project ID? Enter it here
+              <Link to="/viewer" className={styles.footerLink}>
+                Have a project access code? Enter it here
               </Link>
             </div>
           </div>

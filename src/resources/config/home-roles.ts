@@ -12,10 +12,10 @@ export const homeRoles: RoleConfig[] = [
   },
   {
     id: "viewer",
-    title: "Client Viewer",
-    description: "View approved requirements and project status.",
+    title: "Client Review",
+    description: "Review the approved requirements with your project access code.",
     iconType: "viewer",
-    buttonText: "Access as Viewer",
+    buttonText: "Enter Access Code",
     buttonType: "default",
     path: "/viewer",
   },

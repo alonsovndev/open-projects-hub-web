@@ -66,9 +66,9 @@ export const TermsPage: FC = () => {
         credentials and for all activities that occur under your account.
       </Paragraph>
       <Paragraph className={styles.pageContent}>
-        <strong>Client viewers</strong> access the Service through project codes without creating an
-        account. Viewer access is read-only and limited to viewing approved stories for the
-        specified project. Project codes are provided by admin users and may be revoked at any time.
+        <strong>Clients</strong> access the Service through project access codes without creating
+        an account. Access is read-only and limited to viewing approved stories for the specified
+        project. Access codes are provided by freelancers and may be revoked at any time.
       </Paragraph>
 
       {/* 4. User Responsibilities */}

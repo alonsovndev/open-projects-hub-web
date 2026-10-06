@@ -1,6 +1,6 @@
 import { baseApi } from "@/app/api/base-api";
 
-import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
 
 export const teamApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,15 +15,6 @@ export const teamApi = baseApi.injectEndpoints({
         url: "/v1/users",
         method: "POST",
         body: values,
-      }),
-      invalidatesTags: ["TeamMembers"],
-    }),
-
-    updateTeamMemberRole: builder.mutation<TeamMember, { id: string; role: AssignableRole }>({
-      query: ({ id, role }) => ({
-        url: `/v1/users/${id}/role`,
-        method: "PATCH",
-        body: { role },
       }),
       invalidatesTags: ["TeamMembers"],
     }),
@@ -47,7 +38,6 @@ export const teamApi = baseApi.injectEndpoints({
 export const {
   useGetTeamMembersQuery,
   useAddTeamMemberMutation,
-  useUpdateTeamMemberRoleMutation,
   useSetTeamMemberStatusMutation,
   useRemoveTeamMemberMutation,
 } = teamApi;

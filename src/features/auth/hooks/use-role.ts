@@ -14,7 +14,6 @@ export const useRole = () => {
 
   const isAdmin = hasRole("admin");
   const isMember = hasRole("member");
-  const isViewer = hasRole("viewer");
 
   return {
     role: user?.role,
@@ -22,10 +21,9 @@ export const useRole = () => {
     hasAnyRole,
     isAdmin,
     isMember,
-    isViewer,
-    /** Admins and members create and change workspace data; viewers only read it. */
+    /** Admins and members create and change workspace data. */
     canEdit: isAdmin || isMember,
-    /** Only the workspace Admin adds teammates and viewers. */
+    /** Only the workspace Admin adds teammates. */
     canManageTeam: isAdmin,
   };
 };

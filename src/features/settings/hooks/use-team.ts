@@ -6,17 +6,13 @@ import {
   useGetTeamMembersQuery,
   useRemoveTeamMemberMutation,
   useSetTeamMemberStatusMutation,
-  useUpdateTeamMemberRoleMutation,
 } from "@/features/settings/api/team-api";
-import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
 import { getErrorMessage } from "@/shared/types/api";
 
 export const useTeam = () => {
   const { data: members = [], isLoading, isError } = useGetTeamMembersQuery();
   const [addTeamMemberMutation, { isLoading: adding }] = useAddTeamMemberMutation();
-
-  const [updateRoleMutation, { originalArgs: updatingRoleArgs, isLoading: updatingRole }] =
-    useUpdateTeamMemberRoleMutation();
 
   const [setStatusMutation, { originalArgs: togglingStatusArgs, isLoading: togglingStatus }] =
     useSetTeamMemberStatusMutation();
@@ -38,18 +34,6 @@ export const useTeam = () => {
       }
     },
     [addTeamMemberMutation]
-  );
-
-  const changeRole = useCallback(
-    async (memberId: string, role: AssignableRole) => {
-      try {
-        await updateRoleMutation({ id: memberId, role }).unwrap();
-        message.success("Role updated. It applies once their current session expires.");
-      } catch (error) {
-        message.error(getErrorMessage(error, "Unable to change this role. Please try again."));
-      }
-    },
-    [updateRoleMutation]
   );
 
   const setMemberActive = useCallback(
@@ -81,7 +65,6 @@ export const useTeam = () => {
   );
 
   const togglingStatusMemberId = togglingStatus ? togglingStatusArgs?.id : undefined;
-  const updatingRoleMemberId = updatingRole ? updatingRoleArgs?.id : undefined;
 
   return {
     members,
@@ -89,8 +72,6 @@ export const useTeam = () => {
     isError,
     adding,
     addTeamMember,
-    changeRole,
-    updatingRoleMemberId,
     setMemberActive,
     togglingStatusMemberId,
     removeMember,

@@ -38,22 +38,6 @@ describe("AdminLayout navigation", () => {
     expect(screen.getByRole("menuitem", { name: /backlog/i })).toBeInTheDocument();
   });
 
-  it("omits admin-only destinations for a viewer rather than disabling them", () => {
-    renderMenu("viewer");
-
-    expect(screen.queryByRole("menuitem", { name: /clients/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("menuitem", { name: /ai refinement/i })).not.toBeInTheDocument();
-  });
-
-  it("keeps the read-only destinations for a viewer", () => {
-    renderMenu("viewer");
-
-    expect(screen.getByRole("menuitem", { name: /dashboard/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /projects/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /backlog/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /settings/i })).toBeInTheDocument();
-  });
-
   it("shows the editing destinations to a member", () => {
     renderMenu("member");
 

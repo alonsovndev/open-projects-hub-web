@@ -1,17 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { normalizeProjectCode, projectCodePattern } from "@/features/viewer/model/project-code";
+import { accessCodePattern, normalizeAccessCode } from "@/features/viewer/model/access-code";
 import type { ProjectCodeFormValues } from "@/features/viewer/types";
 
 interface UseProjectCodeSearchOptions {
-  onSearch: (projectCode: string) => boolean;
+  onSearch: (accessCode: string) => void;
 }
 
 export const useProjectCodeSearch = ({ onSearch }: UseProjectCodeSearchOptions) => {
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
 
   const projectCodeRules = useMemo(() => {
     return [
@@ -20,28 +19,17 @@ export const useProjectCodeSearch = ({ onSearch }: UseProjectCodeSearchOptions) 
         message: "Please enter the project access code.",
       },
       {
-        pattern: projectCodePattern,
-        message: "Use the format PRJ-123456.",
+        // Validate the normalized value so lowercase and stray spaces are not rejected.
+        validator: (_rule: unknown, value: string | undefined) =>
+          !value || accessCodePattern.test(normalizeAccessCode(value))
+            ? Promise.resolve()
+            : Promise.reject(new Error("Use the format PRJ-XXXXXXXX.")),
       },
     ];
   }, []);
 
   const handleSubmit = ({ projectCode }: ProjectCodeFormValues) => {
-    const normalizedCode = normalizeProjectCode(projectCode);
-    const wasFound = onSearch(normalizedCode);
-
-    if (!wasFound) {
-      setErrorMessage("We couldn't find a project with that access code.");
-      return;
-    }
-
-    setErrorMessage("");
-  };
-
-  const handleValuesChange = () => {
-    if (errorMessage) {
-      setErrorMessage("");
-    }
+    onSearch(normalizeAccessCode(projectCode));
   };
 
   const handleBack = () => {
@@ -49,10 +37,8 @@ export const useProjectCodeSearch = ({ onSearch }: UseProjectCodeSearchOptions) 
   };
 
   return {
-    errorMessage,
     projectCodeRules,
     handleSubmit,
-    handleValuesChange,
     handleBack,
   };
 };

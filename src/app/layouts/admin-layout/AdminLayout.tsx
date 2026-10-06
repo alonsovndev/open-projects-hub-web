@@ -37,8 +37,8 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
 
   const [collapsed, setCollapsed] = useState(false);
 
-  // Editor-only destinations are left out of the menu entirely rather than disabled: a
-  // Viewer cannot open them, so advertising them only invites a trip to /unauthorized.
+  // Editor-only destinations are left out of the menu entirely rather than disabled, so a
+  // role that cannot open them is never invited to a trip to /unauthorized.
   const allMenuItems = [
     {
       key: "/dashboard",

@@ -20,8 +20,8 @@ export const SettingsPage: FC = () => {
   const { profile, loading, error, saving, handleUpdateProfile, handleChangePassword } =
     useSettings();
   // Refinement — and therefore credits and provider keys — is for admins and members; the
-  // backend guards these endpoints with require_editor. Rendering the tab for a Viewer
-  // would only produce 403s. Adding people is the Admin's alone (require_admin).
+  // backend guards these endpoints with require_editor. Adding people is the Admin's alone
+  // (require_admin).
   const { canEdit, canManageTeam } = useRole();
 
   if (loading) {

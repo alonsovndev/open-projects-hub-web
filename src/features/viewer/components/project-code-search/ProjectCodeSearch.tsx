@@ -11,57 +11,57 @@ import styles from "./project-code-search.module.scss";
 const { Title } = Typography;
 
 interface ProjectCodeSearchProps {
-  onSearch: (projectCode: string) => boolean;
+  initialCode?: string;
+  errorMessage?: string;
+  onSearch: (accessCode: string) => void;
 }
 
-export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({ onSearch }) => {
+export const ProjectCodeSearch: FC<ProjectCodeSearchProps> = ({
+  initialCode,
+  errorMessage,
+  onSearch,
+}) => {
   const projectCodeSearch = useProjectCodeSearch({ onSearch });
 
   return (
     <Card className={styles.card}>
       <Title level={2} className={styles.title}>
-        View Project Requirements
+        Client Review
       </Title>
 
       <Form<ProjectCodeFormValues>
         layout="vertical"
         className={styles.form}
         onFinish={projectCodeSearch.handleSubmit}
-        onValuesChange={projectCodeSearch.handleValuesChange}
       >
         <Form.Item
           label="Project Access Code"
           name="projectCode"
-          initialValue="PRJ-123456"
-          extra="Enter the 6-digit access code shared by your freelancer."
+          initialValue={initialCode}
+          extra="Enter the access code your freelancer shared with you."
           rules={projectCodeSearch.projectCodeRules}
         >
           <Input
             size="large"
             prefix={<KeyOutlined className={styles.inputIcon} />}
-            placeholder="e.g., PRJ-123456"
+            placeholder="e.g., PRJ-7K3M9XQ2"
             autoComplete="off"
           />
         </Form.Item>
 
         <Button type="primary" htmlType="submit" size="large" block>
-          View Requirements
+          View Approved Requirements
         </Button>
       </Form>
 
-      {projectCodeSearch.errorMessage ? (
-        <Alert
-          className={styles.feedback}
-          type="error"
-          showIcon
-          description={projectCodeSearch.errorMessage}
-        />
+      {errorMessage ? (
+        <Alert className={styles.feedback} type="error" showIcon description={errorMessage} />
       ) : null}
 
       <Divider className={styles.divider} />
 
       <Button type="link" className={styles.backButton} onClick={projectCodeSearch.handleBack}>
-        Back to role selection
+        Back to home
       </Button>
     </Card>
   );

@@ -29,6 +29,7 @@ export const ProjectsOverview: FC = () => {
     activeCount,
     canCreate,
     isUpdating,
+    isRegeneratingAccessCode,
     editModalOpen,
     editingProject,
     handleSearchChange,
@@ -41,6 +42,7 @@ export const ProjectsOverview: FC = () => {
     handleClearFilters,
     handlePageChange,
     handleViewProject,
+    handleRegenerateAccessCode,
     handleEditProject,
     handleUpdateProject,
     handleCancelEdit,
@@ -179,6 +181,9 @@ export const ProjectsOverview: FC = () => {
             : undefined
         }
         loading={isUpdating}
+        accessCode={editingProject?.accessCode}
+        isRegeneratingAccessCode={isRegeneratingAccessCode}
+        onRegenerateAccessCode={canEdit ? handleRegenerateAccessCode : undefined}
         onSubmit={handleUpdateProject}
         onCancel={handleCancelEdit}
       />

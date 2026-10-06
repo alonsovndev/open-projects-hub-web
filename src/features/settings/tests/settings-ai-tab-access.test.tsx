@@ -60,18 +60,4 @@ describe("Settings AI Providers tab access", () => {
     expect(await screen.findByText("Team")).toBeInTheDocument();
   });
 
-  it("hides the tab from a viewer", async () => {
-    renderAs("viewer");
-
-    expect(await screen.findByText("Profile")).toBeInTheDocument();
-    expect(screen.queryByText("AI Providers")).not.toBeInTheDocument();
-    expect(screen.queryByText("Team")).not.toBeInTheDocument();
-  });
-
-  it("still shows a viewer their own profile and security tabs", async () => {
-    renderAs("viewer");
-
-    expect(await screen.findByText("Profile")).toBeInTheDocument();
-    expect(screen.getByText("Security")).toBeInTheDocument();
-  });
 });

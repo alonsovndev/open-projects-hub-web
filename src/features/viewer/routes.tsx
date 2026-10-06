@@ -15,7 +15,7 @@ export const viewerRoutes: AppRoute[] = [
     guards: ["public"],
   },
   {
-    path: "/viewer/:projectId",
+    path: "/viewer/:accessCode",
     element: (
       <PublicLayout>
         <ClientViewer />
