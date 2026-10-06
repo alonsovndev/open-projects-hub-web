@@ -17,7 +17,13 @@ export const useClientViewerPortal = () => {
   const { accessCode } = useParams<{ accessCode?: string }>();
   const navigate = useNavigate();
 
-  const { data, isFetching, error } = useGetClientReviewQuery(accessCode ?? "", { skip: !accessCode });
+  // `currentData`, not `data`: `data` keeps the last project after the query is skipped,
+  // which left the review on screen when the visitor chose "Use another code".
+  const {
+    currentData: review,
+    isFetching,
+    error,
+  } = useGetClientReviewQuery(accessCode ?? "", { skip: !accessCode });
 
   const searchProject = (typedCode: string) => {
     navigate(`/viewer/${normalizeAccessCode(typedCode)}`);
@@ -25,7 +31,7 @@ export const useClientViewerPortal = () => {
 
   return {
     accessCode,
-    review: data,
+    review,
     isLoading: isFetching,
     errorMessage: error ? errorMessageFor("status" in error ? error.status : undefined) : "",
     searchProject,

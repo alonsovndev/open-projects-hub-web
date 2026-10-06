@@ -39,6 +39,17 @@ describe("Client Review portal", { timeout: 20_000 }, () => {
     expect(screen.getByText("2 approved stories")).toBeInTheDocument();
   });
 
+  it("returns to the access code form when the visitor chooses to use another code", async () => {
+    const user = userEvent.setup();
+    renderAt(`/viewer/${MOCK_ACCESS_CODE}`);
+
+    expect(await screen.findByText("City Clinic Portal")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /use another code/i }));
+
+    expect(await screen.findByLabelText("Project Access Code")).toHaveValue("");
+    expect(screen.queryByText("City Clinic Portal")).not.toBeInTheDocument();
+  });
+
   it("tells the visitor when the code matches no project and keeps what they typed", async () => {
     renderAt("/viewer/PRJ-AAAAAAAA");
 
