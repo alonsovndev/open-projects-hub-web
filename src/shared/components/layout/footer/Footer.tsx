@@ -32,7 +32,11 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
             >
               Documentation
             </a>
-            <a href="https://github.com/alonsovndev" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Code (GitHub)
             </a>
             <Link to="/privacy">Privacy</Link>

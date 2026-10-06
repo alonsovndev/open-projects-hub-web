@@ -67,7 +67,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 Docs
               </a>
               <a
-                href="https://github.com/alonsovndev"
+                href="https://github.com/NaranjoSolutions/open-projects-hub-web"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.navLink}
@@ -120,7 +120,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 Documentation
               </a>
               <a
-                href="https://github.com/alonsovndev"
+                href="https://github.com/NaranjoSolutions/open-projects-hub-web"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.mobileNavLink}

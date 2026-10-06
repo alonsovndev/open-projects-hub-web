@@ -316,3 +316,56 @@
     padding: 20px;
   }
 }
+
+.preview {
+  &::before {
+    display: none;
+  }
+
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .notesPanel,
+  .storyPanel {
+    margin: 0;
+    padding: $spacing-md;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .transformationArrow {
+    display: none;
+  }
+
+  .panelHeading,
+  .notesContent,
+  .storyDescription,
+  .criteria li {
+    font-size: 0.875rem;
+  }
+
+  .storyTitle {
+    font-size: 1.125rem;
+  }
+
+  .criteria h4 {
+    font-size: 0.875rem;
+  }
+
+  .notesFooter,
+  .storyFooter,
+  .exampleCaption,
+  .approved {
+    font-size: 0.875rem;
+  }
+
+  @media (min-width: $breakpoint-tablet) {
+    .panels {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useState } from "react";
 
 import {
   ArrowRightOutlined,
@@ -10,11 +11,13 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { RequirementTransformation } from "@/features/home/components/requirement-transformation/RequirementTransformation";
+import { HomeExampleModal } from "@/features/home/components/home-example-modal/HomeExampleModal";
 
 import styles from "./home-hero.module.scss";
 
 export const HomeHero: FC = () => {
   const navigate = useNavigate();
+  const [exampleOpen, setExampleOpen] = useState(false);
 
   return (
     <section className={styles.heroSection} aria-labelledby="hero-title">
@@ -35,10 +38,19 @@ export const HomeHero: FC = () => {
               className={styles.heroPrimaryButton}
               onClick={() => navigate("/role-selection")}
             >
-              Start Project <ArrowRightOutlined aria-hidden="true" />
+              Get Started <ArrowRightOutlined aria-hidden="true" />
             </Button>
-            <Button size="large" className={styles.heroSecondaryButton} href="#product-example">
-              View Sample
+            <Button
+              size="large"
+              className={styles.heroSecondaryButton}
+              onClick={(event) => {
+                // Safari pointer clicks do not focus buttons; retain the dialog's return target.
+                event.currentTarget.focus();
+                setExampleOpen(true);
+              }}
+              aria-haspopup="dialog"
+            >
+              View Example
             </Button>
           </div>
           <ul className={styles.heroMetadata} aria-label="Product highlights">
@@ -55,6 +67,7 @@ export const HomeHero: FC = () => {
         </div>
         <RequirementTransformation />
       </div>
+      <HomeExampleModal open={exampleOpen} onClose={() => setExampleOpen(false)} />
     </section>
   );
 };

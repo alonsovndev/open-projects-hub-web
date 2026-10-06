@@ -202,7 +202,7 @@ for (const width of widths) {
   });
 }
 
-test("mobile landing keeps the brand and links to the product example", async ({ page }) => {
+test("mobile landing keeps the brand and opens the example preview", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 900 });
   await page.goto("/");
   await expect(
@@ -214,19 +214,39 @@ test("mobile landing keeps the brand and links to the product example", async ({
   await expect(
     page.getByRole("link", { name: "Documentation", exact: true }).first()
   ).toBeVisible();
+  const mobileMenu = page.locator("#landing-mobile-menu");
+  await expect(mobileMenu.getByRole("link", { name: "Get Started" })).toHaveAttribute(
+    "href",
+    "/role-selection"
+  );
+  await expect(mobileMenu.getByRole("link", { name: "Log In", exact: true })).toHaveAttribute(
+    "href",
+    "/login"
+  );
+  await expect(mobileMenu.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
+    "href",
+    "https://github.com/NaranjoSolutions/open-projects-hub-web"
+  );
   await menu.click();
-  await page.getByRole("link", { name: "View Sample" }).click();
-  await expect(page).toHaveURL(/#product-example$/);
-  await expect(page.locator("#product-example")).toBeFocused();
-  await expect(page.getByText("Product example — sample content")).toBeVisible();
-  const createAccount = page.getByRole("button", { name: "Create Account", exact: true });
-  await expect(createAccount).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  await expect(createAccount).toHaveCSS("color", "rgb(7, 91, 199)");
-  await createAccount.hover();
-  await expect(createAccount).toHaveCSS("background-color", "rgb(248, 250, 252)");
-  await expect(createAccount).toHaveCSS("color", "rgb(6, 74, 158)");
+  const exampleButton = page.getByRole("button", { name: "View Example" });
+  await exampleButton.click();
+  const preview = page.getByRole("dialog", { name: "Example: from notes to story" });
+  await expect(preview).toBeVisible();
+  await expect(preview.getByText("Product example — sample content")).toBeVisible();
+  await preview.getByRole("button", { name: "Close", exact: true }).last().click();
+  await expect(preview).not.toBeVisible();
+  await expect(exampleButton).toBeFocused();
+  const getStarted = page.getByRole("button", { name: "Get Started", exact: true }).last();
+  await expect(getStarted).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(getStarted).toHaveCSS("color", "rgb(7, 91, 199)");
+  await getStarted.hover();
+  await expect(getStarted).toHaveCSS("background-color", "rgb(248, 250, 252)");
+  await expect(getStarted).toHaveCSS("color", "rgb(6, 74, 158)");
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: test.info().outputPath("home-mobile.png"), fullPage: true });
+  await menu.click();
+  await mobileMenu.getByRole("link", { name: "Get Started" }).click();
+  await expect(page).toHaveURL(/\/role-selection$/);
 });
 
 test("mobile drawer returns keyboard focus and switches to desktop navigation", async ({
@@ -277,15 +297,22 @@ test.describe("Touch interaction", () => {
   });
 });
 
-test("reduced motion preserves keyboard access to the sample", async ({ page }) => {
+test("reduced motion preserves keyboard access to the example preview", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const sampleLink = page.getByRole("link", { name: "View Sample" });
-  await sampleLink.focus();
+  const exampleButton = page.getByRole("button", { name: "View Example" });
+  await exampleButton.focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator("#product-example")).toBeFocused();
-  const accountButton = page.getByRole("button", { name: "Create Account", exact: true });
-  const transitionDurations = await accountButton.evaluate((button) =>
+  const preview = page.getByRole("dialog", { name: "Example: from notes to story" });
+  await expect(preview).toBeVisible();
+  await expect
+    .poll(() => preview.evaluate((dialog) => dialog.contains(document.activeElement)))
+    .toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(preview).not.toBeVisible();
+  await expect(exampleButton).toBeFocused();
+  const getStarted = page.getByRole("button", { name: "Get Started", exact: true }).last();
+  const transitionDurations = await getStarted.evaluate((button) =>
     getComputedStyle(button)
       .transitionDuration.split(",")
       .map((duration) => Number.parseFloat(duration))

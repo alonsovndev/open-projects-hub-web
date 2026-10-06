@@ -16,12 +16,20 @@ const acceptanceCriteria = [
   "Progress is visible in a read-only dashboard.",
 ];
 
-export const RequirementTransformation: FC = () => (
+interface RequirementTransformationProps {
+  idPrefix?: string;
+  presentation?: "hero" | "preview";
+}
+
+export const RequirementTransformation: FC<RequirementTransformationProps> = ({
+  idPrefix = "product-example",
+  presentation = "hero",
+}) => (
   <figure
-    id="product-example"
+    id={idPrefix}
     tabIndex={-1}
-    aria-labelledby="product-example-caption"
-    className={styles.productExample}
+    aria-labelledby={`${idPrefix}-caption`}
+    className={`${styles.productExample}${presentation === "preview" ? ` ${styles.preview}` : ""}`}
   >
     <div className={styles.panels}>
       <div className={styles.notesPanel}>
@@ -88,7 +96,7 @@ export const RequirementTransformation: FC = () => (
         </p>
       </div>
     </div>
-    <figcaption id="product-example-caption" className={styles.exampleCaption}>
+    <figcaption id={`${idPrefix}-caption`} className={styles.exampleCaption}>
       Product example — sample content
     </figcaption>
   </figure>

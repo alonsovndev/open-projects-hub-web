@@ -1,0 +1,14 @@
+@use "@/styles/variables.scss" as *;
+
+.body {
+  max-height: max(180px, calc(100dvh - 200px));
+  overflow-y: auto;
+  padding: $spacing-sm $spacing-xs;
+}
+
+.description {
+  margin: 0 0 $spacing-md;
+  color: $text-secondary;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}

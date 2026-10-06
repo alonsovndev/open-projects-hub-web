@@ -170,6 +170,13 @@
   margin-top: $spacing-lg;
 }
 
+.accountPrompt {
+  margin: $spacing-sm 0 0;
+  color: $text-secondary;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
 .footerLink {
   font-family: $font-body;
   font-size: 0.9375rem;

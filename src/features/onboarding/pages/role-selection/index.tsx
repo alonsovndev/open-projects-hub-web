@@ -22,12 +22,11 @@ export const RoleSelection: FC = () => {
             <p className={styles.subtitle}>Choose how you'd like to continue</p>
 
             <div className={styles.roleCards}>
-              {/* Admin Card */}
               <div className={styles.roleCard}>
                 <div className={styles.roleIconWrapper}>
                   <SafetyOutlined className={styles.roleIcon} />
                 </div>
-                <h2 className={styles.roleTitle}>I&apos;m an Admin</h2>
+                <h2 className={styles.roleTitle}>I manage projects</h2>
                 <span className={styles.roleBadge}>Dashboard &amp; Project Management</span>
 
                 <ul className={styles.featureList}>
@@ -50,13 +49,18 @@ export const RoleSelection: FC = () => {
                   size="large"
                   block
                   className={styles.primaryButton}
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/register")}
                 >
-                  Continue as Admin
+                  Create Workspace
                 </Button>
+                <p className={styles.accountPrompt}>
+                  Already have an account?{" "}
+                  <Link to="/login" className={styles.footerLink}>
+                    Log In
+                  </Link>
+                </p>
               </div>
 
-              {/* Client Card */}
               <div className={styles.roleCard}>
                 <div className={styles.roleIconWrapper}>
                   <EyeOutlined className={styles.roleIcon} />

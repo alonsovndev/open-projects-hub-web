@@ -33,27 +33,23 @@ export const HomeCtaSection: FC = () => {
           <h2 id="cta-title" className={styles.ctaTitle}>
             Build with precision.
           </h2>
-          <p className={styles.ctaDescription}>
-            Turn ambiguous notes into actionable project plans. Starts here.
-          </p>
+          <p className={styles.ctaDescription}>Plan a project or review shared requirements.</p>
         </div>
         <div className={styles.ctaActions}>
           <Button
             type="primary"
             size="large"
             className={styles.ctaPrimaryButton}
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/role-selection")}
           >
-            Create Account <ArrowRightOutlined aria-hidden="true" />
+            Get Started <ArrowRightOutlined aria-hidden="true" />
           </Button>
           <Button
             size="large"
             className={styles.ctaSecondaryButton}
-            href="https://github.com/alonsovndev"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={() => navigate("/viewer")}
           >
-            Contact
+            Enter Access Code
           </Button>
         </div>
       </div>

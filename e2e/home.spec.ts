@@ -48,7 +48,9 @@ test.describe("Home Page", () => {
     await expect(page.locator("footer")).toHaveCount(1);
   });
 
-  test("preserves CTA routes and external link destinations", async ({ page }) => {
+  test("uses consistent onboarding CTAs and accurate external link destinations", async ({
+    page,
+  }) => {
     await page.goto("/");
     const header = page.locator("header");
     await expect(header.getByRole("link", { name: "Log In", exact: true })).toHaveAttribute(
@@ -61,20 +63,16 @@ test.describe("Home Page", () => {
     );
     await expect(header.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
-      "https://github.com/alonsovndev"
+      "https://github.com/NaranjoSolutions/open-projects-hub-web"
     );
     await expect(header.getByRole("link", { name: "Docs", exact: true })).toHaveAttribute(
       "href",
       "https://github.com/NaranjoSolutions/open-projects-hub-docs"
     );
-    await expect(page.getByRole("link", { name: "Contact", exact: true })).toHaveAttribute(
-      "href",
-      "https://github.com/alonsovndev"
-    );
     const footer = page.locator("footer");
     await expect(footer.getByRole("link", { name: "Code (GitHub)", exact: true })).toHaveAttribute(
       "href",
-      "https://github.com/alonsovndev"
+      "https://github.com/NaranjoSolutions/open-projects-hub-web"
     );
     await expect(
       footer.getByRole("link", { name: "GitHub repository", exact: true })
@@ -92,15 +90,124 @@ test.describe("Home Page", () => {
     await expect(page).toHaveURL(/#features$/);
     await page.getByRole("link", { name: "Learn more about the workflow" }).click();
     await expect(page).toHaveURL(/#workflow$/);
-    await page.getByRole("button", { name: "Start Project", exact: true }).click();
+    await page.getByRole("button", { name: "Get Started", exact: true }).first().click();
     await expect(page).toHaveURL(/\/role-selection$/);
     await expect(
       page.getByRole("heading", { name: "Welcome to Open Projects Hub", exact: true })
     ).toBeVisible();
     await page.goto("/");
-    await page.getByRole("button", { name: "Create Account", exact: true }).click();
-    await expect(page).toHaveURL(/\/register$/);
+    await page.getByRole("button", { name: "Get Started", exact: true }).last().click();
+    await expect(page).toHaveURL(/\/role-selection$/);
   });
+
+  test("role selection offers workspace signup, login, and client access", async ({ page }) => {
+    await page.goto("/role-selection");
+    await expect(page.getByRole("heading", { name: "I manage projects" })).toBeVisible();
+    await page.getByRole("button", { name: "Create Workspace", exact: true }).click();
+    await expect(page).toHaveURL(/\/register$/);
+    await expect(page.getByRole("heading", { name: "Create Your Workspace" })).toBeVisible();
+
+    await page.goto("/role-selection");
+    await page.getByRole("link", { name: "Log In", exact: true }).click();
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByRole("heading", { name: "Sign In", exact: true })).toBeVisible();
+
+    await page.goto("/role-selection");
+    await page.getByRole("button", { name: "Enter Access Code", exact: true }).click();
+    await expect(page).toHaveURL(/\/viewer$/);
+    await expect(page.getByLabel("Project Access Code")).toBeVisible();
+
+    await page.goto("/");
+    await page.getByRole("button", { name: "Enter Access Code", exact: true }).click();
+    await expect(page).toHaveURL(/\/viewer$/);
+    await expect(page.getByLabel("Project Access Code")).toBeVisible();
+  });
+
+  for (const width of [375, 430, 768, 1280, 1440]) {
+    test(`example preview is readable and dismissible at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: width < 640 ? 640 : 900 });
+      await page.goto("/");
+      const initialUrl = page.url();
+      const apiRequests: string[] = [];
+      page.on("request", (request) => {
+        if (new URL(request.url()).pathname.startsWith("/v1/")) {
+          apiRequests.push(request.url());
+        }
+      });
+
+      const trigger = page.getByRole("button", { name: "View Example", exact: true });
+      await trigger.click();
+      const preview = page.getByRole("dialog", { name: "Example: from notes to story" });
+      await expect(preview).toBeVisible();
+      await expect(preview).toHaveCSS("opacity", "1");
+      await expect(page).toHaveURL(initialUrl);
+      await expect(preview.getByText(/read-only example; no account is required/)).toBeVisible();
+      await expect(preview.getByRole("heading", { name: "Raw Notes", exact: true })).toBeVisible();
+      await expect(
+        preview.getByRole("heading", { name: "Refined Story", exact: true })
+      ).toBeVisible();
+      await expect(preview.getByText("Approved", { exact: true })).toBeVisible();
+      await expect(preview.getByRole("listitem")).toHaveText([
+        "The project access code opens approved stories.",
+        "Drafts remain private to the project team.",
+        "Client can comment on specific items.",
+        "Progress is visible in a read-only dashboard.",
+      ]);
+      await expect(preview.locator("input, textarea, [contenteditable=true]")).toHaveCount(0);
+      await expect(page.locator("#product-example")).toHaveCount(1);
+      await expect(page.locator("#sample-preview")).toHaveAttribute(
+        "aria-labelledby",
+        "sample-preview-caption"
+      );
+      await expect(page.locator("#sample-preview-caption")).toHaveCount(1);
+      await expect
+        .poll(() => preview.evaluate((dialog) => dialog.scrollWidth <= dialog.clientWidth))
+        .toBe(true);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+        .toBe(true);
+
+      for (let focusStep = 0; focusStep < 6; focusStep += 1) {
+        await page.keyboard.press("Tab");
+        await expect
+          .poll(() => preview.evaluate((dialog) => dialog.contains(document.activeElement)))
+          .toBe(true);
+      }
+      for (let focusStep = 0; focusStep < 4; focusStep += 1) {
+        await page.keyboard.press("Shift+Tab");
+        await expect
+          .poll(() => preview.evaluate((dialog) => dialog.contains(document.activeElement)))
+          .toBe(true);
+      }
+      await page.screenshot({
+        path: test.info().outputPath(`example-${width}.png`),
+        animations: "disabled",
+      });
+      await preview.getByRole("listitem").last().scrollIntoViewIfNeeded();
+      await expect(preview.getByRole("listitem").last()).toBeInViewport();
+      await expect(
+        preview.getByRole("button", { name: "Close", exact: true }).last()
+      ).toBeInViewport();
+      await preview.getByRole("button", { name: "Close", exact: true }).last().click();
+      await expect(preview).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+
+      await trigger.click();
+      await expect(preview).toBeVisible();
+      await preview.getByRole("button", { name: "Close", exact: true }).first().click();
+      await expect(preview).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+
+      await trigger.focus();
+      await page.keyboard.press("Enter");
+      await expect(preview).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(preview).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+      await expect(page).toHaveURL(initialUrl);
+      expect(apiRequests).toEqual([]);
+    });
+  }
 
   for (const width of [375, 430, 768, 900, 1024, 1280, 1440]) {
     test(`landing content fits at ${width}px`, async ({ page }) => {
