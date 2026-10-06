@@ -62,21 +62,6 @@ describe("Backlog role rendering", () => {
     expect(screen.getByRole("button", { name: /delete markdown export/i })).toBeInTheDocument();
   });
 
-  it("removes export and delete for a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByRole("button", { name: /export markdown/i })).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /delete markdown export/i })
-    ).not.toBeInTheDocument();
-  });
-
-  it("still shows the stories themselves to a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.getByText("Markdown export")).toBeInTheDocument();
-    expect(screen.getByText("Export includes approved stories only")).toBeInTheDocument();
-  });
 });
 
 describe("Backlog export scoping", () => {
@@ -94,9 +79,4 @@ describe("Backlog export scoping", () => {
     expect(screen.getByRole("button", { name: /export markdown/i })).toBeEnabled();
   });
 
-  it("keeps export hidden from a viewer even when a project is selected", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByRole("button", { name: /export markdown/i })).not.toBeInTheDocument();
-  });
 });

@@ -42,9 +42,8 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
   onViewChange,
   onClearFilters,
 }) => {
-  // The client list is limited to admins and members server-side, so a Viewer must not
-  // issue the request at all — firing it just to swallow a 403 would be noise, and the
-  // filter it feeds has no options to offer them.
+  // The client list is limited to admins and members server-side, so any other role must
+  // not issue the request at all — firing it just to swallow a 403 would be noise.
   const { canEdit } = useRole();
   const { data: clientsData } = useGetClientsQuery(undefined, { skip: !canEdit });
   const clientOptions = [

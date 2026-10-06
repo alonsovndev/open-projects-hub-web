@@ -1,40 +1,33 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { findProjectRequirements } from "@/features/viewer/api/find-project-requirements";
-import type { ProjectRequirementsRecord } from "@/features/viewer/types";
+import { useGetClientReviewQuery } from "@/features/viewer/api/viewer-api";
+import { normalizeAccessCode } from "@/features/viewer/model/access-code";
 
+const NOT_FOUND_STATUS = 404;
+const RATE_LIMITED_STATUS = 429;
+
+const errorMessageFor = (status: unknown): string => {
+  if (status === NOT_FOUND_STATUS) return "We couldn't find a project with that access code.";
+  if (status === RATE_LIMITED_STATUS) return "Too many attempts. Please wait a minute and try again.";
+  return "Something went wrong while loading the project. Please try again.";
+};
+
+/** The URL is the state: `/viewer/:accessCode` is a shareable link to one project's review. */
 export const useClientViewerPortal = () => {
-  const { projectId } = useParams<{ projectId?: string }>();
-  const [activeProject, setActiveProject] = useState<ProjectRequirementsRecord | null>(null);
+  const { accessCode } = useParams<{ accessCode?: string }>();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (projectId) {
-      const project = findProjectRequirements(projectId);
-      if (project) {
-        setActiveProject(project);
-      }
-    }
-  }, [projectId]);
+  const { data, isFetching, error } = useGetClientReviewQuery(accessCode ?? "", { skip: !accessCode });
 
-  const searchProject = (projectCode: string) => {
-    const project = findProjectRequirements(projectCode);
-
-    if (!project) {
-      return false;
-    }
-
-    setActiveProject(project);
-    return true;
-  };
-
-  const clearActiveProject = () => {
-    setActiveProject(null);
+  const searchProject = (typedCode: string) => {
+    navigate(`/viewer/${normalizeAccessCode(typedCode)}`);
   };
 
   return {
-    activeProject,
+    accessCode,
+    review: data,
+    isLoading: isFetching,
+    errorMessage: error ? errorMessageFor("status" in error ? error.status : undefined) : "",
     searchProject,
-    clearActiveProject,
   };
 };

@@ -68,21 +68,10 @@ describe("Project backlog page", () => {
     expect(screen.getByText("File is downloadable as .md")).toBeInTheDocument();
   });
 
-  it("shows the criteria to a viewer too", () => {
-    renderPage("viewer");
-
-    expect(screen.getByText("Export includes approved stories only")).toBeInTheDocument();
-  });
-
   it("gives an admin the export button", () => {
     renderPage("admin");
 
     expect(screen.getByRole("button", { name: /^export backlog$/i })).toBeInTheDocument();
   });
 
-  it("withholds the export button from a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByRole("button", { name: /^export backlog$/i })).not.toBeInTheDocument();
-  });
 });

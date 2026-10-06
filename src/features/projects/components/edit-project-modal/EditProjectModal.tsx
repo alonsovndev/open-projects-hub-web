@@ -1,9 +1,12 @@
 import type { FC } from "react";
 import { useEffect } from "react";
-import { Modal, Form, Input, DatePicker } from "antd";
+import { Modal, Form, Input, DatePicker, Button, Popconfirm, Typography } from "antd";
 import dayjs, { type Dayjs } from "dayjs";
 
+import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link";
+
 const { TextArea } = Input;
+const { Paragraph, Text } = Typography;
 
 export interface EditProjectFormData {
   name: string;
@@ -23,6 +26,10 @@ interface EditProjectModalProps {
   open: boolean;
   initialValues?: EditProjectFormData;
   loading?: boolean;
+  /** What the client types on the Client Review page. Omitted until the project has loaded. */
+  accessCode?: string;
+  isRegeneratingAccessCode?: boolean;
+  onRegenerateAccessCode?: () => void | Promise<void>;
   onSubmit: (values: EditProjectFormData) => void | Promise<void>;
   onCancel: () => void;
 }
@@ -31,6 +38,9 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
   open,
   initialValues,
   loading = false,
+  accessCode,
+  isRegeneratingAccessCode = false,
+  onRegenerateAccessCode,
   onSubmit,
   onCancel,
 }) => {
@@ -85,6 +95,35 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
       width={600}
       destroyOnClose
     >
+      {accessCode ? (
+        <div data-testid="client-access">
+          <Text strong>Client access</Text>
+          <Paragraph type="secondary">
+            Share this code or link with your client so they can review the approved stories. No
+            account is needed.
+          </Paragraph>
+          <Paragraph>
+            Access code: <Text code copyable={{ text: accessCode }}>{accessCode}</Text>
+          </Paragraph>
+          <Paragraph>
+            Link: <Text copyable={{ text: buildClientReviewUrl(accessCode) }}>Copy client link</Text>
+          </Paragraph>
+          {onRegenerateAccessCode ? (
+            <Popconfirm
+              title="Generate a new access code?"
+              description="The current code and any link already shared will stop working."
+              okText="Generate"
+              cancelText="Cancel"
+              onConfirm={onRegenerateAccessCode}
+            >
+              <Button danger loading={isRegeneratingAccessCode}>
+                Generate new code
+              </Button>
+            </Popconfirm>
+          ) : null}
+        </div>
+      ) : null}
+
       <Form form={form} layout="vertical" disabled={loading}>
         <Form.Item
           name="name"

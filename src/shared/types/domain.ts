@@ -30,6 +30,8 @@ export interface ProjectSummary {
   id: string;
   name: string;
   code: string;
+  /** What the client types on the Client Review page; not the freelancer-chosen `code`. */
+  accessCode: string;
   status: ProjectStatus;
   priority: ProjectPriority;
   phase: ProjectPhase;

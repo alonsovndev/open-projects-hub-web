@@ -9,6 +9,7 @@ import type { ProjectSummary } from "@/shared/types/domain";
 const project: ProjectSummary = {
   id: "project-1",
   code: "HUB",
+  accessCode: "PRJ-DEMX23A1",
   name: "Open Projects Hub",
   description: "Planning workspace",
   status: "active",
@@ -88,32 +89,6 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
     expect(screen.getByRole("button", { name: /delete open projects hub/i })).toBeInTheDocument();
   });
 
-  it("removes every management control for a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByRole("button", { name: /create new project/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /edit open projects hub/i })).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /archive open projects hub/i })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /delete open projects hub/i })
-    ).not.toBeInTheDocument();
-  });
-
-  it("keeps the read path available to a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.getByRole("button", { name: /view open projects hub/i })).toBeInTheDocument();
-    expect(screen.getByText("Open Projects Hub")).toBeInTheDocument();
-  });
-
-  it("hides the client filter from a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByLabelText(/filter by client/i)).not.toBeInTheDocument();
-  });
-
   describe("archived project", () => {
     beforeEach(() => {
       overview.projects = [{ ...project, status: "archived" }];
@@ -134,13 +109,6 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
       ).not.toBeInTheDocument();
     });
 
-    it("hides reactivate from a viewer", () => {
-      renderPage("viewer");
-
-      expect(
-        screen.queryByRole("button", { name: /reactivate open projects hub/i })
-      ).not.toBeInTheDocument();
-    });
   });
 
   describe("grid view", () => {
@@ -162,17 +130,5 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
       expect(screen.getByRole("button", { name: /delete open projects hub/i })).toBeInTheDocument();
     });
 
-    it("removes them for a viewer", () => {
-      renderPage("viewer");
-
-      expect(screen.queryByRole("button", { name: /edit/i })).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: /archive open projects hub/i })
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: /delete open projects hub/i })
-      ).not.toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /view/i })).toBeInTheDocument();
-    });
   });
 });

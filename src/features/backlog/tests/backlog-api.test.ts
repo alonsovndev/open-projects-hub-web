@@ -106,7 +106,7 @@ describe("exportProjectBacklog", () => {
     vi.unstubAllGlobals();
   });
 
-  it("surfaces the server's message when a viewer is refused", async () => {
+  it("surfaces the server's message when the export is refused", async () => {
     // The 403 body is JSON. If responseHandler read it as a blob, base-api's normalizer
     // would find no `detail` and fall back to its generic message.
     vi.stubGlobal(

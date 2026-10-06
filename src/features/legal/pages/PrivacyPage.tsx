@@ -29,8 +29,8 @@ export const PrivacyPage: FC = () => {
       </Title>
       <Paragraph className={styles.pageContent}>
         We are committed to protecting your privacy. This policy applies to all users of the
-        Service, including admin users with authenticated accounts and client viewers who access
-        projects via project codes. By using the Service, you consent to the practices described in
+        Service, including freelancers with authenticated accounts and their clients who review
+        projects via project access codes. By using the Service, you consent to the practices described in
         this policy.
       </Paragraph>
 
@@ -74,7 +74,7 @@ export const PrivacyPage: FC = () => {
       <Paragraph className={styles.pageContent}>
         We use the data we collect to: provide and maintain the Service; authenticate users and
         manage access control; process AI refinement requests and generate story drafts; enable
-        project sharing via client viewer access; communicate with you about your account or the
+        project sharing via client review access; communicate with you about your account or the
         Service; detect and prevent security incidents or abuse.
       </Paragraph>
       <Paragraph className={styles.pageContent}>
@@ -105,7 +105,7 @@ export const PrivacyPage: FC = () => {
         We implement industry-standard security measures to protect your data: passwords are hashed
         using secure algorithms; authentication tokens are short-lived and not persisted in browser
         storage by default; data transmission is encrypted via TLS; access to the Service is
-        controlled through role-based permissions (admin, viewer).
+        controlled through role-based permissions (admin, member).
       </Paragraph>
       <Paragraph className={styles.pageContent}>
         As an open-source project, our code is publicly auditable, which provides additional
@@ -123,8 +123,8 @@ export const PrivacyPage: FC = () => {
         rights, property, or safety of Open Projects Hub, our users, or the public.
       </Paragraph>
       <Paragraph className={styles.pageContent}>
-        Project data visible to client viewers is limited to approved stories for the specific
-        project they access via project code. Client viewers cannot access admin-only data, drafts,
+        Project data visible to clients is limited to approved stories for the specific
+        project they access via its project access code. Clients cannot access account data, drafts,
         or other projects.
       </Paragraph>
 

@@ -94,9 +94,9 @@ export const mapAdminSession = (
       getDisplayNameFromEmail(normalizedEmail),
     loggedInAt: response.loggedInAt ?? new Date().toISOString(),
     // Every role check in the app reads this one field, so an absent role must fall back
-    // to the least privilege rather than the most: a malformed response should cost a
-    // viewer nothing, not hand them the admin shell.
-    role: response.user?.role ?? response.role ?? "viewer",
+    // to the least privilege rather than the most: a malformed response should not
+    // hand someone the Admin's team controls.
+    role: response.user?.role ?? response.role ?? "member",
     workspace: response.user?.workspace ?? undefined,
   };
 };

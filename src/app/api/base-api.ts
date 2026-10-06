@@ -22,10 +22,24 @@ interface ApiErrorBody {
   promptsKeyUpdate?: boolean;
 }
 
+/**
+ * The Client Review route is anonymous: its access code is the only credential. A freelancer
+ * previewing it while signed in must be treated like any other visitor, so these calls carry
+ * no token and a 404 or 429 from them never touches the freelancer's session.
+ */
+const PUBLIC_URL_PREFIX = "/v1/viewer/";
+
+const isPublicRequest = (args: string | FetchArgs): boolean =>
+  (typeof args === "string" ? args : args.url).startsWith(PUBLIC_URL_PREFIX);
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers, { getState, arg }) => {
     headers.set("Content-Type", "application/json");
+
+    if (isPublicRequest(arg)) {
+      return headers;
+    }
 
     // Read token from Redux state (in-memory only)
     const state = getState() as RootState;
@@ -83,7 +97,7 @@ export const baseQuery: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 && !isPublicRequest(args)) {
     const isRefreshCall = typeof args === "object" && args.url === adminAuthConfig.refreshEndpoint;
     const hadSession = (api.getState() as RootState).auth.session?.token != null;
 

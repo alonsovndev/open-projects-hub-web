@@ -37,7 +37,7 @@ export interface VerifyEmailValues {
   password?: string;
 }
 
-export type UserRole = "admin" | "member" | "viewer";
+export type UserRole = "admin" | "member";
 
 export interface WorkspaceSummary {
   id: string;

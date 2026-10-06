@@ -7,7 +7,7 @@ import type { AdminSession, UserRole } from "@/features/auth/types";
 
 /**
  * Renaming the workspace is the Admin's alone on the server (`require_admin`),
- * so showing the tab to a member or viewer would only produce 403s. This pins
+ * so showing the tab to a member would only produce 403s. This pins
  * the client gate to that contract.
  */
 
@@ -53,10 +53,4 @@ describe("Settings Workspace tab access", () => {
     expect(screen.queryByText("Workspace")).not.toBeInTheDocument();
   });
 
-  it("hides the tab from a viewer", async () => {
-    renderAs("viewer");
-
-    expect(await screen.findByText("Profile")).toBeInTheDocument();
-    expect(screen.queryByText("Workspace")).not.toBeInTheDocument();
-  });
 });

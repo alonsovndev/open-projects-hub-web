@@ -93,7 +93,7 @@ export const backlogApi = baseApi.injectEndpoints({
         body: { status, dateFrom, dateTo },
         // Only a successful export is a file. An error body is JSON, and reading it as a
         // blob would hide the server's message from base-api's error normalizer, turning
-        // a Viewer's 403 into the generic fallback text.
+        // a 403 into the generic fallback text.
         responseHandler: async (response) => (response.ok ? response.blob() : response.json()),
       }),
       transformResponse: (blob: Blob, meta) => {

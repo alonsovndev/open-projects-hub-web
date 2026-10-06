@@ -24,7 +24,7 @@ export const WorkspacePanel: FC = () => {
           <div>
             <Text className={styles.title}>Workspace</Text>
             <Text type="secondary" className={styles.subtitle}>
-              The name your teammates and viewers see across the app
+              The name your teammates see across the app
             </Text>
           </div>
         </div>

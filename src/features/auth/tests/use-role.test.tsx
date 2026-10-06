@@ -40,7 +40,6 @@ describe("useRole", () => {
     expect(result.current.role).toBeUndefined();
     expect(result.current.isAdmin).toBe(false);
     expect(result.current.isMember).toBe(false);
-    expect(result.current.isViewer).toBe(false);
   });
 
   it("should return admin role and isAdmin true", () => {
@@ -63,7 +62,6 @@ describe("useRole", () => {
     expect(result.current.role).toBe("admin");
     expect(result.current.isAdmin).toBe(true);
     expect(result.current.isMember).toBe(false);
-    expect(result.current.isViewer).toBe(false);
   });
 
   it("should return member role and isMember true", () => {
@@ -86,7 +84,6 @@ describe("useRole", () => {
     expect(result.current.role).toBe("member");
     expect(result.current.isAdmin).toBe(false);
     expect(result.current.isMember).toBe(true);
-    expect(result.current.isViewer).toBe(false);
     expect(result.current.canEdit).toBe(true);
     expect(result.current.canManageTeam).toBe(false);
   });
@@ -110,7 +107,6 @@ describe("useRole", () => {
 
     expect(result.current.hasRole("admin")).toBe(true);
     expect(result.current.hasRole("member")).toBe(false);
-    expect(result.current.hasRole("viewer")).toBe(false);
   });
 
   it("should check hasAnyRole correctly", () => {
@@ -131,7 +127,7 @@ describe("useRole", () => {
     const { result } = renderHook(() => useRole(), { wrapper });
 
     expect(result.current.hasAnyRole(["admin", "member"])).toBe(true);
-    expect(result.current.hasAnyRole(["member", "viewer"])).toBe(false);
+    expect(result.current.hasAnyRole(["member"])).toBe(false);
     expect(result.current.hasAnyRole([])).toBe(false);
   });
 });

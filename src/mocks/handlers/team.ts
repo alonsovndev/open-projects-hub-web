@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-import type { AddTeamMemberValues, AssignableRole, TeamMember } from "@/features/settings/types";
+import type { AddTeamMemberValues, TeamMember } from "@/features/settings/types";
 import { adminAuthConfig } from "@/resources/config/auth";
 
 const base = adminAuthConfig.apiBaseUrl;
@@ -31,7 +31,7 @@ export const teamHandlers = [
       id: `user-${members.length + 1}`,
       email: body.email,
       displayName: body.displayName,
-      role: body.role,
+      role: "member",
       isActive: true,
     };
     members = [...members, created];
@@ -69,21 +69,5 @@ export const teamHandlers = [
       member.id === target.id ? { ...member, isActive: active } : member
     );
     return HttpResponse.json({ ...target, isActive: active });
-  }),
-
-  http.patch(`${base}/v1/users/:id/role`, async ({ params, request }) => {
-    const { role } = (await request.json()) as { role: AssignableRole };
-    const target = members.find((member) => member.id === params.id);
-    if (!target) {
-      return HttpResponse.json({ message: "User not found" }, { status: 404 });
-    }
-    if (target.role === "admin") {
-      return HttpResponse.json(
-        { message: "The workspace Admin's role cannot be changed" },
-        { status: 400 }
-      );
-    }
-    members = members.map((member) => (member.id === target.id ? { ...member, role } : member));
-    return HttpResponse.json({ ...target, role });
   }),
 ];

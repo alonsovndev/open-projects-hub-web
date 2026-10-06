@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 
@@ -44,18 +44,11 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
     expect(await screen.findByText("admin@test.com")).toBeInTheDocument();
   });
 
-  it("offers only the member and viewer roles", async () => {
-    const user = userEvent.setup();
+  it("does not ask for a role, because everyone added is a member", async () => {
     renderPanel();
+    await screen.findByText("admin@test.com");
 
-    await user.click(screen.getByLabelText("Role"));
-
-    const listbox = await screen.findByRole("listbox");
-    // An Admin cannot be added: the API refuses it until roles can be changed.
-    expect(within(listbox).getAllByRole("option").map((option) => option.textContent)).toEqual([
-      "member",
-      "viewer",
-    ]);
+    expect(screen.queryByLabelText("Role")).not.toBeInTheDocument();
   });
 
   it("adds a member and shows them in the list", async () => {
@@ -110,19 +103,6 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
 
     expect(screen.getByText("admin")).toBeInTheDocument();
     expect(screen.queryByLabelText("Role for Admin User")).not.toBeInTheDocument();
-  });
-
-  it("lets the Admin change a member's role", async () => {
-    const user = userEvent.setup();
-    renderPanel();
-    await screen.findByText("sam@test.com");
-
-    await user.click(screen.getByLabelText("Role for Sam Member"));
-    await user.click(await screen.findByTitle("viewer"));
-
-    expect(await screen.findByText(/Role updated/)).toBeInTheDocument();
-    const row = screen.getByText("sam@test.com").closest("tr") as HTMLElement;
-    await waitFor(() => expect(within(row).getByTitle("viewer")).toBeInTheDocument());
   });
 
   it("does not offer to delete the Admin", async () => {

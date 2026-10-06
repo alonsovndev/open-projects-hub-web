@@ -10,19 +10,15 @@ export interface PasswordChangeData {
   newPassword: string;
 }
 
-/** Roles an Admin can give someone, when adding them or later; a workspace has exactly one Admin. */
-export type AssignableRole = "member" | "viewer";
-
 export interface TeamMember {
   id: string;
   email: string;
   displayName: string;
-  role: "admin" | "member" | "viewer";
+  role: "admin" | "member";
   isActive: boolean;
 }
 
 export interface AddTeamMemberValues {
   displayName: string;
   email: string;
-  role: AssignableRole;
 }

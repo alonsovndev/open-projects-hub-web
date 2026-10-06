@@ -15,7 +15,7 @@ export const RoleSelection: FC = () => {
   };
 
   const handleUserClick = () => {
-    navigate("/project-entry");
+    navigate("/viewer");
   };
 
   return (
