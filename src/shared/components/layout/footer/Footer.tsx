@@ -8,8 +8,52 @@ import styles from "./footer.module.scss";
 
 const { Text } = Typography;
 
-export const Footer: FC = () => {
+interface FooterProps {
+  variant?: "default" | "landing";
+}
+
+export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
   const currentYear = new Date().getFullYear();
+
+  if (variant === "landing") {
+    return (
+      <footer className={styles.landingFooter}>
+        <div className={styles.landingContainer}>
+          <Link to="/" className={styles.landingBrand}>
+            <img src="/favicon.svg" alt="" width="22" height="22" />
+            Open Projects Hub
+          </Link>
+          <nav className={styles.landingNav} aria-label="Footer navigation">
+            <a href="#features">Product</a>
+            <a
+              href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Documentation
+            </a>
+            <a href="https://github.com/alonsovndev" target="_blank" rel="noopener noreferrer">
+              Code (GitHub)
+            </a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+          </nav>
+          <a
+            href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.landingGithub}
+            aria-label="GitHub repository"
+          >
+            <GithubOutlined aria-hidden="true" />
+          </a>
+          <span className={styles.landingCopyright}>
+            &copy; {currentYear} Open Projects Hub. All rights reserved.
+          </span>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className={styles.footer}>

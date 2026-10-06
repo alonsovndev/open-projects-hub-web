@@ -2,9 +2,9 @@
 
 .tableWrapper {
   background: $surface-white;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
-  overflow: hidden;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  min-width: 0;
 }
 
 .projectsTable {
@@ -46,8 +46,6 @@
 .priorityTag {
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .progressCell {

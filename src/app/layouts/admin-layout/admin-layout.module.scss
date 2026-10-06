@@ -7,7 +7,7 @@
 .sider {
   background: $surface-white;
   border-right: 1px solid $surface-base;
-  box-shadow: $shadow-md;
+  box-shadow: none;
 
   :global {
     .ant-layout-sider-trigger {
@@ -76,9 +76,12 @@
       border-radius: $radius-sm;
       margin: 0 $spacing-md $spacing-xs;
       padding-left: $spacing-md;
-      height: 40px;
-      line-height: 40px;
-      transition: all 0.3s ease;
+      width: calc(100% - 32px);
+      height: 44px;
+      line-height: 44px;
+      transition:
+        color 0.15s ease,
+        background-color 0.15s ease;
 
       &:hover {
         color: $primary-base;
@@ -86,11 +89,7 @@
       }
 
       &.ant-menu-item-selected {
-        background: linear-gradient(
-          135deg,
-          rgba(var(--color-primary-rgb), 0.1) 0%,
-          rgba(var(--color-primary-rgb), 0.15) 100%
-        );
+        background: $primary-bg-light;
         color: $primary-base;
         font-weight: 600;
 
@@ -139,7 +138,7 @@
 }
 
 .avatar {
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  background: $primary-base;
   font-family: $font-headline;
   font-weight: 700;
   flex-shrink: 0;
@@ -181,19 +180,67 @@
 }
 
 .mainLayout {
+  min-width: 0;
   background: $surface-light;
 }
 
 .content {
-  min-height: 100vh;
-  padding: $spacing-2xl;
-  overflow-y: auto;
+  min-width: 0;
+  padding: $spacing-xl;
 
-  @media (max-width: $breakpoint-tablet) {
-    padding: $spacing-xl $spacing-md;
+  @media (max-width: 1023px) {
+    padding: $spacing-lg;
   }
 
   @media (max-width: $breakpoint-mobile) {
-    padding: $spacing-lg $spacing-sm;
+    padding: $spacing-lg $spacing-md;
   }
+}
+
+.mobileHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: $surface-white;
+  border-bottom: 1px solid $border-light;
+}
+
+.mobileMenuButton {
+  margin-left: auto;
+  width: 44px;
+  height: 44px;
+}
+
+.navigationDrawer {
+  :global(.ant-drawer-body) {
+    padding: 0;
+  }
+
+  .siderContent {
+    min-height: 100%;
+  }
+}
+
+.collapseButton,
+.logoutButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.sider:global(.ant-layout-sider-collapsed) {
+  .logo {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .userSection {
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-sm;
+  }
+}
+
+.navigationDrawer :global(#workspace-navigation) {
+  height: 100%;
 }

@@ -8,9 +8,9 @@ import styles from "./client-viewer.module.scss";
 export const ClientViewer: FC = () => {
   usePageTitle("Project Viewer");
   return (
-    <main className={styles.pageContainer}>
+    <div className={styles.pageContainer}>
       <ClientViewerPortal />
-    </main>
+    </div>
   );
 };
 export default ClientViewer;

@@ -48,7 +48,9 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
   const { data: clientsData } = useGetClientsQuery(undefined, { skip: !canEdit });
   const clientOptions = [
     { label: "All Clients", value: "all" },
-    ...(clientsData ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id })) : []),
+    ...(clientsData
+      ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id }))
+      : []),
   ];
   return (
     <div className={styles.filterBar}>
@@ -61,6 +63,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           onChange={(e) => onSearchChange(e.target.value)}
           prefix={<SearchOutlined />}
           className={styles.searchInput}
+          aria-label="Search projects"
         />
       </div>
 
@@ -71,6 +74,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           value={filters.status}
           onChange={onStatusFilter}
           className={styles.filterSelect}
+          aria-label="Filter by status"
           options={[
             { label: "All Statuses", value: "all" },
             { label: "Active", value: "active" },
@@ -87,6 +91,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           value={filters.priority}
           onChange={onPriorityFilter}
           className={styles.filterSelect}
+          aria-label="Filter by priority"
           options={[
             { label: "All Priorities", value: "all" },
             { label: "High", value: "high" },
@@ -125,6 +130,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           }}
           allowClear
           className={styles.filterSelect}
+          placeholder={["Created from", "Created through"]}
           aria-label="Filter by created date"
         />
 

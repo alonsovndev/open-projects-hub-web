@@ -28,7 +28,7 @@
 }
 
 .cardSubtitle {
-  color: rgba(var(--color-text-primary-rgb), 0.45);
+  color: $text-secondary;
   font-size: 14px;
 }
 
@@ -50,12 +50,14 @@
 .notesInput {
   height: 100% !important;
   resize: none;
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-  font-size: 13px;
+  font-family: $font-body;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .formActions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }

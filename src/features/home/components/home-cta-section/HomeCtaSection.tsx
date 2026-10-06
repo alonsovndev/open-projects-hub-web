@@ -1,5 +1,6 @@
 import type { FC } from "react";
 
+import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -9,32 +10,51 @@ export const HomeCtaSection: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className={styles.ctaSection}>
+    <section className={styles.ctaSection} aria-labelledby="cta-title">
+      <svg className={styles.ctaPattern} viewBox="0 0 600 120" fill="none" aria-hidden="true">
+        {Array.from({ length: 8 }, (_, lineIndex) => (
+          <path
+            key={lineIndex}
+            d={
+              "M0 " +
+              (100 + lineIndex * 5) +
+              " C100 110 150 15 245 " +
+              (45 + lineIndex * 5) +
+              " S340 100 405 " +
+              (40 + lineIndex * 5) +
+              " S510 20 600 " +
+              (70 + lineIndex * 5)
+            }
+          />
+        ))}
+      </svg>
       <div className={styles.ctaContainer}>
         <div className={styles.ctaContent}>
-          <h2 className={styles.ctaTitle}>Build with Precision.</h2>
+          <h2 id="cta-title" className={styles.ctaTitle}>
+            Build with precision.
+          </h2>
           <p className={styles.ctaDescription}>
             Turn ambiguous notes into actionable project plans. Starts here.
           </p>
-          <div className={styles.ctaActions}>
-            <Button
-              type="primary"
-              size="large"
-              className={styles.ctaPrimaryButton}
-              onClick={() => navigate("/register")}
-            >
-              Create Account
-            </Button>
-            <Button
-              size="large"
-              className={styles.ctaSecondaryButton}
-              href="https://github.com/alonsovndev"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Contact
-            </Button>
-          </div>
+        </div>
+        <div className={styles.ctaActions}>
+          <Button
+            type="primary"
+            size="large"
+            className={styles.ctaPrimaryButton}
+            onClick={() => navigate("/register")}
+          >
+            Create Account <ArrowRightOutlined aria-hidden="true" />
+          </Button>
+          <Button
+            size="large"
+            className={styles.ctaSecondaryButton}
+            href="https://github.com/alonsovndev"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Contact
+          </Button>
         </div>
       </div>
     </section>

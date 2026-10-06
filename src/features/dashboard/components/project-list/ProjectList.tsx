@@ -118,10 +118,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                   </div>
                   <Progress
                     percent={completionPercent}
-                    strokeColor={{
-                      "0%": "#0057c2",
-                      "100%": "#006ef2",
-                    }}
+                    strokeColor="var(--color-primary)"
                     trailColor="#eeeeee"
                   />
                 </div>
@@ -146,17 +143,18 @@ const ProjectListComponent: FC<ProjectListProps> = ({
 
                 <div className={styles.metaRow}>
                   <Text className={styles.client}>Client: {project.client}</Text>
-                  <Text className={styles.lastUpdated} title={project.createdAt}>
-                    Created {formatDate(project.createdAt)} · Updated {formatRelativeTime(project.lastUpdated)}
+                  <Text
+                    className={styles.lastUpdated}
+                    title={`Created ${formatDate(project.createdAt)} · Updated ${formatDate(project.lastUpdated)}`}
+                  >
+                    Created {formatDate(project.createdAt)} · Updated{" "}
+                    {formatRelativeTime(project.lastUpdated)}
                   </Text>
                 </div>
-                <Text type="secondary" className={styles.lastUpdated} style={{ fontSize: 12 }}>
-                  Created {formatDate(project.createdAt)} · Updated {formatDate(project.lastUpdated)}
-                </Text>
               </div>
 
               <div className={styles.cardFooter}>
-                <Space size="small" className={styles.actions}>
+                <Space size="small" wrap className={styles.actions}>
                   <Button
                     type="primary"
                     icon={<EyeOutlined />}

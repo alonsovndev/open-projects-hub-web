@@ -1,60 +1,76 @@
 import type { FC } from "react";
 
-import { FileTextOutlined, RobotOutlined, BarChartOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  FileTextOutlined,
+  ThunderboltOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
 
 import styles from "./home-features-section.module.scss";
 
-const steps = [
+const features = [
   {
-    id: "capture-raw-ideas",
-    number: "01",
-    icon: <FileTextOutlined />,
+    id: "capture",
     title: "Capture Raw Ideas",
     description:
       "Input unstructured notes, emails, and conversations to begin structuring your project.",
+    icon: FileTextOutlined,
   },
   {
-    id: "ai-refine-stories",
-    number: "02",
-    icon: <RobotOutlined />,
+    id: "refine",
     title: "AI-Powered Story Refinement",
     description:
       "Leverage AI to refine raw ideas into structured stories, identify ambiguities, and create actionable plans.",
+    icon: ThunderboltOutlined,
   },
   {
-    id: "visualize-export-plan",
-    number: "03",
-    icon: <BarChartOutlined />,
+    id: "export",
     title: "Visualize & Export Plan",
     description:
       "Visualize client backlogs, maintain editorial control, and export structured artifacts to Markdown.",
+    icon: ExportOutlined,
   },
 ];
 
-export const HomeFeaturesSection: FC = () => {
-  return (
-    <section className={styles.featuresSection} id="features">
-      <div className={styles.featuresContainer}>
-        <div className={styles.featuresHeader}>
-          <h2 className={styles.featuresTitle}>From Idea to Impact.</h2>
-          <p className={styles.featuresSubtitle}>
-            A seamless three-step cycle to bring professional clarity to every project.
-          </p>
-        </div>
-
-        <div className={styles.featuresGrid}>
-          {steps.map((step) => (
-            <div key={step.id} className={styles.featureCard}>
-              <div className={styles.featureNumber} aria-hidden="true">
-                {step.number}
-              </div>
-              <div className={styles.featureIcon}>{step.icon}</div>
-              <h3 className={styles.featureTitle}>{step.title}</h3>
-              <p className={styles.featureDescription}>{step.description}</p>
-            </div>
-          ))}
-        </div>
+export const HomeFeaturesSection: FC = () => (
+  <section className={styles.featuresSection} id="features" aria-labelledby="features-title">
+    <div className={styles.featuresContainer}>
+      <div className={styles.featuresHeader}>
+        <h2 id="features-title" className={styles.featuresTitle}>
+          From idea to impact.
+        </h2>
+        <p className={styles.featuresSubtitle}>
+          A seamless flow from unstructured thoughts to professional project plans.
+        </p>
+        <a className={styles.workflowLink} href="#workflow">
+          Learn more about the workflow <ArrowRightOutlined aria-hidden="true" />
+        </a>
       </div>
-    </section>
-  );
-};
+      <div className={styles.featuresGrid}>
+        {features.map((feature) => (
+          <article key={feature.id} className={styles.featurePanel} data-visual={feature.id}>
+            <span className={styles.featureIcon}>
+              <feature.icon aria-hidden="true" />
+            </span>
+            <h3 className={styles.featureTitle}>{feature.title}</h3>
+            <p className={styles.featureDescription}>{feature.description}</p>
+            <div className={styles.productMiniature} aria-hidden="true">
+              <div className={styles.miniatureToolbar}>
+                <span />
+                <span />
+              </div>
+              <div className={styles.miniatureRows}>
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+);

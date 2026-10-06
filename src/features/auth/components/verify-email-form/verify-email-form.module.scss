@@ -4,18 +4,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: $spacing-xl;
+  flex: 1;
+  padding: $spacing-2xl $spacing-md;
   background-color: $surface-light;
 }
 
 .card {
   width: 100%;
   max-width: 440px;
-  padding: 3rem 2.5rem;
+  padding: $spacing-xl;
   background-color: $surface-white;
   border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  box-shadow: none;
   border: 1px solid $surface-base;
 
   @media (max-width: 480px) {
@@ -131,7 +131,6 @@
   }
 }
 
-
 .footer {
   margin-top: $spacing-lg;
   text-align: center;
@@ -161,4 +160,10 @@
 .hint {
   margin: $spacing-xs 0 0 0;
   font-size: 0.8125rem;
+}
+
+@media (max-width: 480px) {
+  .verifyEmailPanel {
+    padding-block: $spacing-xl;
+  }
 }

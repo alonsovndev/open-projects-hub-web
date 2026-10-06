@@ -74,9 +74,12 @@ export const RefinementPage: FC = () => {
 
       <div className={styles.projectSection}>
         <div className={styles.projectSelector}>
-          <Text className={styles.selectorLabel}>Project</Text>
+          <Text className={styles.selectorLabel} id="refinement-project-label">
+            Project
+          </Text>
           <Select
-            style={{ width: 500 }}
+            className={styles.projectSelect}
+            aria-labelledby="refinement-project-label"
             placeholder="Select a project"
             options={projectOptions}
             value={selectedProjectId || undefined}

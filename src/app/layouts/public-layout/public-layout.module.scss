@@ -6,4 +6,31 @@
 
 .main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.landing {
+  --color-primary: #075bc7;
+  --color-primary-rgb: 7, 91, 199;
+  --color-primary-dark: #064a9e;
+  --color-primary-hover: #064a9e;
+  --color-link: #075bc7;
+  --color-surface-light: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-primary-rgb: 15, 23, 42;
+  --color-text-secondary: #5f6877;
+  --color-text-secondary-rgb: 95, 104, 119;
+  --color-border-light: #dce3ec;
+  --color-border-subtle: #e9edf3;
+  --color-primary-bg-light: #eef5ff;
+  --color-success: #16834b;
+  --color-surface-inverted: #0d234a;
+  --color-text-inverted: #ffffff;
+  --color-text-inverted-rgb: 255, 255, 255;
+  --color-border-inverted: rgba(255, 255, 255, 0.16);
+  --radius-md: 0.5rem;
+
+  background: var(--color-surface-white);
 }

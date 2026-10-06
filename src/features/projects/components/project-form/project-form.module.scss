@@ -4,8 +4,7 @@
   max-width: 900px;
   margin: 0 auto;
   background: $surface-white;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  border-radius: $radius-md;
 }
 
 .formTitle {
@@ -68,7 +67,7 @@
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: $spacing-md $spacing-lg;
   margin-bottom: $spacing-md;
 
@@ -86,36 +85,13 @@
   display: flex;
   justify-content: flex-end;
   gap: $spacing-md;
+  flex-wrap: wrap;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
   border-top: 1px solid $surface-base;
 }
 
 .submitButton {
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
-  border: none;
   font-family: $font-body;
   font-weight: 600;
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    &:hover:not(:disabled) {
-      transform: none;
-    }
-
-    &:active:not(:disabled) {
-      transform: none;
-    }
-  }
 }

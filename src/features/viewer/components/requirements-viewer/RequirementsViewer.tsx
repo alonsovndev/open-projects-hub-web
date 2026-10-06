@@ -15,7 +15,6 @@ interface RequirementsViewerProps {
   review: ClientReview;
 }
 
-const { Content } = Layout;
 const { Paragraph, Text, Title } = Typography;
 
 const STATUS_DISPLAY: Record<StoryStatus, { label: string; color: string }> = {
@@ -48,7 +47,7 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ review }) => {
         </Tag>
       </AppHeader>
 
-      <Content className={styles.content}>
+      <div className={styles.content}>
         <div className={styles.contentInner}>
           <div className={styles.projectHeader}>
             <div className={styles.projectInfo}>
@@ -82,7 +81,10 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ review }) => {
                       <Tag className={styles.statusTag} color={STATUS_DISPLAY[story.status].color}>
                         {STATUS_DISPLAY[story.status].label}
                       </Tag>
-                      <Tag className={styles.statusTag} color={PROJECT_PRIORITY_COLORS[story.priority]}>
+                      <Tag
+                        className={styles.statusTag}
+                        color={PROJECT_PRIORITY_COLORS[story.priority]}
+                      >
                         {story.priority} priority
                       </Tag>
                     </div>
@@ -101,7 +103,10 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ review }) => {
 
                       <div className={styles.criteriaList}>
                         {story.acceptanceCriteria.map((criterion, criterionIndex) => (
-                          <div key={`${criterionIndex}-${criterion}`} className={styles.criterionItem}>
+                          <div
+                            key={`${criterionIndex}-${criterion}`}
+                            className={styles.criterionItem}
+                          >
                             <div className={styles.criterionNumber}>{criterionIndex + 1}</div>
                             <div className={styles.criterionContent}>
                               <span className={styles.criterionText}>{criterion}</span>
@@ -116,7 +121,7 @@ export const RequirementsViewer: FC<RequirementsViewerProps> = ({ review }) => {
             </div>
           )}
         </div>
-      </Content>
+      </div>
     </Layout>
   );
 };

@@ -94,13 +94,14 @@ export const ProjectBacklogPage: FC = () => {
               </Text>
             </div>
           </div>
-          <Space>
+          <Space wrap className={styles.headerActions}>
             <div className={styles.projectSelector}>
-              <Text strong style={{ marginRight: 8 }}>
+              <Text strong id="backlog-project-label">
                 Project:
               </Text>
               <Select
-                style={{ width: 300 }}
+                className={styles.projectSelect}
+                aria-labelledby="backlog-project-label"
                 placeholder="Select a project"
                 options={projectOptions}
                 value={projectId || undefined}
