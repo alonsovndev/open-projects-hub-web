@@ -6,6 +6,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   CalendarOutlined,
+  KeyOutlined,
   UnorderedListOutlined,
   InboxOutlined,
   UndoOutlined,
@@ -130,6 +131,15 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                     <CalendarOutlined className={styles.infoIcon} />
                     <Text className={styles.infoText}>
                       {formatDate(project.startDate)} - {formatDate(project.endDate)}
+                    </Text>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <KeyOutlined className={styles.infoIcon} />
+                    <Text className={styles.infoText}>
+                      Access code:{" "}
+                      <Text code copyable={{ text: project.accessCode }}>
+                        {project.accessCode}
+                      </Text>
                     </Text>
                   </div>
                 </div>

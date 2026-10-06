@@ -130,5 +130,10 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
       expect(screen.getByRole("button", { name: /delete open projects hub/i })).toBeInTheDocument();
     });
 
+    it("shows the client access code on the card", () => {
+      renderPage("admin");
+
+      expect(screen.getByText("PRJ-DEMX23A1")).toBeInTheDocument();
+    });
   });
 });
