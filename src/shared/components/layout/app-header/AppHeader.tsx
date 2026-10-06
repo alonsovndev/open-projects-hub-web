@@ -55,9 +55,6 @@ export const AppHeader: FC<AppHeaderProps> = ({
               <span className={styles.brandName}>Open Projects Hub</span>
             </Link>
             <nav className={styles.navLinks} aria-label="Main navigation">
-              <a href="#features" className={styles.navLink}>
-                Product
-              </a>
               <a
                 href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
                 target="_blank"
@@ -103,13 +100,6 @@ export const AppHeader: FC<AppHeaderProps> = ({
         {mobileMenuOpen && (
           <div id="landing-mobile-menu" className={styles.mobileMenu}>
             <nav className={styles.mobileNavLinks} aria-label="Mobile navigation">
-              <a
-                href="#features"
-                className={styles.mobileNavLink}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Product
-              </a>
               <a
                 href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
                 target="_blank"

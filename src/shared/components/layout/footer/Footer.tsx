@@ -24,7 +24,6 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
             Open Projects Hub
           </Link>
           <nav className={styles.landingNav} aria-label="Footer navigation">
-            <a href="#features">Product</a>
             <a
               href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
               target="_blank"

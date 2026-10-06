@@ -70,6 +70,7 @@ test.describe("Home Page", () => {
       "https://github.com/NaranjoSolutions/open-projects-hub-docs"
     );
     const footer = page.locator("footer");
+    await expect(footer.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: "Code (GitHub)", exact: true })).toHaveAttribute(
       "href",
       "https://github.com/NaranjoSolutions/open-projects-hub-web"
@@ -86,8 +87,7 @@ test.describe("Home Page", () => {
       "/terms"
     );
 
-    await header.getByRole("link", { name: "Product", exact: true }).click();
-    await expect(page).toHaveURL(/#features$/);
+    await expect(header.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
     await page.getByRole("link", { name: "Learn more about the workflow" }).click();
     await expect(page).toHaveURL(/#workflow$/);
     await page.getByRole("button", { name: "Get Started", exact: true }).first().click();
@@ -215,6 +215,9 @@ test.describe("Home Page", () => {
       await page.goto("/");
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       await expect(page.locator("#product-example")).toBeVisible();
+      await expect(
+        page.locator("footer").getByRole("link", { name: "Product", exact: true })
+      ).toHaveCount(0);
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
         .toBe(true);
@@ -231,6 +234,10 @@ test.describe("Home Page", () => {
   }
 
   test("mobile menu closes after selection, Escape, and switching to desktop", async ({ page }) => {
+    const documentationUrl = "https://github.com/NaranjoSolutions/open-projects-hub-docs";
+    await page.context().route(documentationUrl, (route) =>
+      route.fulfill({ contentType: "text/html", body: "<html><body>Documentation</body></html>" })
+    );
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto("/");
     const toggle = page.getByRole("button", { name: "Toggle menu" });
@@ -239,12 +246,14 @@ test.describe("Home Page", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     await expect(toggle).toBeFocused();
     await toggle.click();
-    await page
-      .getByRole("navigation", { name: "Mobile navigation" })
-      .getByRole("link", { name: "Product", exact: true })
-      .click();
+    const mobileNavigation = page.getByRole("navigation", { name: "Mobile navigation" });
+    await expect(mobileNavigation.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
+    const documentationPopup = page.waitForEvent("popup");
+    await mobileNavigation.getByRole("link", { name: "Documentation", exact: true }).click();
+    const popup = await documentationPopup;
+    await expect(popup).toHaveURL(documentationUrl);
+    await popup.close();
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
-    await expect(page).toHaveURL(/#features$/);
     await toggle.click();
     await page.setViewportSize({ width: 1440, height: 900 });
     await expect(toggle).not.toBeVisible();
