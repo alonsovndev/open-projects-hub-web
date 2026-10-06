@@ -5,11 +5,10 @@
   flex-wrap: wrap;
   gap: $spacing-lg;
   align-items: flex-start;
-  padding: $spacing-xl;
-  background: $surface-white;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
-  margin-bottom: $spacing-2xl;
+  padding: $spacing-lg 0;
+  border-top: 1px solid $border-light;
+  border-bottom: 1px solid $border-light;
+  margin-bottom: $spacing-xl;
 
   @media (max-width: $breakpoint-tablet) {
     flex-direction: column;
@@ -44,6 +43,7 @@
 
 .filterSelect {
   min-width: 160px;
+  max-width: 100%;
   font-family: $font-body;
 
   @media (max-width: $breakpoint-tablet) {
@@ -63,6 +63,11 @@
 
   @media (max-width: $breakpoint-tablet) {
     width: 100%;
+
+    :global(.ant-btn-group) {
+      display: flex;
+      width: 100%;
+    }
 
     button {
       flex: 1;

@@ -61,7 +61,6 @@ export const TeamPanel: FC = () => {
           <Tag color="blue">active</Tag>
         ) : (
           <Switch
-            size="small"
             checked={isActive}
             loading={togglingStatusMemberId === member.id}
             aria-label={`Active: ${member.displayName}`}
@@ -109,8 +108,8 @@ export const TeamPanel: FC = () => {
         <div>
           <Text className={styles.title}>Team</Text>
           <Text type="secondary" className={styles.subtitle}>
-            People in your workspace. Members work on your clients and projects alongside you.
-            Your clients don't need an account: share a project's access code with them instead.
+            People in your workspace. Members work on your clients and projects alongside you. Your
+            clients don't need an account: share a project's access code with them instead.
           </Text>
         </div>
       </div>
@@ -125,6 +124,7 @@ export const TeamPanel: FC = () => {
           loading={isLoading}
           pagination={false}
           size="middle"
+          scroll={{ x: 720 }}
         />
       )}
 

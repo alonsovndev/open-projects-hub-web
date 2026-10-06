@@ -15,12 +15,12 @@ export const Home: FC = () => {
   return (
     <div className={styles.pageContainer}>
       <AppHeader variant="landing" />
-      <main className={styles.mainContent}>
+      <div className={styles.mainContent}>
         <HomeHero />
         <HomeFeaturesSection />
         <HomeInfoGrid />
         <HomeCtaSection />
-      </main>
+      </div>
     </div>
   );
 };

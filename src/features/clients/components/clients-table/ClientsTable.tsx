@@ -76,7 +76,15 @@ const ClientsTableComponent: FC<ClientsTableProps> = ({
     [onEditClient, onDeleteClient]
   );
 
-  return <Table columns={columns} dataSource={clients} rowKey="id" loading={loading} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={clients}
+      rowKey="id"
+      loading={loading}
+      scroll={{ x: 800 }}
+    />
+  );
 };
 
 export const ClientsTable = memo(ClientsTableComponent);

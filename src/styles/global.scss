@@ -8,7 +8,9 @@
   --color-primary-rgb: 0, 87, 194;
   --color-primary-light: #4a8fd9;
   --color-primary-light-rgb: 74, 143, 217;
-  --color-primary-dark: #006ef2;
+  --color-primary-dark: #004da8;
+  --color-primary-hover: #006ef2;
+  --color-surface-white-rgb: 255, 255, 255;
   --color-link: #0057c2;
   --color-surface-white: #ffffff;
   --color-surface-light: #f9f9f9;
@@ -57,8 +59,8 @@
   --spacing-3xl: 4rem;
 
   --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 0.75rem;
 }
 
 /* Base element styles */
@@ -75,4 +77,38 @@ body {
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media (pointer: coarse) {
+  .ant-btn,
+  .ant-drawer-close,
+  .ant-modal-close,
+  .ant-select-single,
+  .ant-input-affix-wrapper,
+  .ant-menu-item,
+  .ant-tabs-tab {
+    min-height: 44px;
+  }
+
+  .ant-btn-icon-only,
+  .ant-drawer-close,
+  .ant-modal-close {
+    min-width: 44px;
+  }
+
+  .ant-switch {
+    min-width: 44px;
+    touch-action: manipulation;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -12px 0;
+    }
+  }
 }

@@ -7,7 +7,6 @@
   align-items: center;
   padding: $spacing-lg $spacing-xl;
   background-color: $surface-white;
-  backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 var(--color-border-subtle);
 }
 
@@ -49,8 +48,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(var(--color-surface-white-rgb), 0.8);
-  backdrop-filter: blur(12px);
+  background: $surface-white;
   border-bottom: 1px solid var(--color-border-subtle);
   padding: 0;
   box-shadow: none;
@@ -148,8 +146,7 @@
   &:hover {
     background: $primary-dark;
     border-color: $primary-dark;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-    transform: translateY(-1px);
+    box-shadow: none;
   }
 
   &:active {
@@ -166,6 +163,8 @@
   color: $text-secondary;
   cursor: pointer;
   padding: $spacing-sm;
+  width: 44px;
+  height: 44px;
   transition: color 0.2s ease;
 
   &:hover {
@@ -176,8 +175,7 @@
 /* Mobile Menu */
 .mobileMenu {
   display: none;
-  background: rgba(var(--color-surface-white-rgb), 0.95);
-  backdrop-filter: blur(12px);
+  background: $surface-white;
   border-bottom: 1px solid var(--color-border-subtle);
   padding: $spacing-lg;
 }
@@ -251,18 +249,19 @@
 
   /* Landing variant mobile */
   .headerLanding {
+    padding: 0;
+
     .landingContainer {
       height: 64px;
-      padding: 0 20px;
+      padding: 0 16px;
       gap: $spacing-md;
     }
 
     .brandName {
-      font-size: 15px;
+      font-size: 14px;
     }
   }
 
-  .leftSection,
   .navLinks,
   .landingActions {
     display: none;

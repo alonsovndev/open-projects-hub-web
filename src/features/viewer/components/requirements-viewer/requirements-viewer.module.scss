@@ -1,8 +1,8 @@
 @use "@/styles/variables.scss" as *;
 
 .layout {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $surface-light 0%, $surface-base 100%);
+  flex: 1;
+  background: $surface-light;
 }
 
 .roleTag {
@@ -53,7 +53,7 @@
 
 .projectTitle {
   font-family: $font-headline;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 $spacing-sm;
@@ -93,12 +93,11 @@
   background: $surface-white;
   border: 1px solid $border-subtle;
   border-radius: $radius-lg;
-  box-shadow: $shadow-lg;
-  transition: all 0.3s ease;
+  box-shadow: none;
+  transition: border-color 0.15s ease;
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(var(--color-primary-rgb), 0.12);
-    transform: translateY(-2px);
+    border-color: $border-light;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -117,7 +116,7 @@
   gap: $spacing-lg;
   margin-bottom: $spacing-xl;
   padding-bottom: $spacing-lg;
-  border-bottom: 2px solid $surface-base;
+  border-bottom: 1px solid $surface-base;
 
   @media (max-width: $breakpoint-tablet) {
     flex-direction: column;
@@ -133,8 +132,7 @@
   font-family: $font-headline;
   font-size: 0.875rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+
   color: $primary-base;
   margin-bottom: $spacing-sm;
 }
@@ -168,15 +166,14 @@
   font-family: $font-headline;
   font-size: 1rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+
   color: $text-secondary;
   margin-bottom: $spacing-md;
 }
 
 .userStoryText {
   font-family: $font-body;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.7;
   color: $text-primary;
   margin: 0;
@@ -208,7 +205,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  background: $primary-base;
   color: $text-inverted;
   font-size: 0.875rem;
   font-weight: 700;
@@ -253,4 +250,11 @@
     height: 28px;
     font-size: 0.75rem;
   }
+}
+
+.projectInfo,
+.storyTitleGroup,
+.criterionContent {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }

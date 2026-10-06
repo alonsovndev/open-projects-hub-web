@@ -29,18 +29,43 @@ export const HomeHero: FC = () => {
             Start Project
             <ArrowRightOutlined />
           </Button>
-          <Button size="large" className={styles.heroSecondaryButton}>
+          <Button size="large" className={styles.heroSecondaryButton} href="#product-example">
             View Sample
           </Button>
         </div>
       </div>
-      <div className={styles.heroImage}>
-        <img
-          src="/hero-workspace.jpg"
-          alt="Modern workspace with monitor and desk setup"
-          className={styles.heroImg}
-        />
-      </div>
+      <figure
+        id="product-example"
+        tabIndex={-1}
+        aria-labelledby="product-example-caption"
+        className={styles.productExample}
+      >
+        <figcaption id="product-example-caption" className={styles.exampleCaption}>
+          Product example — sample content
+        </figcaption>
+        <div className={styles.exampleNotes}>
+          <h2 className={styles.exampleLabel}>Raw notes</h2>
+          <p>
+            Clients need to see what is ready. Share approved requirements and keep drafts private.
+          </p>
+        </div>
+        <div className={styles.exampleStory}>
+          <div className={styles.exampleStoryHeader}>
+            <span className={styles.exampleLabel}>Refined story</span>
+            <span className={styles.exampleStatus}>Approved</span>
+          </div>
+          <h2>Review project requirements</h2>
+          <p>
+            As a client, I want to review approved requirements so I can follow the project scope.
+          </p>
+          <h3 className={styles.exampleLabel}>Acceptance criteria</h3>
+          <ul>
+            <li>The project access code opens approved stories.</li>
+            <li>Drafts remain private to the project team.</li>
+          </ul>
+        </div>
+        <p className={styles.exampleFooter}>Notes → Refine → Approve → Share</p>
+      </figure>
     </section>
   );
 };

@@ -28,7 +28,7 @@ export const lightTokens: ThemeConfig = {
     // Text
     colorText: "#1a1a1a",
     colorTextSecondary: "#666666",
-    colorTextTertiary: "#999999",
+    colorTextTertiary: "#666666",
     colorTextQuaternary: "#cccccc",
 
     // Typography
@@ -42,7 +42,7 @@ export const lightTokens: ThemeConfig = {
 
     // Radius
     borderRadius: 8,
-    borderRadiusLG: 16,
+    borderRadiusLG: 12,
     borderRadiusXS: 4,
 
     // Spacing (used internally by Ant Design)
@@ -56,10 +56,13 @@ export const lightTokens: ThemeConfig = {
     marginXS: 8,
     marginXXS: 4,
     marginLG: 24,
+    screenLG: 1024,
+    screenLGMin: 1024,
+    screenMDMax: 1023,
 
     // Shadow
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)", // $shadow-card
-    boxShadowSecondary: "0 4px 16px rgba(0, 0, 0, 0.08)", // $shadow-lg
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+    boxShadowSecondary: "0 4px 16px rgba(0, 0, 0, 0.08)",
   },
   components: {
     Menu: {
@@ -70,7 +73,7 @@ export const lightTokens: ThemeConfig = {
       itemSelectedBg: "rgba(0, 87, 194, 0.1)",
       itemSelectedColor: "#0057c2",
       itemBorderRadius: 8,
-      itemHeight: 40,
+      itemHeight: 44,
       itemMarginInline: 8,
       paddingXS: 16,
     },
@@ -83,7 +86,7 @@ export const lightTokens: ThemeConfig = {
       paddingContentVertical: 8,
     },
     Card: {
-      borderRadiusLG: 24,
+      borderRadiusLG: 12,
       paddingLG: 24,
     },
     Input: {
@@ -112,7 +115,7 @@ export const lightTokens: ThemeConfig = {
       labelRequiredMarkColor: "#ff4d4f",
     },
     Alert: {
-      borderRadiusLG: 16,
+      borderRadiusLG: 12,
       withDescriptionPadding: "16px 24px",
     },
     Spin: {
@@ -122,7 +125,7 @@ export const lightTokens: ThemeConfig = {
       borderRadius: 8,
     },
     Modal: {
-      borderRadiusLG: 24,
+      borderRadiusLG: 12,
       paddingContentHorizontal: 24,
       paddingMD: 24,
     },

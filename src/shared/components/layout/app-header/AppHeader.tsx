@@ -80,6 +80,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
               className={styles.mobileToggle}
               onClick={toggleMobileMenu}
               aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="landing-mobile-menu"
             >
               {mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
             </button>
@@ -88,7 +90,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className={styles.mobileMenu}>
+          <div id="landing-mobile-menu" className={styles.mobileMenu}>
             <nav className={styles.mobileNavLinks}>
               <a
                 href="https://github.com/alonsovndev"

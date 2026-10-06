@@ -11,7 +11,8 @@ name: Open Projects Hub
 colors:
   primary: "#0057c2"
   primary-light: "#4a8fd9"
-  primary-dark: "#006ef2"
+  primary-dark: "#004da8"
+  primary-hover: "#006ef2"
   surface-white: "#ffffff"
   surface-light: "#f9f9f9"
   surface-base: "#eeeeee"
@@ -59,8 +60,8 @@ typography:
     fontSize: 0.875rem
 rounded:
   sm: 8px
-  md: 16px
-  lg: 24px
+  md: 12px
+  lg: 12px
 spacing:
   xs: 4px
   sm: 8px
@@ -120,10 +121,10 @@ The palette is built on a high-contrast neutral foundation with a single blue pr
 ### Brand Palette
 
 | Token              | Value    | Usage                                                           |
-| ------------------ | -------- | --------------------------------------------------------------- |
+| ------------------ | ------- | --------------------------------------------------------------- |
 | **Primary**        | #0057c2  | Buttons, links, selected menu items, interactive elements       |
 | **Primary Light**  | #4a8fd9  | Hover states, disabled interactions, subtle backgrounds        |
-| **Primary Dark**   | #006ef2  | Button active press, focus rings                                |
+| **Primary Dark**   | #004da8  | Button active press, focus rings                                |
 | **Surface White**  | #ffffff  | Card backgrounds, modals, sidebars                              |
 | **Surface Light**  | #f9f9f9  | Page backgrounds, section dividers                              |
 | **Surface Base**   | #eeeeee  | Borders, dividers, disabled states, skeletons                   |
@@ -135,7 +136,7 @@ The palette is built on a high-contrast neutral foundation with a single blue pr
 Use Ant Design's built-in semantic tokens. Do NOT define custom semantic colors.
 
 | Purpose | Ant Design Token | Value    |
-| ------- | ---------------- | -------- |
+| ------- | ---------------- | ------- |
 | Success | `colorSuccess`   | #52c41a  |
 | Warning | `colorWarning`   | #faad14  |
 | Error   | `colorError`     | #ff4d4f  |
@@ -183,7 +184,7 @@ All text must meet WCAG AA contrast ratios:
 ### Extended Palette
 
 | Token                | Value                          | Usage                     |
-| -------------------- | ------------------------------ | ------------------------- |
+| -------------------- | ------------------ | ------------------------- |
 | **Primary**          | #0057c2                        | Interactive elements      |
 | **Surface White**    | #ffffff                        | Card backgrounds          |
 | **Surface Light**    | #f9f9f9                        | Page backgrounds          |
@@ -203,7 +204,7 @@ All text must meet WCAG AA contrast ratios:
 
 ## 3. Typography
 
-The entire UI uses **Inter** (variable font) via `@fontsource/inter`. No secondary typeface. The single-family approach keeps the interface cohesive.
+The UI uses the existing **Inter** font stack with system-font fallbacks. No secondary typeface or font dependency is introduced.
 
 ### Type Scale
 
@@ -220,16 +221,16 @@ The entire UI uses **Inter** (variable font) via `@fontsource/inter`. No seconda
 ### Typography Rules
 
 - ✅ Use Ant Design `Typography.Title` for H1-H3, `Typography.Text` for body, `Typography.Paragraph` for prose
-- ✅ Label Caps must use `CSSModule` styles with `text-transform: uppercase` and `letter-spacing: 0.05em`
+- ✅ Prefer sentence-case labels; reserve uppercase styling for compact metadata where it improves scanning.
 - ✅ Line heights are set and should not be overridden per component
 - ❌ Never use more than 2 type sizes on a single card
 - ❌ Never use font weights below 400 for body text (keeps readability high)
 - ❌ Never change font-family from Inter except for code blocks
-- ❌ Never use fluid/`clamp()` font sizes — use the fixed scale only
+- ✅ Public display titles use fluid sizes between 32px and 48px. Workspace titles use 28–32px; supporting copy uses 14–16px.
 
 ### Font Loading
 
-Inter is loaded via `@fontsource/inter`. The CSS stack falls back to:
+Inter is the preferred font in the CSS stack. When unavailable, the browser uses:
 
 ```
 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
@@ -250,7 +251,7 @@ Spacing follows a 4px grid with 7 tiers. Use SCSS variables, never raw values.
 | `$spacing-md`  | 1rem    | 16px | Form fields, card padding              |
 | `$spacing-lg`  | 1.5rem  | 24px | Section spacing, card internal padding |
 | `$spacing-xl`  | 2rem    | 32px | Page section separation                |
-| `$spacing-2xl` | 3rem    | 48px | Page content padding (desktop)         |
+| `$spacing-2xl` | 3rem    | 48px | Public form vertical spacing           |
 | `$spacing-3xl` | 4rem    | 64px | Hero sections, major page dividers     |
 
 ### Spacing Rules
@@ -267,13 +268,13 @@ Spacing follows a 4px grid with 7 tiers. Use SCSS variables, never raw values.
 
 ### Page Structure
 
-Page layout follows a **fixed-left-sider + fluid-content** pattern:
+Workspace layout follows a **left sidebar + flexible content** pattern at 1024px and above. Below 1024px, a header menu button opens an Ant Design Drawer with the same destinations and role permissions.
 
 ```
 ┌──────────────┬──────────────────────────────────────┐
 │              │                                      │
 │   Sider      │          Content Area                │
-│   240px      │    (min-height: 100vh)               │
+│   240px      │    (shell fills viewport)               │
 │   ↓ 80px     │                                      │
 │   collapsed   │    Page Title Row                    │
 │              │    ─────────────────────              │
@@ -287,12 +288,12 @@ Page layout follows a **fixed-left-sider + fluid-content** pattern:
 ### Content Padding
 
 | Breakpoint          | Padding |
-| ------------------- | ------- |
-| ≥1024px (desktop)   | 48px    |
-| 768-1023px (tablet) | 24px    |
-| <768px (mobile)     | 16px    |
+| ----------------- | ------------------------------ |
+| ≥1024px (desktop) | 32px                           |
+| 481–1023px        | 24px                           |
+| ≤480px (mobile)   | 16px horizontal, 24px vertical |
 
-Apply via SCSS module at the page level. The layout component itself manages sider; pages manage their own content padding.
+The workspace shell owns page gutters; feature pages do not add a second outer padding layer. Public sections use a maximum width of 1280px, with 16px mobile, 24px tablet and 32px desktop gutters. PublicLayout owns the single main landmark and footer.
 
 ### Sider
 
@@ -304,11 +305,11 @@ Apply via SCSS module at the page level. The layout component itself manages sid
 
 ### Layout Rules
 
-- ✅ No horizontal scrolling on any page
+- ✅ Keep horizontal scrolling inside dense tables; the page itself must fit the viewport.
 - ✅ Feature pages compose vertically: title → content sections (tabs, tables, forms, stat cards)
 - ✅ Use Ant Design `Layout`, `Layout.Sider`, `Layout.Content` for structural layout
-- ❌ Never use CSS Grid for page-level layout (use Ant Design components)
-- ❌ Never create custom scroll containers unless approved by design review
+- ✅ Use Ant Design grids or CSS Grid as appropriate; project grids must fit the available content width.
+- ✅ Mobile refinement uses normal page scrolling; avoid nested viewport-height panes.
 
 ---
 
@@ -317,17 +318,17 @@ Apply via SCSS module at the page level. The layout component itself manages sid
 The UI uses minimal elevation — flat design with subtle shadow cues.
 
 | Element              | Shadow                          | Usage                                   |
-| -------------------- | ------------------------------- | --------------------------------------- |
-| Cards                | `0 2px 8px rgba(0, 0, 0, 0.06)` | Subtle lift from page background        |
-| Sider                | `2px 0 8px rgba(0, 0, 0, 0.03)` | Shallow right-side shadow               |
+| -------------------- | ------------------ | ---------------------------------------- |
+| Cards                | None               | Borders distinguish records and forms    |
+| Sider                | None               | Border separates navigation from content |
 | Modals               | Default Ant Design              | 16px blur at 0.15 opacity               |
 | Dropdowns            | Default Ant Design              | Mathches Ant Design elevation           |
 | No persistent floats | —                               | No FABs, no sticky headers beyond sider |
 
 ### Elevation Rules
 
-- ✅ Cards use consistent 2px/8px shadow
-- ✅ Sider uses shallow 2px/8px right-side shadow
+- ✅ Keep record cards and forms flat; use grouping and borders for hierarchy.
+- ✅ Reserve shadows for elevated overlays such as modals and dropdowns.
 - ❌ Never use box-shadow with blur > 8px for surface elements
 - ❌ Never add shadows to buttons, inputs, or menu items
 - ❌ Never use multiple shadow layers on cards
@@ -336,19 +337,19 @@ The UI uses minimal elevation — flat design with subtle shadow cues.
 
 ## 7. Shapes (Border Radius)
 
-Three-tier radius system applied via SCSS variables and Ant Design tokens.
+Controls use 8px radii and containers use 12px. Existing SM/MD/LG token names are retained; MD and LG resolve to the same container radius.
 
 | Tier | Value               | Applied To                                               |
 | ---- | ------------------- | -------------------------------------------------------- |
 | SM   | 8px (`$radius-sm`)  | Buttons, inputs, menu items, table rows, tags, dropdowns |
-| MD   | 16px (`$radius-md`) | Larger containers, stat cards, filter panels, alerts     |
-| LG   | 24px (`$radius-lg`) | Card components, modals, form sections                   |
+| MD   | 12px (`$radius-md`) | Larger containers, stat cards, filter panels, alerts     |
+| LG   | 12px (`$radius-lg`) | Card components, modals, form sections                   |
 
 ### Radius Rules
 
 - ✅ All corners in a single component use the same radius (no mixed treatments)
-- ✅ Ant Design global `borderRadius: 8` with `borderRadiusLG: 16` covers most cases
-- ✅ Card radius uses LG (24px) via component token override
+- ✅ Ant Design global `borderRadius: 8` with `borderRadiusLG: 12` covers most cases
+- ✅ Card radius uses LG (12px) via component token override
 - ❌ Never use pill-shaped radii (border-radius ≥ component height)
 - ❌ Never set individual `border-top-left-radius` etc. — always use shorthand
 
@@ -383,9 +384,9 @@ Three-tier radius system applied via SCSS variables and Ant Design tokens.
 | Property         | Value                            |
 | ---------------- | -------------------------------- |
 | Background       | White (#ffffff)                  |
-| Radius           | LG (24px)                        |
+| Radius           | LG (12px)                        |
 | Border           | 1px solid Surface Base (#eeeeee) |
-| Shadow           | 0 2px 8px rgba(0, 0, 0, 0.06)    |
+| Shadow           | None                             |
 | Internal Padding | 24px (Ant Design default)        |
 
 - ✅ Use Ant Design `Card` component with `variant="outlined"`
@@ -442,7 +443,7 @@ See [Form Standards](#12-form-standards) for detailed UX requirements.
 
 | Property | Value                                   |
 | -------- | --------------------------------------- |
-| Radius   | LG (24px)                               |
+| Radius   | LG (12px)                               |
 | Padding  | 24px horizontal                         |
 | Header   | None or minimal (use title prop)        |
 | Footer   | Right-aligned primary + default buttons |
@@ -466,7 +467,7 @@ See [Form Standards](#12-form-standards) for detailed UX requirements.
 | Toast        | `message` hook       | Quick success/error confirmations       |
 | Confirmation | `Modal.confirm`      | Destructive action confirmations        |
 
-- ✅ `Alert` radius: MD (16px)
+- ✅ `Alert` radius: MD (12px)
 - ✅ `Alert` padding: 16px 24px (with description)
 - ❌ Never use toast notifications for critical errors — use page-level Alerts
 - ❌ Never show more than one notification at a time
@@ -756,12 +757,12 @@ For features with no records (new user, fresh database):
 
 - Use the primary blue (#0057c2) for all interactive elements — buttons, links, selected states, focus indicators
 - Use Surface Light (#f9f9f9) as the page background — it separates content areas from cards
-- Use generous border radius (24px) on cards — it distinguishes containers from the page
+- Use restrained 12px radii and borders on record cards; present statistics and filters without extra boxes.
 - Use the 4px spacing scale consistently — never freehand spacing values
 - Use Ant Design components over custom HTML elements
 - Write CSS Modules for page/component-specific styles only
 - Add `aria-label` to icon-only buttons and links
-- Test every view at 320px and 1440px before shipping
+- Check layouts at 375px, 430px, 768px, 1280px and 1440px, including keyboard and reduced-motion behavior.
 - Show loading skeletons for recognizable content patterns
 - Show empty states with CTAs for zero-data scenarios
 - Use the centralized error handler for API error messages
@@ -772,7 +773,7 @@ For features with no records (new user, fresh database):
 - Add additional colors to the palette — one primary is sufficient
 - Use box-shadows heavier than 8px blur — the design is intentionally flat
 - Use more than two type sizes on a single card — hierarchies should stay simple
-- Override Ant Design component radii inconsistently — use the three-tier system (8/16/24)
+- Override Ant Design component radii inconsistently — use the control/container tokens (8/12)
 - Hardcode colors, spacing, or radius values in components — use the token system
 - Create custom modals, tables, or form components — Ant Design provides them
 - Disable focus outlines without providing alternatives

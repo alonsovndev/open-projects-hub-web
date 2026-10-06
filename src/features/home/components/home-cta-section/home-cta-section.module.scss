@@ -2,14 +2,14 @@
 
 .ctaSection {
   background-color: $primary-base;
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
 
   @media (max-width: 1024px) {
     padding: 4rem 2rem;
   }
 
   @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
+    padding: 2.5rem 1rem;
   }
 }
 
@@ -27,7 +27,7 @@
 
 .ctaTitle {
   font-family: $font-headline;
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 700;
   color: $surface-white;
   margin: 0;
@@ -69,19 +69,20 @@
   }
 }
 
-.ctaPrimaryButton {
+.ctaSection .ctaPrimaryButton {
   height: 48px;
   font-weight: 600;
   font-size: 1rem;
-  background-color: $primary-base;
-  color: $surface-white; /* Added this line */
+  background-color: $surface-white;
+  color: $primary-base;
   border: none;
   border-radius: $radius-sm;
   padding: 0 2rem;
   transition: background-color 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: $primary-dark;
+    background-color: $surface-light;
+    color: $primary-dark;
   }
 
   @media (max-width: 480px) {
@@ -89,7 +90,7 @@
   }
 }
 
-.ctaSecondaryButton {
+.ctaSection .ctaSecondaryButton {
   height: 48px;
   font-weight: 500;
   font-size: 1rem;
@@ -100,7 +101,7 @@
   padding: 0 2rem;
   transition: border-color 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: $surface-white;
     color: $surface-white;
     background-color: rgba(var(--color-surface-white-rgb), 0.1);

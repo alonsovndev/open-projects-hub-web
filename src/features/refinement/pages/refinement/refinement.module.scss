@@ -9,12 +9,13 @@
   margin-bottom: $spacing-lg;
 }
 
-.pageTitle {
+.pageTitle:global(.ant-typography) {
   font-family: $font-headline;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.25;
   color: $text-primary;
-  margin: 0 !important;
+  margin: 0;
 }
 
 .pageSubtitle {
@@ -34,14 +35,18 @@
   align-items: center;
   gap: $spacing-md;
   margin-bottom: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.projectSelect {
+  width: 500px;
+  max-width: 100%;
 }
 
 .selectorLabel {
   font-family: $font-body;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: $text-secondary;
   flex-shrink: 0;
 }
@@ -60,6 +65,8 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
 }
 
 .summaryIcon {
@@ -110,4 +117,23 @@
 .generatedStoriesCol {
   max-height: calc(100vh - 320px);
   overflow-y: auto;
+}
+
+@media (max-width: 1023px) {
+  .workspaceCol:global(.ant-col) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-height: 0;
+  }
+
+  .generatedStoriesCol {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .pageTitle:global(.ant-typography) {
+    font-size: 1.75rem;
+  }
 }

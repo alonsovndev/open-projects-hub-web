@@ -1,7 +1,6 @@
 @use "@/styles/variables.scss" as *;
 
 .pageContainer {
-  padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -28,13 +27,13 @@
 
 .backButton {
   align-self: flex-start;
-  padding: 4px 8px;
-  height: auto;
+  padding: 8px;
+  min-height: 44px;
   font-size: 14px;
 }
 
-.pageTitle {
-  margin: 0 !important;
+.pageTitle:global(.ant-typography) {
+  margin: 0;
   font-size: 32px;
   font-weight: 600;
   color: $text-primary;
@@ -48,6 +47,21 @@
 .projectSelector {
   display: flex;
   align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.headerActions {
+  max-width: 100%;
+
+  :global(.ant-space-item) {
+    min-width: 0;
+  }
+}
+
+.projectSelect {
+  width: 300px;
+  max-width: 100%;
 }
 
 .actionButton {
@@ -63,10 +77,6 @@
 }
 
 @media (max-width: 768px) {
-  .pageContainer {
-    padding: 16px;
-  }
-
   .headerContent {
     flex-direction: column;
     align-items: stretch;
@@ -82,7 +92,13 @@
     }
   }
 
-  .pageTitle {
-    font-size: 24px;
+  .pageTitle:global(.ant-typography) {
+    font-size: 28px;
+  }
+
+  .headerActions {
+    :global(.ant-space-item):first-child {
+      width: 100%;
+    }
   }
 }

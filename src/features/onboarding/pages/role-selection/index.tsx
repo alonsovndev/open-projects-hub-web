@@ -15,7 +15,7 @@ export const RoleSelection: FC = () => {
   return (
     <div className={styles.pageContainer}>
       <AppHeader />
-      <main className={styles.mainContent}>
+      <div className={styles.mainContent}>
         <section className={styles.selectionSection}>
           <div className={styles.selectionContent}>
             <h1 className={styles.title}>Welcome to Open Projects Hub</h1>
@@ -92,7 +92,7 @@ export const RoleSelection: FC = () => {
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

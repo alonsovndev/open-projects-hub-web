@@ -96,7 +96,6 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
                 <div className={styles.storyActions}>
                   <Button
                     type="text"
-                    size="small"
                     icon={<EditOutlined />}
                     onClick={() => onEdit(story.id)}
                     disabled={isApproving}
@@ -105,7 +104,6 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
                   </Button>
                   <Button
                     type="text"
-                    size="small"
                     icon={<CheckOutlined />}
                     className={styles.approveBtn}
                     onClick={() => onApprove(story.id)}
@@ -115,7 +113,6 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
                   </Button>
                   <Button
                     type="text"
-                    size="small"
                     danger
                     icon={<DeleteOutlined />}
                     onClick={() => onDelete(story.id)}
@@ -126,15 +123,13 @@ export const GeneratedStoriesList: FC<GeneratedStoriesListProps> = ({
                 </div>
               </div>
 
-              <Paragraph className={styles.storyDescription} italic>
-                {story.description}
-              </Paragraph>
+              <Paragraph className={styles.storyDescription}>{story.description}</Paragraph>
 
               <Divider className={styles.divider} />
 
               <div className={styles.criteriaSection}>
                 <Text strong className={styles.criteriaLabel}>
-                  ACCEPTANCE CRITERIA
+                  Acceptance criteria
                 </Text>
                 <ul className={styles.criteriaList}>
                   {story.acceptanceCriteria.map((criteria, index) => (
