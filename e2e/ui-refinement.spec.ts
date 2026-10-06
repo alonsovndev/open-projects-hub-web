@@ -221,10 +221,10 @@ test("mobile landing keeps the brand and links to the product example", async ({
   await expect(page.getByText("Product example — sample content")).toBeVisible();
   const createAccount = page.getByRole("button", { name: "Create Account", exact: true });
   await expect(createAccount).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  await expect(createAccount).toHaveCSS("color", "rgb(0, 87, 194)");
+  await expect(createAccount).toHaveCSS("color", "rgb(7, 91, 199)");
   await createAccount.hover();
-  await expect(createAccount).toHaveCSS("background-color", "rgb(249, 249, 249)");
-  await expect(createAccount).toHaveCSS("color", "rgb(0, 77, 168)");
+  await expect(createAccount).toHaveCSS("background-color", "rgb(248, 250, 252)");
+  await expect(createAccount).toHaveCSS("color", "rgb(6, 74, 158)");
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: test.info().outputPath("home-mobile.png"), fullPage: true });
 });
@@ -285,5 +285,10 @@ test("reduced motion preserves keyboard access to the sample", async ({ page }) 
   await page.keyboard.press("Enter");
   await expect(page.locator("#product-example")).toBeFocused();
   const accountButton = page.getByRole("button", { name: "Create Account", exact: true });
-  await expect(accountButton).toHaveCSS("transition-duration", "1e-05s");
+  const transitionDurations = await accountButton.evaluate((button) =>
+    getComputedStyle(button)
+      .transitionDuration.split(",")
+      .map((duration) => Number.parseFloat(duration))
+  );
+  expect(transitionDurations).toEqual([0.00001]);
 });

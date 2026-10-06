@@ -1,110 +1,205 @@
 @use "@/styles/variables.scss" as *;
 
 .featuresSection {
-  background-color: $surface-white;
-  padding: 4rem 2rem;
-
-  @media (max-width: 1024px) {
-    padding: 4rem 2rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 2.5rem 1rem;
-  }
+  padding: 28px 24px;
+  background: $surface-light;
+  scroll-margin-top: 88px;
 }
 
 .featuresContainer {
-  max-width: 1280px;
+  max-width: 1232px;
   margin: 0 auto;
-}
-
-.featuresHeader {
-  text-align: left;
-  margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    margin-bottom: 3rem;
-  }
+  display: grid;
+  gap: 24px;
 }
 
 .featuresTitle {
-  font-family: $font-headline;
-  font-size: 2rem;
+  margin: 0 0 12px;
+  font-size: clamp(1.6rem, 2.2vw, 2rem);
+  line-height: 1.2;
   font-weight: 700;
+  letter-spacing: -0.04em;
   color: $text-primary;
-  margin: 0 0 $spacing-md;
-  letter-spacing: -0.02em;
-
-  @media (max-width: 1024px) {
-    font-size: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.75rem;
-  }
 }
 
 .featuresSubtitle {
-  font-family: $font-body;
-  font-size: 1.125rem;
-  color: $text-secondary;
   margin: 0;
-  max-width: 600px;
-  margin-left: 0;
-  margin-right: 0;
-  line-height: 1.5;
+  color: $text-secondary;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 330px;
+}
 
-  @media (max-width: 768px) {
-    font-size: 1rem;
+.workflowLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $primary-base;
+  text-decoration: none;
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
   }
 }
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  counter-reset: step;
+  gap: 16px;
+  min-width: 0;
+}
 
-  @media (max-width: 1024px) {
-    gap: 1.5rem;
+.featurePanel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 182px;
+  padding: 16px;
+  border: 1px solid #e3ebf6;
+  border-radius: 6px;
+  background: #f5f9ff;
+
+  &[data-visual="refine"] {
+    background: #f8f7fe;
+    border-color: #eae7f6;
+
+    .featureIcon {
+      background: #edeaff;
+    }
+
+    .productMiniature {
+      transform: rotate(-8deg);
+    }
+
+    .miniatureRows span::before {
+      border-radius: 50%;
+      background: #8a91e4;
+    }
   }
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  &[data-visual="export"] .productMiniature {
+    width: 110px;
+    transform: perspective(200px) rotateY(-12deg);
   }
 }
 
-.featureCard {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-lg 0;
-  border-top: 1px solid $border-light;
-}
-
-.featureNumber {
-  font-size: 1rem;
-  font-weight: 600;
+.featureIcon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #e8f1ff;
   color: $primary-base;
+  font-size: 20px;
 }
 
 .featureTitle {
-  font-family: $font-headline;
-  font-size: 1.25rem;
-  font-weight: 600;
+  position: relative;
+  margin: 10px 0 6px;
+  max-width: 185px;
   color: $text-primary;
-  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
 }
 
 .featureDescription {
-  font-family: $font-body;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: $text-secondary;
+  position: relative;
   margin: 0;
+  max-width: 190px;
+  color: $text-secondary;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.productMiniature {
+  position: absolute;
+  z-index: -1;
+  right: -12px;
+  bottom: 16px;
+  width: 90px;
+  height: 114px;
+  padding: 12px;
+  border: 5px solid #d5e6ff;
+  border-radius: 8px;
+  background: white;
+  opacity: 0.32;
+  transform: rotate(-6deg);
+  box-shadow: 18px -18px 0 #e5edff;
+}
+
+.miniatureToolbar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+
+  span {
+    width: 22px;
+    height: 4px;
+    border-radius: 2px;
+    background: #669ae8;
+  }
+
+  span:last-child {
+    width: 8px;
+    margin-left: auto;
+  }
+}
+
+.miniatureRows {
+  display: grid;
+  gap: 9px;
+
+  span {
+    position: relative;
+    height: 4px;
+    margin-left: 10px;
+    background: #c3d8f7;
+    border-radius: 2px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      top: -1px;
+      width: 5px;
+      height: 6px;
+      background: #7eaff4;
+      border-radius: 1px;
+    }
+
+    &:nth-child(2n) {
+      width: 60%;
+    }
+  }
+}
+
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuresContainer {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 3fr);
+    align-items: center;
+    gap: 28px;
+  }
+
+  .featuresGrid {
+    gap: 14px;
+  }
+
+  .featureTitle,
+  .featureDescription {
+    max-width: 78%;
+  }
 }

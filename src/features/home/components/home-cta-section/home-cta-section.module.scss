@@ -1,113 +1,110 @@
 @use "@/styles/variables.scss" as *;
 
 .ctaSection {
-  background-color: $primary-base;
-  padding: 4rem 2rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 28px 24px;
+  background: $surface-inverted;
+}
 
-  @media (max-width: 1024px) {
-    padding: 4rem 2rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 2.5rem 1rem;
-  }
+.ctaPattern {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: 0;
+  width: min(60%, 620px);
+  height: 130px;
+  stroke: #3264ac;
+  stroke-width: 1;
+  opacity: 0.25;
+  pointer-events: none;
 }
 
 .ctaContainer {
-  max-width: 1280px;
+  max-width: 1232px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .ctaContent {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-  max-width: 700px;
+  min-width: 0;
 }
 
 .ctaTitle {
-  font-family: $font-headline;
-  font-size: clamp(2rem, 3vw, 3rem);
-  font-weight: 700;
-  color: $surface-white;
-  margin: 0;
-  letter-spacing: -0.02em;
-
-  @media (max-width: 1024px) {
-    font-size: 3rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 2rem;
-  }
+  margin: 0 0 4px;
+  font-size: 27px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  color: $text-inverted;
 }
 
 .ctaDescription {
-  font-family: $font-body;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: $surface-white;
-  opacity: 0.8;
   margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
+  font-size: 12px;
+  line-height: 1.6;
+  color: #d6e0ef;
 }
 
 .ctaActions {
   display: flex;
-  gap: $spacing-md;
   flex-wrap: wrap;
+  gap: 12px;
+}
 
-  @media (max-width: 480px) {
-    flex-direction: column;
-  }
+.ctaSection .ctaPrimaryButton,
+.ctaSection .ctaSecondaryButton {
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none;
 }
 
 .ctaSection .ctaPrimaryButton {
-  height: 48px;
-  font-weight: 600;
-  font-size: 1rem;
-  background-color: $surface-white;
+  background: $surface-white;
   color: $primary-base;
-  border: none;
-  border-radius: $radius-sm;
-  padding: 0 2rem;
-  transition: background-color 0.2s ease;
+  border: 1px solid $border-light;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: $surface-light;
+    background: $surface-light;
     color: $primary-dark;
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
+    border-color: $border-light;
   }
 }
 
 .ctaSection .ctaSecondaryButton {
-  height: 48px;
-  font-weight: 500;
-  font-size: 1rem;
-  background-color: transparent;
-  color: $surface-white;
-  border: 1px solid $surface-white;
-  border-radius: $radius-sm;
-  padding: 0 2rem;
-  transition: border-color 0.2s ease;
+  background: transparent;
+  color: $text-inverted;
+  border: 1px solid #8c9ab0;
 
   &:hover:not(:disabled) {
-    border-color: $surface-white;
-    color: $surface-white;
-    background-color: rgba(var(--color-surface-white-rgb), 0.1);
+    color: $text-inverted;
+    border-color: $text-inverted;
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (min-width: 900px) {
+  .ctaSection {
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 
-  @media (max-width: 480px) {
-    width: 100%;
+  .ctaContainer {
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .ctaActions {
+    flex-shrink: 0;
   }
 }

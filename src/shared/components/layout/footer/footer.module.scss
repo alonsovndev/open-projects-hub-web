@@ -96,3 +96,99 @@
     color: $text-inverted;
   }
 }
+
+.landingFooter {
+  padding: 12px 24px;
+  background: #101821;
+  color: #dce3ec;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landingContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  max-width: 1232px;
+  margin: 0 auto;
+}
+
+.landingBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+
+  img {
+    border-radius: 50%;
+  }
+}
+
+.landingNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+  width: 100%;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: #dce3ec;
+    text-decoration: none;
+    font-size: 10px;
+
+    &:hover {
+      color: white;
+      text-decoration: underline;
+    }
+  }
+}
+
+.landingGithub {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #dce3ec;
+  font-size: 20px;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.landingCopyright {
+  color: #a9b4c2;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (min-width: 1100px) {
+  .landingFooter {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .landingContainer {
+    flex-wrap: nowrap;
+    gap: 20px;
+  }
+
+  .landingBrand,
+  .landingGithub,
+  .landingCopyright {
+    flex-shrink: 0;
+  }
+
+  .landingNav {
+    width: auto;
+    justify-content: center;
+    flex: 1;
+    gap: 20px;
+  }
+}
