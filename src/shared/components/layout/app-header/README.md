@@ -127,8 +127,8 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 
 - Features → `#features`
 - Workflow → `#workflow`
-- Docs → https://github.com/NaranjoSolutions/open-projects-hub-docs
-- GitHub → https://github.com/NaranjoSolutions/open-projects-hub-web
+- Docs → https://alonsovndev.github.io/open-projects-hub-docs/
+- GitHub → https://github.com/orgs/alonsovndev/repositories?q=open-projects
 - Pricing → `#pricing`
 
 **CTAs:**

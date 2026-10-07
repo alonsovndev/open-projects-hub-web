@@ -225,7 +225,7 @@ test("mobile landing keeps the brand and opens the example preview", async ({ pa
   );
   await expect(mobileMenu.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
     "href",
-    "https://github.com/NaranjoSolutions/open-projects-hub-web"
+    "https://github.com/orgs/alonsovndev/repositories?q=open-projects"
   );
   await menu.click();
   const exampleButton = page.getByRole("button", { name: "View Example" });

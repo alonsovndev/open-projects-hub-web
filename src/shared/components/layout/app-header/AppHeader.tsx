@@ -56,7 +56,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
             </Link>
             <nav className={styles.navLinks} aria-label="Main navigation">
               <a
-                href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+                href="https://alonsovndev.github.io/open-projects-hub-docs/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.navLink}
@@ -64,7 +64,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 Docs
               </a>
               <a
-                href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+                href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.navLink}
@@ -101,7 +101,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
           <div id="landing-mobile-menu" className={styles.mobileMenu}>
             <nav className={styles.mobileNavLinks} aria-label="Mobile navigation">
               <a
-                href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+                href="https://alonsovndev.github.io/open-projects-hub-docs/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.mobileNavLink}
@@ -110,7 +110,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
                 Documentation
               </a>
               <a
-                href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+                href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.mobileNavLink}

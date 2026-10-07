@@ -63,21 +63,21 @@ test.describe("Home Page", () => {
     );
     await expect(header.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
-      "https://github.com/NaranjoSolutions/open-projects-hub-web"
+      "https://github.com/orgs/alonsovndev/repositories?q=open-projects"
     );
     await expect(header.getByRole("link", { name: "Docs", exact: true })).toHaveAttribute(
       "href",
-      "https://github.com/NaranjoSolutions/open-projects-hub-docs"
+      "https://alonsovndev.github.io/open-projects-hub-docs/"
     );
     const footer = page.locator("footer");
     await expect(footer.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
     await expect(footer.getByRole("link", { name: "Code (GitHub)", exact: true })).toHaveAttribute(
       "href",
-      "https://github.com/NaranjoSolutions/open-projects-hub-web"
+      "https://github.com/orgs/alonsovndev/repositories?q=open-projects"
     );
     await expect(
       footer.getByRole("link", { name: "GitHub repository", exact: true })
-    ).toHaveAttribute("href", "https://github.com/NaranjoSolutions/open-projects-hub-web");
+    ).toHaveAttribute("href", "https://github.com/orgs/alonsovndev/repositories?q=open-projects");
     await expect(footer.getByRole("link", { name: "Privacy", exact: true })).toHaveAttribute(
       "href",
       "/privacy"
@@ -234,7 +234,7 @@ test.describe("Home Page", () => {
   }
 
   test("mobile menu closes after selection, Escape, and switching to desktop", async ({ page }) => {
-    const documentationUrl = "https://github.com/NaranjoSolutions/open-projects-hub-docs";
+    const documentationUrl = "https://alonsovndev.github.io/open-projects-hub-docs/";
     await page.context().route(documentationUrl, (route) =>
       route.fulfill({ contentType: "text/html", body: "<html><body>Documentation</body></html>" })
     );

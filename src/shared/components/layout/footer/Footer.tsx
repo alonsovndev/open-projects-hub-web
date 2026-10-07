@@ -25,14 +25,14 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
           </Link>
           <nav className={styles.landingNav} aria-label="Footer navigation">
             <a
-              href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+              href="https://alonsovndev.github.io/open-projects-hub-docs/"
               target="_blank"
               rel="noopener noreferrer"
             >
               Documentation
             </a>
             <a
-              href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+              href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -42,7 +42,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
             <Link to="/terms">Terms</Link>
           </nav>
           <a
-            href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+            href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.landingGithub}
@@ -72,7 +72,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
           <div className={styles.footerColumn}>
             <h2 className={styles.columnTitle}>Directories</h2>
             <a
-              href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+              href="https://alonsovndev.github.io/open-projects-hub-docs/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.footerLink}
@@ -80,7 +80,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
               Documentation
             </a>
             <a
-              href="https://github.com/alonsovndev"
+              href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.footerLink}
@@ -103,7 +103,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
         <div className={styles.footerBottom}>
           <span className={styles.copyright}>&copy; {currentYear} Open Projects Hub</span>
           <a
-            href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+            href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.githubLink}
