@@ -26,7 +26,7 @@ The current suite is still intentionally small, but the architecture is now test
 
 ### What is covered today
 
-- `src/features/viewer/model/project-code.test.ts` covers the pure project-code normalization and validation helpers.
+- `src/features/viewer/model/access-code.test.ts` covers the pure access-code normalization and validation helpers; `viewer-api.test.ts` and `client-viewer-portal.test.tsx` cover the public Client Review endpoint and page.
 - `e2e/home.spec.ts` provides a Playwright smoke test for the public landing page.
 - `src/test/setup.ts` standardizes DOM matchers and cleanup for every Vitest run.
 

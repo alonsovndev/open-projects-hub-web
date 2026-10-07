@@ -21,10 +21,11 @@
   }
 }
 
-.pageTitle {
+.pageTitle:global(.ant-typography) {
   font-family: $font-headline;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.25;
   color: $text-primary;
   margin: 0;
 }
@@ -93,5 +94,11 @@
     &:active:not(:disabled) {
       transform: none;
     }
+  }
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .pageTitle:global(.ant-typography) {
+    font-size: 1.75rem;
   }
 }

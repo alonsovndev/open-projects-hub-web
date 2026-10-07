@@ -1,15 +1,45 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { BaseQueryApi, BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type {
+  BaseQueryApi,
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query";
 
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
 import type { AppDispatch, RootState } from "@/app/store/store";
 
+/** The error shapes this API returns: a FastAPI `detail`, plus any handler-specific fields. */
+interface ApiErrorBody {
+  detail?: string;
+  message?: string;
+  code?: string;
+  provider?: string;
+  reason?: string;
+  promptsKeyUpdate?: boolean;
+}
+
+/**
+ * The Client Review route is anonymous: its access code is the only credential. A freelancer
+ * previewing it while signed in must be treated like any other visitor, so these calls carry
+ * no token and a 404 or 429 from them never touches the freelancer's session.
+ */
+const PUBLIC_URL_PREFIX = "/v1/viewer/";
+
+const isPublicRequest = (args: string | FetchArgs): boolean =>
+  (typeof args === "string" ? args : args.url).startsWith(PUBLIC_URL_PREFIX);
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers, { getState, arg }) => {
     headers.set("Content-Type", "application/json");
+
+    if (isPublicRequest(arg)) {
+      return headers;
+    }
 
     // Read token from Redux state (in-memory only)
     const state = getState() as RootState;
@@ -56,14 +86,18 @@ const refreshSession = (api: BaseQueryApi): Promise<boolean> => {
   return refreshPromise;
 };
 
-export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions
-) => {
+// FetchBaseQueryMeta is declared so endpoints can read response headers in
+// transformResponse — the export endpoint takes its filename from Content-Disposition.
+export const baseQuery: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  object,
+  FetchBaseQueryMeta
+> = async (args, api, extraOptions) => {
   let result = await rawBaseQuery(args, api, extraOptions);
 
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 && !isPublicRequest(args)) {
     const isRefreshCall = typeof args === "object" && args.url === adminAuthConfig.refreshEndpoint;
     const hadSession = (api.getState() as RootState).auth.session?.token != null;
 
@@ -93,9 +127,19 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
 
     // FastAPI (and this app's exception handlers) return errors as { detail: "..." },
     // not { message: "..." } — read detail first, falling back to message for resilience.
-    const errorData = result.error.data as { detail?: string; message?: string } | undefined;
+    const errorData = result.error.data as ApiErrorBody | undefined;
     const normalizedMessage =
       errorData?.detail ?? errorData?.message ?? "Something went wrong while communicating with the API.";
+
+    // Some handlers attach fields the caller must act on rather than just display — the
+    // provider-key errors carry `promptsKeyUpdate`, which decides whether the user is
+    // sent to Settings (F-010 FR-010-11). Normalizing to `message` alone would drop them.
+    const structured = {
+      ...(errorData?.code !== undefined && { code: errorData.code }),
+      ...(errorData?.provider !== undefined && { provider: errorData.provider }),
+      ...(errorData?.reason !== undefined && { reason: errorData.reason }),
+      ...(errorData?.promptsKeyUpdate !== undefined && { promptsKeyUpdate: errorData.promptsKeyUpdate }),
+    };
 
     if (typeof result.error.status === "number") {
       return {
@@ -103,6 +147,7 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
           status: result.error.status,
           data: {
             message: normalizedMessage,
+            ...structured,
           },
         },
       };
@@ -114,6 +159,7 @@ export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
         error: normalizedMessage,
         data: {
           message: normalizedMessage,
+          ...structured,
         },
       },
     };
@@ -132,8 +178,10 @@ export const baseApi = createApi({
     "DashboardStats",
     "Stories",
     "Backlog",
-    "Refinement",
     "UserProfile",
+    "AiProviderKeys",
+    "CreditBalance",
+    "TeamMembers",
   ],
   endpoints: () => ({}),
 });

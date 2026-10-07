@@ -1,46 +1,73 @@
 import type { FC } from "react";
+import { useState } from "react";
 
-import { ArrowRightOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  FileTextOutlined,
+  GithubOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
+
+import { RequirementTransformation } from "@/features/home/components/requirement-transformation/RequirementTransformation";
+import { HomeExampleModal } from "@/features/home/components/home-example-modal/HomeExampleModal";
 
 import styles from "./home-hero.module.scss";
 
 export const HomeHero: FC = () => {
   const navigate = useNavigate();
+  const [exampleOpen, setExampleOpen] = useState(false);
 
   return (
-    <section className={styles.heroSection}>
-      <div className={styles.heroContent}>
-        <h1 className={styles.heroTitle}>
-          Turn Ambiguity <span className={styles.heroAccent}>Into Action.</span>
-        </h1>
-        <p className={styles.heroDescription}>
-          Transform raw ideas into structured project plans with AI-powered refinement, seamless
-          Markdown exports, and transparent client backlog visualization.
-        </p>
-        <div className={styles.heroActions}>
-          <Button
-            type="primary"
-            size="large"
-            className={styles.heroPrimaryButton}
-            onClick={() => navigate("/role-selection")}
-          >
-            Start Project
-            <ArrowRightOutlined />
-          </Button>
-          <Button size="large" className={styles.heroSecondaryButton}>
-            View Sample
-          </Button>
+    <section className={styles.heroSection} aria-labelledby="hero-title">
+      <div className={styles.heroContainer}>
+        <div className={styles.heroContent}>
+          <h1 id="hero-title" className={styles.heroTitle}>
+            <span>Turn raw</span> <span>requirements into</span>{" "}
+            <span className={styles.heroAccent}>buildable projects.</span>
+          </h1>
+          <p className={styles.heroDescription}>
+            Transform raw notes into structured project plans with AI-assisted refinement, approval
+            workflows, and transparent client backlog visualization.
+          </p>
+          <div className={styles.heroActions}>
+            <Button
+              type="primary"
+              size="large"
+              className={styles.heroPrimaryButton}
+              onClick={() => navigate("/role-selection")}
+            >
+              Get Started <ArrowRightOutlined aria-hidden="true" />
+            </Button>
+            <Button
+              size="large"
+              className={styles.heroSecondaryButton}
+              onClick={(event) => {
+                // Safari pointer clicks do not focus buttons; retain the dialog's return target.
+                event.currentTarget.focus();
+                setExampleOpen(true);
+              }}
+              aria-haspopup="dialog"
+            >
+              View Example
+            </Button>
+          </div>
+          <ul className={styles.heroMetadata} aria-label="Product highlights">
+            <li>
+              <GithubOutlined aria-hidden="true" /> Open source
+            </li>
+            <li>
+              <FileTextOutlined aria-hidden="true" /> Markdown export
+            </li>
+            <li>
+              <TeamOutlined aria-hidden="true" /> Built for freelancers
+            </li>
+          </ul>
         </div>
+        <RequirementTransformation />
       </div>
-      <div className={styles.heroImage}>
-        <img
-          src="/hero-workspace.jpg"
-          alt="Modern workspace with monitor and desk setup"
-          className={styles.heroImg}
-        />
-      </div>
+      <HomeExampleModal open={exampleOpen} onClose={() => setExampleOpen(false)} />
     </section>
   );
 };

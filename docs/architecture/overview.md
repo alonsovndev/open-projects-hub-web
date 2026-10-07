@@ -7,7 +7,7 @@ Open Projects Hub Web is a Vite + React + TypeScript single-page application org
 - a public landing page (`/`)
 - an admin login page (`/login`)
 - a protected admin dashboard (`/dashboard`)
-- a public viewer flow for client-facing requirement lookup (`/viewer`)
+- a public Client Review flow (`/viewer`, `/viewer/:accessCode`) where a client opens the approved stories of one project with its access code, no account needed
 - an unauthorized fallback page (`/unauthorized`)
 
 At a high level, the codebase separates responsibilities into four layers:

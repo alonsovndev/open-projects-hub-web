@@ -24,7 +24,7 @@ export const DashboardPage: FC = () => {
     handleCreateProject,
     handleViewAllProjects,
   } = useDashboard();
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   if (loading) {
     return (
@@ -47,7 +47,7 @@ export const DashboardPage: FC = () => {
             </Title>
             <Text className={styles.subtitle}>Here's an overview of your projects</Text>
           </div>
-          {isAdmin && (
+          {canEdit && (
             <Button
               type="primary"
               size="large"

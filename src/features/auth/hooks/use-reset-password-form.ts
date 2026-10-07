@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Form, message } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import type { AuthLocationState, ResetPasswordValues } from "@/features/auth/types";
 import {
@@ -21,9 +21,21 @@ export const useResetPasswordForm = () => {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const [resendResetCode, { isLoading: isResending }] = useResendResetCodeMutation();
 
-  // Carried from the Forgot Password step (same-session flow: the user reads
-  // the code from their inbox and types it back into the app they still have open).
-  const email = (location.state as AuthLocationState | null)?.email ?? "";
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Carried from the Forgot Password step (same-session flow) or, when the person opened
+  // the emailed link, from its query string.
+  const email =
+    searchParams.get("email") ?? (location.state as AuthLocationState | null)?.email ?? "";
+  const [initialCode] = useState(() => searchParams.get("code") ?? "");
+
+  // Keep the code out of the address bar, history and any later Referer header.
+  useEffect(() => {
+    if (!searchParams.has("code")) return;
+    const remaining = new URLSearchParams(searchParams);
+    remaining.delete("code");
+    setSearchParams(remaining, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const newPasswordValue = Form.useWatch("newPassword", form) ?? "";
 
@@ -89,6 +101,7 @@ export const useResetPasswordForm = () => {
   return {
     form,
     email,
+    initialCode,
     isSubmitting: isLoading,
     isResending,
     passwordRuleStatuses,

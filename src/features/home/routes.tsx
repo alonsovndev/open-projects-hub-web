@@ -8,7 +8,7 @@ export const homeRoutes: AppRoute[] = [
   {
     path: "/",
     element: (
-      <PublicLayout>
+      <PublicLayout variant="landing">
         <Home />
       </PublicLayout>
     ),

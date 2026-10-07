@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Button, Space, Spin, Alert } from "antd";
+import { Typography, Button, Space, Spin, Alert, Tooltip } from "antd";
 import { FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
@@ -21,6 +21,9 @@ export const BacklogPage: FC = () => {
     isLoading,
     error,
     isLoadingProjects,
+    isExporting,
+    canExport,
+    exportBlockedReason,
     projectOptions,
     handleDeleteStory,
     handleSearchChange,
@@ -29,7 +32,7 @@ export const BacklogPage: FC = () => {
     handleClearFilters,
     handleExportMarkdown,
   } = useBacklog();
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   return (
     <div className={styles.pageContainer}>
@@ -43,16 +46,21 @@ export const BacklogPage: FC = () => {
               Generated user stories ({filteredStories.length} items)
             </Text>
           </div>
-          {isAdmin && (
+          {canEdit && (
             <Space>
-              <Button
-                type="primary"
-                size="large"
-                icon={<FileMarkdownOutlined />}
-                onClick={handleExportMarkdown}
-              >
-                Export Markdown
-              </Button>
+              <Tooltip title={exportBlockedReason ?? ""}>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<FileMarkdownOutlined />}
+                  aria-label="Export Markdown"
+                  onClick={handleExportMarkdown}
+                  disabled={!canExport}
+                  loading={isExporting}
+                >
+                  Export Markdown
+                </Button>
+              </Tooltip>
             </Space>
           )}
         </div>
@@ -84,7 +92,7 @@ export const BacklogPage: FC = () => {
               <Spin size="large" tip="Loading stories..." />
             </div>
           ) : (
-            <StoryList stories={filteredStories} onDelete={handleDeleteStory} canManage={isAdmin} />
+            <StoryList stories={filteredStories} onDelete={handleDeleteStory} canManage={canEdit} />
           )}
         </>
       )}

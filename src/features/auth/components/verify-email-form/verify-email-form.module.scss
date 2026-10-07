@@ -1,33 +1,22 @@
 @use "@/styles/variables.scss" as *;
 
-.pageContainer {
-  min-height: 100vh;
+.verifyEmailPanel {
   display: flex;
-  flex-direction: column;
-}
-
-.mainContent {
-  flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: $spacing-2xl $spacing-md;
   background-color: $surface-light;
-  padding: $spacing-xl;
 }
 
-.entrySection {
+.card {
   width: 100%;
   max-width: 440px;
-  margin: 0 auto;
-}
-
-.entryContent {
-  background: $surface-white;
+  padding: $spacing-xl;
+  background-color: $surface-white;
   border-radius: $radius-lg;
-  padding: 3rem 2.5rem;
-  box-shadow: $shadow-card;
+  box-shadow: none;
   border: 1px solid $surface-base;
-  text-align: center;
 
   @media (max-width: 480px) {
     padding: $spacing-xl $spacing-lg;
@@ -38,8 +27,9 @@
   font-family: $font-body;
   font-size: 0.875rem;
   font-weight: 500;
-  color: $primary-base;
-  text-decoration: none;
+  color: $color-link;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
@@ -52,54 +42,32 @@
   }
 }
 
-.backArrow {
-  flex-shrink: 0;
-}
-
-.iconWrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
-  border-radius: $radius-md;
-  color: $text-inverted;
-  margin-bottom: $spacing-lg;
-}
-
-.icon {
-  font-size: 24px;
-}
-
 .title {
   font-family: $font-headline;
   font-size: 2rem;
   font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 $spacing-sm;
   color: $text-primary;
+  text-align: center;
+  margin: 0 0 $spacing-sm 0;
 }
 
 .description {
   font-family: $font-body;
   font-size: 0.875rem;
-  line-height: 1.5;
-  margin: 0 0 $spacing-xl;
   color: $text-secondary;
+  text-align: center;
+  margin: 0 0 $spacing-xl 0;
+  line-height: 1.5;
 }
 
 .form {
-  margin-bottom: $spacing-lg;
-
-  :global(.ant-form-item) {
-    margin-bottom: $spacing-md;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
 }
 
 .formItem {
   margin-bottom: 0;
-  text-align: left;
 
   :global(.ant-form-item-label) {
     padding-bottom: $spacing-xs;
@@ -133,6 +101,15 @@
     border-color: $primary-base;
     box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
   }
+
+  :global(.ant-input-prefix) {
+    margin-inline-end: 8px;
+  }
+}
+
+.inputIcon {
+  color: $text-secondary;
+  font-size: 16px;
 }
 
 .submitButton {
@@ -142,6 +119,7 @@
   background-color: $primary-base;
   border: none;
   border-radius: $radius-sm;
+  margin-top: $spacing-sm;
   transition: background-color 0.2s ease;
 
   &:hover:not(:disabled) {
@@ -153,24 +131,39 @@
   }
 }
 
-.helpText {
-  font-family: $font-body;
-  font-size: 0.75rem;
-  color: $text-secondary;
-  margin: 0 0 $spacing-lg;
-}
-
-.homeLink {
+.footer {
+  margin-top: $spacing-lg;
+  text-align: center;
   font-family: $font-body;
   font-size: 0.875rem;
-  color: $primary-base;
-  text-decoration: none;
-  font-weight: 500;
-  display: block;
-  text-align: center;
+  color: $text-secondary;
 
-  &:hover {
-    color: $primary-dark;
+  .footerLink {
+    padding: 0;
+    color: $color-link;
     text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+
+    &:hover {
+      color: $primary-dark;
+      text-decoration: underline;
+    }
+  }
+}
+
+.resendAlert {
+  margin-bottom: $spacing-sm;
+  text-align: left;
+}
+
+.hint {
+  margin: $spacing-xs 0 0 0;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 480px) {
+  .verifyEmailPanel {
+    padding-block: $spacing-xl;
   }
 }

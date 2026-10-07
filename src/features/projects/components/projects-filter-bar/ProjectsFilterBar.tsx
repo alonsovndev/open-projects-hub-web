@@ -42,14 +42,15 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
   onViewChange,
   onClearFilters,
 }) => {
-  // The client list is admin-only server-side, so a Viewer must not issue the request at
-  // all — firing it just to swallow a 403 would be noise, and the filter it feeds has no
-  // options to offer them.
-  const { isAdmin } = useRole();
-  const { data: clientsData } = useGetClientsQuery(undefined, { skip: !isAdmin });
+  // The client list is limited to admins and members server-side, so any other role must
+  // not issue the request at all — firing it just to swallow a 403 would be noise.
+  const { canEdit } = useRole();
+  const { data: clientsData } = useGetClientsQuery(undefined, { skip: !canEdit });
   const clientOptions = [
     { label: "All Clients", value: "all" },
-    ...(clientsData ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id })) : []),
+    ...(clientsData
+      ? selectClientSummaries(clientsData.items).map((c) => ({ label: c.name, value: c.id }))
+      : []),
   ];
   return (
     <div className={styles.filterBar}>
@@ -62,6 +63,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           onChange={(e) => onSearchChange(e.target.value)}
           prefix={<SearchOutlined />}
           className={styles.searchInput}
+          aria-label="Search projects"
         />
       </div>
 
@@ -72,6 +74,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           value={filters.status}
           onChange={onStatusFilter}
           className={styles.filterSelect}
+          aria-label="Filter by status"
           options={[
             { label: "All Statuses", value: "all" },
             { label: "Active", value: "active" },
@@ -88,6 +91,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           value={filters.priority}
           onChange={onPriorityFilter}
           className={styles.filterSelect}
+          aria-label="Filter by priority"
           options={[
             { label: "All Priorities", value: "all" },
             { label: "High", value: "high" },
@@ -96,7 +100,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           ]}
         />
 
-        {isAdmin && (
+        {canEdit && (
           <Select
             placeholder="Client"
             size="large"
@@ -126,6 +130,7 @@ export const ProjectsFilterBar: FC<ProjectsFilterBarProps> = ({
           }}
           allowClear
           className={styles.filterSelect}
+          placeholder={["Created from", "Created through"]}
           aria-label="Filter by created date"
         />
 

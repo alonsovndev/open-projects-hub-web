@@ -20,7 +20,7 @@ interface ApproveStoryModalProps {
  * Confirms the one-way step from AI draft to official backlog story.
  *
  * Approval is deliberately a separate, confirmed action from generation: nothing reaches
- * the backlog or a Viewer without an Admin saying so (FR-002-03).
+ * the backlog or your client without an Admin saying so (FR-002-03).
  */
 export const ApproveStoryModal: FC<ApproveStoryModalProps> = ({
   open,
@@ -48,7 +48,7 @@ export const ApproveStoryModal: FC<ApproveStoryModalProps> = ({
         type="info"
         showIcon
         className={styles.notice}
-        message="Approved stories become part of the official backlog and are visible to Viewers."
+        message="Approved stories become part of the official backlog and are visible to your client on the Client Review page."
       />
 
       {story && (

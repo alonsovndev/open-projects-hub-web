@@ -6,6 +6,7 @@ interface ProjectResponse {
   id: string;
   name: string;
   code: string;
+  accessCode: string;
   description: string | null;
   createdBy: string;
   clientId: string;
@@ -73,6 +74,7 @@ const transformProject = (backendProject: ProjectResponse & { archived?: boolean
     id: backendProject.id,
     name: backendProject.name,
     code: backendProject.code,
+    accessCode: backendProject.accessCode,
     status: statusValue as ProjectSummary["status"],
     priority: backendProject.priority as ProjectSummary["priority"],
     phase: backendProject.phase as ProjectSummary["phase"],
@@ -193,6 +195,32 @@ export const projectsApi = baseApi.injectEndpoints({
       ],
     }),
 
+    // Replaces the client access code; the old code and every link built from it stop working.
+    regenerateAccessCode: builder.mutation<ProjectSummary, string>({
+      query: (id) => ({
+        url: `/v1/projects/${id}/access-code/regenerate`,
+        method: "POST",
+      }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
+      invalidatesTags: (result, error, id) => [
+        { type: "Projects", id },
+        { type: "Projects", id: "LIST" },
+      ],
+    }),
+
+    reactivateProject: builder.mutation<ProjectSummary, string>({
+      query: (id) => ({
+        url: `/v1/projects/${id}/reactivate`,
+        method: "POST",
+      }),
+      transformResponse: (response: ProjectResponse) => transformProject(response),
+      invalidatesTags: (result, error, id) => [
+        { type: "Projects", id },
+        { type: "Projects", id: "LIST" },
+        "DashboardStats",
+      ],
+    }),
+
     // Delete project
     deleteProject: builder.mutation<void, string>({
       query: (id) => ({
@@ -215,5 +243,7 @@ export const {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useArchiveProjectMutation,
+  useReactivateProjectMutation,
+  useRegenerateAccessCodeMutation,
   useDeleteProjectMutation,
 } = projectsApi;

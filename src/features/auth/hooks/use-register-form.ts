@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
-import type { AdminRegisterValues } from "@/features/auth/types";
+import type { AdminRegisterValues, AuthLocationState } from "@/features/auth/types";
 import { useRegisterMutation } from "@/features/auth/api/admin-auth-api";
 import {
   getPasswordRuleStatuses,
@@ -34,9 +34,10 @@ export const useRegisterForm = () => {
 
   const handleSubmit = async (values: AdminRegisterValues) => {
     try {
-      await register(values).unwrap();
-      message.success("Account created successfully! Please sign in.");
-      navigate("/login");
+      const result = await register(values).unwrap();
+      message.success("Account created! Check your email for a verification code.");
+      const state: AuthLocationState = { email: values.email, codeExpiresAt: result.codeExpiresAt };
+      navigate("/verify-email", { state });
     } catch (error) {
       const err = error as { data?: { message?: string } };
       message.error(err?.data?.message ?? "Unable to create account. Please try again.");
@@ -47,6 +48,8 @@ export const useRegisterForm = () => {
     { required: true, message: "Please enter your full name." },
     { min: 2, message: "Name must be at least 2 characters." },
   ];
+
+  const workspaceNameFieldRules = [{ max: 100, message: "Keep it under 100 characters." }];
 
   const emailFieldRules = [
     { required: true, message: "Please enter your work email address." },
@@ -91,6 +94,7 @@ export const useRegisterForm = () => {
     hasPasswordInput,
     isPasswordValid,
     fullNameFieldRules,
+    workspaceNameFieldRules,
     emailFieldRules,
     passwordFieldRules,
     confirmPasswordFieldRules,

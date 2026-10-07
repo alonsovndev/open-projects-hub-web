@@ -9,6 +9,7 @@ import {
   DeleteOutlined,
   CalendarOutlined,
   InboxOutlined,
+  UndoOutlined,
 } from "@ant-design/icons";
 
 import type { ProjectSummary, ProjectStatus, ProjectPriority } from "@/shared/types/domain";
@@ -26,11 +27,12 @@ interface ProjectsTableProps {
   totalCount: number;
   onSortChange: (field: ProjectSort["field"]) => void;
   onPageChange: (page: number, pageSize?: number) => void;
-  onViewProject: (projectCode: string) => void;
+  onViewProject: (accessCode: string) => void;
   onEditProject: (projectId: string) => void;
   onDeleteProject?: (projectId: string, projectName: string) => void;
   onArchiveProject?: (projectId: string, projectName: string) => void;
-  /** Whether the viewer may change projects. Defaults to false so a caller that forgets it fails closed. */
+  onReactivateProject?: (projectId: string, projectName: string) => void;
+  /** Whether the caller may change projects. Defaults to false so a caller that forgets it fails closed. */
   canManage?: boolean;
 }
 
@@ -48,6 +50,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
   onEditProject,
   onDeleteProject,
   onArchiveProject,
+  onReactivateProject,
   canManage = false,
 }) => {
   const columns: ColumnsType<ProjectSummary> = useMemo(
@@ -109,14 +112,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
               : 0;
           return (
             <div className={styles.progressCell}>
-              <Progress
-                percent={percent}
-                size="small"
-                strokeColor={{
-                  "0%": "#0057c2",
-                  "100%": "#006ef2",
-                }}
-              />
+              <Progress percent={percent} size="small" strokeColor="var(--color-primary)" />
               <Text type="secondary" className={styles.progressText}>
                 {record.completedStories}/{record.storiesCount}
               </Text>
@@ -141,7 +137,8 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         dataIndex: "createdAt",
         key: "createdAt",
         sorter: true,
-        sortOrder: sort.field === "createdAt" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        sortOrder:
+          sort.field === "createdAt" ? (sort.order === "asc" ? "ascend" : "descend") : null,
         render: (value: string) => <Text>{formatDate(value)}</Text>,
       },
       {
@@ -149,7 +146,8 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         dataIndex: "lastUpdated",
         key: "lastUpdated",
         sorter: true,
-        sortOrder: sort.field === "lastUpdated" ? (sort.order === "asc" ? "ascend" : "descend") : null,
+        sortOrder:
+          sort.field === "lastUpdated" ? (sort.order === "asc" ? "ascend" : "descend") : null,
         render: (value: string) => <Text>{formatRelativeTime(value)}</Text>,
       },
       {
@@ -180,7 +178,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             <Button
               type="link"
               icon={<EyeOutlined />}
-              onClick={() => onViewProject(record.code)}
+              onClick={() => onViewProject(record.accessCode)}
               className={styles.actionButton}
               aria-label={`View ${record.name}`}
             >
@@ -208,6 +206,17 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
                 Archive
               </Button>
             )}
+            {canManage && onReactivateProject && record.status === "archived" && (
+              <Button
+                type="link"
+                icon={<UndoOutlined />}
+                onClick={() => onReactivateProject(record.id, record.name)}
+                className={styles.actionButton}
+                aria-label={`Reactivate ${record.name}`}
+              >
+                Reactivate
+              </Button>
+            )}
             {canManage && onDeleteProject && (
               <Button
                 type="link"
@@ -224,7 +233,15 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         ),
       },
     ],
-    [sort, onViewProject, onEditProject, onDeleteProject, onArchiveProject, canManage]
+    [
+      sort,
+      onViewProject,
+      onEditProject,
+      onDeleteProject,
+      onArchiveProject,
+      onReactivateProject,
+      canManage,
+    ]
   );
 
   const handleTableChange = (
@@ -249,6 +266,7 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
         columns={columns}
         dataSource={projects}
         rowKey="id"
+        scroll={{ x: 1500 }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,

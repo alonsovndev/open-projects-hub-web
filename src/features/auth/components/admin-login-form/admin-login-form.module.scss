@@ -4,18 +4,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: $spacing-xl;
+  flex: 1;
+  padding: $spacing-2xl $spacing-md;
   background-color: $surface-light;
 }
 
 .card {
   width: 100%;
   max-width: 440px;
-  padding: 3rem 2.5rem;
+  padding: $spacing-xl;
   background-color: $surface-white;
   border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  box-shadow: none;
   border: 1px solid $surface-base;
 
   @media (max-width: 480px) {
@@ -44,13 +44,13 @@
 .iconWrapper {
   width: 56px;
   height: 56px;
-  margin: 0 auto $spacing-lg;
+  margin: 0 0 $spacing-lg;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $primary-base 0%, $primary-dark 100%);
+  background: $primary-bg-light;
   border-radius: $radius-md;
-  color: $text-inverted;
+  color: $primary-base;
 }
 
 .icon {
@@ -62,7 +62,7 @@
   font-size: 2rem;
   font-weight: 700;
   color: $text-primary;
-  text-align: center;
+  text-align: left;
   margin: 0 0 $spacing-xl;
 }
 
@@ -192,7 +192,7 @@
 }
 
 .cardFooter {
-  text-align: center;
+  text-align: left;
   margin-top: $spacing-xl;
   padding-top: $spacing-lg;
   border-top: 1px solid $surface-base;
@@ -205,6 +205,7 @@
 }
 
 .footerLink {
+  margin-left: $spacing-xs;
   font-weight: 500;
   color: $color-link;
   text-decoration: underline;
@@ -213,5 +214,11 @@
   &:hover {
     color: $primary-dark;
     text-decoration: underline;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginPanel {
+    padding-block: $spacing-xl;
   }
 }

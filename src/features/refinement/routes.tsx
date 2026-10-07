@@ -12,8 +12,8 @@ export const refinementRoutes: AppRoute[] = [
         <RefinementPage />
       </AdminLayout>
     ),
-    // Drafts are unapproved AI output and never reach a Viewer, matching the API, where
-    // every refinement endpoint requires admin.
-    guards: ["auth", { role: "admin" }],
+    // Drafts are unapproved AI output and never reach a client, matching the API, where
+    // every refinement endpoint requires an admin or member.
+    guards: ["auth", { role: ["admin", "member"] }],
   },
 ];

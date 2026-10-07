@@ -10,7 +10,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: $spacing-xl;
-  margin-bottom: $spacing-2xl;
+  margin-bottom: $spacing-xl;
 
   @media (max-width: $breakpoint-tablet) {
     flex-direction: column;
@@ -18,22 +18,22 @@
   }
 }
 
-.pageTitle {
+.pageTitle:global(.ant-typography) {
   font-family: $font-headline;
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.25;
   margin: 0 0 $spacing-sm;
   color: $text-primary;
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 }
 
 .subtitle {
   font-family: $font-body;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.6;
   color: $text-secondary;
 }

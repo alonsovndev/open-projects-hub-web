@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { http, HttpResponse } from "msw";
+import { message } from "antd";
 
 import { useAdminLoginForm } from "@/features/auth/hooks/use-admin-login-form";
+import { adminAuthConfig } from "@/resources/config/auth";
+import { server } from "@/mocks/server";
 import { TestProviders as wrapper } from "@/test/utils/render-with-providers";
 
 vi.mock("antd", async () => {
@@ -71,5 +75,26 @@ describe("useAdminLoginForm", () => {
     const { result } = renderHook(() => useAdminLoginForm(), { wrapper });
 
     expect(result.current.isSubmitEnabled).toBe(false);
+  });
+
+  it("offers email verification instead of a generic error for an unverified account", async () => {
+    server.use(
+      http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.loginEndpoint}`, () =>
+        HttpResponse.json(
+          { detail: "Please verify your email before signing in.", code: "EMAIL_NOT_VERIFIED" },
+          { status: 403 }
+        )
+      )
+    );
+    const { result } = renderHook(() => useAdminLoginForm(), { wrapper });
+
+    await act(async () => {
+      await result.current.handleSubmit({ email: "new@example.com", password: "Secure123!" });
+    });
+
+    await waitFor(() => expect(result.current.needsEmailVerification).toBe(true));
+    expect(result.current.authError).toBe("Please verify your email before signing in.");
+    expect(message.error).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

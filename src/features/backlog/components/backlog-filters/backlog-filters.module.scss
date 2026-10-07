@@ -1,11 +1,10 @@
 @use "@/styles/variables.scss" as *;
 
 .filtersBar {
-  background: $surface-white;
-  padding: $spacing-lg;
-  border-radius: $radius-lg;
+  padding: $spacing-lg 0;
+  border-top: 1px solid $border-light;
+  border-bottom: 1px solid $border-light;
   margin-bottom: $spacing-xl;
-  box-shadow: $shadow-card;
 }
 
 .filtersContent {
@@ -13,9 +12,20 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+
+  :global(.ant-space-item) {
+    min-width: 0;
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    :global(.ant-space-item) {
+      width: 100%;
+    }
+  }
 }
 
 .searchInput {
+  width: 100%;
   min-width: 280px;
   flex: 1;
 
@@ -32,6 +42,7 @@
 }
 
 .filterSelect {
+  width: 100%;
   min-width: 180px;
 
   :global {

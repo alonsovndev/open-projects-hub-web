@@ -9,10 +9,10 @@ const mockUsers = [
     role: "admin" as const,
   },
   {
-    email: "user@test.com",
-    password: "User123!",
-    displayName: "Regular User",
-    role: "user" as const,
+    email: "member@test.com",
+    password: "Member123!",
+    displayName: "Team Member",
+    role: "member" as const,
   },
 ];
 
@@ -41,12 +41,13 @@ export const authHandlers = [
           displayName: user.displayName,
           name: user.displayName,
           role: user.role,
+          workspace: { id: "ws-1", name: "Admin User's workspace" },
         },
       });
     }
   ),
 
-  // Register - now returns session like the real backend
+  // Register - the account must verify its email before it can sign in
   http.post(
     `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.registerEndpoint}`,
     async ({ request }) => {
@@ -61,25 +62,42 @@ export const authHandlers = [
         return HttpResponse.json({ message: "Email already registered" }, { status: 409 });
       }
 
-      // Backend returns session on successful registration (auto-login)
       return HttpResponse.json(
         {
-          token: `mock-token-${Date.now()}`,
-          accessToken: `mock-access-token-${Date.now()}`,
-          refreshToken: `mock-refresh-token-${Date.now()}`,
-          email: body.email,
-          displayName: body.displayName,
-          role: "viewer",
-          loggedInAt: new Date().toISOString(),
-          user: {
-            email: body.email,
-            displayName: body.displayName,
-            name: body.displayName,
-            role: "viewer",
-          },
+          email: `${body.email.slice(0, 2)}***@${body.email.split("@")[1]}`,
+          verificationRequired: true,
+          nextStep: "verify-email",
+          codeExpiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
         },
         { status: 201 }
       );
+    }
+  ),
+
+  // Verify email — mock code is fixed for local testing without real email delivery
+  http.post(
+    `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.verifyEmailEndpoint}`,
+    async ({ request }) => {
+      const body = (await request.json()) as { email: string; code: string };
+
+      if (body.code.toUpperCase() !== "ABC234") {
+        return HttpResponse.json(
+          { message: "Invalid or expired verification code" },
+          { status: 400 }
+        );
+      }
+
+      return HttpResponse.json({ verified: true });
+    }
+  ),
+
+  // Resend verification — always the same generic response
+  http.post(
+    `${adminAuthConfig.apiBaseUrl}${adminAuthConfig.resendVerificationEndpoint}`,
+    async () => {
+      return HttpResponse.json({
+        message: "If this email is awaiting verification, a new code has been sent.",
+      });
     }
   ),
 

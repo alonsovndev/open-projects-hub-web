@@ -27,16 +27,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NaranjoSolutions/open-projects-hub-web.git"
+    "url": "git+https://github.com/alonsovndev/open-projects-hub-web.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/NaranjoSolutions/open-projects-hub-web/issues"
+    "url": "https://github.com/alonsovndev/open-projects-hub-web/issues"
   },
-  "homepage": "https://github.com/NaranjoSolutions/open-projects-hub-web#readme",
+  "homepage": "https://github.com/alonsovndev/open-projects-hub-web#readme",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@reduxjs/toolkit": "^2.11.2",

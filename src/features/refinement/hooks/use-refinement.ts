@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
 
 import {
   useGenerateStoriesMutation,
-  useApproveDraftMutation,
-  useApproveDraftsBulkMutation,
-  useUpdateDraftMutation,
-  useDeleteDraftMutation,
+  useApproveStoryMutation,
+  useApproveStoriesBulkMutation,
 } from "@/features/refinement/api/refinement-api";
+import { useAuth } from "@/features/auth/hooks/use-auth";
+import { pendingStoriesStorage } from "@/features/refinement/model/pending-stories-storage";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
+import {
+  useGetApiKeysQuery,
+  useGetCreditBalanceQuery,
+} from "@/features/settings/api/ai-providers-api";
+import type { AiProvider, ProviderErrorDetail, RefinementProvider } from "@/shared/types/ai";
 import type { ProjectSummary } from "@/shared/types/domain";
 import {
   RAW_NOTES_MAX_LENGTH,
@@ -46,26 +51,94 @@ const toRefinementFailure = (error: unknown): RefinementFailure | null => {
     : null;
 };
 
+/**
+ * Read the 422 body the API returns when a provider refuses a key.
+ *
+ * `promptsKeyUpdate` is the part that matters: it separates a key the user must replace
+ * in Settings (FR-010-11) from a spent quota or an outage, which replacing would not fix.
+ */
+const toProviderKeyError = (error: unknown): ProviderErrorDetail | null => {
+  if (!error || typeof error !== "object") return null;
+
+  const { status, data } = error as { status?: unknown; data?: unknown };
+  if (status !== 422 || !data || typeof data !== "object") return null;
+
+  const body = data as ProviderErrorDetail;
+  return body.code === "API_KEY_INVALID" ? body : null;
+};
+
+/** True when the API refused the run because the free credits are gone (FR-010-03). */
+const isCreditsExhausted = (error: unknown): boolean =>
+  typeof error === "object" && error !== null && (error as { status?: unknown }).status === 402;
+
 export const useRefinement = () => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const { user } = useAuth();
+  const storageOwner = user?.email ?? null;
+
+  // Read once on mount: stories left over from a reload of this tab (see the storage module).
+  const [restored] = useState(() =>
+    storageOwner ? pendingStoriesStorage.load(storageOwner) : null
+  );
+
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(restored?.projectId ?? "");
   const [rawNotes, setRawNotes] = useState<string>("");
-  const [generatedStories, setGeneratedStories] = useState<GeneratedStory[]>([]);
+  const [generatedStories, setGeneratedStories] = useState<GeneratedStory[]>(
+    restored?.stories ?? []
+  );
+  // The project the stories were generated for. Approval must target it, not whatever the
+  // project dropdown shows by then.
+  const [generatedProjectId, setGeneratedProjectId] = useState<string>(restored?.projectId ?? "");
   const [approvingIds, setApprovingIds] = useState<string[]>([]);
   const [editingStory, setEditingStory] = useState<GeneratedStory | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pendingApproval, setPendingApproval] = useState<GeneratedStory | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [redactionCount, setRedactionCount] = useState(0);
+  // Session-scoped only: Q-031 rules out remembering the last provider across visits.
+  const [selectedProvider, setSelectedProvider] = useState<RefinementProvider | null>(null);
+  const [creditsExhausted, setCreditsExhausted] = useState(false);
+  const [invalidKeyProvider, setInvalidKeyProvider] = useState<AiProvider | null>(null);
 
   const { data: projectsData, isLoading: isLoadingProjects } = useGetProjectsQuery({
     limit: 100,
   });
 
+  const { data: creditBalance } = useGetCreditBalanceQuery();
+  const { data: apiKeys } = useGetApiKeysQuery();
+
   const [generateStories, { isLoading: isGenerating }] = useGenerateStoriesMutation();
-  const [approveDraft] = useApproveDraftMutation();
-  const [approveDraftsBulk, { isLoading: isApprovingAll }] = useApproveDraftsBulkMutation();
-  const [updateDraft, { isLoading: isUpdating }] = useUpdateDraftMutation();
-  const [deleteDraft] = useDeleteDraftMutation();
+  const [approveStory] = useApproveStoryMutation();
+  const [approveStoriesBulk, { isLoading: isApprovingAll }] = useApproveStoriesBulkMutation();
+
+  useEffect(() => {
+    if (!storageOwner) return;
+
+    if (generatedStories.length === 0) {
+      pendingStoriesStorage.clear(storageOwner);
+      return;
+    }
+
+    pendingStoriesStorage.save(storageOwner, {
+      projectId: generatedProjectId,
+      stories: generatedStories,
+    });
+  }, [storageOwner, generatedStories, generatedProjectId]);
+
+  const hasUnapprovedStories = generatedStories.length > 0;
+
+  // Closing the tab discards the persisted stories, and a reload interrupts the review, so
+  // the browser asks first. In-app navigation needs no guard: the stories are restored.
+  useEffect(() => {
+    if (!hasUnapprovedStories) return;
+
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [hasUnapprovedStories]);
 
   const projectOptions =
     projectsData?.projects.map((p: ProjectSummary) => ({
@@ -74,6 +147,29 @@ export const useRefinement = () => {
     })) ?? [];
 
   const selectedProject = projectsData?.projects.find((p) => p.id === selectedProjectId) ?? null;
+
+  const configuredProviders: AiProvider[] = (apiKeys ?? [])
+    .map((key) => key.provider)
+    .sort((left, right) => left.localeCompare(right));
+  const hasCredits = (creditBalance?.credits ?? 0) > 0;
+
+  // "Platform" is offered only while credits remain; the rest are the providers the user
+  // actually holds a key for (FR-010-06).
+  const providerOptions: RefinementProvider[] = [
+    ...(hasCredits ? (["platform"] as const) : []),
+    ...configuredProviders,
+  ];
+
+  // Default: Platform when there are credits, otherwise the first configured provider
+  // alphabetically. Held as a derived value rather than seeded into state so it tracks a
+  // key being added or deleted in another tab without a stale selection surviving.
+  const effectiveProvider: RefinementProvider | null =
+    selectedProvider !== null && providerOptions.includes(selectedProvider)
+      ? selectedProvider
+      : (providerOptions[0] ?? null);
+
+  // FR-010-03: no credits and no key means there is nothing to run the refinement on.
+  const isRefinementBlocked = providerOptions.length === 0;
 
   // A past failure says nothing about notes the Admin has since changed, so the alert and
   // its Retry button clear as soon as the input does.
@@ -95,12 +191,31 @@ export const useRefinement = () => {
       const result = await generateStories({
         projectId: selectedProjectId,
         rawNotes: notes,
+        ...(effectiveProvider !== null && { provider: effectiveProvider }),
       }).unwrap();
 
-      setGeneratedStories(result.stories);
+      // The API stores nothing, so the ids are only list keys for this session.
+      const batchKey = Date.now();
+      setGeneratedStories(
+        result.stories.map((story, index) => ({ ...story, id: `${batchKey}-${index}` }))
+      );
+      setGeneratedProjectId(selectedProjectId);
       setRedactionCount(result.redactionCount ?? 0);
       message.success(`Generated ${result.stories.length} stories successfully!`);
     } catch (error) {
+      if (isCreditsExhausted(error)) {
+        // Not shown as a generic failure: this one has a specific remedy, so it gets the
+        // add-a-key prompt instead of a Retry button that would fail the same way.
+        setCreditsExhausted(true);
+        return;
+      }
+
+      const keyError = toProviderKeyError(error);
+      if (keyError?.promptsKeyUpdate && keyError.provider) {
+        setInvalidKeyProvider(keyError.provider);
+        return;
+      }
+
       const failure = toRefinementFailure(error);
 
       if (failure) {
@@ -118,6 +233,11 @@ export const useRefinement = () => {
   const handleGenerate = async () => {
     if (!selectedProjectId) {
       message.error("Please select a project first");
+      return;
+    }
+
+    if (isRefinementBlocked) {
+      setCreditsExhausted(true);
       return;
     }
 
@@ -142,8 +262,8 @@ export const useRefinement = () => {
     setGenerationError(null);
   };
 
-  const handleRequestApproval = (draftId: string) => {
-    const story = generatedStories.find((candidate) => candidate.id === draftId);
+  const handleRequestApproval = (storyId: string) => {
+    const story = generatedStories.find((candidate) => candidate.id === storyId);
     if (story) setPendingApproval(story);
   };
 
@@ -154,22 +274,22 @@ export const useRefinement = () => {
   const handleConfirmApproval = async () => {
     if (!pendingApproval) return;
 
-    const draftId = pendingApproval.id;
-    setApprovingIds((prev) => [...prev, draftId]);
+    const { id: storyId, ...content } = pendingApproval;
+    setApprovingIds((prev) => [...prev, storyId]);
 
     try {
-      const result = await approveDraft(draftId).unwrap();
+      const result = await approveStory({ projectId: generatedProjectId, ...content }).unwrap();
 
-      setGeneratedStories((prev) => prev.filter((story) => story.id !== draftId));
+      setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
       message.success(`Story "${result.title}" approved and added to backlog!`);
     } catch (error) {
       message.error("Failed to approve story. Please try again.");
-      console.error("Approve draft error:", error);
+      console.error("Approve story error:", error);
     } finally {
       // The dialog stays open until the request settles, so its confirm button can show
       // progress and a second click cannot land while the first is in flight.
       setPendingApproval(null);
-      setApprovingIds((prev) => prev.filter((id) => id !== draftId));
+      setApprovingIds((prev) => prev.filter((id) => id !== storyId));
     }
   };
 
@@ -180,8 +300,11 @@ export const useRefinement = () => {
     }
 
     try {
-      const draftIds = generatedStories.map((story) => story.id);
-      const result = await approveDraftsBulk({ draftIds }).unwrap();
+      const stories = generatedStories.map(({ id: _localId, ...content }) => ({
+        projectId: generatedProjectId,
+        ...content,
+      }));
+      const result = await approveStoriesBulk({ stories }).unwrap();
 
       setGeneratedStories([]);
 
@@ -196,36 +319,23 @@ export const useRefinement = () => {
     }
   };
 
-  const handleEdit = (draftId: string) => {
-    const story = generatedStories.find((candidate) => candidate.id === draftId);
+  const handleEdit = (storyId: string) => {
+    const story = generatedStories.find((candidate) => candidate.id === storyId);
     if (!story) return;
 
     setEditingStory(story);
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = async (updatedStory: GeneratedStory) => {
-    try {
-      await updateDraft({
-        id: updatedStory.id,
-        data: {
-          title: updatedStory.title,
-          description: updatedStory.description,
-          acceptanceCriteria: updatedStory.acceptanceCriteria,
-        },
-      }).unwrap();
+  // Edits stay in the browser: the story is saved only when it is approved.
+  const handleSaveEdit = (updatedStory: GeneratedStory) => {
+    setGeneratedStories((prev) =>
+      prev.map((story) => (story.id === updatedStory.id ? updatedStory : story))
+    );
 
-      setGeneratedStories((prev) =>
-        prev.map((story) => (story.id === updatedStory.id ? updatedStory : story))
-      );
-
-      setIsEditModalOpen(false);
-      setEditingStory(null);
-      message.success("Story updated successfully!");
-    } catch (error) {
-      message.error("Failed to update story. Please try again.");
-      console.error("Update draft error:", error);
-    }
+    setIsEditModalOpen(false);
+    setEditingStory(null);
+    message.success("Story updated successfully!");
   };
 
   const handleCancelEdit = () => {
@@ -233,21 +343,21 @@ export const useRefinement = () => {
     setEditingStory(null);
   };
 
-  const handleDelete = async (draftId: string) => {
-    try {
-      // Deleted server-side, not just dropped from the list: an abandoned draft must not
-      // linger where a later session could approve it.
-      await deleteDraft(draftId).unwrap();
-
-      setGeneratedStories((prev) => prev.filter((story) => story.id !== draftId));
-      message.success("Draft discarded");
-    } catch (error) {
-      message.error("Failed to discard draft. Please try again.");
-      console.error("Delete draft error:", error);
-    }
+  const handleDelete = (storyId: string) => {
+    setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
+    message.success("Draft discarded");
   };
 
   return {
+    creditBalance: creditBalance ?? null,
+    providerOptions,
+    selectedProvider: effectiveProvider,
+    setSelectedProvider,
+    isRefinementBlocked,
+    creditsExhausted,
+    dismissCreditsExhausted: () => setCreditsExhausted(false),
+    invalidKeyProvider,
+    dismissInvalidKey: () => setInvalidKeyProvider(null),
     selectedProjectId,
     selectedProject,
     rawNotes,
@@ -262,7 +372,6 @@ export const useRefinement = () => {
     isLoadingProjects,
     isGenerating,
     isApprovingAll,
-    isUpdating,
     handleProjectChange,
     handleNotesChange,
     handleGenerate,

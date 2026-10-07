@@ -49,6 +49,7 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
       <Space size="middle" wrap className={styles.filtersContent}>
         <Search
           placeholder="Search stories..."
+          aria-label="Search stories"
           prefix={<SearchOutlined />}
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
@@ -58,6 +59,7 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
 
         <Select
           value={filters.project}
+          aria-label="Filter by project"
           onChange={onProjectFilter}
           options={[allProjectsOption, ...projectOptions]}
           className={styles.filterSelect}
@@ -67,6 +69,7 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
 
         <Select
           value={filters.priority}
+          aria-label="Filter by priority"
           onChange={onPriorityFilter}
           options={priorityOptions}
           className={styles.filterSelect}

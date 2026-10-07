@@ -79,7 +79,7 @@ describe("useAuth", () => {
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
 
-    store.dispatch(setAdminSession({ session: { ...mockSession, role: "user" } }));
+    store.dispatch(setAdminSession({ session: { ...mockSession, role: "member" } }));
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider store={store}>{children}</Provider>
@@ -87,6 +87,6 @@ describe("useAuth", () => {
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
-    expect(result.current.user?.role).toBe("user");
+    expect(result.current.user?.role).toBe("member");
   });
 });

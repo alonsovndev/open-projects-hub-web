@@ -1,13 +1,17 @@
 import type { FC } from "react";
-import { Typography, Row, Col, Select, Alert, Card } from "antd";
+import { Typography, Row, Col, Select, Alert, Card, Button, Modal } from "antd";
 import { ProjectOutlined, UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 import { RawNotesEditor } from "@/features/refinement/components/raw-notes-editor";
 import { GeneratedStoriesList } from "@/features/refinement/components/generated-stories-list";
 import { EditStoryModal } from "@/features/refinement/components/edit-story-modal";
 import { ApproveStoryModal } from "@/features/refinement/components/approve-story-modal";
+import { ProviderControls } from "@/features/refinement/components/provider-controls";
 import { useRefinement } from "@/features/refinement/hooks/use-refinement";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
+import { AI_PROVIDER_LABELS } from "@/shared/types/ai";
+
+import { Link, useNavigate } from "react-router-dom";
 
 import styles from "./refinement.module.scss";
 
@@ -16,7 +20,18 @@ const { Title, Text } = Typography;
 export const RefinementPage: FC = () => {
   usePageTitle("AI Refinement");
 
+  const navigate = useNavigate();
+
   const {
+    creditBalance,
+    providerOptions,
+    selectedProvider,
+    setSelectedProvider,
+    isRefinementBlocked,
+    creditsExhausted,
+    dismissCreditsExhausted,
+    invalidKeyProvider,
+    dismissInvalidKey,
     selectedProjectId,
     selectedProject,
     rawNotes,
@@ -31,7 +46,6 @@ export const RefinementPage: FC = () => {
     isLoadingProjects,
     isGenerating,
     isApprovingAll,
-    isUpdating,
     handleProjectChange,
     handleNotesChange,
     handleGenerate,
@@ -60,9 +74,12 @@ export const RefinementPage: FC = () => {
 
       <div className={styles.projectSection}>
         <div className={styles.projectSelector}>
-          <Text className={styles.selectorLabel}>Project</Text>
+          <Text className={styles.selectorLabel} id="refinement-project-label">
+            Project
+          </Text>
           <Select
-            style={{ width: 500 }}
+            className={styles.projectSelect}
+            aria-labelledby="refinement-project-label"
             placeholder="Select a project"
             options={projectOptions}
             value={selectedProjectId || undefined}
@@ -99,7 +116,30 @@ export const RefinementPage: FC = () => {
             </Row>
           </Card>
         )}
+        <ProviderControls
+          balance={creditBalance}
+          providerOptions={providerOptions}
+          selectedProvider={selectedProvider}
+          onProviderChange={setSelectedProvider}
+        />
       </div>
+
+      {isRefinementBlocked && (
+        <Alert
+          type="warning"
+          showIcon
+          className={styles.disclaimerAlert}
+          message="No credits remaining"
+          description="Add your own API key to continue unlimited refinements."
+          action={
+            <Link to="/settings">
+              <Button size="small" type="primary">
+                Add API Key
+              </Button>
+            </Link>
+          }
+        />
+      )}
 
       <Alert
         type="info"
@@ -108,6 +148,57 @@ export const RefinementPage: FC = () => {
         message="AI can make mistakes. Story refinements use a third-party AI service. Do not include sensitive information. Review before use."
         className={styles.disclaimerAlert}
       />
+
+      <Modal
+        open={creditsExhausted}
+        title="No credits remaining"
+        onCancel={dismissCreditsExhausted}
+        footer={[
+          <Button key="dismiss" onClick={dismissCreditsExhausted}>
+            Not now
+          </Button>,
+          <Button
+            key="settings"
+            type="primary"
+            onClick={() => {
+              dismissCreditsExhausted();
+              navigate("/settings");
+            }}
+          >
+            Add API Key
+          </Button>,
+        ]}
+      >
+        You have used all your free refinements. Add your own API key to continue unlimited
+        refinements.
+      </Modal>
+
+      <Modal
+        open={invalidKeyProvider !== null}
+        title={
+          invalidKeyProvider
+            ? `${AI_PROVIDER_LABELS[invalidKeyProvider]} API key is invalid or expired`
+            : ""
+        }
+        onCancel={dismissInvalidKey}
+        footer={[
+          <Button key="switch" onClick={dismissInvalidKey}>
+            Switch Provider
+          </Button>,
+          <Button
+            key="settings"
+            type="primary"
+            onClick={() => {
+              dismissInvalidKey();
+              navigate("/settings");
+            }}
+          >
+            Go to Settings
+          </Button>,
+        ]}
+      >
+        Update your key in Settings to continue, or pick another provider for this refinement.
+      </Modal>
 
       <Row gutter={[24, 24]} className={styles.workspaceGrid}>
         <Col xs={24} lg={10} className={styles.workspaceCol}>
@@ -141,7 +232,6 @@ export const RefinementPage: FC = () => {
         story={editingStory}
         onCancel={handleCancelEdit}
         onSave={handleSaveEdit}
-        loading={isUpdating}
       />
 
       <ApproveStoryModal

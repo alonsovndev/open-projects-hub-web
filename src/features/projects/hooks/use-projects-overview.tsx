@@ -7,10 +7,13 @@ import {
   useGetProjectsQuery,
   useGetProjectByIdQuery,
   useArchiveProjectMutation,
+  useReactivateProjectMutation,
+  useRegenerateAccessCodeMutation,
 } from "@/features/projects/api/projects-api";
 import { useDeleteProject } from "@/features/projects/hooks/use-delete-project";
 import { useUpdateProject } from "@/features/projects/hooks/use-update-project";
 import type { ProjectFilters, ProjectSort, ProjectView } from "@/features/projects/types";
+import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link";
 
 /** Maximum number of concurrently active projects allowed (MVP constraint). */
 export const MAX_ACTIVE_PROJECTS = 3;
@@ -27,6 +30,9 @@ export const useProjectsOverview = () => {
     },
   });
   const [archiveProject, { isLoading: isArchiving }] = useArchiveProjectMutation();
+  const [reactivateProject, { isLoading: isReactivating }] = useReactivateProjectMutation();
+  const [regenerateAccessCode, { isLoading: isRegeneratingAccessCode }] =
+    useRegenerateAccessCodeMutation();
 
   const [filters, setFilters] = useState<ProjectFilters>({
     search: "",
@@ -176,8 +182,18 @@ export const useProjectsOverview = () => {
     }
   };
 
-  const handleViewProject = (projectCode: string) => {
-    navigate(`/viewer/${projectCode}`);
+  const handleViewProject = (accessCode: string) => {
+    window.open(buildClientReviewUrl(accessCode), "_blank", "noopener,noreferrer");
+  };
+
+  const handleRegenerateAccessCode = async () => {
+    if (!editingProjectId) return;
+    try {
+      await regenerateAccessCode(editingProjectId).unwrap();
+      message.success("New access code generated. The previous code no longer works.");
+    } catch {
+      message.error("Failed to generate a new access code");
+    }
   };
 
   const handleEditProject = (projectId: string) => {
@@ -235,6 +251,29 @@ export const useProjectsOverview = () => {
     });
   };
 
+  const handleReactivateProject = (projectId: string, projectName: string) => {
+    Modal.confirm({
+      title: "Reactivate Project",
+      icon: <ExclamationCircleOutlined />,
+      content: `Reactivate "${projectName}"? It will count toward your ${MAX_ACTIVE_PROJECTS} active projects.`,
+      okText: "Reactivate",
+      cancelText: "Cancel",
+      onOk: async () => {
+        try {
+          await reactivateProject(projectId).unwrap();
+          message.success(`Project "${projectName}" reactivated`);
+        } catch (error) {
+          const apiError = error as { status?: number };
+          message.error(
+            apiError?.status === 409
+              ? "You have reached the maximum of 3 active projects. Archive another project before reactivating this one."
+              : "Failed to reactivate project"
+          );
+        }
+      },
+    });
+  };
+
   const activeFilterCount = [
     filters.search !== "",
     filters.status !== "all",
@@ -259,6 +298,8 @@ export const useProjectsOverview = () => {
     isDeleting,
     isUpdating,
     isArchiving,
+    isReactivating,
+    isRegeneratingAccessCode,
     error,
     editModalOpen,
     editingProject,
@@ -272,11 +313,13 @@ export const useProjectsOverview = () => {
     handleClearFilters,
     handlePageChange,
     handleViewProject,
+    handleRegenerateAccessCode,
     handleEditProject,
     handleUpdateProject,
     handleCancelEdit,
     handleCreateProject,
     handleDeleteProject,
     handleArchiveProject,
+    handleReactivateProject,
   };
 };

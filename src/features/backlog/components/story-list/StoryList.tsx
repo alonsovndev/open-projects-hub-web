@@ -18,7 +18,7 @@ const { Text, Paragraph } = Typography;
 interface StoryListProps {
   stories: Story[];
   onDelete: (storyId: string) => void;
-  /** Whether the viewer may change the backlog. Defaults to false so a caller that forgets it fails closed. */
+  /** Whether the caller may change the backlog. Defaults to false so a caller that forgets it fails closed. */
   canManage?: boolean;
 }
 

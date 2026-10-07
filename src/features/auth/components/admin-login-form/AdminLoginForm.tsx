@@ -12,7 +12,7 @@ export const AdminLoginForm: FC = () => {
   const adminLoginForm = useAdminLoginForm();
 
   return (
-    <section className={styles.loginPanel} aria-labelledby="admin-login-title">
+    <section className={styles.loginPanel} aria-labelledby="login-title">
       <div className={styles.card}>
         <Link to="/" className={styles.backLink}>
           <ArrowLeftOutlined /> Back to Home
@@ -22,8 +22,8 @@ export const AdminLoginForm: FC = () => {
           <SafetyOutlined className={styles.icon} />
         </div>
 
-        <h1 id="admin-login-title" className={styles.title}>
-          Admin Sign In
+        <h1 id="login-title" className={styles.title}>
+          Sign In
         </h1>
 
         <Form
@@ -42,7 +42,7 @@ export const AdminLoginForm: FC = () => {
             <Input
               size="large"
               prefix={<MailOutlined className={styles.inputIcon} />}
-              placeholder="admin@projecthub.com"
+              placeholder="you@example.com"
               autoComplete="email"
               className={styles.input}
             />
@@ -88,6 +88,13 @@ export const AdminLoginForm: FC = () => {
               type="error"
               showIcon
               message={adminLoginForm.authError}
+              description={
+                adminLoginForm.needsEmailVerification ? (
+                  <Link to="/verify-email" state={adminLoginForm.verifyEmailState}>
+                    Verify your email
+                  </Link>
+                ) : undefined
+              }
             />
           ) : null}
 
@@ -104,7 +111,7 @@ export const AdminLoginForm: FC = () => {
         </Form>
 
         <div className={styles.cardFooter}>
-          <span className={styles.footerText}>New to the portal? </span>
+          <span className={styles.footerText}>New here?</span>
           <Link to="/register" className={styles.footerLink}>
             Create account
           </Link>

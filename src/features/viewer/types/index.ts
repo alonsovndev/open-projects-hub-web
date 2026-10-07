@@ -1,27 +1,20 @@
-export interface UserStoryNarrative {
-  userRole: string;
-  goal: string;
-  benefit: string;
-}
+import type { StoryStatus } from "@/features/backlog/types";
+import type { ProjectPhase, ProjectPriority } from "@/features/dashboard/types";
 
-export interface AcceptanceCriterion {
-  given: string;
-  when: string;
-  then: string;
-}
-
-export interface ProjectRequirementStory {
+export interface ReviewStory {
   id: string;
   title: string;
-  userStory: UserStoryNarrative;
-  status: "Approved";
-  acceptanceCriteria: AcceptanceCriterion[];
+  description: string;
+  acceptanceCriteria: string[];
+  status: StoryStatus;
+  priority: ProjectPriority;
 }
 
-export interface ProjectRequirementsRecord {
-  code: string;
-  projectTitle: string;
-  stories: ProjectRequirementStory[];
+export interface ClientReview {
+  projectName: string;
+  phase: ProjectPhase;
+  total: number;
+  stories: ReviewStory[];
 }
 
 export interface ProjectCodeFormValues {

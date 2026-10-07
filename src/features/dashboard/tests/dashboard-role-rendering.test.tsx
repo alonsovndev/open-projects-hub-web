@@ -9,6 +9,7 @@ import type { ProjectSummary } from "@/features/dashboard/types";
 const project: ProjectSummary = {
   id: "project-1",
   code: "HUB",
+  accessCode: "PRJ-DEMX23A1",
   name: "Open Projects Hub",
   description: "Planning workspace",
   status: "active",
@@ -59,15 +60,4 @@ describe("Dashboard role rendering", () => {
     expect(screen.getByRole("button", { name: /new project/i })).toBeInTheDocument();
   });
 
-  it("removes the create control for a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.queryByRole("button", { name: /new project/i })).not.toBeInTheDocument();
-  });
-
-  it("still shows the project overview to a viewer", () => {
-    renderPage("viewer");
-
-    expect(screen.getByText("Open Projects Hub")).toBeInTheDocument();
-  });
 });

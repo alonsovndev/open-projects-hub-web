@@ -171,7 +171,7 @@ describe("GuardResolver", () => {
     it("should redirect to /unauthorized when role does not match", () => {
       const userSession: AdminSession = {
         ...mockSession,
-        role: "user",
+        role: "member",
       };
 
       renderWithRouter(
@@ -200,17 +200,17 @@ describe("GuardResolver", () => {
       expect(screen.getByTestId("login-page")).toBeInTheDocument();
     });
 
-    it("should redirect a viewer away from an admin-only route", () => {
-      const viewerSession: AdminSession = {
+    it("should redirect a member away from an admin-only route", () => {
+      const memberSession: AdminSession = {
         ...mockSession,
-        role: "viewer",
+        role: "member",
       };
 
       renderWithRouter(
         <GuardResolver guards={["auth", { role: "admin" }]}>
           <TestChild />
         </GuardResolver>,
-        { session: viewerSession }
+        { session: memberSession }
       );
 
       expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
@@ -218,49 +218,49 @@ describe("GuardResolver", () => {
     });
 
     it("should admit any role listed when the guard names several", () => {
-      const viewerSession: AdminSession = {
+      const memberSession: AdminSession = {
         ...mockSession,
-        role: "viewer",
+        role: "member",
       };
 
       renderWithRouter(
-        <GuardResolver guards={["auth", { role: ["admin", "viewer"] }]}>
+        <GuardResolver guards={["auth", { role: ["admin", "member"] }]}>
           <TestChild />
         </GuardResolver>,
-        { session: viewerSession }
+        { session: memberSession }
       );
 
       expect(screen.getByTestId("protected-content")).toBeInTheDocument();
     });
 
     it("should reject a role that is not in the guard's list", () => {
-      const userSession: AdminSession = {
+      const adminSession: AdminSession = {
         ...mockSession,
-        role: "user",
+        role: "admin",
       };
 
       renderWithRouter(
-        <GuardResolver guards={["auth", { role: ["admin", "viewer"] }]}>
+        <GuardResolver guards={["auth", { role: ["member"] }]}>
           <TestChild />
         </GuardResolver>,
-        { session: userSession }
+        { session: adminSession }
       );
 
       expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
       expect(screen.getByTestId("unauthorized-page")).toBeInTheDocument();
     });
 
-    it("should render children for viewer role when role matches", () => {
-      const viewerSession: AdminSession = {
+    it("should render children for member role when role matches", () => {
+      const memberSession: AdminSession = {
         ...mockSession,
-        role: "viewer",
+        role: "member",
       };
 
       renderWithRouter(
-        <GuardResolver guards={["auth", { role: "viewer" }]}>
+        <GuardResolver guards={["auth", { role: "member" }]}>
           <TestChild />
         </GuardResolver>,
-        { session: viewerSession }
+        { session: memberSession }
       );
 
       expect(screen.getByTestId("protected-content")).toBeInTheDocument();

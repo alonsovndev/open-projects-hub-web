@@ -10,7 +10,7 @@ export class ForgotPasswordPage {
     this.page = page;
     this.emailInput = page.getByLabel(/email/i);
     this.submitButton = page.getByRole("button", { name: /send reset code/i });
-    this.backToSignInLink = page.getByRole("link", { name: /back to sign in/i });
+    this.backToSignInLink = page.getByRole("link", { name: /^sign in$/i });
   }
 
   async goto() {

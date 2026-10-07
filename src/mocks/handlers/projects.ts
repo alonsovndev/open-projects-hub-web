@@ -10,6 +10,7 @@ const mockProjects = [
     id: "11111111-1111-1111-1111-111111111111",
     name: "City Clinic Portal",
     code: "PRJ-2024-010",
+    accessCode: "PRJ-DEMX23CD",
     description: "Patient portal for the clinic",
     createdBy: "admin",
     clientId: "c1",
@@ -28,6 +29,7 @@ const mockProjects = [
     id: "22222222-2222-2222-2222-222222222222",
     name: "E-Commerce Storefront Revamp",
     code: "PRJ-2024-001",
+    accessCode: "PRJ-DEMX23DG",
     description: "Rebuild the online store",
     createdBy: "admin",
     clientId: "c2",
@@ -46,6 +48,7 @@ const mockProjects = [
     id: "33333333-3333-3333-3333-333333333333",
     name: "Inventory Tracking System",
     code: "PRJ-2024-002",
+    accessCode: "PRJ-DEMX23EK",
     description: "Real-time inventory dashboard",
     createdBy: "admin",
     clientId: "c3",
@@ -64,6 +67,7 @@ const mockProjects = [
     id: "44444444-4444-4444-4444-444444444444",
     name: "Billing Automation",
     code: "PRJ-2024-003",
+    accessCode: "PRJ-DEMX23FN",
     description: "Automated invoice reconciliation",
     createdBy: "admin",
     clientId: "c4",
@@ -82,6 +86,7 @@ const mockProjects = [
     id: "55555555-5555-5555-5555-555555555555",
     name: "Mobile App Redesign",
     code: "PRJ-2024-004",
+    accessCode: "PRJ-DEMX23GR",
     description: "Refresh the patient-facing mobile app",
     createdBy: "admin",
     clientId: "c1",
@@ -100,6 +105,7 @@ const mockProjects = [
     id: "66666666-6666-6666-6666-666666666666",
     name: "Data Migration Toolkit",
     code: "PRJ-2024-005",
+    accessCode: "PRJ-DEMX23HU",
     description: "Legacy data migration utilities",
     createdBy: "admin",
     clientId: "c3",
@@ -118,6 +124,7 @@ const mockProjects = [
     id: "99999999-9999-9999-9999-999999999999",
     name: "Legacy Archive Migration",
     code: "PRJ-2024-ARCH",
+    accessCode: "PRJ-DEMX23JX",
     description: "Historical data archived for compliance",
     createdBy: "admin",
     clientId: "c4",
@@ -193,6 +200,7 @@ export const projectsHandlers = [
         id: "77777777-7777-7777-7777-777777777777",
         name: body.name,
         code: body.code,
+        accessCode: "PRJ-DEMX23NW",
         description: body.description ?? null,
         createdBy: "admin",
         clientId: body.clientId,
@@ -233,5 +241,21 @@ export const projectsHandlers = [
       return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
     }
     return HttpResponse.json({ ...project, status: "archived", updatedAt: new Date().toISOString() });
+  }),
+
+  http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/access-code/regenerate`, ({ params }) => {
+    const project = mockProjects.find((p) => p.id === params.id);
+    if (!project) {
+      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+    }
+    return HttpResponse.json({ ...project, accessCode: "PRJ-DEMX23PQ", updatedAt: new Date().toISOString() });
+  }),
+
+  http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/reactivate`, ({ params }) => {
+    const project = mockProjects.find((p) => p.id === params.id);
+    if (!project) {
+      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+    }
+    return HttpResponse.json({ ...project, status: "active", updatedAt: new Date().toISOString() });
   }),
 ];

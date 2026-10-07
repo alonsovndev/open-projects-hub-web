@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { message } from "antd";
 
 import { useRefinement } from "@/features/refinement/hooks/use-refinement";
-import type { GeneratedStory } from "@/features/refinement/types";
+import { pendingStoriesStorage } from "@/features/refinement/model/pending-stories-storage";
+import type { RefinedStory } from "@/features/refinement/types";
 
 vi.mock("antd", async () => {
   const actual = await vi.importActual("antd");
@@ -17,18 +18,32 @@ vi.mock("antd", async () => {
   };
 });
 
+let mockUserEmail: string | null = "admin@test.com";
+
+vi.mock("@/features/auth/hooks/use-auth", () => ({
+  useAuth: () => ({ user: mockUserEmail ? { email: mockUserEmail } : null }),
+}));
+
 const mockGenerateStories = vi.fn();
-const mockApproveDraft = vi.fn();
-const mockApproveDraftsBulk = vi.fn();
-const mockUpdateDraft = vi.fn();
-const mockDeleteDraft = vi.fn();
+const mockApproveStory = vi.fn();
+const mockApproveStoriesBulk = vi.fn();
 
 vi.mock("@/features/refinement/api/refinement-api", () => ({
   useGenerateStoriesMutation: vi.fn(() => [mockGenerateStories, { isLoading: false }]),
-  useApproveDraftMutation: vi.fn(() => [mockApproveDraft, { isLoading: false }]),
-  useApproveDraftsBulkMutation: vi.fn(() => [mockApproveDraftsBulk, { isLoading: false }]),
-  useUpdateDraftMutation: vi.fn(() => [mockUpdateDraft, { isLoading: false }]),
-  useDeleteDraftMutation: vi.fn(() => [mockDeleteDraft, { isLoading: false }]),
+  useApproveStoryMutation: vi.fn(() => [mockApproveStory, { isLoading: false }]),
+  useApproveStoriesBulkMutation: vi.fn(() => [mockApproveStoriesBulk, { isLoading: false }]),
+}));
+
+// Mocked like the other RTK Query hooks: these tests render the hook without a Provider,
+// so a real query would have no store to subscribe to. Credits and keys are set to the
+// common case (credits available, no user key), which is the state the generation tests
+// below assume.
+const mockCreditBalance = vi.fn(() => ({ data: { credits: 3, totalGranted: 5 } }));
+const mockApiKeys = vi.fn(() => ({ data: [] }));
+
+vi.mock("@/features/settings/api/ai-providers-api", () => ({
+  useGetCreditBalanceQuery: () => mockCreditBalance(),
+  useGetApiKeysQuery: () => mockApiKeys(),
 }));
 
 vi.mock("@/features/projects/api/projects-api", () => ({
@@ -40,12 +55,14 @@ vi.mock("@/features/projects/api/projects-api", () => ({
   })),
 }));
 
-const draft: GeneratedStory = {
-  id: "draft-1",
+const draft: RefinedStory = {
   title: "Markdown export",
   description: "As an Admin, I want to export the backlog so that I can share scope.",
   acceptanceCriteria: ["Export includes approved stories only"],
 };
+
+/** What the hook holds for a story: the API content plus a client-side list key. */
+const heldStory = (id: string) => ({ ...draft, id });
 
 const RAW_NOTES = "Client wants login, project tracking, and export to markdown.";
 
@@ -65,14 +82,21 @@ const generate = async (result: { current: ReturnType<typeof useRefinement> }) =
 };
 
 describe("useRefinement", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
+    window.sessionStorage.clear();
+    mockUserEmail = "admin@test.com";
     mockGenerateStories.mockReturnValue(
       unwrapped({ stories: [draft], rawNotes: RAW_NOTES, redactionCount: 0 })
     );
-    mockApproveDraft.mockReturnValue(unwrapped({ id: draft.id, title: draft.title }));
-    mockDeleteDraft.mockReturnValue(unwrapped(undefined));
-    mockUpdateDraft.mockReturnValue(unwrapped({ id: draft.id }));
+    mockApproveStory.mockReturnValue(unwrapped({ id: "story-1", title: draft.title }));
+    mockApproveStoriesBulk.mockReturnValue(
+      unwrapped({ approvedCount: 1, stories: [{ id: "story-1", title: draft.title }] })
+    );
   });
 
   describe("generation", () => {
@@ -81,7 +105,7 @@ describe("useRefinement", () => {
 
       await generate(result);
 
-      expect(result.current.generatedStories).toEqual([draft]);
+      expect(result.current.generatedStories).toEqual([{ ...draft, id: expect.any(String) }]);
       expect(result.current.generationError).toBeNull();
     });
 
@@ -162,9 +186,10 @@ describe("useRefinement", () => {
       expect(mockGenerateStories).toHaveBeenLastCalledWith({
         projectId: "project-1",
         rawNotes: RAW_NOTES,
+        provider: "platform",
       });
       await waitFor(() => expect(result.current.generationError).toBeNull());
-      expect(result.current.generatedStories).toEqual([draft]);
+      expect(result.current.generatedStories).toEqual([{ ...draft, id: expect.any(String) }]);
     });
 
     it("ignores an error body that is not the documented 502 failure", async () => {
@@ -226,37 +251,82 @@ describe("useRefinement", () => {
   });
 
   describe("approval gate", () => {
+    /** The list key the hook assigned to the single generated story. */
+    const heldId = (result: { current: ReturnType<typeof useRefinement> }) =>
+      result.current.generatedStories[0].id;
+
     it("does not approve until the confirmation is accepted", async () => {
       const { result } = renderHook(() => useRefinement());
       await generate(result);
+      const storyId = heldId(result);
 
       act(() => {
-        result.current.handleRequestApproval(draft.id);
+        result.current.handleRequestApproval(storyId);
       });
 
-      expect(result.current.pendingApproval).toEqual(draft);
-      expect(mockApproveDraft).not.toHaveBeenCalled();
+      expect(result.current.pendingApproval).toEqual(heldStory(storyId));
+      expect(mockApproveStory).not.toHaveBeenCalled();
     });
 
-    it("approves and removes the draft once confirmed", async () => {
+    it("sends the story content and project on approval, then removes it from the list", async () => {
       const { result } = renderHook(() => useRefinement());
       await generate(result);
 
       act(() => {
-        result.current.handleRequestApproval(draft.id);
+        result.current.handleRequestApproval(heldId(result));
       });
       await act(async () => {
         await result.current.handleConfirmApproval();
       });
 
-      expect(mockApproveDraft).toHaveBeenCalledWith(draft.id);
+      // Content, not an id: nothing exists server-side until this call.
+      expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
       expect(result.current.generatedStories).toEqual([]);
       expect(result.current.pendingApproval).toBeNull();
     });
 
-    it("keeps the dialog open and marks the draft in flight while approving", async () => {
+    it("approves the edited content, not the generated original", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+      const storyId = heldId(result);
+
+      act(() => {
+        result.current.handleSaveEdit({ ...heldStory(storyId), title: "Edited title" });
+      });
+      act(() => {
+        result.current.handleRequestApproval(storyId);
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(mockApproveStory).toHaveBeenCalledWith({
+        projectId: "project-1",
+        ...draft,
+        title: "Edited title",
+      });
+    });
+
+    it("keeps the story and reports an error when approval fails", async () => {
+      mockApproveStory.mockReturnValueOnce(rejected({ status: 500 }));
+
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleRequestApproval(heldId(result));
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(result.current.generatedStories).toHaveLength(1);
+      expect(message.error).toHaveBeenCalled();
+    });
+
+    it("keeps the dialog open and marks the story in flight while approving", async () => {
       let settle: (value: { id: string; title: string }) => void = () => {};
-      mockApproveDraft.mockReturnValueOnce({
+      mockApproveStory.mockReturnValueOnce({
         unwrap: () =>
           new Promise<{ id: string; title: string }>((resolve) => {
             settle = resolve;
@@ -265,9 +335,10 @@ describe("useRefinement", () => {
 
       const { result } = renderHook(() => useRefinement());
       await generate(result);
+      const storyId = heldId(result);
 
       act(() => {
-        result.current.handleRequestApproval(draft.id);
+        result.current.handleRequestApproval(storyId);
       });
 
       let confirmed: Promise<void> = Promise.resolve();
@@ -275,13 +346,13 @@ describe("useRefinement", () => {
         confirmed = result.current.handleConfirmApproval();
       });
 
-      // Mid-flight the dialog is still up and the draft is flagged, which is what the
+      // Mid-flight the dialog is still up and the story is flagged, which is what the
       // list uses to disable Edit, Discard, and Approve All.
-      expect(result.current.approvingIds).toEqual([draft.id]);
-      expect(result.current.pendingApproval).toEqual(draft);
+      expect(result.current.approvingIds).toEqual([storyId]);
+      expect(result.current.pendingApproval).toEqual(heldStory(storyId));
 
       await act(async () => {
-        settle({ id: draft.id, title: draft.title });
+        settle({ id: "story-1", title: draft.title });
         await confirmed;
       });
 
@@ -289,48 +360,188 @@ describe("useRefinement", () => {
       expect(result.current.pendingApproval).toBeNull();
     });
 
-    it("leaves the draft in place when the confirmation is cancelled", async () => {
+    it("leaves the story in place when the confirmation is cancelled", async () => {
       const { result } = renderHook(() => useRefinement());
       await generate(result);
+      const storyId = heldId(result);
 
       act(() => {
-        result.current.handleRequestApproval(draft.id);
+        result.current.handleRequestApproval(storyId);
       });
       act(() => {
         result.current.handleCancelApproval();
       });
 
-      expect(mockApproveDraft).not.toHaveBeenCalled();
-      expect(result.current.generatedStories).toEqual([draft]);
+      expect(mockApproveStory).not.toHaveBeenCalled();
+      expect(result.current.generatedStories).toEqual([heldStory(storyId)]);
       expect(result.current.pendingApproval).toBeNull();
+    });
+
+    it("approves into the project the stories were generated for, not the current selection", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleProjectChange("project-2");
+      });
+      act(() => {
+        result.current.handleRequestApproval(heldId(result));
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
+    });
+
+    it("approves every story in one request and clears the list", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      await act(async () => {
+        await result.current.handleApproveAll();
+      });
+
+      expect(mockApproveStoriesBulk).toHaveBeenCalledWith({
+        stories: [{ projectId: "project-1", ...draft }],
+      });
+      expect(result.current.generatedStories).toEqual([]);
     });
   });
 
-  describe("discarding a draft", () => {
-    it("deletes the draft server-side before dropping it from the list", async () => {
+  describe("discarding a story", () => {
+    it("drops it from the list without calling the API", async () => {
       const { result } = renderHook(() => useRefinement());
       await generate(result);
 
-      await act(async () => {
-        await result.current.handleDelete(draft.id);
+      act(() => {
+        result.current.handleDelete(result.current.generatedStories[0].id);
       });
 
-      expect(mockDeleteDraft).toHaveBeenCalledWith(draft.id);
+      expect(result.current.generatedStories).toEqual([]);
+      expect(mockApproveStory).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("keeping unapproved stories across a reload", () => {
+    const OWNER = "admin@test.com";
+
+    it("persists generated stories with the project they were generated for", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      expect(pendingStoriesStorage.load(OWNER)).toEqual({
+        projectId: "project-1",
+        stories: result.current.generatedStories,
+      });
+    });
+
+    it("restores stories and the project on mount", () => {
+      const stories = [heldStory("kept-1")];
+      pendingStoriesStorage.save(OWNER, { projectId: "project-1", stories });
+
+      const { result } = renderHook(() => useRefinement());
+
+      expect(result.current.generatedStories).toEqual(stories);
+      expect(result.current.selectedProjectId).toBe("project-1");
+    });
+
+    it("approves a restored story into the project it was generated for", async () => {
+      pendingStoriesStorage.save(OWNER, { projectId: "project-1", stories: [heldStory("kept-1")] });
+
+      const { result } = renderHook(() => useRefinement());
+      act(() => {
+        result.current.handleProjectChange("project-2");
+      });
+      act(() => {
+        result.current.handleRequestApproval("kept-1");
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
+    });
+
+    it("persists edits", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleSaveEdit({ ...result.current.generatedStories[0], title: "Edited" });
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)?.stories[0].title).toBe("Edited");
+    });
+
+    it("clears storage once the last story is approved", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleRequestApproval(result.current.generatedStories[0].id);
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)).toBeNull();
+    });
+
+    it("clears storage once the last story is discarded", async () => {
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+
+      act(() => {
+        result.current.handleDelete(result.current.generatedStories[0].id);
+      });
+
+      expect(pendingStoriesStorage.load(OWNER)).toBeNull();
+    });
+
+    it("does not restore another account's stories", () => {
+      pendingStoriesStorage.save("someone-else@test.com", {
+        projectId: "project-1",
+        stories: [heldStory("theirs")],
+      });
+
+      const { result } = renderHook(() => useRefinement());
+
       expect(result.current.generatedStories).toEqual([]);
     });
 
-    it("keeps the draft listed when the delete fails", async () => {
-      mockDeleteDraft.mockReturnValueOnce(rejected({ status: 500 }));
+    it("warns before the page is left only while stories are unapproved", async () => {
+      const { result } = renderHook(() => useRefinement());
+
+      const idleEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(idleEvent);
+      expect(idleEvent.defaultPrevented).toBe(false);
+
+      await generate(result);
+
+      const pendingEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(pendingEvent);
+      expect(pendingEvent.defaultPrevented).toBe(true);
+
+      act(() => {
+        result.current.handleDelete(result.current.generatedStories[0].id);
+      });
+
+      const clearedEvent = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(clearedEvent);
+      expect(clearedEvent.defaultPrevented).toBe(false);
+    });
+
+    it("still works when storage throws", async () => {
+      const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+        throw new Error("quota exceeded");
+      });
 
       const { result } = renderHook(() => useRefinement());
       await generate(result);
 
-      await act(async () => {
-        await result.current.handleDelete(draft.id);
-      });
-
-      expect(result.current.generatedStories).toEqual([draft]);
-      expect(message.error).toHaveBeenCalled();
+      expect(result.current.generatedStories).toHaveLength(1);
+      expect(setItem).toHaveBeenCalled();
     });
   });
 });

@@ -1,0 +1,62 @@
+@use "@/styles/variables.scss" as *;
+
+.card {
+  background: $surface-white;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border-bottom: 1px solid $surface-base;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: $primary-base;
+  margin-top: 2px;
+}
+
+.title {
+  font-family: $font-headline;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: $text-primary;
+  display: block;
+  margin-bottom: $spacing-xs;
+}
+
+.subtitle {
+  font-family: $font-body;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.form {
+  :global {
+    .ant-form-item-label > label {
+      font-family: $font-body;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+  }
+}
+
+.section {
+  margin-top: $spacing-lg;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-md;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}

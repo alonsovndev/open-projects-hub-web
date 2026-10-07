@@ -15,6 +15,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: $spacing-md;
+  flex-wrap: wrap;
   margin-bottom: 24px;
 }
 
@@ -23,7 +25,7 @@
 }
 
 .cardSubtitle {
-  color: rgba(var(--color-text-primary-rgb), 0.45);
+  color: $text-secondary;
   font-size: 14px;
 }
 
@@ -46,7 +48,7 @@
 }
 
 .emptyText {
-  color: rgba(var(--color-text-primary-rgb), 0.45);
+  color: $text-secondary;
 }
 
 .storyCard {
@@ -54,12 +56,7 @@
   border-radius: 8px;
   padding: 20px;
   background: $surface-white;
-  border-left: 4px solid $primary-base;
-
-  &:hover {
-    border-left-color: $primary-dark;
-    box-shadow: $shadow-card;
-  }
+  overflow-wrap: anywhere;
 }
 
 .storyHeader {
@@ -89,20 +86,20 @@
 .storyActions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .approveBtn {
-  color: $success-base;
+  color: $primary-base;
 
   &:hover {
-    color: $success-base;
+    color: $primary-dark;
   }
 }
 
 .storyDescription {
   margin: 0 0 16px 0 !important;
   color: rgba(var(--color-text-primary-rgb), 0.65);
-  font-style: italic;
 }
 
 .divider {
@@ -116,9 +113,8 @@
 }
 
 .criteriaLabel {
-  font-size: 12px;
-  color: rgba(var(--color-text-primary-rgb), 0.45);
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  color: $text-secondary;
 }
 
 .criteriaList {
@@ -158,6 +154,16 @@
 }
 
 .generatingHint {
-  color: rgba(var(--color-text-primary-rgb), 0.45);
+  color: $text-secondary;
   max-width: 420px;
+}
+
+@media (max-width: 1023px) {
+  .listCard:global(.ant-card) {
+    height: auto;
+
+    :global(.ant-card-body) {
+      overflow: visible;
+    }
+  }
 }

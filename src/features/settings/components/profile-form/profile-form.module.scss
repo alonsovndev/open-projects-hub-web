@@ -6,9 +6,8 @@
 
 .card {
   background: $surface-white;
-  border: 1px solid $surface-base;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
 }
 
 .header {

@@ -1,0 +1,118 @@
+@use "@/styles/variables.scss" as *;
+
+.workflowSection {
+  background: $surface-white;
+  scroll-margin-top: 88px;
+}
+
+.workflowList {
+  display: grid;
+  gap: 28px;
+  list-style: none;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.workflowStep {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+}
+
+.stepIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: $primary-bg-light;
+  color: $primary-base;
+  font-size: 23px;
+}
+
+.stepContent {
+  min-width: 0;
+
+  h2 {
+    margin: 2px 0 4px;
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: $text-primary;
+  }
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: $text-secondary;
+  }
+}
+
+.stepNumber {
+  font-size: 11px;
+  font-weight: 600;
+  color: $primary-base;
+}
+
+.stepArrow {
+  position: absolute;
+  left: 18px;
+  bottom: -22px;
+  transform: rotate(90deg);
+  font-size: 15px;
+  color: #8995a5;
+}
+
+@media (min-width: 768px) {
+  .workflowList {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+    padding-top: 24px;
+    padding-bottom: 28px;
+  }
+
+  .workflowStep {
+    gap: 12px;
+    padding-right: 12px;
+  }
+
+  .stepIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .stepArrow {
+    left: auto;
+    right: -20px;
+    top: 22px;
+    bottom: auto;
+    transform: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .workflowList {
+    gap: 48px;
+  }
+
+  .stepIcon {
+    width: 52px;
+    height: 52px;
+    font-size: 25px;
+  }
+
+  .workflowStep {
+    gap: 16px;
+  }
+
+  .stepArrow {
+    right: -28px;
+    font-size: 20px;
+  }
+}

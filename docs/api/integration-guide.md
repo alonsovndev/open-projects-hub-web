@@ -263,7 +263,7 @@ Get user profile.
 {
   "email": "string",
   "displayName": "string",
-  "role": "admin" | "viewer",
+  "role": "admin" | "member",
   "avatar": "string (optional)",
   "createdAt": "ISO 8601 string"
 }

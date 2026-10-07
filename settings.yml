@@ -2,7 +2,7 @@ version: 1
 
 project:
   name: open-projects-hub-web
-  root: /Users/alonso/Documents/Workspace/NaranjoSolutions/OpenProjectsHub/open-projects-hub-web
+  root: /Users/alonso/Documents/Workspace/Alonsovndev/OpenProjectsHub/open-projects-hub-web
 
 defaults:
   agent: orchestrator

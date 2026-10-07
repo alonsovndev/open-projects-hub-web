@@ -4,7 +4,8 @@ import { Typography, Select, Space, Button, Spin, Alert } from "antd";
 import { ArrowLeftOutlined, FileMarkdownOutlined } from "@ant-design/icons";
 
 import { StoryList } from "@/features/backlog/components/story-list";
-import { useProjectStories } from "@/features/backlog/hooks/use-project-stories";
+import { useProjectBacklog } from "@/features/backlog/hooks/use-project-backlog";
+import { useBacklogExport } from "@/features/backlog/hooks/use-backlog-export";
 import { useRole } from "@/features/auth/hooks/use-role";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
@@ -29,11 +30,9 @@ export const ProjectBacklogPage: FC = () => {
     totalStories,
     isLoading: isLoadingStories,
     error,
-  } = useProjectStories({
-    projectId: projectId ?? "",
-    limit: 50,
-    offset: 0,
-  });
+  } = useProjectBacklog(projectId ?? "");
+
+  const { exportBacklog, isExporting } = useBacklogExport();
 
   const projectOptions =
     projectsData?.projects.map((p: ProjectSummary) => ({
@@ -43,7 +42,7 @@ export const ProjectBacklogPage: FC = () => {
 
   const selectedProject = projectsData?.projects.find((p: ProjectSummary) => p.id === projectId);
 
-  const { isAdmin } = useRole();
+  const { canEdit } = useRole();
 
   const handleProjectChange = (newProjectId: string) => {
     navigate(`/backlog/project/${newProjectId}`);
@@ -53,50 +52,7 @@ export const ProjectBacklogPage: FC = () => {
     navigate("/backlog");
   };
 
-  const handleExportMarkdown = () => {
-    if (stories.length === 0) {
-      return;
-    }
-
-    let markdown = `# User Stories - ${selectedProject?.name || "Project"}\n\n`;
-    markdown += `Generated on: ${new Date().toLocaleDateString()}\n\n`;
-    markdown += `Total Stories: ${stories.length}\n\n`;
-    markdown += "---\n\n";
-
-    stories.forEach((story, index) => {
-      markdown += `## ${index + 1}. ${story.title}\n\n`;
-      markdown += `**Project:** ${selectedProject?.name ?? "Project"} (${projectId})\n\n`;
-      markdown += `**Status:** ${story.status}\n\n`;
-      markdown += `**Priority:** ${story.priority}\n\n`;
-      if (story.assignee) {
-        markdown += `**Assignee:** ${story.assignee}\n\n`;
-      }
-      if (story.storyPoints) {
-        markdown += `**Story Points:** ${story.storyPoints}\n\n`;
-      }
-      markdown += `### Description\n\n${story.description}\n\n`;
-
-      if (story.acceptanceCriteria && story.acceptanceCriteria.length > 0) {
-        markdown += `### Acceptance Criteria\n\n`;
-        story.acceptanceCriteria.forEach((criteria, i) => {
-          markdown += `${i + 1}. ${criteria}\n`;
-        });
-        markdown += "\n";
-      }
-
-      markdown += "---\n\n";
-    });
-
-    const blob = new Blob([markdown], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `stories-${selectedProject?.code || projectId}-${new Date().toISOString().split("T")[0]}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const handleExportMarkdown = () => exportBacklog(projectId ?? null);
 
   const handleDeleteStory = async (_storyId: string) => {
     // TODO: Implement delete functionality when backend endpoint is available
@@ -138,13 +94,14 @@ export const ProjectBacklogPage: FC = () => {
               </Text>
             </div>
           </div>
-          <Space>
+          <Space wrap className={styles.headerActions}>
             <div className={styles.projectSelector}>
-              <Text strong style={{ marginRight: 8 }}>
+              <Text strong id="backlog-project-label">
                 Project:
               </Text>
               <Select
-                style={{ width: 300 }}
+                className={styles.projectSelect}
+                aria-labelledby="backlog-project-label"
                 placeholder="Select a project"
                 options={projectOptions}
                 value={projectId || undefined}
@@ -158,13 +115,15 @@ export const ProjectBacklogPage: FC = () => {
                 }
               />
             </div>
-            {isAdmin && (
+            {canEdit && (
               <Button
                 type="default"
                 size="large"
                 icon={<FileMarkdownOutlined />}
+                aria-label="Export backlog"
                 onClick={handleExportMarkdown}
-                disabled={stories.length === 0}
+                disabled={!projectId}
+                loading={isExporting}
                 className={styles.actionButton}
               >
                 Export
@@ -179,7 +138,7 @@ export const ProjectBacklogPage: FC = () => {
           <Spin size="large" tip="Loading stories..." />
         </div>
       ) : (
-        <StoryList stories={stories} onDelete={handleDeleteStory} canManage={isAdmin} />
+        <StoryList stories={stories} onDelete={handleDeleteStory} canManage={canEdit} />
       )}
     </div>
   );

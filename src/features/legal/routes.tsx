@@ -1,5 +1,6 @@
 import { lazyWithRetry } from "@/app/routing/lazy-loader";
 import type { AppRoute } from "@/app/routing/types";
+import { PublicLayout } from "@/app/layouts";
 
 // Lazy-load page components
 const PrivacyPage = lazyWithRetry(() => import("./pages/PrivacyPage"));
@@ -8,12 +9,20 @@ const TermsPage = lazyWithRetry(() => import("./pages/TermsPage"));
 export const legalRoutes: AppRoute[] = [
   {
     path: "/privacy",
-    element: <PrivacyPage />,
+    element: (
+      <PublicLayout>
+        <PrivacyPage />
+      </PublicLayout>
+    ),
     guards: ["public"],
   },
   {
     path: "/terms",
-    element: <TermsPage />,
+    element: (
+      <PublicLayout>
+        <TermsPage />
+      </PublicLayout>
+    ),
     guards: ["public"],
   },
 ];

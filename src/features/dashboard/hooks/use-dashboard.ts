@@ -5,6 +5,7 @@ import {
   useGetDashboardStatsQuery,
 } from "@/features/projects/api/projects-api";
 import { useAuth } from "@/features/auth/hooks/use-auth";
+import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link";
 
 /**
  * Dashboard hook with RTK Query data fetching
@@ -39,8 +40,8 @@ export const useDashboard = () => {
     // Could dispatch to error tracking service (e.g., Sentry)
   }
 
-  const handleViewProject = (projectCode: string) => {
-    navigate(`/viewer/${projectCode}`);
+  const handleViewProject = (accessCode: string) => {
+    window.open(buildClientReviewUrl(accessCode), "_blank", "noopener,noreferrer");
   };
 
   const handleCreateProject = () => {

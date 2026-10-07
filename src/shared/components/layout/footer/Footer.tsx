@@ -8,8 +8,55 @@ import styles from "./footer.module.scss";
 
 const { Text } = Typography;
 
-export const Footer: FC = () => {
+interface FooterProps {
+  variant?: "default" | "landing";
+}
+
+export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
   const currentYear = new Date().getFullYear();
+
+  if (variant === "landing") {
+    return (
+      <footer className={styles.landingFooter}>
+        <div className={styles.landingContainer}>
+          <Link to="/" className={styles.landingBrand}>
+            <img src="/favicon.svg" alt="" width="22" height="22" />
+            Open Projects Hub
+          </Link>
+          <nav className={styles.landingNav} aria-label="Footer navigation">
+            <a
+              href="https://alonsovndev.github.io/open-projects-hub-docs/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Documentation
+            </a>
+            <a
+              href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Code (GitHub)
+            </a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+          </nav>
+          <a
+            href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.landingGithub}
+            aria-label="GitHub repository"
+          >
+            <GithubOutlined aria-hidden="true" />
+          </a>
+          <span className={styles.landingCopyright}>
+            &copy; {currentYear} Open Projects Hub. All rights reserved.
+          </span>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className={styles.footer}>
@@ -25,7 +72,7 @@ export const Footer: FC = () => {
           <div className={styles.footerColumn}>
             <h2 className={styles.columnTitle}>Directories</h2>
             <a
-              href="https://github.com/NaranjoSolutions/open-projects-hub-docs"
+              href="https://alonsovndev.github.io/open-projects-hub-docs/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.footerLink}
@@ -33,7 +80,7 @@ export const Footer: FC = () => {
               Documentation
             </a>
             <a
-              href="https://github.com/alonsovndev"
+              href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.footerLink}
@@ -56,7 +103,7 @@ export const Footer: FC = () => {
         <div className={styles.footerBottom}>
           <span className={styles.copyright}>&copy; {currentYear} Open Projects Hub</span>
           <a
-            href="https://github.com/NaranjoSolutions/open-projects-hub-web"
+            href="https://github.com/orgs/alonsovndev/repositories?q=open-projects"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.githubLink}

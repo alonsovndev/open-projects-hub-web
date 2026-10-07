@@ -1,5 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Grid } from "antd";
 
 import { AdminLayout } from "./AdminLayout";
 import { renderWithProviders } from "@/test/utils/render-with-providers";
@@ -30,6 +32,14 @@ const renderMenu = (role: UserRole) =>
   );
 
 describe("AdminLayout navigation", () => {
+  beforeEach(() => {
+    vi.spyOn(Grid, "useBreakpoint").mockReturnValue({ lg: true });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("shows every destination to an admin", () => {
     renderMenu("admin");
 
@@ -38,26 +48,69 @@ describe("AdminLayout navigation", () => {
     expect(screen.getByRole("menuitem", { name: /backlog/i })).toBeInTheDocument();
   });
 
-  it("omits admin-only destinations for a viewer rather than disabling them", () => {
-    renderMenu("viewer");
+  it("shows the editing destinations to a member", () => {
+    renderMenu("member");
+
+    expect(screen.getByRole("menuitem", { name: /clients/i })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: /ai refinement/i })).toBeInTheDocument();
+  });
+
+  it("shows the workspace name under the user", () => {
+    renderWithProviders(
+      <AdminLayout>
+        <div>content</div>
+      </AdminLayout>,
+      {
+        preloadedState: {
+          auth: {
+            session: {
+              ...sessionWithRole("admin"),
+              workspace: { id: "ws-1", name: "Acme Studio" },
+            },
+            isBootstrapping: false,
+          },
+        },
+      }
+    );
+
+    expect(screen.getByText("Acme Studio")).toBeInTheDocument();
+  });
+
+  it("treats an unrecognised role as read-only", () => {
+    renderMenu("user" as UserRole);
 
     expect(screen.queryByRole("menuitem", { name: /clients/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("menuitem", { name: /ai refinement/i })).not.toBeInTheDocument();
   });
 
-  it("keeps the read-only destinations for a viewer", () => {
-    renderMenu("viewer");
+  it("opens mobile navigation and closes it after selecting a destination", async () => {
+    vi.mocked(Grid.useBreakpoint).mockReturnValue({ lg: false });
+    const user = userEvent.setup();
+    renderMenu("admin");
 
-    expect(screen.getByRole("menuitem", { name: /dashboard/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /projects/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /backlog/i })).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: /settings/i })).toBeInTheDocument();
+    const trigger = screen.getByRole("button", { name: "Open navigation" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("menuitem", { name: /projects/i })).not.toBeInTheDocument();
+    await user.click(trigger);
+
+    const drawer = await screen.findByRole("dialog", { name: "Navigation" });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await user.click(within(drawer).getByRole("menuitem", { name: /projects/i }));
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(window.location.pathname).toBe("/projects");
   });
 
-  it("treats an unrecognised non-admin role as read-only", () => {
-    renderMenu("user");
+  it("preserves read-only permissions in the mobile drawer", async () => {
+    vi.mocked(Grid.useBreakpoint).mockReturnValue({ lg: false });
+    const user = userEvent.setup();
+    renderMenu("user" as UserRole);
 
-    expect(screen.queryByRole("menuitem", { name: /clients/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("menuitem", { name: /ai refinement/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Open navigation" }));
+    const drawer = await screen.findByRole("dialog", { name: "Navigation" });
+    expect(within(drawer).queryByRole("menuitem", { name: /clients/i })).not.toBeInTheDocument();
+    expect(
+      within(drawer).queryByRole("menuitem", { name: /ai refinement/i })
+    ).not.toBeInTheDocument();
+    expect(within(drawer).getByRole("menuitem", { name: /backlog/i })).toBeInTheDocument();
   });
 });

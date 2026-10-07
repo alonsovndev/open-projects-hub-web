@@ -1,10 +1,14 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, RobotOutlined, TeamOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
 import { PasswordForm } from "@/features/settings/components/password-form";
+import { AiProvidersPanel } from "@/features/settings/components/ai-providers";
+import { WorkspacePanel } from "@/features/settings/components/workspace-panel";
+import { TeamPanel } from "@/features/settings/components/team-panel";
+import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./settings.module.scss";
@@ -15,6 +19,10 @@ export const SettingsPage: FC = () => {
   usePageTitle("Settings");
   const { profile, loading, error, saving, handleUpdateProfile, handleChangePassword } =
     useSettings();
+  // Refinement — and therefore credits and provider keys — is for admins and members; the
+  // backend guards these endpoints with require_editor. Adding people is the Admin's alone
+  // (require_admin).
+  const { canEdit, canManageTeam } = useRole();
 
   if (loading) {
     return (
@@ -58,6 +66,50 @@ export const SettingsPage: FC = () => {
       ),
       children: <PasswordForm saving={saving} onSubmit={handleChangePassword} />,
     },
+    // Renaming the workspace is the Admin's alone, like adding people — the
+    // backend guards it with require_admin.
+    ...(canManageTeam
+      ? [
+          {
+            key: "workspace",
+            label: (
+              <span>
+                <ApartmentOutlined />
+                Workspace
+              </span>
+            ),
+            children: <WorkspacePanel />,
+          },
+        ]
+      : []),
+    ...(canEdit
+      ? [
+          {
+            key: "ai-providers",
+            label: (
+              <span>
+                <RobotOutlined />
+                AI Providers
+              </span>
+            ),
+            children: <AiProvidersPanel />,
+          },
+        ]
+      : []),
+    ...(canManageTeam
+      ? [
+          {
+            key: "team",
+            label: (
+              <span>
+                <TeamOutlined />
+                Team
+              </span>
+            ),
+            children: <TeamPanel />,
+          },
+        ]
+      : []),
   ];
 
   return (

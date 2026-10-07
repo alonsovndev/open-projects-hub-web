@@ -1,109 +1,133 @@
 @use "@/styles/variables.scss" as *;
 
 .gridSection {
-  background-color: $surface-light;
-  padding: 6rem 2rem;
-
-  @media (max-width: 1024px) {
-    padding: 4rem 2rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
-  }
+  background: $surface-white;
+  padding: 24px;
 }
 
 .gridContainer {
-  max-width: 1280px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 20px;
+  max-width: 1232px;
+  margin: 0 auto;
+}
 
-  @media (max-width: 1024px) {
-    gap: 2rem;
-  }
+.audiencePanel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #d6e5fb;
+  border-radius: 6px;
+  background: #f7faff;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+  &[data-audience="clients"] {
+    background: #fdfbf7;
+    border-color: #efdfc4;
+
+    .audienceIcon {
+      background: #fcf0d9;
+      color: #94702d;
+    }
   }
 }
 
-.gridColumn {
+.audienceHeader {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid $border-subtle;
+}
+
+.audienceIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: #e7f0ff;
+  color: $primary-base;
+  font-size: 24px;
 }
 
 .columnTitle {
-  font-family: $font-headline;
-  font-size: 1.75rem;
-  font-weight: 700;
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
   color: $text-primary;
-  margin: 0;
-  letter-spacing: -0.01em;
+}
 
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
+.audienceDescription {
+  margin: 0;
+  color: $text-secondary;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .featureList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
+  display: grid;
+  list-style: none;
+  gap: 20px;
+  padding: 16px 0 0;
+  margin: 0;
 }
 
-.featureCard {
+.featureItem {
   display: flex;
   align-items: flex-start;
-  gap: $spacing-md;
-  padding: $spacing-lg;
-  background-color: $surface-white;
-  border-radius: $radius-md;
-  border: 1px solid $surface-base;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    border-color: $primary-base;
-    box-shadow: $shadow-card;
-  }
+  min-width: 0;
+  gap: 12px;
 }
 
 .featureIcon {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  font-size: 19px;
   color: $primary-base;
-  background-color: $primary-bg-light;
-  border-radius: $radius-sm;
-}
-
-.featureContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-shrink: 0;
 }
 
 .featureTitle {
-  font-family: $font-headline;
-  font-size: 1rem;
-  font-weight: 600;
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
   color: $text-primary;
-  margin: 0;
 }
 
 .featureDescription {
-  font-family: $font-body;
-  font-size: 0.875rem;
+  margin: 0;
+  font-size: 11px;
   line-height: 1.5;
   color: $text-secondary;
-  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .featureList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .featureItem + .featureItem {
+    border-left: 1px solid $border-subtle;
+    padding-left: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .audiencePanel {
+    padding: 16px;
+  }
+
+  .featureItem {
+    gap: 10px;
+  }
+
+  .featureItem + .featureItem {
+    padding-left: 12px;
+  }
 }

@@ -1,0 +1,7 @@
+@use "@/styles/variables.scss" as *;
+
+.verifyEmailPage {
+  flex: 1;
+  display: flex;
+  background-color: $surface-light;
+}

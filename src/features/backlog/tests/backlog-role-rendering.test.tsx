@@ -26,6 +26,8 @@ const backlog = {
   isLoading: false,
   error: null,
   isLoadingProjects: false,
+  isExporting: false,
+  canExport: true,
   projectOptions: [],
   handleDeleteStory: vi.fn(),
   handleSearchChange: vi.fn(),
@@ -60,19 +62,21 @@ describe("Backlog role rendering", () => {
     expect(screen.getByRole("button", { name: /delete markdown export/i })).toBeInTheDocument();
   });
 
-  it("removes export and delete for a viewer", () => {
-    renderPage("viewer");
+});
 
-    expect(screen.queryByRole("button", { name: /export markdown/i })).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /delete markdown export/i })
-    ).not.toBeInTheDocument();
+describe("Backlog export scoping", () => {
+  it("disables export until a project is selected", () => {
+    backlog.canExport = false;
+    renderPage("admin");
+    backlog.canExport = true;
+
+    expect(screen.getByRole("button", { name: /export markdown/i })).toBeDisabled();
   });
 
-  it("still shows the stories themselves to a viewer", () => {
-    renderPage("viewer");
+  it("enables export once the filter bar names a project", () => {
+    renderPage("admin");
 
-    expect(screen.getByText("Markdown export")).toBeInTheDocument();
-    expect(screen.getByText("Export includes approved stories only")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /export markdown/i })).toBeEnabled();
   });
+
 });

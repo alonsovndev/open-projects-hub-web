@@ -2,18 +2,19 @@
 
 .pageContainer {
   min-height: 100%;
-  padding: $spacing-2xl;
-  background: $surface-light;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .pageHeader {
   margin-bottom: $spacing-xl;
 }
 
-.pageTitle {
+.pageTitle:global(.ant-typography) {
   font-family: $font-headline;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.25;
   color: $text-primary;
   margin: 0;
 }
@@ -30,7 +31,7 @@
     .ant-tabs-nav {
       background: $surface-white;
       padding: 0 $spacing-xl;
-      border-radius: $radius-lg $radius-lg 0 0;
+      border-radius: $radius-md;
       border: 1px solid $surface-base;
       border-bottom: none;
       margin-bottom: 0;
@@ -58,10 +59,6 @@
 }
 
 @media (max-width: $breakpoint-tablet) {
-  .pageContainer {
-    padding: $spacing-lg;
-  }
-
   .tabs {
     :global {
       .ant-tabs-nav {
@@ -73,5 +70,11 @@
         font-size: 0.875rem;
       }
     }
+  }
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .pageTitle:global(.ant-typography) {
+    font-size: 1.75rem;
   }
 }

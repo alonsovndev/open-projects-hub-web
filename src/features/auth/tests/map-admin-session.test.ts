@@ -23,18 +23,18 @@ describe("mapAdminSession", () => {
 
   it("falls back to the top-level role", () => {
     const session = mapAdminSession(
-      { ...baseResponse, role: "viewer" } as AdminLoginApiResponse,
+      { ...baseResponse, role: "member" } as AdminLoginApiResponse,
       "person@example.com"
     );
 
-    expect(session.role).toBe("viewer");
+    expect(session.role).toBe("member");
   });
 
   it("defaults to the least privilege when the response carries no role", () => {
     // Every guard in the app reads session.role, so a malformed response must not be
-    // able to hand someone the admin shell.
+    // able to hand someone the Admin's team controls.
     const session = mapAdminSession(baseResponse, "person@example.com");
 
-    expect(session.role).toBe("viewer");
+    expect(session.role).toBe("member");
   });
 });

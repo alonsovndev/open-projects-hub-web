@@ -6,6 +6,8 @@ export interface AdminLoginValues {
 
 export interface AdminRegisterValues {
   fullName: string;
+  /** Optional; the API names the workspace after the display name when blank. */
+  workspaceName?: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -23,7 +25,24 @@ export interface ResetPasswordValues {
   confirmPassword: string;
 }
 
-export type UserRole = "admin" | "user" | "viewer";
+/** Registration succeeded; the account signs in only after its email is verified. */
+export interface RegisterResult {
+  codeExpiresAt: string;
+}
+
+export interface VerifyEmailValues {
+  email: string;
+  code: string;
+  /** Set by invited members, who choose their own password while verifying. */
+  password?: string;
+}
+
+export type UserRole = "admin" | "member";
+
+export interface WorkspaceSummary {
+  id: string;
+  name: string;
+}
 
 export interface AdminSession {
   token: string;
@@ -34,6 +53,7 @@ export interface AdminSession {
   displayName: string;
   loggedInAt: string;
   role: UserRole;
+  workspace?: WorkspaceSummary;
 }
 
 export interface AdminAuthResponse {
@@ -49,6 +69,8 @@ export interface AuthLocationState {
   from?: { pathname: string };
   email?: string;
   message?: string;
+  /** ISO timestamp the emailed verification code expires at (register -> verify-email). */
+  codeExpiresAt?: string;
 }
 
 export interface PasswordStrengthState {
