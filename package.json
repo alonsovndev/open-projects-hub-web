@@ -1,8 +1,8 @@
 {
   "name": "open-projects-hub-web",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Web app for Open Projects Hub, an open-source project and backlog manager for freelancers.",
+  "private": true,
   "scripts": {
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -30,8 +30,8 @@
     "url": "git+https://github.com/alonsovndev/open-projects-hub-web.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Alonso Villanueva",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/alonsovndev/open-projects-hub-web/issues"
@@ -40,16 +40,12 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@reduxjs/toolkit": "^2.11.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "antd": "^6.3.2",
     "dayjs": "^1.11.20",
-    "i": "^0.3.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-redux": "^9.2.0",
-    "react-router-dom": "^7.13.1",
-    "typescript": "^5.9.3",
+    "react-router-dom": "^7.18.4",
     "zod": "^4.4.1"
   },
   "devDependencies": {
@@ -59,6 +55,8 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "@vitejs/plugin-react": "^5.1.4",
@@ -77,6 +75,7 @@
     "prettier": "^3.8.1",
     "rollup-plugin-visualizer": "^7.0.1",
     "sass-embedded": "^1.97.3",
+    "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^3.2.4"
   },
@@ -87,11 +86,6 @@
     ],
     "*.{js,jsx,json,css,scss,md}": [
       "prettier --write"
-    ]
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
     ]
   }
 }
