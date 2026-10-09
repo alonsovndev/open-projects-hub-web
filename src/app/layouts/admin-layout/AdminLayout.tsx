@@ -19,6 +19,7 @@ import { useAppSelector } from "@/app/store/hooks";
 import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useRole } from "@/features/auth/hooks/use-role";
 import { SessionExpiryWarning } from "@/features/auth/components/session-expiry-warning";
+import { ThemeToggle } from "@/shared/components/theme-toggle/ThemeToggle";
 
 import styles from "./admin-layout.module.scss";
 
@@ -178,21 +179,24 @@ export const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
       </Drawer>
 
       <Layout className={styles.mainLayout}>
-        {isMobile && (
-          <header className={styles.mobileHeader}>
-            <img src="/favicon.svg" alt="" className={styles.logoImage} />
-            <span className={styles.brandName}>Open Projects Hub</span>
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              aria-label="Open navigation"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="workspace-navigation"
-              onClick={() => setMobileMenuOpen(true)}
-              className={styles.mobileMenuButton}
-            />
-          </header>
-        )}
+        <header className={styles.workspaceHeader}>
+          {isMobile && (
+            <>
+              <img src="/favicon.svg" alt="" className={styles.logoImage} />
+              <span className={styles.brandName}>Open Projects Hub</span>
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                aria-label="Open navigation"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="workspace-navigation"
+                onClick={() => setMobileMenuOpen(true)}
+                className={styles.mobileMenuButton}
+              />
+            </>
+          )}
+          <ThemeToggle />
+        </header>
         <Content className={styles.content}>{children}</Content>
       </Layout>
     </Layout>

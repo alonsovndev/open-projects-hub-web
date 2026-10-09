@@ -22,6 +22,21 @@ $border-subtle: var(--color-border-subtle);
 $hover-overlay: var(--color-hover-overlay);
 $primary-bg-light: var(--color-primary-bg-light);
 $success-base: var(--color-success);
+$text-on-primary: var(--color-text-on-primary);
+$accent-blue-surface: var(--color-accent-blue-surface);
+$accent-blue-border: var(--color-accent-blue-border);
+$accent-blue-shadow: var(--color-accent-blue-shadow);
+$accent-violet-surface: var(--color-accent-violet-surface);
+$accent-violet-border: var(--color-accent-violet-border);
+$accent-violet-icon: var(--color-accent-violet-icon);
+$accent-warm-surface: var(--color-accent-warm-surface);
+$accent-warm-border: var(--color-accent-warm-border);
+$accent-warm-icon: var(--color-accent-warm-icon);
+$accent-warm-text: var(--color-accent-warm-text);
+$success-surface: var(--color-success-surface);
+$success-text: var(--color-success-text);
+$size-touch-target: var(--size-touch-target);
+$font-size-icon: var(--font-size-icon);
 
 // Inverted Surface (always-dark sections like CTA, footer)
 $surface-inverted: var(--color-surface-inverted);

@@ -6,6 +6,7 @@ import { Grid } from "antd";
 import { AdminLayout } from "./AdminLayout";
 import { renderWithProviders } from "@/test/utils/render-with-providers";
 import type { AdminSession, UserRole } from "@/features/auth/types";
+import { initializeTheme } from "@/app/theme/theme-provider";
 
 vi.mock("@/features/auth/hooks/use-logout", () => ({
   useLogout: () => ({ logout: vi.fn() }),
@@ -33,11 +34,21 @@ const renderMenu = (role: UserRole) =>
 
 describe("AdminLayout navigation", () => {
   beforeEach(() => {
+    localStorage.removeItem("oph-theme");
+    initializeTheme();
     vi.spyOn(Grid, "useBreakpoint").mockReturnValue({ lg: true });
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it.each([true, false])("switches theme with desktop=%s", async (desktop) => {
+    vi.mocked(Grid.useBreakpoint).mockReturnValue({ lg: desktop });
+    renderMenu("admin");
+    await userEvent.click(screen.getByRole("button", { name: "Switch to dark mode" }));
+    expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeInTheDocument();
+    expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
   it("shows every destination to an admin", () => {

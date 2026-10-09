@@ -119,7 +119,7 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                   <Progress
                     percent={completionPercent}
                     strokeColor="var(--color-primary)"
-                    trailColor="#eeeeee"
+                    trailColor="var(--color-surface-base)"
                   />
                 </div>
 
