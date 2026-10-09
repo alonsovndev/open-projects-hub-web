@@ -45,7 +45,9 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete, canManage =
       locale={{
         emptyText: (
           <Empty
-            image={<FileTextOutlined style={{ fontSize: 64, color: "#d9d9d9" }} />}
+            image={
+              <FileTextOutlined style={{ fontSize: 64, color: "var(--color-text-secondary)" }} />
+            }
             description="No stories found"
           />
         ),

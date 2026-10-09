@@ -61,12 +61,12 @@
   .heroPrimaryButton {
     background: $primary-base;
     border-color: $primary-base;
-    color: white;
+    color: $text-on-primary;
 
     &:hover {
       background: $primary-dark;
       border-color: $primary-dark;
-      color: white;
+      color: $text-on-primary;
     }
   }
 
@@ -149,4 +149,8 @@
   .heroMetadata li + li {
     padding-left: 16px;
   }
+}
+
+:global(html[data-theme="dark"]) .heroMetadata svg {
+  color: $text-secondary;
 }

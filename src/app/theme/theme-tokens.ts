@@ -1,4 +1,5 @@
 import type { ThemeConfig } from "antd";
+import { theme } from "antd";
 
 const fontFamily =
   'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
@@ -134,6 +135,57 @@ export const lightTokens: ThemeConfig = {
     },
     Popover: {
       borderRadius: 8,
+    },
+  },
+};
+
+export const darkTokens: ThemeConfig = {
+  algorithm: theme.darkAlgorithm,
+  token: {
+    ...lightTokens.token,
+    colorPrimary: "#69b1ff",
+    colorPrimaryHover: "#91caff",
+    colorPrimaryActive: "#4096ff",
+    colorLink: "#69b1ff",
+    colorInfo: "#69b1ff",
+    colorBgLayout: "#141414",
+    colorBgContainer: "#1f1f1f",
+    colorBgElevated: "#262626",
+    colorBgSpotlight: "#424242",
+    colorBorder: "#424242",
+    colorBorderSecondary: "#303030",
+    colorText: "#f0f0f0",
+    colorTextSecondary: "#bfbfbf",
+    colorTextTertiary: "#a6a6a6",
+    colorTextQuaternary: "#737373",
+    colorTextLightSolid: "#141414",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+    boxShadowSecondary: "0 4px 16px rgba(0, 0, 0, 0.4)",
+  },
+  components: {
+    ...lightTokens.components,
+    Menu: {
+      ...lightTokens.components?.Menu,
+      itemColor: "#bfbfbf",
+      itemHoverBg: "rgba(105, 177, 255, 0.08)",
+      itemHoverColor: "#69b1ff",
+      itemSelectedBg: "rgba(105, 177, 255, 0.15)",
+      itemSelectedColor: "#69b1ff",
+    },
+    Table: {
+      ...lightTokens.components?.Table,
+      headerBg: "#262626",
+      headerColor: "#bfbfbf",
+      rowHoverBg: "rgba(105, 177, 255, 0.06)",
+    },
+    Tabs: {
+      ...lightTokens.components?.Tabs,
+      inkBarColor: "#69b1ff",
+      itemSelectedColor: "#69b1ff",
+      itemHoverColor: "#91caff",
+    },
+    Tooltip: {
+      colorTextLightSolid: "#f0f0f0",
     },
   },
 };

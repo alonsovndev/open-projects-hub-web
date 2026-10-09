@@ -118,6 +118,25 @@ Open Projects Hub follows a **Precision Editorial** design philosophy — clean,
 
 The palette is built on a high-contrast neutral foundation with a single blue primary for interaction.
 
+### Theme modes
+
+The application supports light and dark modes. It follows `prefers-color-scheme` until the user switches mode with the sun/moon button at the top right of the public or workspace header. Manual choices persist in `localStorage` as `oph-theme` and override device changes. Authentication pages inherit the current theme. The document's `data-theme` and `color-scheme` match the active mode; Ant Design components, including static messages and confirmation dialogs, use the same preference.
+
+| Token                                      | Light                                 | Dark                                  |
+| ------------------------------------------ | ------------------------------------- | ------------------------------------- |
+| Primary / hover / active                   | #0057c2 / #006ef2 / #004da8           | #69b1ff / #91caff / #4096ff           |
+| Container / page / base surface            | #ffffff / #f9f9f9 / #eeeeee           | #1f1f1f / #141414 / #303030           |
+| Elevated surface                           | #ffffff                               | #262626                               |
+| Primary / secondary text                   | #1a1a1a / #666666                     | #f0f0f0 / #bfbfbf                     |
+| Light / medium border                      | #d0d0d0 / #b0b0b0                     | #424242 / #595959                     |
+| Text on primary                            | #ffffff                               | #141414                               |
+| Accent blue surface / border / shadow      | #f5f9ff / #d6e5fb / #e5edff           | #192737 / #30465e / #233347           |
+| Accent violet surface / border / icon      | #f8f7fe / #eae7f6 / #edeaff           | #262238 / #443b5e / #393050           |
+| Accent warm surface / border / icon / text | #fdfbf7 / #efdfc4 / #fcf0d9 / #94702d | #2b261d / #51432b / #42351f / #e8bf73 |
+| Success surface / text                     | #e1f3e7 / #147743                     | #20351f / #95de64                     |
+
+Decorative accent tokens preserve the landing page's existing blue, violet, and warm cards. Inverted CTA and footer surfaces remain dark in both modes. Dark tooltips retain light text on their dark spotlight surface. Theme controls use the shared `--size-touch-target` (44px) and `--font-size-icon` (1.25rem) tokens.
+
 ### Brand Palette
 
 | Token              | Value   | Usage                                                           |
@@ -784,7 +803,7 @@ All design tokens are defined in three synchronized locations:
 | ------------------------------- | --------------------------------------------------------------- |
 | `src/styles/variables.scss`     | SCSS variables for CSS Modules (links to CSS custom properties) |
 | `src/styles/global.scss`        | CSS custom properties on `:root`                                |
-| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light)               |
+| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light and dark)      |
 | `DESIGN.md`                     | Single source of truth documentation                            |
 
 ### Rules for Token Management
@@ -898,3 +917,4 @@ import { useProjectsOverview } from "@/features/projects/hooks/use-projects-over
 | 2025-01 | Initial design system                                                                                                                                                                                                                                                                |
 | 2026-05 | Major revision: added form standards, empty/loading/error states, accessibility requirements, responsive guidelines, animation rules, semantic colors, navigation patterns, performance guidelines, and design token management. Standardized file structure and naming conventions. |
 | 2026-07 | Removed dark theme. Application now supports light theme only. Deleted theme toggle, `useActiveTheme` hook, `darkTokens`, dark CSS variables, dark favicon, and pre-hydration favicon init script.                                                                                   |
+| 2026-10 | Restored light/dark support with device preference by default, a persisted manual override, sun/moon header controls, theme-aware Ant Design overlays, and dark landing surfaces.                                                                                                    |

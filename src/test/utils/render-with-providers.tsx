@@ -6,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { RootState } from "@/app/store/store";
 import { adminAuthReducer } from "@/features/auth/state/admin-auth-slice";
 import { baseApi } from "@/app/api/base-api";
+import { ThemeProvider } from "@/app/theme/theme-provider";
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, "wrapper"> {
   preloadedState?: Partial<RootState>;
@@ -47,7 +48,9 @@ export function TestProviders({
 }) {
   return (
     <Provider store={store}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>
+        <ThemeProvider>{children}</ThemeProvider>
+      </BrowserRouter>
     </Provider>
   );
 }

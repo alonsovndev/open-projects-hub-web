@@ -131,3 +131,24 @@
     padding-left: 12px;
   }
 }
+
+:global(html[data-theme="dark"]) {
+  .audiencePanel {
+    background: $accent-blue-surface;
+    border-color: $accent-blue-border;
+
+    &[data-audience="clients"] {
+      background: $accent-warm-surface;
+      border-color: $accent-warm-border;
+
+      .audienceIcon {
+        background: $accent-warm-icon;
+        color: $accent-warm-text;
+      }
+    }
+  }
+
+  .audienceIcon {
+    background: $primary-bg-light;
+  }
+}
