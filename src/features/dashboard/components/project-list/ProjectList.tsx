@@ -127,7 +127,8 @@ const ProjectListComponent: FC<ProjectListProps> = ({
                   <div className={styles.infoItem}>
                     <CalendarOutlined className={styles.infoIcon} />
                     <Text className={styles.infoText}>
-                      {formatDate(project.startDate)} - {formatDate(project.endDate)}
+                      {project.startDate ? formatDate(project.startDate) : "No start date"} -{" "}
+                      {project.endDate ? formatDate(project.endDate) : "No end date"}
                     </Text>
                   </div>
                   <div className={styles.infoItem}>

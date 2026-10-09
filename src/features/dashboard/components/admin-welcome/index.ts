@@ -1,1 +1,0 @@
-export { AdminWelcome } from "./AdminWelcome";
