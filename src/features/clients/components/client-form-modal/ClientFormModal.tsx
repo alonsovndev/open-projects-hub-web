@@ -32,7 +32,9 @@ export const ClientFormModal: FC<ClientFormModalProps> = ({
 
   useEffect(() => {
     if (open) {
-      form.setFieldsValue(initialValues ?? { name: "", email: "", phone: "", company: "", address: "", notes: "" });
+      form.setFieldsValue(
+        initialValues ?? { name: "", email: "", phone: "", company: "", address: "", notes: "" }
+      );
     }
   }, [open, initialValues, form]);
 

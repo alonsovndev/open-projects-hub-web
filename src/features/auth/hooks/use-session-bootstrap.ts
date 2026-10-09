@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
@@ -19,9 +19,13 @@ export const useSessionBootstrap = () => {
   const isBootstrapping = useAppSelector((state) => state.auth.isBootstrapping);
   const dispatch = useAppDispatch();
   const [refreshToken] = useRefreshTokenMutation();
+  // StrictMode runs this effect twice in development. Refresh tokens are single-use, so a
+  // second concurrent refresh with the same token is rejected and would end the session.
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!isBootstrapping) return;
+    if (!isBootstrapping || hasStarted.current) return;
+    hasStarted.current = true;
 
     const stored = sessionStorage.load();
     if (!stored?.refreshToken) {

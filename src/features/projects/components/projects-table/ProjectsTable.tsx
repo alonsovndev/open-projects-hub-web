@@ -160,12 +160,12 @@ const ProjectsTableComponent: FC<ProjectsTableProps> = ({
             <Space>
               <CalendarOutlined className={styles.dateIcon} />
               <Text type="secondary">Start:</Text>
-              <Text>{formatDate(record.startDate)}</Text>
+              <Text>{record.startDate ? formatDate(record.startDate) : "Not set"}</Text>
             </Space>
             <Space>
               <CalendarOutlined className={styles.dateIcon} />
               <Text type="secondary">End:</Text>
-              <Text>{formatDate(record.endDate)}</Text>
+              <Text>{record.endDate ? formatDate(record.endDate) : "Not set"}</Text>
             </Space>
           </Space>
         ),

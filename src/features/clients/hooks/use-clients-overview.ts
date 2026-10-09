@@ -49,7 +49,11 @@ export const useClientsOverview = () => {
       setFormOpen(false);
       setEditingClient(null);
     } catch {
-      message.error(editingClient ? "Failed to update client. Please try again." : "Failed to create client. Please try again.");
+      message.error(
+        editingClient
+          ? "Failed to update client. Please try again."
+          : "Failed to create client. Please try again."
+      );
     }
   };
 
@@ -67,7 +71,9 @@ export const useClientsOverview = () => {
           message.success(`Client "${client.name}" deleted`);
         } catch (error) {
           const apiError = error as { data?: { message?: string } };
-          setDeleteError(apiError?.data?.message ?? `Failed to delete "${client.name}". Please try again.`);
+          setDeleteError(
+            apiError?.data?.message ?? `Failed to delete "${client.name}". Please try again.`
+          );
         }
       },
     });

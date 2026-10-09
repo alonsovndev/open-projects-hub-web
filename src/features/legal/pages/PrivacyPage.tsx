@@ -30,8 +30,8 @@ export const PrivacyPage: FC = () => {
       <Paragraph className={styles.pageContent}>
         We are committed to protecting your privacy. This policy applies to all users of the
         Service, including freelancers with authenticated accounts and their clients who review
-        projects via project access codes. By using the Service, you consent to the practices described in
-        this policy.
+        projects via project access codes. By using the Service, you consent to the practices
+        described in this policy.
       </Paragraph>
 
       {/* 2. Data We Collect */}
@@ -123,9 +123,9 @@ export const PrivacyPage: FC = () => {
         rights, property, or safety of Open Projects Hub, our users, or the public.
       </Paragraph>
       <Paragraph className={styles.pageContent}>
-        Project data visible to clients is limited to approved stories for the specific
-        project they access via its project access code. Clients cannot access account data, drafts,
-        or other projects.
+        Project data visible to clients is limited to approved stories for the specific project they
+        access via its project access code. Clients cannot access account data, drafts, or other
+        projects.
       </Paragraph>
 
       {/* 7. Cookies and Sessions */}
@@ -156,7 +156,8 @@ export const PrivacyPage: FC = () => {
       <Paragraph className={styles.pageContent}>
         You have the following rights regarding your data: access your personal information and
         project data; correct or update inaccurate information; delete your account and associated
-        data. To exercise these rights, use the settings page or contact us directly.
+        data. You can update your profile in Settings; for access or deletion requests, contact us
+        directly.
       </Paragraph>
 
       {/* 10. Changes to This Policy */}

@@ -35,7 +35,8 @@ export const useCreateProject = () => {
         message.error(msg);
         return;
       }
-      const isLimit = apiError?.status === 409 || apiError?.status === 422 || /limit|maximum.*3/i.test(msg);
+      const isLimit =
+        apiError?.status === 409 || apiError?.status === 422 || /limit|maximum.*3/i.test(msg);
       if (isLimit) {
         const friendly = msg.includes("Archive") ? msg : ACTIVE_LIMIT_MESSAGE;
         setLimitError(friendly);

@@ -26,7 +26,7 @@ src/
       base-api.ts              # RTK Query base configuration
     layouts/
       PublicLayout.tsx         # Layout for public pages
-      PrivateLayout.tsx        # Layout for authenticated pages
+      admin-layout/            # Sidebar layout for authenticated pages
       index.ts
     routing/
       AppRouter.tsx            # Router component
@@ -83,12 +83,12 @@ src/
 
     dashboard/
       components/
-        admin-welcome/
-          AdminWelcome.tsx
-          admin-welcome.module.scss
+        project-list/
+          ProjectList.tsx
+          project-list.module.scss
           index.ts
       hooks/
-        use-admin-welcome.ts
+        use-dashboard.ts
       types/
         index.ts
       routes.tsx
@@ -97,11 +97,9 @@ src/
     home/
       components/
         home-hero/
-        role-selection/
-      hooks/
-        use-role-selection.ts
+        home-workflow/
+      pages/
       routes.tsx
-      index.ts
 
     viewer/
       api/
@@ -164,7 +162,7 @@ src/
 **Contains**:
 
 - **`api/`** - Base RTK Query API configuration with auth headers
-- **`layouts/`** - Reusable page layouts (`PublicLayout`, `PrivateLayout`)
+- **`layouts/`** - Reusable page layouts (`PublicLayout`, `AdminLayout`)
 - **`routing/`** - Declarative routing system with guards
 - **`store/`** - Redux store setup and typed hooks
 - **`providers/`** - React context providers (if needed)
@@ -352,7 +350,7 @@ export const DashboardPage: FC = () => {
 };
 ```
 
-**Note**: Layouts (PublicLayout/PrivateLayout) are applied in route definitions, not in page files.
+**Note**: Layouts (PublicLayout/AdminLayout) are applied in route definitions, not in page files.
 
 ---
 

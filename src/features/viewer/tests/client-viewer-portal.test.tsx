@@ -53,7 +53,9 @@ describe("Client Review portal", { timeout: 20_000 }, () => {
   it("tells the visitor when the code matches no project and keeps what they typed", async () => {
     renderAt("/viewer/PRJ-AAAAAAAA");
 
-    expect(await screen.findByText(/couldn't find a project with that access code/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/couldn't find a project with that access code/i)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("Project Access Code")).toHaveValue("PRJ-AAAAAAAA");
   });
 

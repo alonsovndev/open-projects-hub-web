@@ -63,16 +63,17 @@ describe("ai providers api", () => {
     );
 
     const store = storeWithSession();
-    const result = await store
-      .dispatch(aiProvidersApi.endpoints.getApiKeys.initiate())
-      .unwrap();
+    const result = await store.dispatch(aiProvidersApi.endpoints.getApiKeys.initiate()).unwrap();
 
     expect(result).toHaveLength(1);
     expect(result[0].maskedKey).toBe("sk-proj***...1234");
   });
 
   it("reads the credit balance", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => jsonResponse({ credits: 3, totalGranted: 5 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => jsonResponse({ credits: 3, totalGranted: 5 }))
+    );
 
     const store = storeWithSession();
     const balance = await store

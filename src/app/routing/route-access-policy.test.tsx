@@ -5,12 +5,12 @@ import type { GuardType } from "@/app/routing/types";
 import type { UserRole } from "@/features/auth/types";
 
 /**
- * Route-level half of the editor/Viewer boundary (US-EP4-FE-001).
+ * Route-level access boundary (US-EP4-FE-001).
  *
- * The per-page tests prove controls disappear for a Viewer; this one proves a Viewer
- * cannot reach an editor-only page (admins and members) by typing its URL. It enumerates `appRoutes` rather
- * than a list of paths to check, so a new route added with no guards fails the suite
- * instead of shipping public by default.
+ * Proves an anonymous visitor (such as a client on the access-code review page) cannot reach
+ * a signed-in page by typing its URL. It enumerates `appRoutes` rather than a list of paths
+ * to check, so a new route added with no guards fails the suite instead of shipping public
+ * by default.
  *
  * Moving a path between these lists is an access-control decision, so it should show up
  * in review as one.
@@ -39,6 +39,8 @@ const PUBLIC_PATHS = [
   "/privacy",
   "/terms",
   "/unauthorized",
+  // Catch-all 404 page.
+  "*",
 ];
 
 const guardsFor = (path: string): GuardType[] => {
@@ -49,7 +51,8 @@ const guardsFor = (path: string): GuardType[] => {
 
 const allowedRoles = (guards: GuardType[]): UserRole[] | null => {
   const roleGuard = guards.find(
-    (guard): guard is { role: UserRole | UserRole[] } => typeof guard === "object" && "role" in guard
+    (guard): guard is { role: UserRole | UserRole[] } =>
+      typeof guard === "object" && "role" in guard
   );
   if (!roleGuard) return null;
   return Array.isArray(roleGuard.role) ? roleGuard.role : [roleGuard.role];
@@ -59,7 +62,9 @@ describe("route access policy", () => {
   it("classifies every registered route", () => {
     const classified = new Set([...EDITOR_ONLY_PATHS, ...AUTHENTICATED_PATHS, ...PUBLIC_PATHS]);
 
-    const unclassified = appRoutes.map((route) => route.path).filter((path) => !classified.has(path));
+    const unclassified = appRoutes
+      .map((route) => route.path)
+      .filter((path) => !classified.has(path));
 
     expect(unclassified).toEqual([]);
   });

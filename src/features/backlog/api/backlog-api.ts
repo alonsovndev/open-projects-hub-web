@@ -101,7 +101,8 @@ export const backlogApi = baseApi.injectEndpoints({
         // A missing count header means "unknown", not "zero" — CORS can strip it. Reading
         // it as zero would warn "no approved stories" over a perfectly full export.
         const rawCount = headers?.get("X-Export-Story-Count");
-        const storyCount = rawCount === null || rawCount === undefined ? undefined : Number(rawCount);
+        const storyCount =
+          rawCount === null || rawCount === undefined ? undefined : Number(rawCount);
 
         return {
           blob,

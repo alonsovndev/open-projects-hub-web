@@ -459,7 +459,8 @@ describe("useBacklog", () => {
     it("should surface the server message when the export is refused", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       mockExportFn.mockReturnValue({
-        unwrap: () => Promise.reject({ status: 403, data: { message: "Insufficient permissions" } }),
+        unwrap: () =>
+          Promise.reject({ status: 403, data: { message: "Insufficient permissions" } }),
       });
       const { result } = renderHook(() => useBacklog());
 
@@ -489,9 +490,7 @@ describe("useBacklog", () => {
         await result.current.handleExportMarkdown();
       });
 
-      expect(message.error).toHaveBeenCalledWith(
-        "Unable to export the backlog. Please try again."
-      );
+      expect(message.error).toHaveBeenCalledWith("Unable to export the backlog. Please try again.");
 
       consoleErrorSpy.mockRestore();
     });

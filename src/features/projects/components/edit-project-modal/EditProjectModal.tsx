@@ -103,10 +103,14 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
             account is needed.
           </Paragraph>
           <Paragraph>
-            Access code: <Text code copyable={{ text: accessCode }}>{accessCode}</Text>
+            Access code:{" "}
+            <Text code copyable={{ text: accessCode }}>
+              {accessCode}
+            </Text>
           </Paragraph>
           <Paragraph>
-            Link: <Text copyable={{ text: buildClientReviewUrl(accessCode) }}>Copy client link</Text>
+            Link:{" "}
+            <Text copyable={{ text: buildClientReviewUrl(accessCode) }}>Copy client link</Text>
           </Paragraph>
           {onRegenerateAccessCode ? (
             <Popconfirm

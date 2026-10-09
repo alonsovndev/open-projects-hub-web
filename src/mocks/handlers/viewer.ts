@@ -13,7 +13,8 @@ const mockClientReview = {
     {
       id: "s1",
       title: "Appointment scheduling",
-      description: "As a patient I want to book an appointment online so that I do not need to call the clinic.",
+      description:
+        "As a patient I want to book an appointment online so that I do not need to call the clinic.",
       acceptanceCriteria: [
         "A patient can pick a doctor and a free time slot",
         "A taken slot cannot be booked twice",

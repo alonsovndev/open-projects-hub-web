@@ -126,14 +126,14 @@ export const AppRouter: FC = () => {
 // Auth-required route
 {
   path: "/dashboard",
-  element: <PrivateLayout><DashboardPage /></PrivateLayout>,
+  element: <AdminLayout><DashboardPage /></AdminLayout>,
   guards: ["auth"],
 }
 
 // Admin-only route
 {
   path: "/admin",
-  element: <PrivateLayout><AdminPage /></PrivateLayout>,
+  element: <AdminLayout><AdminPage /></AdminLayout>,
   guards: ["auth", { role: "admin" }],
 }
 ```
@@ -199,23 +199,23 @@ element: (
 )
 ```
 
-### PrivateLayout
+### AdminLayout
 
-Used for authenticated pages (dashboard, admin).
+Used for authenticated pages (dashboard, projects, clients, refinement, backlog, settings).
 
 **Features**:
 
-- Includes AppHeader with user info
+- Collapsible sidebar navigation
+- Current user and workspace name
 - Sign Out button
-- Automatic session display
 
 **Usage (in route definitions)**:
 
 ```typescript
 element: (
-  <PrivateLayout>
+  <AdminLayout>
     <DashboardPage />
-  </PrivateLayout>
+  </AdminLayout>
 )
 ```
 
@@ -252,16 +252,16 @@ import { Link } from "react-router-dom";
 ```typescript
 // features/my-feature/routes.tsx
 import type { AppRoute } from "@/app/routing/types";
-import { PrivateLayout } from "@/app/layouts";
+import { AdminLayout } from "@/app/layouts";
 import { MyFeaturePage } from "@/pages/my-feature";
 
 export const myFeatureRoutes: AppRoute[] = [
   {
     path: "/my-feature",
     element: (
-      <PrivateLayout>
+      <AdminLayout>
         <MyFeaturePage />
-      </PrivateLayout>
+      </AdminLayout>
     ),
     guards: ["auth"],
   },
@@ -404,7 +404,7 @@ test("redirects unauthenticated user from dashboard to login", async ({ page }) 
 
 1. Verify layout is wrapped in route definition:
    ```typescript
-   element: <PrivateLayout><MyPage /></PrivateLayout>
+   element: <AdminLayout><MyPage /></AdminLayout>
    ```
 2. Don't wrap layout in page file
 
@@ -421,7 +421,7 @@ The routing system provides:
 
 - ✅ **Feature ownership** - Routes defined per feature
 - ✅ **Centralized guards** - No duplicated auth logic
-- ✅ **Layout reuse** - PublicLayout/PrivateLayout
+- ✅ **Layout reuse** - PublicLayout/AdminLayout
 - ✅ **Type safety** - Fully typed route definitions
 - ✅ **Testability** - Guard logic in one place
 - ✅ **Scalability** - Easy to add routes without touching core

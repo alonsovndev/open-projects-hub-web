@@ -56,7 +56,8 @@ export const AiProvidersPanel: FC = () => {
           <div>
             <Text className={styles.title}>AI Providers</Text>
             <Text type="secondary" className={styles.subtitle}>
-              Use your free platform credits, or bring your own provider key for unlimited refinements
+              Use your free platform credits, or bring your own provider key for unlimited
+              refinements
             </Text>
           </div>
         </div>

@@ -1,6 +1,12 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined, RobotOutlined, TeamOutlined, ApartmentOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  RobotOutlined,
+  TeamOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
