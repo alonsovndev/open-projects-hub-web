@@ -120,27 +120,27 @@ The palette is built on a high-contrast neutral foundation with a single blue pr
 
 ### Brand Palette
 
-| Token              | Value    | Usage                                                           |
+| Token              | Value   | Usage                                                           |
 | ------------------ | ------- | --------------------------------------------------------------- |
-| **Primary**        | #0057c2  | Buttons, links, selected menu items, interactive elements       |
-| **Primary Light**  | #4a8fd9  | Hover states, disabled interactions, subtle backgrounds        |
-| **Primary Dark**   | #004da8  | Button active press, focus rings                                |
-| **Surface White**  | #ffffff  | Card backgrounds, modals, sidebars                              |
-| **Surface Light**  | #f9f9f9  | Page backgrounds, section dividers                              |
-| **Surface Base**   | #eeeeee  | Borders, dividers, disabled states, skeletons                   |
-| **Text Primary**   | #1a1a1a  | Headlines, body copy, labels. AA on white: 14.9:1               |
-| **Text Secondary** | #666666  | Captions, metadata, placeholders, help text. AA on white: 5.4:1 |
+| **Primary**        | #0057c2 | Buttons, links, selected menu items, interactive elements       |
+| **Primary Light**  | #4a8fd9 | Hover states, disabled interactions, subtle backgrounds         |
+| **Primary Dark**   | #004da8 | Button active press, focus rings                                |
+| **Surface White**  | #ffffff | Card backgrounds, modals, sidebars                              |
+| **Surface Light**  | #f9f9f9 | Page backgrounds, section dividers                              |
+| **Surface Base**   | #eeeeee | Borders, dividers, disabled states, skeletons                   |
+| **Text Primary**   | #1a1a1a | Headlines, body copy, labels. AA on white: 14.9:1               |
+| **Text Secondary** | #666666 | Captions, metadata, placeholders, help text. AA on white: 5.4:1 |
 
 ### Semantic Colors
 
 Use Ant Design's built-in semantic tokens. Do NOT define custom semantic colors.
 
-| Purpose | Ant Design Token | Value    |
+| Purpose | Ant Design Token | Value   |
 | ------- | ---------------- | ------- |
-| Success | `colorSuccess`   | #52c41a  |
-| Warning | `colorWarning`   | #faad14  |
-| Error   | `colorError`     | #ff4d4f  |
-| Info    | `colorInfo`      | #1677ff  |
+| Success | `colorSuccess`   | #52c41a |
+| Warning | `colorWarning`   | #faad14 |
+| Error   | `colorError`     | #ff4d4f |
+| Info    | `colorInfo`      | #1677ff |
 
 ### Text Contrast Requirements
 
@@ -152,15 +152,6 @@ All text must meet WCAG AA contrast ratios:
 - **Text Primary on white**: 14.9:1 ✅
 - **Text Secondary on white**: 5.4:1 ✅
 - **Placeholder text**: May use 3:1 minimum (NOT the body text standard)
-
-### Color Usage Rules
-
-- ✅ Primary blue (#0057c2) for ALL interactive elements
-- ✅ Surface Light (#f9f9f9) as page background to separate cards
-- ✅ Semantic Ant Design tokens for errors/success/warnings — never custom colors
-- ❌ Never add additional brand colors to the palette
-- ❌ Never hardcode hex values in components or SCSS — use the token system only
-- ❌ Never use color alone to convey state — pair with icons or text labels
 
 ### Color Usage Rules
 
@@ -183,22 +174,22 @@ All text must meet WCAG AA contrast ratios:
 
 ### Extended Palette
 
-| Token                | Value                          | Usage                     |
+| Token                | Value              | Usage                     |
 | -------------------- | ------------------ | ------------------------- |
-| **Primary**          | #0057c2                        | Interactive elements      |
-| **Surface White**    | #ffffff                        | Card backgrounds          |
-| **Surface Light**    | #f9f9f9                        | Page backgrounds          |
-| **Surface Base**     | #eeeeee                        | Borders, dividers         |
-| **Surface Dark**     | #1a1a1a                        | Inverted sections (CTA)   |
-| **Text Primary**     | #1a1a1a                        | Headlines, body           |
-| **Text Secondary**   | #666666                        | Captions, metadata        |
-| **Text on Dark**     | #f0f0f0                        | Text on dark backgrounds  |
-| **Border Light**     | #d0d0d0                        | Light borders             |
-| **Border Medium**    | #b0b0b0                        | Medium borders            |
-| **Border Subtle**    | rgba(0,0,0,0.06)               | Subtle borders            |
-| **Hover Overlay**    | rgba(0,0,0,0.04)               | Hover state backgrounds   |
-| **Primary BG Light** | rgba(0,87,194,0.1)             | Primary color backgrounds |
-| **Success Base**     | #52c41a                        | Semantic success color    |
+| **Primary**          | #0057c2            | Interactive elements      |
+| **Surface White**    | #ffffff            | Card backgrounds          |
+| **Surface Light**    | #f9f9f9            | Page backgrounds          |
+| **Surface Base**     | #eeeeee            | Borders, dividers         |
+| **Surface Dark**     | #1a1a1a            | Inverted sections (CTA)   |
+| **Text Primary**     | #1a1a1a            | Headlines, body           |
+| **Text Secondary**   | #666666            | Captions, metadata        |
+| **Text on Dark**     | #f0f0f0            | Text on dark backgrounds  |
+| **Border Light**     | #d0d0d0            | Light borders             |
+| **Border Medium**    | #b0b0b0            | Medium borders            |
+| **Border Subtle**    | rgba(0,0,0,0.06)   | Subtle borders            |
+| **Hover Overlay**    | rgba(0,0,0,0.04)   | Hover state backgrounds   |
+| **Primary BG Light** | rgba(0,87,194,0.1) | Primary color backgrounds |
+| **Success Base**     | #52c41a            | Semantic success color    |
 
 ---
 
@@ -287,7 +278,7 @@ Workspace layout follows a **left sidebar + flexible content** pattern at 1024px
 
 ### Content Padding
 
-| Breakpoint          | Padding |
+| Breakpoint        | Padding                        |
 | ----------------- | ------------------------------ |
 | ≥1024px (desktop) | 32px                           |
 | 481–1023px        | 24px                           |
@@ -317,13 +308,13 @@ The workspace shell owns page gutters; feature pages do not add a second outer p
 
 The UI uses minimal elevation — flat design with subtle shadow cues.
 
-| Element              | Shadow                          | Usage                                   |
+| Element              | Shadow             | Usage                                    |
 | -------------------- | ------------------ | ---------------------------------------- |
 | Cards                | None               | Borders distinguish records and forms    |
 | Sider                | None               | Border separates navigation from content |
-| Modals               | Default Ant Design              | 16px blur at 0.15 opacity               |
-| Dropdowns            | Default Ant Design              | Mathches Ant Design elevation           |
-| No persistent floats | —                               | No FABs, no sticky headers beyond sider |
+| Modals               | Default Ant Design | 16px blur at 0.15 opacity                |
+| Dropdowns            | Default Ant Design | Mathches Ant Design elevation            |
+| No persistent floats | —                  | No FABs, no sticky headers beyond sider  |
 
 ### Elevation Rules
 
@@ -792,8 +783,8 @@ All design tokens are defined in three synchronized locations:
 | Location                        | Purpose                                                         |
 | ------------------------------- | --------------------------------------------------------------- |
 | `src/styles/variables.scss`     | SCSS variables for CSS Modules (links to CSS custom properties) |
-| `src/styles/global.scss`        | CSS custom properties on `:root`                                 |
-| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light)              |
+| `src/styles/global.scss`        | CSS custom properties on `:root`                                |
+| `src/app/theme/theme-tokens.ts` | Ant Design ThemeConfig for ConfigProvider (light)               |
 | `DESIGN.md`                     | Single source of truth documentation                            |
 
 ### Rules for Token Management
@@ -906,4 +897,4 @@ import { useProjectsOverview } from "@/features/projects/hooks/use-projects-over
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 2025-01 | Initial design system                                                                                                                                                                                                                                                                |
 | 2026-05 | Major revision: added form standards, empty/loading/error states, accessibility requirements, responsive guidelines, animation rules, semantic colors, navigation patterns, performance guidelines, and design token management. Standardized file structure and naming conventions. |
-| 2026-07 | Removed dark theme. Application now supports light theme only. Deleted theme toggle, `useActiveTheme` hook, `darkTokens`, dark CSS variables, dark favicon, and pre-hydration favicon init script. |
+| 2026-07 | Removed dark theme. Application now supports light theme only. Deleted theme toggle, `useActiveTheme` hook, `darkTokens`, dark CSS variables, dark favicon, and pre-hydration favicon init script.                                                                                   |

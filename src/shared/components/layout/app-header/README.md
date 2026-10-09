@@ -88,14 +88,13 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 
 ### Landing Variant
 
-**Use for:** Public marketing pages (home, features, pricing)
+**Use for:** Public pages (home, auth screens, legal pages)
 
 **Desktop Layout:**
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│ [Logo] Open Freelancer Hub  Features Workflow Docs GitHub   │
-│                              Pricing         Sign In [Start] │
+│ [Logo] Open Projects Hub  Docs  GitHub  Log In [Get Started] │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -103,38 +102,30 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 
 ```
 ┌────────────────────────────────┐
-│ [Logo] Open Freelancer Hub [☰] │
+│ [Logo] Open Projects Hub   [☰] │
 └────────────────────────────────┘
-│ Features                       │
-│ Workflow                       │
 │ Docs                           │
 │ GitHub                         │
-│ Pricing                        │
-│ [Sign In]                      │
-│ [Start Free]                   │
+│ [Log In]                       │
+│ [Get Started]                  │
 └────────────────────────────────┘
 ```
 
 **Features:**
 
 - Sticky positioning with blur backdrop
-- Centered navigation links
-- Primary CTA button (Start Free)
 - Mobile hamburger menu
 - External links to GitHub and Docs
 
 **Navigation:**
 
-- Features → `#features`
-- Workflow → `#workflow`
 - Docs → https://alonsovndev.github.io/open-projects-hub-docs/
 - GitHub → https://github.com/orgs/alonsovndev/repositories?q=open-projects
-- Pricing → `#pricing`
 
 **CTAs:**
 
-- Sign In → `/login`
-- Start Free → `/register`
+- Log In → `/login`
+- Get Started → `/role-selection`
 
 ## Design Tokens
 

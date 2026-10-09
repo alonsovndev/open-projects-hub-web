@@ -35,14 +35,14 @@ The current suite is still intentionally small, but the architecture is now test
 - `src/features/auth/model/password-policy.ts` and `password-strength.ts` are pure logic modules that are ideal unit-test targets.
 - `src/features/auth/hooks/use-admin-login-form.ts` centralizes login orchestration, which makes the form flow testable through integration tests.
 - `src/app/routing/GuardResolver.tsx` centralizes auth and role redirects, which makes guard behavior testable without rendering the whole app.
-- `src/features/dashboard/hooks/use-admin-welcome.ts` isolates sign-out and navigation behavior from dashboard presentation.
+- `src/features/dashboard/hooks/use-dashboard.ts` isolates dashboard data loading from presentation.
 
 ## Testability Analysis
 
 ### Why the codebase is easier to test now
 
 - **Thin pages** such as `src/pages/home/index.tsx`, `src/pages/login/index.tsx`, and `src/pages/dashboard/index.tsx` mostly compose feature components, so tests can focus on real behavior instead of page wiring.
-- **Hooks separate orchestration from UI**. The login and dashboard flows keep navigation, dispatching, and submit logic in `use-admin-login-form.ts` and `use-admin-welcome.ts`.
+- **Hooks separate orchestration from UI**. The login and dashboard flows keep navigation, dispatching, and submit logic in `use-admin-login-form.ts` and `use-dashboard.ts`.
 - **Pure model helpers exist for business rules**. Viewer code validation and auth password rules live in standalone files, which enables cheap unit tests with no DOM setup.
 - **Guards are centralized** in `GuardResolver.tsx`, so redirect logic is not duplicated across pages.
 - **Shared test utilities already exist** for Redux store setup and provider-aware rendering.
@@ -61,11 +61,9 @@ The tables below describe both the current state and the intended pattern for th
 
 ### Home page (`/`)
 
-| Level       | What to test                                               | Current state                         | Recommended pattern                                                              |
-| ----------- | ---------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------- |
-| Unit        | `useRoleSelection` navigation decisions                    | Not yet implemented                   | Mock `useNavigate`, assert `handleSelectRole()` routes to the chosen path        |
-| Integration | `RoleSelection` renders role cards and triggers navigation | Not yet implemented                   | Render with router context, click the visible role CTA, assert navigation intent |
-| E2E         | Landing page loads and exposes the role-selection path     | **Implemented** in `e2e/home.spec.ts` | Keep smoke coverage, then extend to both admin and viewer route entry flows      |
+| Level | What to test                                           | Current state                         | Recommended pattern                                                           |
+| ----- | ------------------------------------------------------ | ------------------------------------- | ----------------------------------------------------------------------------- |
+| E2E   | Landing page loads and exposes the role-selection path | **Implemented** in `e2e/home.spec.ts` | Keep smoke coverage, then extend to the sign-up and client review entry flows |
 
 **Why this matters for juniors:** the Home page should prove that a public user can start the right journey.
 
@@ -85,11 +83,10 @@ The tables below describe both the current state and the intended pattern for th
 
 ### Admin Dashboard page (`/dashboard`)
 
-| Level       | What to test                                                        | Current state       | Recommended pattern                                                                               |
-| ----------- | ------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------- |
-| Unit        | `useAdminWelcome` sign-out and viewer navigation helpers            | Not yet implemented | Mock navigation and assert dispatch + redirect side effects                                       |
-| Integration | `GuardResolver` + `AdminWelcome` authenticated rendering            | Not yet implemented | Render with preloaded auth state to verify welcome text, redirect rules, and sign-out affordances |
-| E2E         | Authenticated dashboard load, viewer shortcut, and return-home flow | Not yet implemented | Seed an authenticated session, visit `/dashboard`, then verify viewer and sign-out paths          |
+| Level       | What to test                                        | Current state       | Recommended pattern                                                                      |
+| ----------- | --------------------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------- |
+| Integration | `GuardResolver` + dashboard authenticated rendering | Not yet implemented | Render with preloaded auth state to verify welcome text, redirect rules, and sign-out    |
+| E2E         | Authenticated dashboard load and sign-out           | Not yet implemented | Seed an authenticated session, visit `/dashboard`, then verify project list and sign-out |
 
 **Why this matters for juniors:** the dashboard is where route protection becomes visible.
 
@@ -130,7 +127,7 @@ The tables below describe both the current state and the intended pattern for th
 
 ## What Else Could Be Done
 
-1. Add integration coverage for `GuardResolver`, `AdminLoginForm`, and `AdminWelcome`.
+1. Add integration coverage for `GuardResolver`, `AdminLoginForm`, and the dashboard page.
 2. Enforce minimum coverage thresholds once the auth and dashboard flows have baseline tests.
 3. Add visual regression checks for the marketing-style Home page and the admin dashboard shell.
 4. Introduce API mocking with real handlers under `src/test/mocks/handlers.ts` so E2E and integration tests share realistic fixtures.
