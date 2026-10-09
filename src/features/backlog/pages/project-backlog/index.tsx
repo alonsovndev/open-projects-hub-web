@@ -1,8 +1,9 @@
 import type { FC } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Typography, Select, Space, Button, Spin, Alert } from "antd";
+import { Typography, Select, Space, Button, Spin, Alert, message } from "antd";
 import { ArrowLeftOutlined, FileMarkdownOutlined } from "@ant-design/icons";
 
+import { useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
 import { StoryList } from "@/features/backlog/components/story-list";
 import { useProjectBacklog } from "@/features/backlog/hooks/use-project-backlog";
 import { useBacklogExport } from "@/features/backlog/hooks/use-backlog-export";
@@ -33,6 +34,7 @@ export const ProjectBacklogPage: FC = () => {
   } = useProjectBacklog(projectId ?? "");
 
   const { exportBacklog, isExporting } = useBacklogExport();
+  const [deleteStory] = useDeleteStoryMutation();
 
   const projectOptions =
     projectsData?.projects.map((p: ProjectSummary) => ({
@@ -54,8 +56,13 @@ export const ProjectBacklogPage: FC = () => {
 
   const handleExportMarkdown = () => exportBacklog(projectId ?? null);
 
-  const handleDeleteStory = async (_storyId: string) => {
-    // TODO: Implement delete functionality when backend endpoint is available
+  const handleDeleteStory = async (storyId: string) => {
+    try {
+      await deleteStory(storyId).unwrap();
+      message.success("Story deleted successfully");
+    } catch {
+      message.error("Failed to delete story. Please try again.");
+    }
   };
 
   if (error) {

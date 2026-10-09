@@ -7,6 +7,7 @@ import type {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 
+import { isDev } from "@/config/env";
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
@@ -66,7 +67,11 @@ const refreshSession = (api: BaseQueryApi): Promise<boolean> => {
     if (!session?.refreshToken) return false;
 
     const refreshResult = await rawBaseQuery(
-      { url: adminAuthConfig.refreshEndpoint, method: "POST", body: { refreshToken: session.refreshToken } },
+      {
+        url: adminAuthConfig.refreshEndpoint,
+        method: "POST",
+        body: { refreshToken: session.refreshToken },
+      },
       api,
       {}
     );
@@ -115,21 +120,18 @@ export const baseQuery: BaseQueryFn<
   }
 
   if (result.error) {
-    // Log full error for debugging
-    console.error("[baseQuery] Error occurred:", {
-      status: result.error.status,
-      statusType: typeof result.error.status,
-      data: result.error.data,
-      error: "error" in result.error ? result.error.error : undefined,
-      originalStatus: "originalStatus" in result.error ? result.error.originalStatus : undefined,
-      fullError: JSON.stringify(result.error, null, 2),
-    });
+    // Error bodies can echo submitted fields, so they are only logged in development.
+    if (isDev) {
+      console.error("[baseQuery] Error occurred:", result.error);
+    }
 
     // FastAPI (and this app's exception handlers) return errors as { detail: "..." },
     // not { message: "..." } — read detail first, falling back to message for resilience.
     const errorData = result.error.data as ApiErrorBody | undefined;
     const normalizedMessage =
-      errorData?.detail ?? errorData?.message ?? "Something went wrong while communicating with the API.";
+      errorData?.detail ??
+      errorData?.message ??
+      "Something went wrong while communicating with the API.";
 
     // Some handlers attach fields the caller must act on rather than just display — the
     // provider-key errors carry `promptsKeyUpdate`, which decides whether the user is
@@ -138,7 +140,9 @@ export const baseQuery: BaseQueryFn<
       ...(errorData?.code !== undefined && { code: errorData.code }),
       ...(errorData?.provider !== undefined && { provider: errorData.provider }),
       ...(errorData?.reason !== undefined && { reason: errorData.reason }),
-      ...(errorData?.promptsKeyUpdate !== undefined && { promptsKeyUpdate: errorData.promptsKeyUpdate }),
+      ...(errorData?.promptsKeyUpdate !== undefined && {
+        promptsKeyUpdate: errorData.promptsKeyUpdate,
+      }),
     };
 
     if (typeof result.error.status === "number") {

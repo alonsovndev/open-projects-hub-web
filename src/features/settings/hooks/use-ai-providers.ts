@@ -37,7 +37,9 @@ export const useAiProviders = () => {
       } catch (err) {
         // The backend's message already names the provider and the corrective action
         // (FR-010-10), so it is shown as-is rather than replaced with a generic string.
-        message.error(getErrorMessage(err, `Could not save your ${AI_PROVIDER_LABELS[provider]} key.`));
+        message.error(
+          getErrorMessage(err, `Could not save your ${AI_PROVIDER_LABELS[provider]} key.`)
+        );
         throw err;
       }
     },
@@ -50,7 +52,9 @@ export const useAiProviders = () => {
         await deleteKey(provider).unwrap();
         message.success(`${AI_PROVIDER_LABELS[provider]} API key deleted`);
       } catch (err) {
-        message.error(getErrorMessage(err, `Could not delete your ${AI_PROVIDER_LABELS[provider]} key.`));
+        message.error(
+          getErrorMessage(err, `Could not delete your ${AI_PROVIDER_LABELS[provider]} key.`)
+        );
         throw err;
       }
     },

@@ -134,7 +134,10 @@ describe("exportProjectBacklog", () => {
   });
 
   it("falls back to a default filename when the header is stripped", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => exportResponse("# Acme\n", {})));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => exportResponse("# Acme\n", {}))
+    );
 
     const store = storeWithSession();
     const result = await store
@@ -188,9 +191,7 @@ describe("getProjectBacklog", () => {
       .unwrap();
 
     expect(result.total).toBe(1);
-    expect(result.stories[0].acceptanceCriteria).toEqual([
-      "Export includes approved stories only",
-    ]);
+    expect(result.stories[0].acceptanceCriteria).toEqual(["Export includes approved stories only"]);
     // `blocked` must not collapse into `backlog` — that misreports blocked work.
     expect(result.stories[0].status).toBe("review");
     expect(result.stories[0].projectId).toBe("project-1");

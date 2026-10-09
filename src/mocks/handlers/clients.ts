@@ -93,7 +93,9 @@ export const clientsHandlers = [
   http.delete(`${adminAuthConfig.apiBaseUrl}/v1/clients/:id`, ({ params }) => {
     if (clientsWithActiveProjects.has(String(params.id))) {
       return HttpResponse.json(
-        { detail: "Cannot delete client with active projects. Archive or reassign projects first." },
+        {
+          detail: "Cannot delete client with active projects. Archive or reassign projects first.",
+        },
         { status: 409 }
       );
     }

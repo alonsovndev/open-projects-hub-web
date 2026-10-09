@@ -67,7 +67,9 @@ describe("WorkspacePanel", { timeout: 20_000 }, () => {
     await user.type(input, "Acme Studio");
     await user.click(screen.getByRole("button", { name: "Rename Workspace" }));
 
-    expect(await screen.findByText("Only the workspace Admin can rename the workspace")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Only the workspace Admin can rename the workspace")
+    ).toBeInTheDocument();
     // A failed rename must not wipe what the Admin typed.
     expect(screen.getByLabelText("Workspace Name")).toHaveValue("Acme Studio");
   });

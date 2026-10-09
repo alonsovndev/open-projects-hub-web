@@ -78,7 +78,9 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
       role: index === 0 ? "admin" : "member",
       isActive: true,
     }));
-    server.use(http.get(`${adminAuthConfig.apiBaseUrl}/v1/users`, () => HttpResponse.json(fullTeam)));
+    server.use(
+      http.get(`${adminAuthConfig.apiBaseUrl}/v1/users`, () => HttpResponse.json(fullTeam))
+    );
     renderPanel();
     await screen.findByText("user5@test.com");
 

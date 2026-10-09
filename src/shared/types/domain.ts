@@ -41,8 +41,8 @@ export interface ProjectSummary {
   client: string;
   storiesCount: number;
   completedStories: number;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   createdAt: string;
   lastUpdated: string;
   description: string;

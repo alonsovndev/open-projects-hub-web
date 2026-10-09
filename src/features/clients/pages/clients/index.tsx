@@ -35,7 +35,9 @@ export const ClientsOverview: FC = () => {
           <Title level={1} className={styles.pageTitle}>
             Clients
           </Title>
-          <Text className={styles.subtitle}>Manage the clients your projects are associated with</Text>
+          <Text className={styles.subtitle}>
+            Manage the clients your projects are associated with
+          </Text>
         </div>
         <Button type="primary" size="large" icon={<PlusOutlined />} onClick={handleCreateClick}>
           New Client

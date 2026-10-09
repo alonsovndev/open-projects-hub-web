@@ -44,7 +44,8 @@ const reviewResponse = {
 const jsonResponse = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
-const requestOf = (fetchMock: ReturnType<typeof vi.fn>): Request => fetchMock.mock.calls[0][0] as Request;
+const requestOf = (fetchMock: ReturnType<typeof vi.fn>): Request =>
+  fetchMock.mock.calls[0][0] as Request;
 
 describe("getClientReview", () => {
   beforeEach(() => {
@@ -57,7 +58,10 @@ describe("getClientReview", () => {
   });
 
   it("maps the API response to the review the page renders", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => jsonResponse(reviewResponse)));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => jsonResponse(reviewResponse))
+    );
 
     const review = await createTestStore()
       .dispatch(viewerApi.endpoints.getClientReview.initiate("PRJ-7K3M9XQ2"))
@@ -121,7 +125,9 @@ describe("getClientReview", () => {
     vi.stubGlobal("fetch", fetchMock);
     const store = createTestStore({ auth: { session, isBootstrapping: false } });
 
-    const result = await store.dispatch(viewerApi.endpoints.getClientReview.initiate("PRJ-AAAAAAAA"));
+    const result = await store.dispatch(
+      viewerApi.endpoints.getClientReview.initiate("PRJ-AAAAAAAA")
+    );
 
     expect(result.error).toMatchObject({ status: 404 });
     expect(store.getState().auth.session).not.toBeNull();

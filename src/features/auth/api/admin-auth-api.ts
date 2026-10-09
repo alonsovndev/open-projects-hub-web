@@ -130,7 +130,9 @@ export const adminAuthApi = baseApi.injectEndpoints({
           displayName: userData.fullName,
           email: userData.email,
           password: userData.password,
-          ...(userData.workspaceName?.trim() ? { workspaceName: userData.workspaceName.trim() } : {}),
+          ...(userData.workspaceName?.trim()
+            ? { workspaceName: userData.workspaceName.trim() }
+            : {}),
         },
       }),
       transformResponse: (response: RegisterApiResponse): RegisterResult => ({

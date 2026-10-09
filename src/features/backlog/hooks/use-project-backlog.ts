@@ -15,10 +15,7 @@ interface UseProjectBacklogReturn {
  * acceptance criteria, which the backlog view renders and the export is built from.
  */
 export const useProjectBacklog = (projectId: string): UseProjectBacklogReturn => {
-  const { data, isLoading, error } = useGetProjectBacklogQuery(
-    { projectId },
-    { skip: !projectId }
-  );
+  const { data, isLoading, error } = useGetProjectBacklogQuery({ projectId }, { skip: !projectId });
 
   return {
     stories: data?.stories ?? [],

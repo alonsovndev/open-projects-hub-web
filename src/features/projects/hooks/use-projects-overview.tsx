@@ -110,9 +110,13 @@ export const useProjectsOverview = () => {
           compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
           break;
         }
-        case "endDate":
-          compareValue = new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+        case "endDate": {
+          // Undated projects compare as the latest possible end date (last when ascending).
+          const endTime = (endDate?: string) =>
+            endDate ? new Date(endDate).getTime() : Number.MAX_SAFE_INTEGER;
+          compareValue = endTime(a.endDate) - endTime(b.endDate);
           break;
+        }
         case "lastUpdated":
           compareValue = new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();
           break;
