@@ -2,7 +2,6 @@ import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Result } from "antd";
 
-import { Footer } from "@/shared/components/layout/footer";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./unauthorized.module.scss";
@@ -20,7 +19,7 @@ export const UnauthorizedPage: FC = () => {
   };
 
   return (
-    <main className={styles.pageContainer}>
+    <div className={styles.pageContainer}>
       <div className={styles.contentWrapper}>
         <Result
           status="403"
@@ -36,9 +35,7 @@ export const UnauthorizedPage: FC = () => {
           }
         />
       </div>
-
-      <Footer />
-    </main>
+    </div>
   );
 };
 export default UnauthorizedPage;
