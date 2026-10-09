@@ -13,43 +13,16 @@ import {
   useGetApiKeysQuery,
   useGetCreditBalanceQuery,
 } from "@/features/settings/api/ai-providers-api";
+import { AI_PROVIDERS } from "@/shared/types/ai";
 import type { AiProvider, ProviderErrorDetail, RefinementProvider } from "@/shared/types/ai";
+import { getErrorMessage } from "@/shared/types/api";
+import { getRefinementErrorMessage } from "@/shared/utils/error-messages";
 import type { ProjectSummary } from "@/shared/types/domain";
 import {
   RAW_NOTES_MAX_LENGTH,
   RAW_NOTES_MIN_LENGTH,
   type GeneratedStory,
-  type RefinementFailure,
-  type RefinementFailureClass,
 } from "@/features/refinement/types";
-
-/**
- * Read the API's 502 refinement-failure body, which carries the notes back.
- *
- * Returns null for any other error shape so the caller can fall back to a generic
- * message rather than showing a retry button that would resubmit nothing.
- */
-const FAILURE_CLASSES: readonly RefinementFailureClass[] = [
-  "timeout",
-  "provider_error",
-  "invalid_response",
-];
-
-const toRefinementFailure = (error: unknown): RefinementFailure | null => {
-  if (!error || typeof error !== "object") return null;
-
-  // Only the documented 502 body carries preserved notes; anything else that happens to
-  // have a `rawNotes` field must not be allowed to drive the retry path.
-  const { status, data } = error as { status?: unknown; data?: unknown };
-  if (status !== 502 || !data || typeof data !== "object") return null;
-
-  const body = data as Partial<RefinementFailure>;
-  const isFailureClass = FAILURE_CLASSES.includes(body.failureClass as RefinementFailureClass);
-
-  return typeof body.rawNotes === "string" && typeof body.detail === "string" && isFailureClass
-    ? (body as RefinementFailure)
-    : null;
-};
 
 /**
  * Read the 422 body the API returns when a provider refuses a key.
@@ -64,7 +37,11 @@ const toProviderKeyError = (error: unknown): ProviderErrorDetail | null => {
   if (status !== 422 || !data || typeof data !== "object") return null;
 
   const body = data as ProviderErrorDetail;
-  return body.code === "API_KEY_INVALID" ? body : null;
+  return body.code === "API_KEY_INVALID" &&
+    typeof body.promptsKeyUpdate === "boolean" &&
+    AI_PROVIDERS.includes(body.provider as AiProvider)
+    ? body
+    : null;
 };
 
 /** True when the API refused the run because the free credits are gone (FR-010-03). */
@@ -201,7 +178,9 @@ export const useRefinement = () => {
       );
       setGeneratedProjectId(selectedProjectId);
       setRedactionCount(result.redactionCount ?? 0);
-      message.success(`Generated ${result.stories.length} stories successfully!`);
+      message.success(
+        `Generated ${result.stories.length} ${result.stories.length === 1 ? "story" : "stories"}.`
+      );
     } catch (error) {
       if (isCreditsExhausted(error)) {
         // Not shown as a generic failure: this one has a specific remedy, so it gets the
@@ -216,23 +195,25 @@ export const useRefinement = () => {
         return;
       }
 
-      const failure = toRefinementFailure(error);
+      const failureMessage = getRefinementErrorMessage(error);
 
-      if (failure) {
-        // The API preserved the input; put it back in the editor so Retry resubmits it.
-        setRawNotes(failure.rawNotes);
-        setGenerationError(failure.detail);
+      if (failureMessage) {
+        setGenerationError(failureMessage);
         return;
       }
 
-      setGenerationError("Failed to generate stories. Your notes were kept — please try again.");
-      console.error("Generate stories error:", error);
+      setGenerationError(
+        getErrorMessage(
+          error,
+          "We couldn't generate stories. Your notes were kept. Please try again."
+        )
+      );
     }
   };
 
   const handleGenerate = async () => {
     if (!selectedProjectId) {
-      message.error("Please select a project first");
+      message.error("Select a project first.");
       return;
     }
 
@@ -242,12 +223,12 @@ export const useRefinement = () => {
     }
 
     if (rawNotes.length < RAW_NOTES_MIN_LENGTH) {
-      message.error(`Please enter at least ${RAW_NOTES_MIN_LENGTH} characters of discovery notes`);
+      message.error(`Please enter at least ${RAW_NOTES_MIN_LENGTH} characters of discovery notes.`);
       return;
     }
 
     if (rawNotes.length > RAW_NOTES_MAX_LENGTH) {
-      message.error(`Discovery notes cannot exceed ${RAW_NOTES_MAX_LENGTH} characters`);
+      message.error(`Discovery notes cannot exceed ${RAW_NOTES_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -281,10 +262,9 @@ export const useRefinement = () => {
       const result = await approveStory({ projectId: generatedProjectId, ...content }).unwrap();
 
       setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
-      message.success(`Story "${result.title}" approved and added to backlog!`);
+      message.success(`Story "${result.title}" approved and added to the backlog.`);
     } catch (error) {
-      message.error("Failed to approve story. Please try again.");
-      console.error("Approve story error:", error);
+      message.error(getErrorMessage(error, "We couldn't approve the story. Please try again."));
     } finally {
       // The dialog stays open until the request settles, so its confirm button can show
       // progress and a second click cannot land while the first is in flight.
@@ -295,7 +275,7 @@ export const useRefinement = () => {
 
   const handleApproveAll = async () => {
     if (generatedStories.length === 0) {
-      message.warning("No stories to approve");
+      message.warning("There are no stories to approve.");
       return;
     }
 
@@ -309,13 +289,10 @@ export const useRefinement = () => {
       setGeneratedStories([]);
 
       message.success(
-        `Successfully approved ${result.approvedCount} ${
-          result.approvedCount === 1 ? "story" : "stories"
-        }!`
+        `Approved ${result.approvedCount} ${result.approvedCount === 1 ? "story" : "stories"}.`
       );
     } catch (error) {
-      message.error("Failed to approve all stories. Please try again.");
-      console.error("Approve all error:", error);
+      message.error(getErrorMessage(error, "We couldn't approve the stories. Please try again."));
     }
   };
 
@@ -335,7 +312,7 @@ export const useRefinement = () => {
 
     setIsEditModalOpen(false);
     setEditingStory(null);
-    message.success("Story updated successfully!");
+    message.success("Story updated.");
   };
 
   const handleCancelEdit = () => {
@@ -345,7 +322,7 @@ export const useRefinement = () => {
 
   const handleDelete = (storyId: string) => {
     setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
-    message.success("Draft discarded");
+    message.success("Draft discarded.");
   };
 
   return {

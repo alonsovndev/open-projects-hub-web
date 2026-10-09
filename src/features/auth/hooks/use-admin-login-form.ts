@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { Form, message } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -31,7 +32,7 @@ export const useAdminLoginForm = () => {
   const isSubmitEnabled = isEmailValid && passwordValue.length > 0 && !isLoading;
 
   const authError = useMemo(() => {
-    return (error as LoginErrorShape)?.data?.message ?? "";
+    return error ? getErrorMessage(error, "We couldn't sign you in. Please try again.") : "";
   }, [error]);
 
   // The API only reports this after the password matched, so offering the
@@ -62,7 +63,7 @@ export const useAdminLoginForm = () => {
       const nextError = error as LoginErrorShape;
       if (nextError?.data?.code === EMAIL_NOT_VERIFIED) return;
 
-      message.error(nextError?.data?.message ?? "Unable to sign in right now. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't sign you in. Please try again."));
     }
   };
 

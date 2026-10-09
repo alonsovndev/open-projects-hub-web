@@ -29,7 +29,7 @@ export const useTeam = () => {
         );
         return true;
       } catch (error) {
-        message.error(getErrorMessage(error, "Unable to add this person. Please try again."));
+        message.error(getErrorMessage(error, "We couldn't add this person. Please try again."));
         return false;
       }
     },
@@ -46,7 +46,9 @@ export const useTeam = () => {
             : `${member.displayName} is inactive. They can't sign in once their current session expires.`
         );
       } catch (error) {
-        message.error(getErrorMessage(error, "Unable to change this status. Please try again."));
+        message.error(
+          getErrorMessage(error, "We couldn't change this person's status. Please try again.")
+        );
       }
     },
     [setStatusMutation]
@@ -58,7 +60,7 @@ export const useTeam = () => {
         await removeMemberMutation(member.id).unwrap();
         message.success(`${member.displayName} was deleted. Their work moved to you.`);
       } catch (error) {
-        message.error(getErrorMessage(error, "Unable to delete this person. Please try again."));
+        message.error(getErrorMessage(error, "We couldn't delete this person. Please try again."));
       }
     },
     [removeMemberMutation]

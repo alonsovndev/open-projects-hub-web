@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Modal, message } from "antd";
 
+import { getErrorMessage } from "@/shared/types/api";
 import {
   useGetClientsQuery,
   useCreateClientMutation,
@@ -41,18 +42,21 @@ export const useClientsOverview = () => {
     try {
       if (editingClient) {
         await updateClient({ id: editingClient.id, data: values }).unwrap();
-        message.success("Client updated successfully!");
+        message.success("Client updated.");
       } else {
         await createClient(values).unwrap();
-        message.success("Client created successfully!");
+        message.success("Client created.");
       }
       setFormOpen(false);
       setEditingClient(null);
-    } catch {
+    } catch (error) {
       message.error(
-        editingClient
-          ? "Failed to update client. Please try again."
-          : "Failed to create client. Please try again."
+        getErrorMessage(
+          error,
+          editingClient
+            ? "We couldn't update the client. Please try again."
+            : "We couldn't create the client. Please try again."
+        )
       );
     }
   };
@@ -60,19 +64,18 @@ export const useClientsOverview = () => {
   const handleDeleteClient = (client: Client) => {
     setDeleteError(null);
     Modal.confirm({
-      title: "Delete Client",
-      content: `Delete "${client.name}"? This cannot be undone.`,
+      title: "Delete client",
+      content: `Delete "${client.name}" and their archived projects? This action cannot be undone.`,
       okText: "Delete",
       okButtonProps: { danger: true },
       cancelText: "Cancel",
       onOk: async () => {
         try {
           await deleteClient(client.id).unwrap();
-          message.success(`Client "${client.name}" deleted`);
+          message.success(`Client "${client.name}" deleted.`);
         } catch (error) {
-          const apiError = error as { data?: { message?: string } };
           setDeleteError(
-            apiError?.data?.message ?? `Failed to delete "${client.name}". Please try again.`
+            getErrorMessage(error, "We couldn't delete the client. Please try again.")
           );
         }
       },

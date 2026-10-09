@@ -88,7 +88,7 @@ describe("useSessionExpiryWarning", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
-      state: { message: "Your session has expired. Please log in again." },
+      state: { message: "Your session has expired. Please sign in again." },
     });
   });
 
@@ -100,7 +100,7 @@ describe("useSessionExpiryWarning", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
-      state: { message: "Your session has expired. Please log in again." },
+      state: { message: "Your session has expired. Please sign in again." },
     });
   });
 

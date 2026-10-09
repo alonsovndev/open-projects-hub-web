@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Typography, Select, Space, Button, Spin, Alert, message } from "antd";
 import { ArrowLeftOutlined, FileMarkdownOutlined } from "@ant-design/icons";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
 import { StoryList } from "@/features/backlog/components/story-list";
 import { useProjectBacklog } from "@/features/backlog/hooks/use-project-backlog";
@@ -59,9 +60,9 @@ export const ProjectBacklogPage: FC = () => {
   const handleDeleteStory = async (storyId: string) => {
     try {
       await deleteStory(storyId).unwrap();
-      message.success("Story deleted successfully");
-    } catch {
-      message.error("Failed to delete story. Please try again.");
+      message.success("Story deleted.");
+    } catch (error) {
+      message.error(getErrorMessage(error, "We couldn't delete the story. Please try again."));
     }
   };
 
@@ -69,8 +70,8 @@ export const ProjectBacklogPage: FC = () => {
     return (
       <div className={styles.pageContainer}>
         <Alert
-          message="Error Loading Stories"
-          description="Failed to load stories for this project. Please try again."
+          message="Couldn't load the stories"
+          description="We couldn't load this project's stories. Please try again."
           type="error"
           showIcon
         />

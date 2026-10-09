@@ -42,7 +42,7 @@ export const PasswordForm: FC<PasswordFormProps> = ({ saving, onSubmit }) => {
         <Form.Item
           label="Current Password"
           name="currentPassword"
-          rules={[{ required: true, message: "Please enter your current password" }]}
+          rules={[{ required: true, message: "Please enter your current password." }]}
         >
           <Input.Password size="large" placeholder="Enter current password" />
         </Form.Item>
@@ -51,8 +51,8 @@ export const PasswordForm: FC<PasswordFormProps> = ({ saving, onSubmit }) => {
           label="New Password"
           name="newPassword"
           rules={[
-            { required: true, message: "Please enter your new password" },
-            { min: 8, message: "Password must be at least 8 characters" },
+            { required: true, message: "Please enter your new password." },
+            { min: 8, message: "Password must be at least 8 characters." },
           ]}
         >
           <Input.Password size="large" placeholder="Enter new password" />
@@ -63,13 +63,13 @@ export const PasswordForm: FC<PasswordFormProps> = ({ saving, onSubmit }) => {
           name="confirmPassword"
           dependencies={["newPassword"]}
           rules={[
-            { required: true, message: "Please confirm your new password" },
+            { required: true, message: "Please confirm your new password." },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue("newPassword") === value) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error("Passwords do not match"));
+                return Promise.reject(new Error("Passwords do not match."));
               },
             }),
           ]}

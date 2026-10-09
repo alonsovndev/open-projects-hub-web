@@ -67,7 +67,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({ profile, saving, onSubmit })
           <Form.Item
             label="Display Name"
             name="displayName"
-            rules={[{ required: true, message: "Please enter your display name" }]}
+            rules={[{ required: true, message: "Please enter your display name." }]}
           >
             <Input size="large" placeholder="Enter your name" />
           </Form.Item>

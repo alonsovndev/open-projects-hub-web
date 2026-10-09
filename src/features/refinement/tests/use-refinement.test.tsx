@@ -141,15 +141,15 @@ describe("useRefinement", () => {
       expect(message.error).toHaveBeenCalled();
     });
 
-    it("restores the preserved notes and surfaces the error when the provider fails", async () => {
+    it("keeps local notes and shows safe guidance when the provider fails", async () => {
       mockGenerateStories.mockReturnValueOnce(
         rejected({
           status: 502,
           data: {
-            detail: "The AI provider took too long to respond.",
+            detail: "<SENSITIVE_PROVIDER_DETAIL>",
             failureClass: "timeout",
             provider: "gemini",
-            rawNotes: RAW_NOTES,
+            rawNotes: "<SENSITIVE_ECHOED_NOTES>",
           },
         })
       );
@@ -159,7 +159,10 @@ describe("useRefinement", () => {
       await generate(result);
 
       expect(result.current.rawNotes).toBe(RAW_NOTES);
-      expect(result.current.generationError).toContain("took too long");
+      expect(result.current.generationError).toBe(
+        "The AI provider took too long to respond. Your notes were kept. Try again."
+      );
+      expect(result.current.rawNotes).not.toContain("<SENSITIVE_ECHOED_NOTES>");
       expect(result.current.generatedStories).toEqual([]);
     });
 

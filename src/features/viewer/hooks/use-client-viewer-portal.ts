@@ -8,9 +8,8 @@ const RATE_LIMITED_STATUS = 429;
 
 const errorMessageFor = (status: unknown): string => {
   if (status === NOT_FOUND_STATUS) return "We couldn't find a project with that access code.";
-  if (status === RATE_LIMITED_STATUS)
-    return "Too many attempts. Please wait a minute and try again.";
-  return "Something went wrong while loading the project. Please try again.";
+  if (status === RATE_LIMITED_STATUS) return "Too many attempts. Please wait and try again.";
+  return "We couldn't load the project. Please try again.";
 };
 
 /** The URL is the state: `/viewer/:accessCode` is a shareable link to one project's review. */

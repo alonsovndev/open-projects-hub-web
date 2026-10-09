@@ -30,10 +30,12 @@ export const useWorkspace = () => {
           );
         }
 
-        message.success("Workspace renamed successfully");
+        message.success("Workspace renamed.");
         return true;
       } catch (error) {
-        message.error(getErrorMessage(error, "Unable to rename the workspace. Please try again."));
+        message.error(
+          getErrorMessage(error, "We couldn't rename the workspace. Please try again.")
+        );
         return false;
       }
     },

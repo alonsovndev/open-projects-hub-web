@@ -43,8 +43,8 @@ export const ClientFormModal: FC<ClientFormModalProps> = ({
       const values = await form.validateFields();
       await onSubmit(values);
       form.resetFields();
-    } catch (error) {
-      console.error("Form validation error:", error);
+    } catch {
+      return;
     }
   };
 
@@ -70,8 +70,8 @@ export const ClientFormModal: FC<ClientFormModalProps> = ({
           name="name"
           label="Client Name"
           rules={[
-            { required: true, message: "Please enter the client name" },
-            { max: 255, message: "Name must not exceed 255 characters" },
+            { required: true, message: "Please enter the client name." },
+            { max: 255, message: "Name must not exceed 255 characters." },
           ]}
         >
           <Input placeholder="Enter client name" size="large" />
@@ -84,7 +84,7 @@ export const ClientFormModal: FC<ClientFormModalProps> = ({
         <Form.Item
           name="email"
           label="Email"
-          rules={[{ type: "email", message: "Please enter a valid email address" }]}
+          rules={[{ type: "email", message: "Please enter a valid email address." }]}
         >
           <Input placeholder="Enter email address" size="large" />
         </Form.Item>

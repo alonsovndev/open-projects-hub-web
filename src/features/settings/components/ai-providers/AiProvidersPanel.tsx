@@ -40,7 +40,11 @@ export const AiProvidersPanel: FC = () => {
   if (error) {
     return (
       <div className={styles.aiProviders}>
-        <Alert type="error" showIcon message="Could not load your AI settings. Please retry." />
+        <Alert
+          type="error"
+          showIcon
+          message="We couldn't load your AI settings. Please try again."
+        />
       </div>
     );
   }
@@ -80,7 +84,7 @@ export const AiProvidersPanel: FC = () => {
             className={styles.creditCopy}
             style={{ marginBottom: 24 }}
             message="No credits remaining"
-            description="Add your own API key below to continue unlimited refinements."
+            description="Add your own API key below to continue. Your provider's usage limits and charges apply."
           />
         )}
 

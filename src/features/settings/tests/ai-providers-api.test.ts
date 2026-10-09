@@ -167,10 +167,12 @@ describe("ai providers api", () => {
     const error = (result as { error: { status: number; data: Record<string, unknown> } }).error;
     expect(error.status).toBe(422);
     expect(error.data.promptsKeyUpdate).toBe(true);
-    expect(error.data.message).toContain("Check your key in Settings");
+    expect(error.data.message).toBe(
+      "Your AI provider rejected the API key. Update it in Settings and try again."
+    );
   });
 
-  it("does not lose the message for errors that carry no structured fields", async () => {
+  it("replaces unknown server messages with safe service guidance", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => jsonResponse({ detail: "Something broke" }, 500))
@@ -182,6 +184,8 @@ describe("ai providers api", () => {
     );
 
     const error = (result as { error?: { data: { message: string } } }).error;
-    expect(error?.data.message).toBe("Something broke");
+    expect(error?.data.message).toBe(
+      "The service is temporarily unavailable. Please try again later."
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -35,12 +36,11 @@ export const useRegisterForm = () => {
   const handleSubmit = async (values: AdminRegisterValues) => {
     try {
       const result = await register(values).unwrap();
-      message.success("Account created! Check your email for a verification code.");
+      message.success("Account created. Check your email for a verification code.");
       const state: AuthLocationState = { email: values.email, codeExpiresAt: result.codeExpiresAt };
       navigate("/verify-email", { state });
     } catch (error) {
-      const err = error as { data?: { message?: string } };
-      message.error(err?.data?.message ?? "Unable to create account. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't create your account. Please try again."));
     }
   };
 
@@ -49,7 +49,7 @@ export const useRegisterForm = () => {
     { min: 2, message: "Name must be at least 2 characters." },
   ];
 
-  const workspaceNameFieldRules = [{ max: 100, message: "Keep it under 100 characters." }];
+  const workspaceNameFieldRules = [{ max: 100, message: "Use 100 characters or fewer." }];
 
   const emailFieldRules = [
     { required: true, message: "Please enter your work email address." },

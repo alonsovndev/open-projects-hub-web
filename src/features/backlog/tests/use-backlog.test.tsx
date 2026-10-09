@@ -300,7 +300,7 @@ describe("useBacklog", () => {
 
       await waitFor(() => {
         expect(mockDeleteStoryFn).toHaveBeenCalledWith("story-1");
-        expect(message.success).toHaveBeenCalledWith("Story deleted successfully");
+        expect(message.success).toHaveBeenCalledWith("Story deleted.");
       });
     });
 
@@ -317,7 +317,9 @@ describe("useBacklog", () => {
       });
 
       await waitFor(() => {
-        expect(message.error).toHaveBeenCalledWith("Failed to delete story. Please try again.");
+        expect(message.error).toHaveBeenCalledWith(
+          "We couldn't delete the story. Please try again."
+        );
       });
 
       consoleErrorSpy.mockRestore();
@@ -340,7 +342,7 @@ describe("useBacklog", () => {
         await result.current.handleExportMarkdown();
       });
 
-      expect(message.warning).toHaveBeenCalledWith("Select a project to export its backlog");
+      expect(message.warning).toHaveBeenCalledWith("Select a project to export its backlog.");
       expect(mockExportFn).not.toHaveBeenCalled();
     });
 
@@ -438,7 +440,7 @@ describe("useBacklog", () => {
 
     it("should warn but still deliver the file when the scope is empty", async () => {
       mockExportFn.mockReturnValue(
-        exportResult({ storyCount: 0, warning: "No approved stories match this scope." })
+        exportResult({ storyCount: 0, warning: "<SENSITIVE_EXPORT_WARNING>" })
       );
       const { result } = renderHook(() => useBacklog());
 
@@ -452,11 +454,16 @@ describe("useBacklog", () => {
       });
 
       expect(anchor.click).toHaveBeenCalled();
-      expect(message.warning).toHaveBeenCalledWith("No approved stories match this scope.");
+      expect(message.warning).toHaveBeenCalledWith(
+        "No approved stories match this scope. An empty template was downloaded."
+      );
       expect(message.success).not.toHaveBeenCalled();
+      expect(JSON.stringify(vi.mocked(message.warning).mock.calls)).not.toContain(
+        "<SENSITIVE_EXPORT_WARNING>"
+      );
     });
 
-    it("should surface the server message when the export is refused", async () => {
+    it("should show safe permission guidance when the export is refused", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       mockExportFn.mockReturnValue({
         unwrap: () =>
@@ -472,7 +479,7 @@ describe("useBacklog", () => {
         await result.current.handleExportMarkdown();
       });
 
-      expect(message.error).toHaveBeenCalledWith("Insufficient permissions");
+      expect(message.error).toHaveBeenCalledWith("You don't have permission to do this.");
 
       consoleErrorSpy.mockRestore();
     });
@@ -490,7 +497,9 @@ describe("useBacklog", () => {
         await result.current.handleExportMarkdown();
       });
 
-      expect(message.error).toHaveBeenCalledWith("Unable to export the backlog. Please try again.");
+      expect(message.error).toHaveBeenCalledWith(
+        "We couldn't export the backlog. Please try again."
+      );
 
       consoleErrorSpy.mockRestore();
     });

@@ -130,7 +130,7 @@ export const RefinementPage: FC = () => {
           showIcon
           className={styles.disclaimerAlert}
           message="No credits remaining"
-          description="Add your own API key to continue unlimited refinements."
+          description="Add your own API key to continue. Your provider's usage limits and charges apply."
           action={
             <Link to="/settings">
               <Button size="small" type="primary">
@@ -169,8 +169,8 @@ export const RefinementPage: FC = () => {
           </Button>,
         ]}
       >
-        You have used all your free refinements. Add your own API key to continue unlimited
-        refinements.
+        You have used all your free refinements. Add your own API key to continue. Your provider's
+        usage limits and charges apply.
       </Modal>
 
       <Modal

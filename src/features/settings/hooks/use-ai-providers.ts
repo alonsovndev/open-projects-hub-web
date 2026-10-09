@@ -33,12 +33,13 @@ export const useAiProviders = () => {
     async (provider: AiProvider, apiKey: string) => {
       try {
         await saveKey({ provider, apiKey }).unwrap();
-        message.success("API key saved successfully");
+        message.success("API key saved.");
       } catch (err) {
-        // The backend's message already names the provider and the corrective action
-        // (FR-010-10), so it is shown as-is rather than replaced with a generic string.
         message.error(
-          getErrorMessage(err, `Could not save your ${AI_PROVIDER_LABELS[provider]} key.`)
+          getErrorMessage(
+            err,
+            `We couldn't save your ${AI_PROVIDER_LABELS[provider]} key. Please try again.`
+          )
         );
         throw err;
       }
@@ -50,10 +51,13 @@ export const useAiProviders = () => {
     async (provider: AiProvider) => {
       try {
         await deleteKey(provider).unwrap();
-        message.success(`${AI_PROVIDER_LABELS[provider]} API key deleted`);
+        message.success(`${AI_PROVIDER_LABELS[provider]} API key deleted.`);
       } catch (err) {
         message.error(
-          getErrorMessage(err, `Could not delete your ${AI_PROVIDER_LABELS[provider]} key.`)
+          getErrorMessage(
+            err,
+            `We couldn't delete your ${AI_PROVIDER_LABELS[provider]} key. Please try again.`
+          )
         );
         throw err;
       }
@@ -71,11 +75,16 @@ export const useAiProviders = () => {
               "Consider upgrading your plan or adding another provider."
           );
         } else {
-          message.success(`${AI_PROVIDER_LABELS[provider]} API key is valid`);
+          message.success(`${AI_PROVIDER_LABELS[provider]} API key is valid.`);
         }
         return result;
       } catch (err) {
-        message.error(getErrorMessage(err, `Could not reach ${AI_PROVIDER_LABELS[provider]}.`));
+        message.error(
+          getErrorMessage(
+            err,
+            `We couldn't check your ${AI_PROVIDER_LABELS[provider]} key. Please try again.`
+          )
+        );
         throw err;
       }
     },

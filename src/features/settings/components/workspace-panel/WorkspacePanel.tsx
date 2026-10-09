@@ -40,8 +40,8 @@ export const WorkspacePanel: FC = () => {
             label="Workspace Name"
             name="name"
             rules={[
-              { required: true, message: "Please enter a workspace name" },
-              { max: 100, message: "Keep it under 100 characters." },
+              { required: true, message: "Please enter a workspace name." },
+              { max: 100, message: "Use 100 characters or fewer." },
             ]}
           >
             <Input size="large" placeholder="Enter a new name for your workspace" maxLength={100} />

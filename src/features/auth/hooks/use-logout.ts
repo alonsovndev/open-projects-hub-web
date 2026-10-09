@@ -20,7 +20,7 @@ export const useLogout = () => {
       logoutRequest({ refreshToken });
     }
     dispatch(clearAdminSessionState());
-    message.success("Logged out successfully");
+    message.success("Signed out.");
     navigate("/login");
   }, [dispatch, navigate, refreshToken, logoutRequest]);
 

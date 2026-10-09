@@ -70,7 +70,7 @@ describe("useCreateProject", () => {
     // After completion
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
-      expect(message.success).toHaveBeenCalledWith("Project created successfully!");
+      expect(message.success).toHaveBeenCalledWith("Project created.");
       expect(mockNavigate).toHaveBeenCalledWith("/projects");
     });
   });
@@ -137,13 +137,17 @@ describe("useCreateProject", () => {
       await result.current.handleSubmit(formData);
 
       await waitFor(() =>
-        expect(message.error).toHaveBeenCalledWith("A project with code 'TEST' already exists")
+        expect(message.error).toHaveBeenCalledWith(
+          "A project with this code already exists. Choose a different code."
+        )
       );
       expect(result.current.limitError).toBeNull();
     });
 
     it("keeps the limit message for active project limit conflicts", async () => {
-      respondWithConflict("Maximum of 3 active projects reached");
+      respondWithConflict(
+        "Active project limit reached (3). Archive a project before creating or reactivating."
+      );
       const { result } = renderHook(() => useCreateProject(), { wrapper });
 
       await result.current.handleSubmit(formData);

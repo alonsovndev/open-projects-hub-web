@@ -34,7 +34,7 @@ export const VerifyEmailForm: FC = () => {
             type="warning"
             showIcon
             className={styles.formItem}
-            message="We don't know which email to verify"
+            message="Start by registering or signing in"
             description={
               <>
                 Please <Link to="/login">sign in</Link> with the account you registered, or{" "}

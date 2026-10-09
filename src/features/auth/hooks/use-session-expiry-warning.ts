@@ -55,7 +55,7 @@ export const useSessionExpiryWarning = () => {
       setIsWarningVisible(false);
       dispatch(clearAdminSessionState());
       const state: AuthLocationState = {
-        message: "Your session has expired. Please log in again.",
+        message: "Your session has expired. Please sign in again.",
       };
       navigate("/login", { state });
     };

@@ -42,8 +42,8 @@ export const SettingsPage: FC = () => {
     return (
       <div className={styles.pageContainer}>
         <Alert
-          message="Error Loading Settings"
-          description="Failed to load your profile. Please try again."
+          message="Couldn't load your settings"
+          description="We couldn't load your profile. Please try again."
           type="error"
           showIcon
         />

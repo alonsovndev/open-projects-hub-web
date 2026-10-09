@@ -69,7 +69,7 @@ const StoryListComponent: FC<StoryListProps> = ({ stories, onDelete, canManage =
               {canManage && (
                 <Popconfirm
                   title="Delete story"
-                  description="Are you sure you want to delete this story?"
+                  description="Delete this story? This action cannot be undone."
                   onConfirm={() => onDelete(story.id)}
                   okText="Yes"
                   cancelText="No"

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { Form, message } from "antd";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -53,11 +54,10 @@ export const useResetPasswordForm = () => {
   const handleSubmit = async (values: ResetPasswordValues) => {
     try {
       await resetPassword({ ...values, email }).unwrap();
-      message.success("Password reset successfully! Please sign in.");
+      message.success("Password reset. Please sign in.");
       navigate("/login");
     } catch (error) {
-      const err = error as { data?: { message?: string } };
-      message.error(err?.data?.message ?? "Unable to reset password. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't reset your password. Please try again."));
     }
   };
 
@@ -65,15 +65,16 @@ export const useResetPasswordForm = () => {
     if (!email) return;
     try {
       await resendResetCode({ email }).unwrap();
-      message.success("A new code has been sent to your email.");
+      message.success(
+        "If an account exists for this email, a new reset code has been sent. Check your email."
+      );
     } catch (error) {
-      const err = error as { data?: { message?: string } };
-      message.error(err?.data?.message ?? "Unable to resend the code right now.");
+      message.error(getErrorMessage(error, "We couldn't send a new code. Please try again."));
     }
   };
 
   const codeFieldRules = [
-    { required: true, message: "Please enter the 6-digit code from your email." },
+    { required: true, message: "Please enter the 6-character code from your email." },
     { len: 6, message: "The code must be 6 characters." },
   ];
 

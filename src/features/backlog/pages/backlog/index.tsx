@@ -68,8 +68,8 @@ export const BacklogPage: FC = () => {
 
       {error ? (
         <Alert
-          message="Error Loading Backlog"
-          description="Failed to load backlog stories. Please try again."
+          message="Couldn't load the backlog"
+          description="We couldn't load the backlog. Please try again."
           type="error"
           showIcon
           className={styles.errorAlert}
