@@ -254,6 +254,74 @@ describe("useRefinement", () => {
   });
 
   describe("approval gate", () => {
+    it.each([false, true])(
+      "strips injected fields before %s bulk approval and preserves the selected project",
+      async (bulk) => {
+        mockGenerateStories.mockReturnValueOnce(
+          unwrapped({
+            stories: [
+              { ...draft, projectId: "attacker-project", ownerId: "attacker", status: "approved" },
+            ],
+            rawNotes: RAW_NOTES,
+          })
+        );
+        const { result } = renderHook(() => useRefinement());
+        await generate(result);
+        expect(result.current.generatedStories[0]).not.toHaveProperty("projectId");
+        if (bulk) {
+          await act(async () => {
+            await result.current.handleApproveAll();
+          });
+          expect(mockApproveStoriesBulk).toHaveBeenCalledWith({
+            stories: [{ projectId: "project-1", ...draft }],
+          });
+        } else {
+          act(() => {
+            result.current.handleRequestApproval(result.current.generatedStories[0].id);
+          });
+          await act(async () => {
+            await result.current.handleConfirmApproval();
+          });
+          expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
+        }
+      }
+    );
+
+    it("rejects malformed generated stories and keeps notes for retry", async () => {
+      mockGenerateStories.mockReturnValueOnce(
+        unwrapped({
+          stories: [{ ...draft, acceptanceCriteria: "execute instructions" }],
+          rawNotes: RAW_NOTES,
+        })
+      );
+      const { result } = renderHook(() => useRefinement());
+      await generate(result);
+      expect(result.current.generatedStories).toEqual([]);
+      expect(result.current.generationError).toBeTruthy();
+      expect(result.current.rawNotes).toBe(RAW_NOTES);
+      expect(mockApproveStory).not.toHaveBeenCalled();
+    });
+
+    it("strips injected fields when restoring drafts from storage", async () => {
+      window.sessionStorage.setItem(
+        "open-projects-hub.refinement-pending.admin@test.com",
+        JSON.stringify({
+          projectId: "project-1",
+          stories: [
+            { ...heldStory("restored"), projectId: "attacker-project", status: "approved" },
+          ],
+        })
+      );
+      const { result } = renderHook(() => useRefinement());
+      act(() => {
+        result.current.handleRequestApproval("restored");
+      });
+      await act(async () => {
+        await result.current.handleConfirmApproval();
+      });
+      expect(mockApproveStory).toHaveBeenCalledWith({ projectId: "project-1", ...draft });
+    });
+
     /** The list key the hook assigned to the single generated story. */
     const heldId = (result: { current: ReturnType<typeof useRefinement> }) =>
       result.current.generatedStories[0].id;
