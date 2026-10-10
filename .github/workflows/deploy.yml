@@ -1,0 +1,72 @@
+name: deploy
+
+# Publishes the tagged build to the S3 bucket behind CloudFront (open-projects-hub-infra).
+# Trigger: push a tag vX.Y.Z, or run manually from a tag ref to redeploy it.
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      WEB_BUCKET: ${{ vars.WEB_BUCKET }}
+      DISTRIBUTION_ID: ${{ vars.DISTRIBUTION_ID }}
+    steps:
+      - name: Require a vX.Y.Z tag
+        run: |
+          if [[ "$GITHUB_REF_TYPE" != tag || ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Run this workflow from a vX.Y.Z tag (got $GITHUB_REF_TYPE $GITHUB_REF_NAME)." >&2
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      # .env.production leaves VITE_API_BASE_URL empty: the app calls /v1 on its own CloudFront origin.
+      - run: npm run build
+
+      - name: Drop bundle report
+        run: rm -f dist/stats.html
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Hashed assets first so index.html never points at a file that is not uploaded yet.
+      # Old hashes are kept: browsers holding a cached index.html still request them.
+      - name: Upload hashed assets
+        run: |
+          aws s3 sync dist/assets "s3://$WEB_BUCKET/assets" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      - name: Upload index.html and public files
+        run: |
+          aws s3 sync dist "s3://$WEB_BUCKET" --exclude "assets/*" --delete \
+            --cache-control "no-cache"
+
+      - name: Invalidate CloudFront
+        run: |
+          invalidation_id=$(aws cloudfront create-invalidation \
+            --distribution-id "$DISTRIBUTION_ID" --paths "/*" \
+            --query Invalidation.Id --output text)
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$DISTRIBUTION_ID" --id "$invalidation_id"
