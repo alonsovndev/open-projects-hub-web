@@ -71,7 +71,7 @@ describe("useLogout", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 
-  it("sends the revoke request with the access token even though the session is cleared first", async () => {
+  it("revokes the cookie session without exposing credentials after local sign-out", async () => {
     const fetchSpy = vi
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(new Response(JSON.stringify({ message: "ok" }), { status: 200 }));
@@ -82,9 +82,7 @@ describe("useLogout", () => {
       },
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     });
-    store.dispatch(
-      setAdminSession({ session: { ...mockSession, refreshToken: "mock-refresh-456" } })
-    );
+    store.dispatch(setAdminSession({ session: mockSession }));
     const wrapper = ({ children }: { children: ReactNode }) => (
       <BrowserRouter>
         <Provider store={store}>{children}</Provider>
@@ -98,8 +96,11 @@ describe("useLogout", () => {
 
     await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
     const request = fetchSpy.mock.calls[0][0] as Request;
-    expect(request.headers.get("Authorization")).toBe("Bearer mock-token-123");
-    expect(await request.json()).toEqual({ refreshToken: "mock-refresh-456" });
+    expect(request.credentials).toBe("include");
+    expect(request.headers.get("X-Session-Mode")).toBe("cookie");
+    expect(request.headers.get("Authorization")).toBeNull();
+    expect(await request.text()).toBe("");
+    expect(store.getState().auth.session).toBeNull();
     fetchSpy.mockRestore();
   });
 });

@@ -4,8 +4,7 @@ import { message } from "antd";
 import { useAppDispatch } from "@/app/store/hooks";
 import { useUpdateWorkspaceNameMutation } from "@/features/settings/api/workspace-api";
 import { useAuth } from "@/features/auth/hooks/use-auth";
-import { sessionStorage } from "@/features/auth/model/session-storage";
-import { setAdminSession } from "@/features/auth/state/admin-auth-slice";
+import { workspaceUpdated } from "@/features/auth/state/admin-auth-slice";
 import { getErrorMessage } from "@/shared/types/api";
 
 export const useWorkspace = () => {
@@ -18,17 +17,7 @@ export const useWorkspace = () => {
       try {
         const renamedWorkspace = await updateWorkspaceNameMutation({ name }).unwrap();
 
-        // The sider renders the workspace name off the auth session, so a
-        // successful rename must patch it there too — reusing the login
-        // action re-persists the session to the correct storage.
-        if (session) {
-          dispatch(
-            setAdminSession({
-              session: { ...session, workspace: renamedWorkspace },
-              rememberMe: sessionStorage.isRemembered(),
-            })
-          );
-        }
+        if (session) dispatch(workspaceUpdated(renamedWorkspace));
 
         message.success("Workspace renamed.");
         return true;

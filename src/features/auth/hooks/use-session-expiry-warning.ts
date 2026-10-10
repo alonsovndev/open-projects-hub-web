@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
-import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
+import { useLogoutMutation, useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import { notifySessionChange } from "@/features/auth/model/session-coordinator";
+import { markSignedOut } from "@/features/auth/model/sign-out-intent";
 import type { AuthLocationState } from "@/features/auth/types";
 
 const WARNING_LEAD_MS = 5 * 60 * 1000;
@@ -41,6 +42,7 @@ export const useSessionExpiryWarning = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [refreshToken, { isLoading: isExtending }] = useRefreshTokenMutation();
+  const [logoutRequest] = useLogoutMutation();
   const [isWarningVisible, setIsWarningVisible] = useState(false);
 
   const sessionExpiresAt = session?.sessionExpiresAt;
@@ -52,8 +54,11 @@ export const useSessionExpiryWarning = () => {
     }
 
     const expireSession = () => {
+      markSignedOut();
       setIsWarningVisible(false);
       dispatch(clearAdminSessionState());
+      notifySessionChange();
+      void logoutRequest();
       const state: AuthLocationState = {
         message: "Your session has expired. Please sign in again.",
       };
@@ -75,20 +80,19 @@ export const useSessionExpiryWarning = () => {
       cancelWarn();
       cancelExpire();
     };
-  }, [sessionExpiresAt, dispatch, navigate]);
+  }, [sessionExpiresAt, dispatch, navigate, logoutRequest]);
 
   const extendSession = useCallback(async () => {
-    if (!session?.refreshToken) return;
+    if (!session) return;
 
     try {
-      const response = await refreshToken({ refreshToken: session.refreshToken }).unwrap();
-      applyRefreshedSession(dispatch, session, response);
+      await refreshToken().unwrap();
       setIsWarningVisible(false);
     } catch {
       // A failed refresh means the session can't be extended; the expiry
       // timer above will fire on its own and redirect to login.
     }
-  }, [session, refreshToken, dispatch]);
+  }, [session, refreshToken]);
 
   return {
     isWarningVisible,

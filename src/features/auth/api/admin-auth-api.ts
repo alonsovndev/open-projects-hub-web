@@ -9,28 +9,16 @@ import type {
   RegisterResult,
   VerifyEmailValues,
   ResetPasswordValues,
-  AdminSession,
-  UserRole,
-  WorkspaceSummary,
 } from "@/features/auth/types";
 
-export interface AdminLoginApiResponse {
-  token?: string;
-  accessToken?: string;
-  refreshToken?: string;
-  sessionExpiresAt?: string;
-  email?: string;
-  displayName?: string;
-  loggedInAt?: string;
-  role?: UserRole;
-  user?: {
-    email?: string;
-    displayName?: string;
-    name?: string;
-    role?: UserRole;
-    workspace?: WorkspaceSummary | null;
-  };
-}
+import {
+  mapAdminSession,
+  type AdminLoginApiResponse,
+} from "@/features/auth/model/map-admin-session";
+export {
+  mapAdminSession,
+  type AdminLoginApiResponse,
+} from "@/features/auth/model/map-admin-session";
 
 interface MessageResponse {
   message: string;
@@ -43,16 +31,6 @@ interface RegisterApiResponse {
   codeExpiresAt: string;
 }
 
-interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  sessionExpiresAt?: string;
-}
-
 /** forgotPassword, resendResetCode and resendVerification all just POST { email } to their own endpoint. */
 const postEmail =
   (endpoint: string) =>
@@ -61,45 +39,6 @@ const postEmail =
     method: "POST",
     body: data,
   });
-
-const getDisplayNameFromEmail = (email: string) => {
-  const nameFromEmail = email.split("@")[0] ?? "admin";
-
-  return nameFromEmail.replace(/[._-]+/g, " ");
-};
-
-/** Exported for tests: this is the single point at which a role enters the app. */
-export const mapAdminSession = (
-  response: AdminLoginApiResponse,
-  fallbackEmail: string
-): AdminSession => {
-  const normalizedEmail = (response.user?.email ?? response.email ?? fallbackEmail)
-    .trim()
-    .toLowerCase();
-  const token = response.token ?? response.accessToken;
-
-  if (!token) {
-    throw new Error("Authentication response did not include a token.");
-  }
-
-  return {
-    token,
-    refreshToken: response.refreshToken,
-    sessionExpiresAt: response.sessionExpiresAt,
-    email: normalizedEmail,
-    displayName:
-      response.user?.displayName ??
-      response.user?.name ??
-      response.displayName ??
-      getDisplayNameFromEmail(normalizedEmail),
-    loggedInAt: response.loggedInAt ?? new Date().toISOString(),
-    // Every role check in the app reads this one field, so an absent role must fall back
-    // to the least privilege rather than the most: a malformed response should not
-    // hand someone the Admin's team controls.
-    role: response.user?.role ?? response.role ?? "member",
-    workspace: response.user?.workspace ?? undefined,
-  };
-};
 
 export const adminAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -152,12 +91,8 @@ export const adminAuthApi = baseApi.injectEndpoints({
       query: postEmail(adminAuthConfig.resendVerificationEndpoint),
     }),
 
-    refreshToken: builder.mutation<RefreshTokenResponse, RefreshTokenRequest>({
-      query: (data) => ({
-        url: adminAuthConfig.refreshEndpoint,
-        method: "POST",
-        body: data,
-      }),
+    refreshToken: builder.mutation<AdminLoginApiResponse, void>({
+      query: () => ({ url: adminAuthConfig.refreshEndpoint, method: "POST" }),
     }),
 
     forgotPassword: builder.mutation<MessageResponse, ForgotPasswordValues>({
@@ -176,11 +111,11 @@ export const adminAuthApi = baseApi.injectEndpoints({
       query: postEmail(adminAuthConfig.resendResetCodeEndpoint),
     }),
 
-    logout: builder.mutation<MessageResponse, RefreshTokenRequest>({
-      query: (data) => ({
+    logout: builder.mutation<MessageResponse, void | { retryPending: true }>({
+      query: (options) => ({
         url: adminAuthConfig.logoutEndpoint,
         method: "POST",
-        body: data,
+        onlyIfSignedOut: options?.retryPending === true,
       }),
     }),
   }),

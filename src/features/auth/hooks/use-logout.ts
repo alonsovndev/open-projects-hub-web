@@ -1,28 +1,26 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { useAppDispatch } from "@/app/store/hooks";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
 import { useLogoutMutation } from "@/features/auth/api/admin-auth-api";
+import { notifySessionChange } from "@/features/auth/model/session-coordinator";
+import { sessionStorage } from "@/features/auth/model/session-storage";
+import { markSignedOut } from "@/features/auth/model/sign-out-intent";
 
 export const useLogout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const refreshToken = useAppSelector((state) => state.auth.session?.refreshToken);
   const [logoutRequest] = useLogoutMutation();
-
   const logout = useCallback(() => {
-    // Best-effort server-side revocation — logout must feel instant to the
-    // user even if this call is slow or fails, so it isn't awaited. The
-    // access token still expires naturally on its own short TTL either way.
-    if (refreshToken) {
-      logoutRequest({ refreshToken });
-    }
+    markSignedOut();
     dispatch(clearAdminSessionState());
+    sessionStorage.clear();
+    notifySessionChange();
+    // Cookie revocation is queued behind any refresh already in flight.
+    void logoutRequest();
     message.success("Signed out.");
     navigate("/login");
-  }, [dispatch, navigate, refreshToken, logoutRequest]);
-
+  }, [dispatch, navigate, logoutRequest]);
   return { logout };
 };
