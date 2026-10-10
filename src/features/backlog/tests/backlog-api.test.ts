@@ -68,7 +68,7 @@ describe("exportProjectBacklog", () => {
         exportResponse("# Empty\n", {
           "Content-Disposition": 'attachment; filename="empty-backlog.md"',
           "X-Export-Story-Count": "0",
-          "X-Export-Warning": "No approved stories match this scope.",
+          "X-Export-Warning": "<SENSITIVE_EXPORT_WARNING>",
         })
       )
     );
@@ -128,7 +128,7 @@ describe("exportProjectBacklog", () => {
     expect("error" in result).toBe(true);
     const error = (result as { error: { status: number; data: { message: string } } }).error;
     expect(error.status).toBe(403);
-    expect(error.data.message).toBe("Insufficient permissions");
+    expect(error.data.message).toBe("You don't have permission to do this.");
 
     vi.unstubAllGlobals();
   });

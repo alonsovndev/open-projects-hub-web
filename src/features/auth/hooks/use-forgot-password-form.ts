@@ -1,6 +1,7 @@
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import { getErrorMessage } from "@/shared/types/api";
 import type { AuthLocationState, ForgotPasswordValues } from "@/features/auth/types";
 import { useForgotPasswordMutation } from "@/features/auth/api/admin-auth-api";
 
@@ -12,12 +13,13 @@ export const useForgotPasswordForm = () => {
   const handleSubmit = async (values: ForgotPasswordValues) => {
     try {
       await forgotPassword(values).unwrap();
-      message.success("Reset code sent! Check your email for a 6-digit code.");
+      message.success(
+        "If an account exists for this email, a reset code has been sent. Check your email."
+      );
       const state: AuthLocationState = { email: values.email };
       navigate("/reset-password", { state });
     } catch (error) {
-      const err = error as { data?: { message?: string } };
-      message.error(err?.data?.message ?? "Unable to send the reset code. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't send a reset code. Please try again."));
     }
   };
 

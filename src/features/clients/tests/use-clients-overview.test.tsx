@@ -60,7 +60,7 @@ describe("useClientsOverview", () => {
     expect(result.current.editingClient).toEqual(client);
   });
 
-  it("should surface the real backend reason inline when deleting a client with active projects", async () => {
+  it("should show safe actionable guidance inline when deleting a client with active projects", async () => {
     const result = await renderClientsHook();
     // Fixture "c1" (Metro Health) has active projects — see src/mocks/handlers/clients.ts
     const clientWithActiveProjects = result.current.clients.find((c) => c.id === "c1")!;
@@ -71,7 +71,7 @@ describe("useClientsOverview", () => {
 
     await waitFor(() => {
       expect(result.current.deleteError).toBe(
-        "Cannot delete client with active projects. Archive or reassign projects first."
+        "Archive or reassign this client's active projects before deleting them."
       );
     });
   });

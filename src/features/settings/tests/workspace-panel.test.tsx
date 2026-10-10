@@ -45,7 +45,7 @@ describe("WorkspacePanel", { timeout: 20_000 }, () => {
     await user.type(input, "Acme Studio");
     await user.click(screen.getByRole("button", { name: "Rename Workspace" }));
 
-    expect(await screen.findByText("Workspace renamed successfully")).toBeInTheDocument();
+    expect(await screen.findByText("Workspace renamed.")).toBeInTheDocument();
     // The sider renders the name off the auth session — it must be patched in place.
     expect(store.getState().auth.session?.workspace?.name).toBe("Acme Studio");
   });
@@ -67,9 +67,7 @@ describe("WorkspacePanel", { timeout: 20_000 }, () => {
     await user.type(input, "Acme Studio");
     await user.click(screen.getByRole("button", { name: "Rename Workspace" }));
 
-    expect(
-      await screen.findByText("Only the workspace Admin can rename the workspace")
-    ).toBeInTheDocument();
+    expect(await screen.findByText("You don't have permission to do this.")).toBeInTheDocument();
     // A failed rename must not wipe what the Admin typed.
     expect(screen.getByLabelText("Workspace Name")).toHaveValue("Acme Studio");
   });

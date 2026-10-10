@@ -1,5 +1,6 @@
 import { message } from "antd";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { useExportProjectBacklogMutation } from "@/features/backlog/api/backlog-api";
 import { downloadBlob } from "@/shared/utils/download-file";
 
@@ -19,12 +20,12 @@ export const useBacklogExport = (): UseBacklogExportReturn => {
 
   const exportBacklog = async (projectId: string | null) => {
     if (!projectId) {
-      message.warning("Select a project to export its backlog");
+      message.warning("Select a project to export its backlog.");
       return;
     }
 
     try {
-      const { blob, filename, storyCount, warning } = await exportProjectBacklog({
+      const { blob, filename, storyCount } = await exportProjectBacklog({
         projectId,
       }).unwrap();
 
@@ -34,15 +35,13 @@ export const useBacklogExport = (): UseBacklogExportReturn => {
 
       // Only an explicit zero is empty; an absent count is unknown and must not warn.
       if (storyCount === 0) {
-        message.warning(warning ?? "No approved stories to export");
+        message.warning("No approved stories match this scope. An empty template was downloaded.");
         return;
       }
 
       message.success(`Exported ${filename}`);
     } catch (error) {
-      console.error("Failed to export backlog:", error);
-      const failure = error as { data?: { message?: string } };
-      message.error(failure?.data?.message ?? "Unable to export the backlog. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't export the backlog. Please try again."));
     }
   };
 

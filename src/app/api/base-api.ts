@@ -7,21 +7,11 @@ import type {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 
-import { isDev } from "@/config/env";
+import { normalizeApiError } from "@/shared/utils/error-messages";
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
 import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
 import type { AppDispatch, RootState } from "@/app/store/store";
-
-/** The error shapes this API returns: a FastAPI `detail`, plus any handler-specific fields. */
-interface ApiErrorBody {
-  detail?: string;
-  message?: string;
-  code?: string;
-  provider?: string;
-  reason?: string;
-  promptsKeyUpdate?: boolean;
-}
 
 /**
  * The Client Review route is anonymous: its access code is the only credential. A freelancer
@@ -120,52 +110,8 @@ export const baseQuery: BaseQueryFn<
   }
 
   if (result.error) {
-    // Error bodies can echo submitted fields, so they are only logged in development.
-    if (isDev) {
-      console.error("[baseQuery] Error occurred:", result.error);
-    }
-
-    // FastAPI (and this app's exception handlers) return errors as { detail: "..." },
-    // not { message: "..." } — read detail first, falling back to message for resilience.
-    const errorData = result.error.data as ApiErrorBody | undefined;
-    const normalizedMessage =
-      errorData?.detail ??
-      errorData?.message ??
-      "Something went wrong while communicating with the API.";
-
-    // Some handlers attach fields the caller must act on rather than just display — the
-    // provider-key errors carry `promptsKeyUpdate`, which decides whether the user is
-    // sent to Settings (F-010 FR-010-11). Normalizing to `message` alone would drop them.
-    const structured = {
-      ...(errorData?.code !== undefined && { code: errorData.code }),
-      ...(errorData?.provider !== undefined && { provider: errorData.provider }),
-      ...(errorData?.reason !== undefined && { reason: errorData.reason }),
-      ...(errorData?.promptsKeyUpdate !== undefined && {
-        promptsKeyUpdate: errorData.promptsKeyUpdate,
-      }),
-    };
-
-    if (typeof result.error.status === "number") {
-      return {
-        error: {
-          status: result.error.status,
-          data: {
-            message: normalizedMessage,
-            ...structured,
-          },
-        },
-      };
-    }
-
     return {
-      error: {
-        status: "CUSTOM_ERROR",
-        error: normalizedMessage,
-        data: {
-          message: normalizedMessage,
-          ...structured,
-        },
-      },
+      error: normalizeApiError(result.error, typeof args === "string" ? args : args.url),
     };
   }
 

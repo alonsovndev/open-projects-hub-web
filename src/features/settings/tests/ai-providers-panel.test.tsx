@@ -69,8 +69,9 @@ describe("AiProvidersPanel", () => {
     await user.click(await screen.findByLabelText("Replace the OpenAI API key"));
 
     await waitFor(() => {
-      expect(screen.getByText("Your current key will stop working")).toBeInTheDocument();
+      expect(screen.getByText("Replace your saved key?")).toBeInTheDocument();
     });
+    expect(screen.getByText(/does not revoke the old key at OpenAI/)).toBeInTheDocument();
   });
 
   it("masks the key input so it is never on screen in plain text", async () => {

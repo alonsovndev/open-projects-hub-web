@@ -25,9 +25,9 @@ const isGeneratedStory = (value: unknown): value is GeneratedStory => {
   );
 };
 
-const reportFailure = (action: string, error: unknown) => {
+const reportFailure = (action: "load" | "save" | "clear") => {
   if (isDev) {
-    console.error(`Failed to ${action} pending refinement stories:`, error);
+    console.error(`Failed to ${action} pending refinement stories.`);
   }
 };
 
@@ -50,8 +50,8 @@ export const pendingStoriesStorage = {
       if (stories.length === 0 || !stories.every(isGeneratedStory)) return null;
 
       return { projectId, stories };
-    } catch (error) {
-      reportFailure("load", error);
+    } catch {
+      reportFailure("load");
       return null;
     }
   },
@@ -59,16 +59,16 @@ export const pendingStoriesStorage = {
   save: (owner: string, pending: PendingStories): void => {
     try {
       window.sessionStorage.setItem(keyFor(owner), JSON.stringify(pending));
-    } catch (error) {
-      reportFailure("save", error);
+    } catch {
+      reportFailure("save");
     }
   },
 
   clear: (owner: string): void => {
     try {
       window.sessionStorage.removeItem(keyFor(owner));
-    } catch (error) {
-      reportFailure("clear", error);
+    } catch {
+      reportFailure("clear");
     }
   },
 };

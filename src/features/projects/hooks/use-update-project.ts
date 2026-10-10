@@ -1,5 +1,6 @@
 import { message } from "antd";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { useUpdateProjectMutation } from "@/features/projects/api/projects-api";
 
 interface UpdateProjectData {
@@ -31,10 +32,13 @@ export const useUpdateProject = (options?: UseUpdateProjectOptions) => {
       };
 
       await updateProjectMutation({ id: projectId, data: formattedData }).unwrap();
-      message.success("Project updated successfully");
+      message.success("Project updated.");
       options?.onSuccess?.();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update project";
+      const errorMessage = getErrorMessage(
+        error,
+        "We couldn't update the project. Please try again."
+      );
       message.error(errorMessage);
       options?.onError?.(error instanceof Error ? error : new Error(errorMessage));
     }

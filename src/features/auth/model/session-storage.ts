@@ -16,9 +16,9 @@ export const sessionStorage = {
       if (rememberMe) {
         window.localStorage.setItem(REMEMBER_ME_KEY, "true");
       }
-    } catch (error) {
+    } catch {
       if (isDev) {
-        console.error("Failed to save session:", error);
+        console.error("Failed to save session.");
       }
     }
   },
@@ -30,9 +30,9 @@ export const sessionStorage = {
     try {
       const stored = storageType.getItem(adminAuthConfig.sessionStorageKey);
       return stored ? JSON.parse(stored) : null;
-    } catch (error) {
+    } catch {
       if (isDev) {
-        console.error("Failed to load session, clearing corrupt entry:", error);
+        console.error("Failed to load session, clearing corrupt entry.");
       }
       // Malformed/corrupt entry would otherwise fail to parse on every future
       // load (including the one computing isBootstrapping on every app boot)
@@ -59,9 +59,9 @@ export const sessionStorage = {
       window.localStorage.removeItem(adminAuthConfig.sessionStorageKey);
       window.sessionStorage.removeItem(adminAuthConfig.sessionStorageKey);
       window.localStorage.removeItem(REMEMBER_ME_KEY);
-    } catch (error) {
+    } catch {
       if (isDev) {
-        console.error("Failed to clear session:", error);
+        console.error("Failed to clear session.");
       }
     }
   },

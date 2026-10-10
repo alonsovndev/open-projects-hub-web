@@ -108,7 +108,7 @@ export const backlogApi = baseApi.injectEndpoints({
           blob,
           filename: parseFilename(headers?.get("Content-Disposition")),
           storyCount: Number.isNaN(storyCount) ? undefined : storyCount,
-          warning: headers?.get("X-Export-Warning") ?? undefined,
+          warning: storyCount === 0 ? "No approved stories match this scope." : undefined,
         };
       },
     }),

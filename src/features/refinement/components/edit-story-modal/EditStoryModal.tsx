@@ -54,8 +54,8 @@ export const EditStoryModal: FC<EditStoryModalProps> = ({
         description: values.description,
         acceptanceCriteria: values.acceptanceCriteria,
       });
-    } catch (error) {
-      console.error("Validation failed:", error);
+    } catch {
+      return;
     }
   };
 
@@ -85,8 +85,8 @@ export const EditStoryModal: FC<EditStoryModalProps> = ({
           label="Title"
           name="title"
           rules={[
-            { required: true, message: "Please enter a title" },
-            { min: 5, message: "Title must be at least 5 characters" },
+            { required: true, message: "Please enter a title." },
+            { min: 5, message: "Title must be at least 5 characters." },
           ]}
         >
           <Input placeholder="Enter story title" />
@@ -96,8 +96,8 @@ export const EditStoryModal: FC<EditStoryModalProps> = ({
           label="Description"
           name="description"
           rules={[
-            { required: true, message: "Please enter a description" },
-            { min: 10, message: "Description must be at least 10 characters" },
+            { required: true, message: "Please enter a description." },
+            { min: 10, message: "Description must be at least 10 characters." },
           ]}
         >
           <TextArea rows={4} placeholder="As a [user], I want [goal] so that [benefit]" />
@@ -110,7 +110,7 @@ export const EditStoryModal: FC<EditStoryModalProps> = ({
               {
                 validator: async (_, criteria) => {
                   if (!criteria || criteria.length < 1) {
-                    return Promise.reject(new Error("At least one criterion is required"));
+                    return Promise.reject(new Error("At least one criterion is required."));
                   }
                 },
               },
@@ -128,7 +128,7 @@ export const EditStoryModal: FC<EditStoryModalProps> = ({
                           {
                             required: true,
                             whitespace: true,
-                            message: "Please enter criterion or delete this field",
+                            message: "Enter an acceptance criterion or remove this field.",
                           },
                         ]}
                         noStyle

@@ -67,7 +67,7 @@ describe("useLogout", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(localStorage.getItem("admin_session")).toBeNull();
-    expect(message.success).toHaveBeenCalledWith("Logged out successfully");
+    expect(message.success).toHaveBeenCalledWith("Signed out.");
     expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 

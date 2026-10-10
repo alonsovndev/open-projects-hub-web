@@ -7,7 +7,7 @@ test.describe("Verify Email Flow", () => {
     const verifyEmailPage = new VerifyEmailPage(page);
     await verifyEmailPage.goto();
 
-    await expect(page.getByText(/don't know which email to verify/i)).toBeVisible();
+    await expect(page.getByText(/start by registering or signing in/i)).toBeVisible();
     await expect(verifyEmailPage.submitButton).toBeDisabled();
   });
 
@@ -55,7 +55,9 @@ test.describe("Verify Email Flow", () => {
 
       await verifyEmailPage.verify("ZZZ999");
 
-      await expect(page.getByRole("alert")).toContainText(/invalid or expired verification code/i);
+      await expect(page.getByRole("alert")).toContainText(
+        /this verification code is invalid or has expired/i
+      );
       await expect(page).toHaveURL(/\/verify-email/);
     });
 
