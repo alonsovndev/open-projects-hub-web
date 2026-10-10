@@ -6,83 +6,120 @@ import type {
   FetchBaseQueryError,
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
-
 import { normalizeApiError } from "@/shared/utils/error-messages";
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
-import { clearAdminSessionState } from "@/features/auth/state/admin-auth-slice";
+import {
+  mapAdminSession,
+  type AdminLoginApiResponse,
+} from "@/features/auth/model/map-admin-session";
+import { clearAdminSessionState, sessionRefreshed } from "@/features/auth/state/admin-auth-slice";
+import {
+  notifySessionChange,
+  readSessionRevision,
+  serializeSessionOperation,
+} from "@/features/auth/model/session-coordinator";
 import type { AppDispatch, RootState } from "@/app/store/store";
+import {
+  clearSignOutIntent,
+  hasPendingRevocation,
+  markSignedOut,
+} from "@/features/auth/model/sign-out-intent";
 
-/**
- * The Client Review route is anonymous: its access code is the only credential. A freelancer
- * previewing it while signed in must be treated like any other visitor, so these calls carry
- * no token and a 404 or 429 from them never touches the freelancer's session.
- */
-const PUBLIC_URL_PREFIX = "/v1/viewer/";
-
-const isPublicRequest = (args: string | FetchArgs): boolean =>
-  (typeof args === "string" ? args : args.url).startsWith(PUBLIC_URL_PREFIX);
-
+const urlOf = (args: string | FetchArgs) => (typeof args === "string" ? args : args.url);
+const isPublicRequest = (args: string | FetchArgs) => urlOf(args).startsWith("/v1/viewer/");
+const sessionEndpoints = [
+  adminAuthConfig.loginEndpoint,
+  adminAuthConfig.refreshEndpoint,
+  adminAuthConfig.logoutEndpoint,
+] as readonly string[];
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: adminAuthConfig.apiBaseUrl,
+  credentials: "omit",
   prepareHeaders: (headers, { getState, arg }) => {
     headers.set("Content-Type", "application/json");
-
-    if (isPublicRequest(arg)) {
-      return headers;
+    if (!isPublicRequest(arg) && !sessionEndpoints.includes(urlOf(arg))) {
+      const token = (getState() as RootState).auth.session?.token;
+      if (token) headers.set("Authorization", `Bearer ${token}`);
     }
-
-    // Read token from Redux state (in-memory only)
-    const state = getState() as RootState;
-    const token = state.auth.session?.token;
-
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-
     return headers;
   },
 });
 
-// Access tokens are short-lived (15 min) by design, so a 401 mid-session is
-// expected routine behavior, not a sign the session is over — the refresh
-// token (and sessionExpiresAt) can still be well within its 24h/7d window.
-// Shared across concurrent requests so a burst of parallel queries doesn't
-// each kick off their own refresh call.
-let refreshPromise: Promise<boolean> | null = null;
+type SessionScope = { generation: number; revision: string | null };
+const captureScope = (api: BaseQueryApi): SessionScope => ({
+  generation: (api.getState() as RootState).auth.generation ?? 0,
+  revision: readSessionRevision(),
+});
+const isCurrent = (api: BaseQueryApi, scope: SessionScope) =>
+  captureScope(api).generation === scope.generation && readSessionRevision() === scope.revision;
+const staleResult = (): { error: FetchBaseQueryError } => ({
+  error: {
+    status: "CUSTOM_ERROR",
+    error: "Your session changed. Please try again.",
+    data: { message: "Your session changed. Please try again." },
+  },
+});
+const cookieRequest = (args: string | FetchArgs): FetchArgs => ({
+  ...(typeof args === "string" ? { url: args } : args),
+  credentials: "include",
+  headers: { "X-Session-Mode": "cookie" },
+});
+type QueryResult = Awaited<ReturnType<typeof rawBaseQuery>>;
+const sessionQuery = (args: string | FetchArgs, api: BaseQueryApi, extraOptions: object) =>
+  // Cache reset must not release the cookie lock while the browser can still
+  // install Set-Cookie from the server's in-flight response.
+  rawBaseQuery(cookieRequest(args), { ...api, signal: new AbortController().signal }, extraOptions);
+const refreshes = new WeakMap<
+  BaseQueryApi["getState"],
+  { generation: number; revision: string | null; promise: Promise<QueryResult> }
+>();
 
-const refreshSession = (api: BaseQueryApi): Promise<boolean> => {
-  refreshPromise ??= (async () => {
-    const session = (api.getState() as RootState).auth.session;
-    if (!session?.refreshToken) return false;
-
-    const refreshResult = await rawBaseQuery(
-      {
-        url: adminAuthConfig.refreshEndpoint,
-        method: "POST",
-        body: { refreshToken: session.refreshToken },
-      },
+const refreshSession = (api: BaseQueryApi, extraOptions: object): Promise<QueryResult> => {
+  const scope = captureScope(api);
+  const existing = refreshes.get(api.getState);
+  if (existing?.generation === scope.generation && existing.revision === scope.revision)
+    return existing.promise;
+  const promise = serializeSessionOperation(async (): Promise<QueryResult> => {
+    if (!isCurrent(api, scope)) return staleResult();
+    const result = await sessionQuery(
+      { url: adminAuthConfig.refreshEndpoint, method: "POST" },
       api,
-      {}
+      extraOptions
     );
-
-    if (refreshResult.error || !refreshResult.data) return false;
-
-    applyRefreshedSession(
-      api.dispatch as AppDispatch,
-      session,
-      refreshResult.data as { accessToken: string; refreshToken: string; sessionExpiresAt?: string }
-    );
-    return true;
-  })().finally(() => {
-    refreshPromise = null;
+    if (!isCurrent(api, scope)) return staleResult();
+    if (result.data) {
+      try {
+        applyRefreshedSession(
+          api.dispatch as AppDispatch,
+          result.data as AdminLoginApiResponse,
+          scope.generation
+        );
+      } catch {
+        return {
+          error: {
+            status: "CUSTOM_ERROR",
+            error: "Invalid session response.",
+            data: { message: "We couldn't resume your session. Please sign in again." },
+          },
+        };
+      }
+    } else if (result.error?.status === 401) {
+      markSignedOut();
+      api.dispatch(clearAdminSessionState());
+      notifySessionChange();
+    }
+    return result;
   });
-
-  return refreshPromise;
+  refreshes.set(api.getState, { ...scope, promise });
+  void promise
+    .finally(() => {
+      if (refreshes.get(api.getState)?.promise === promise) refreshes.delete(api.getState);
+    })
+    .catch(() => undefined);
+  return promise;
 };
 
-// FetchBaseQueryMeta is declared so endpoints can read response headers in
-// transformResponse — the export endpoint takes its filename from Content-Disposition.
 export const baseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -90,32 +127,84 @@ export const baseQuery: BaseQueryFn<
   object,
   FetchBaseQueryMeta
 > = async (args, api, extraOptions) => {
-  let result = await rawBaseQuery(args, api, extraOptions);
-
-  if (result.error?.status === 401 && !isPublicRequest(args)) {
-    const isRefreshCall = typeof args === "object" && args.url === adminAuthConfig.refreshEndpoint;
-    const hadSession = (api.getState() as RootState).auth.session?.token != null;
-
-    if (hadSession && !isRefreshCall) {
-      // Try a silent refresh once, then retry the original request with the new token.
-      const refreshed = await refreshSession(api);
-      result = refreshed ? await rawBaseQuery(args, api, extraOptions) : result;
-      if (!refreshed) {
-        api.dispatch(clearAdminSessionState());
+  const url = urlOf(args);
+  let result: QueryResult;
+  if (url === adminAuthConfig.refreshEndpoint) {
+    result = await refreshSession(api, extraOptions);
+  } else if (url === adminAuthConfig.logoutEndpoint) {
+    // Set-Cookie is applied by the browser even if JS ignores a stale response. Drain
+    // previous refreshes before the server deletes and revokes the current cookie.
+    result = await serializeSessionOperation(async () => {
+      const retryPending =
+        typeof args === "object" && "onlyIfSignedOut" in args && args.onlyIfSignedOut === true;
+      if (retryPending && !hasPendingRevocation()) return { data: { message: "Signed out." } };
+      return await sessionQuery(args, api, extraOptions);
+    });
+  } else if (url === adminAuthConfig.loginEndpoint) {
+    const scope = captureScope(api);
+    result = await serializeSessionOperation(async () => {
+      if (!isCurrent(api, scope)) return staleResult();
+      const loginResult = await sessionQuery(args, api, extraOptions);
+      if (!isCurrent(api, scope)) return staleResult();
+      if (loginResult.data) {
+        try {
+          const credentials =
+            typeof args === "object" ? (args.body as { email?: string }) : undefined;
+          api.dispatch(
+            sessionRefreshed({
+              generation: scope.generation,
+              session: mapAdminSession(
+                loginResult.data as AdminLoginApiResponse,
+                credentials?.email ?? ""
+              ),
+            })
+          );
+          clearSignOutIntent();
+        } catch {
+          markSignedOut();
+          return {
+            error: {
+              status: "CUSTOM_ERROR" as const,
+              error: "Invalid session response.",
+              data: { message: "We couldn't sign you in. Please try again." },
+            },
+          };
+        }
       }
-    } else if (hadSession) {
-      // The refresh call itself came back 401 — the refresh token is dead too.
-      api.dispatch(clearAdminSessionState());
+      if (loginResult.error) markSignedOut();
+      return loginResult;
+    });
+  } else {
+    const scope = captureScope(api);
+    result = await rawBaseQuery(args, api, extraOptions);
+    if (!isPublicRequest(args) && !isCurrent(api, scope)) return staleResult();
+    if (
+      result.error?.status === 401 &&
+      !isPublicRequest(args) &&
+      (api.getState() as RootState).auth.session
+    ) {
+      const refreshResult = await refreshSession(api, extraOptions);
+      if (!isCurrent(api, scope)) return staleResult();
+      if (refreshResult.data) {
+        result = await rawBaseQuery(args, api, extraOptions);
+        if (!isCurrent(api, scope)) return staleResult();
+        if (result.error?.status === 401) {
+          markSignedOut();
+          api.dispatch(clearAdminSessionState());
+          notifySessionChange();
+          void serializeSessionOperation(
+            async () =>
+              await sessionQuery(
+                { url: adminAuthConfig.logoutEndpoint, method: "POST" },
+                api,
+                extraOptions
+              )
+          );
+        }
+      }
     }
   }
-
-  if (result.error) {
-    return {
-      error: normalizeApiError(result.error, typeof args === "string" ? args : args.url),
-    };
-  }
-
-  return result;
+  return result.error ? { error: normalizeApiError(result.error, url) } : result;
 };
 
 export const baseApi = createApi({

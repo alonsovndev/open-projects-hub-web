@@ -7,6 +7,7 @@ import {
   useApproveStoriesBulkMutation,
 } from "@/features/refinement/api/refinement-api";
 import { useAuth } from "@/features/auth/hooks/use-auth";
+import { refinedStorySchema } from "@/features/refinement/model/story-schema";
 import { pendingStoriesStorage } from "@/features/refinement/model/pending-stories-storage";
 import { useGetProjectsQuery } from "@/features/projects/api/projects-api";
 import {
@@ -172,9 +173,16 @@ export const useRefinement = () => {
       }).unwrap();
 
       // The API stores nothing, so the ids are only list keys for this session.
+      const parsedStories = refinedStorySchema.array().safeParse(result.stories);
+      if (!parsedStories.success) {
+        setGenerationError(
+          "We couldn't use the generated response. Your notes were kept. Try again."
+        );
+        return;
+      }
       const batchKey = Date.now();
       setGeneratedStories(
-        result.stories.map((story, index) => ({ ...story, id: `${batchKey}-${index}` }))
+        parsedStories.data.map((story, index) => ({ ...story, id: `${batchKey}-${index}` }))
       );
       setGeneratedProjectId(selectedProjectId);
       setRedactionCount(result.redactionCount ?? 0);
@@ -259,7 +267,12 @@ export const useRefinement = () => {
     setApprovingIds((prev) => [...prev, storyId]);
 
     try {
-      const result = await approveStory({ projectId: generatedProjectId, ...content }).unwrap();
+      const result = await approveStory({
+        projectId: generatedProjectId,
+        title: content.title,
+        description: content.description,
+        acceptanceCriteria: content.acceptanceCriteria,
+      }).unwrap();
 
       setGeneratedStories((prev) => prev.filter((story) => story.id !== storyId));
       message.success(`Story "${result.title}" approved and added to the backlog.`);
@@ -282,7 +295,9 @@ export const useRefinement = () => {
     try {
       const stories = generatedStories.map(({ id: _localId, ...content }) => ({
         projectId: generatedProjectId,
-        ...content,
+        title: content.title,
+        description: content.description,
+        acceptanceCriteria: content.acceptanceCriteria,
       }));
       const result = await approveStoriesBulk({ stories }).unwrap();
 

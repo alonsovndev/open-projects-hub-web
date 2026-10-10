@@ -5,6 +5,7 @@ import type {
   ApproveStoriesBulkPayload,
   ApproveStoriesBulkResponse,
 } from "@/features/refinement/types";
+import { generationResponseSchema } from "@/features/refinement/model/story-schema";
 import { baseApi } from "@/app/api/base-api";
 
 /**
@@ -22,11 +23,28 @@ const APPROVAL_SIDE_EFFECTS = [
 export const refinementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     generateStories: builder.mutation<GenerateStoriesResponse, GenerateStoriesPayload>({
-      query: (body) => ({
-        url: "/v1/refinement/generate-stories",
-        method: "POST",
-        body,
-      }),
+      queryFn: async (body, _api, _options, fetchWithBaseQuery) => {
+        const result = await fetchWithBaseQuery({
+          url: "/v1/refinement/generate-stories",
+          method: "POST",
+          body,
+        });
+        if (result.error) return { error: result.error };
+        const parsed = generationResponseSchema.safeParse(result.data);
+        return parsed.success
+          ? { data: parsed.data }
+          : {
+              error: {
+                status: "CUSTOM_ERROR",
+                error: "Invalid generation response.",
+                data: {
+                  failureClass: "invalid_response",
+                  message:
+                    "We couldn't use the generated response. Your notes were kept. Try again.",
+                },
+              },
+            };
+      },
       invalidatesTags: (result, error, { provider }) => {
         const refreshCredits =
           (result !== undefined && (provider ?? "platform") === "platform") ||

@@ -23,7 +23,7 @@ Requires Node.js 20.19+ and a running [Open Projects Hub API](https://github.com
 ```bash
 git clone https://github.com/alonsovndev/open-projects-hub-web.git
 cd open-projects-hub-web
-cp .env.example .env   # VITE_API_BASE_URL defaults to http://127.0.0.1:8000 (use :8080 for the Docker API)
+cp .env.example .env   # API defaults to http://localhost:8000
 npm install
 npm run dev          # http://localhost:5173
 ```
@@ -37,7 +37,7 @@ npm run dev          # http://localhost:5173
 
 ## Known limitations
 
-- The refresh token is kept in browser storage (session storage, or local storage with "remember me"); an httpOnly cookie would be safer against XSS. The access token stays in memory.
+- Browser sessions require the API's cookie-session contract; access tokens stay in memory and refresh tokens use an HttpOnly cookie. See [API integration](docs/api/integration-guide.md#authentication) for migration and deployment requirements.
 - The `/backlog` page loads up to 100 stories (the API maximum per request) and filters them in the browser; there is no pagination yet.
 - Stories cannot be reordered manually (FR-004-03 is deferred).
 - E2E coverage is limited to the auth flows and a public backlog smoke test.

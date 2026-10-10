@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// CSP forbids eval; use Zod's interpreter instead of runtime code generation.
+z.config({ jitless: true });
+
 /**
  * Environment variable schema validation
  * Ensures all required environment variables are present at runtime
@@ -12,10 +15,23 @@ const envSchema = z.object({
  * Validate and parse environment variables
  * Throws error if required variables are missing or invalid
  */
+function resolveApiOrigin(): string {
+  const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+  if (import.meta.env.PROD) return configured || window.location.origin;
+  const apiOrigin = new URL(configured || "http://localhost:8000");
+  if (
+    ["localhost", "127.0.0.1"].includes(apiOrigin.hostname) &&
+    ["localhost", "127.0.0.1"].includes(window.location.hostname)
+  ) {
+    return window.location.origin;
+  }
+  return apiOrigin.origin;
+}
+
 function validateEnv() {
   try {
     return envSchema.parse({
-      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+      VITE_API_BASE_URL: resolveApiOrigin(),
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

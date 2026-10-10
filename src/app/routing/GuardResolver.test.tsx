@@ -32,7 +32,7 @@ describe("GuardResolver", () => {
       },
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
       preloadedState: {
-        auth: { session, isBootstrapping: false },
+        auth: { session, isBootstrapping: false, generation: 0 },
       },
     });
     return store;

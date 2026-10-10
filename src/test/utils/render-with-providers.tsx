@@ -2,14 +2,11 @@ import React, { ReactElement } from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { configureStore } from "@reduxjs/toolkit";
-import type { RootState } from "@/app/store/store";
-import { adminAuthReducer } from "@/features/auth/state/admin-auth-slice";
-import { baseApi } from "@/app/api/base-api";
+import { createAppStore, type AppPreloadedState } from "@/app/store/store";
 import { ThemeProvider } from "@/app/theme/theme-provider";
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, "wrapper"> {
-  preloadedState?: Partial<RootState>;
+  preloadedState?: AppPreloadedState;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   store?: any;
 }
@@ -19,19 +16,8 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, "wrapper"> {
  * component/hook using useDispatch, useSelector, or an RTK Query hook
  * (e.g. useCreateProjectMutation) has a real store to talk to.
  */
-export function createTestStore(preloadedState: Partial<RootState> = {}) {
-  return configureStore({
-    reducer: {
-      auth: adminAuthReducer,
-      [baseApi.reducerPath]: baseApi.reducer,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any,
-    middleware: (getDefaultMiddleware) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getDefaultMiddleware().concat(baseApi.middleware as any),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    preloadedState: preloadedState as any,
-  });
+export function createTestStore(preloadedState: AppPreloadedState = {}) {
+  return createAppStore(preloadedState);
 }
 
 /**

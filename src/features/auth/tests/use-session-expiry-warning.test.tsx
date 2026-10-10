@@ -22,7 +22,6 @@ const MINUTE_MS = 60 * 1000;
 
 const sessionExpiringIn = (ms: number): AdminSession => ({
   token: "access-token",
-  refreshToken: "refresh-token",
   sessionExpiresAt: new Date(Date.now() + ms).toISOString(),
   email: "admin@example.com",
   displayName: "Admin",
