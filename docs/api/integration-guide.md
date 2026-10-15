@@ -77,10 +77,13 @@ The root `wrangler.jsonc` serves `dist` with SPA routing; the Cloudflare Vite pl
 not required. `public/.assetsignore` is copied into `dist` to exclude the bundle report
 (`stats.html`) from uploads.
 
-API routing is **TBD**. Static hosting does not forward `/v1/*` to the backend. With the
-current empty `VITE_API_BASE_URL`, configure same-origin API forwarding before testing
-login or other API features. A separate API origin requires a coordinated build-time
-URL override, CORS, trusted-origin, and cookie configuration.
+The production API is a separate origin, `https://api-oph.alonsovndev.com`, set at build time by
+`VITE_API_BASE_URL` in `.env.production` (Cloudflare Builds runs `npm run build`, so the value is
+baked into the bundle and into the CSP `connect-src`). The API must allow the web origin
+`https://oph.alonsovndev.com` exactly: `CORS_ORIGINS` and `FRONTEND_BASE_URL`, with
+`CORS_ALLOW_CREDENTIALS=true`. The refresh cookie is `SameSite=Lax`; it is sent because both
+hostnames share the registrable domain `alonsovndev.com`. Preview deployments get other origins
+and are rejected by the API's CORS list, so sign-in works only on the production hostname.
 
 ### AI draft boundaries
 
