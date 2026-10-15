@@ -69,7 +69,10 @@ any API proxy and disable caching for `/v1/*` responses. Auth responses carry
 `Cache-Control: no-store`.
 
 The frontend uses Cloudflare Workers static assets. In Cloudflare Builds, use
-`npm run build` as the build command and `npx wrangler deploy` as the deploy command.
+`npm run build` as the build command, `npx wrangler deploy` as the production deploy command,
+and `npx wrangler preview` as the preview command for non-production branches.
+The empty `previews` block enables previews; assets and compatibility settings remain at
+the top level. See [Cloudflare's preview configuration](https://developers.cloudflare.com/workers/previews/configuration/#wrangler-configuration-file).
 The root `wrangler.jsonc` serves `dist` with SPA routing; the Cloudflare Vite plugin is
 not required. `public/.assetsignore` is copied into `dist` to exclude the bundle report
 (`stats.html`) from uploads.
