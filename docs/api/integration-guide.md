@@ -64,9 +64,20 @@ Configure the API's `FRONTEND_BASE_URL` or exact CORS origins to the deployed we
 Cookie operations reject missing, `null`, or untrusted `Origin` headers. Local mode also
 accepts loopback origins on Vite fallback ports. Cross-origin development requires
 `allow_credentials: true` and `X-Session-Mode` in allowed headers. Container/dev/prod cookie
-mode requires HTTPS. Keep CloudFront `/v1/auth/*` caching disabled and forward cookies,
-`Origin`, and `X-Session-Mode`; concrete deployment configuration is TBD and is not changed
-by this patch. Auth responses carry `Cache-Control: no-store`.
+mode requires HTTPS. Forward cookies, `Authorization`, `Origin`, and `X-Session-Mode` through
+any API proxy and disable caching for `/v1/*` responses. Auth responses carry
+`Cache-Control: no-store`.
+
+The frontend uses Cloudflare Workers static assets. In Cloudflare Builds, use
+`npm run build` as the build command and `npx wrangler deploy` as the deploy command.
+The root `wrangler.jsonc` serves `dist` with SPA routing; the Cloudflare Vite plugin is
+not required. `public/.assetsignore` is copied into `dist` to exclude the bundle report
+(`stats.html`) from uploads.
+
+API routing is **TBD**. Static hosting does not forward `/v1/*` to the backend. With the
+current empty `VITE_API_BASE_URL`, configure same-origin API forwarding before testing
+login or other API features. A separate API origin requires a coordinated build-time
+URL override, CORS, trusted-origin, and cookie configuration.
 
 ### AI draft boundaries
 
