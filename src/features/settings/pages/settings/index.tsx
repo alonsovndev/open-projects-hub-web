@@ -1,6 +1,12 @@
 import type { FC } from "react";
 import { Tabs, Typography, Spin, Alert } from "antd";
-import { UserOutlined, LockOutlined, RobotOutlined, TeamOutlined, ApartmentOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  RobotOutlined,
+  TeamOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
 
 import { useSettings } from "@/features/settings/hooks/use-settings";
 import { ProfileForm } from "@/features/settings/components/profile-form";
@@ -36,8 +42,8 @@ export const SettingsPage: FC = () => {
     return (
       <div className={styles.pageContainer}>
         <Alert
-          message="Error Loading Settings"
-          description="Failed to load your profile. Please try again."
+          message="Couldn't load your settings"
+          description="We couldn't load your profile. Please try again."
           type="error"
           showIcon
         />

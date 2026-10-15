@@ -99,16 +99,20 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
       overview.view = "table";
     });
 
-    it.each(["table", "grid"])("offers reactivate instead of archive to an admin in %s view", (view) => {
-      overview.view = view;
-      renderPage("admin");
+    it.each(["table", "grid"])(
+      "offers reactivate instead of archive to an admin in %s view",
+      (view) => {
+        overview.view = view;
+        renderPage("admin");
 
-      expect(screen.getByRole("button", { name: /reactivate open projects hub/i })).toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: /archive open projects hub/i })
-      ).not.toBeInTheDocument();
-    });
-
+        expect(
+          screen.getByRole("button", { name: /reactivate open projects hub/i })
+        ).toBeInTheDocument();
+        expect(
+          screen.queryByRole("button", { name: /archive open projects hub/i })
+        ).not.toBeInTheDocument();
+      }
+    );
   });
 
   describe("grid view", () => {
@@ -126,7 +130,9 @@ describe("Projects overview role rendering", { timeout: 20_000 }, () => {
       renderPage("admin");
 
       expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /archive open projects hub/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /archive open projects hub/i })
+      ).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /delete open projects hub/i })).toBeInTheDocument();
     });
 

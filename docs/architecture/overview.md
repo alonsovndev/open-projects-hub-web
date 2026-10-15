@@ -59,7 +59,7 @@ The project has a strong architectural foundation, clear feature boundaries, mod
 2. `src/app/App.tsx` provides Redux state and router context.
 3. `src/app/routing/AppRouter.tsx` reads the centralized route list.
 4. Each route element is wrapped by `GuardResolver`.
-5. Feature pages render their own components inside `PublicLayout` or `PrivateLayout`.
+5. Feature pages render their own components inside `PublicLayout` or `AdminLayout`.
 6. API interactions flow through `src/app/api/base-api.ts` and feature-specific endpoint modules.
 
 ## Testing-Aware Architecture
@@ -75,7 +75,7 @@ The app structure now supports testing as a first-class engineering concern inst
 - `src/test/setup.ts` centralizes matcher setup and cleanup.
 - `src/test/utils/render-with-providers.tsx` gives feature components Redux and router context during tests.
 - `src/app/routing/GuardResolver.tsx` keeps route-protection rules in one place, which reduces duplicated guard test setups.
-- Thin route pages plus feature hooks (`use-admin-login-form.ts`, `use-admin-welcome.ts`, `use-role-selection.ts`) keep orchestration separate from presentational markup.
+- Thin route pages plus feature hooks (`use-admin-login-form.ts`, `use-dashboard.ts`, `use-backlog.ts`) keep orchestration separate from presentational markup.
 
 ## Why This Architecture Works
 

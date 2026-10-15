@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Typography, Button, Spin } from "antd";
+import { Typography, Button, Spin, Alert } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
 import { DashboardStats } from "@/features/dashboard/components/dashboard-stats";
@@ -20,6 +20,7 @@ export const DashboardPage: FC = () => {
     projects,
     stats,
     loading,
+    hasError,
     handleViewProject,
     handleCreateProject,
     handleViewAllProjects,
@@ -60,6 +61,15 @@ export const DashboardPage: FC = () => {
           )}
         </div>
       </div>
+
+      {hasError && (
+        <Alert
+          type="error"
+          showIcon
+          message="Couldn't load your dashboard"
+          description="Some data failed to load. Refresh the page to try again."
+        />
+      )}
 
       {stats && <DashboardStats stats={stats} />}
 

@@ -6,8 +6,20 @@ import { adminAuthConfig } from "@/resources/config/auth";
 const base = adminAuthConfig.apiBaseUrl;
 
 const initialMembers = (): TeamMember[] => [
-  { id: "user-1", email: "admin@test.com", displayName: "Admin User", role: "admin", isActive: true },
-  { id: "user-2", email: "sam@test.com", displayName: "Sam Member", role: "member", isActive: true },
+  {
+    id: "user-1",
+    email: "admin@test.com",
+    displayName: "Admin User",
+    role: "admin",
+    isActive: true,
+  },
+  {
+    id: "user-2",
+    email: "sam@test.com",
+    displayName: "Sam Member",
+    role: "member",
+    isActive: true,
+  },
 ];
 
 let members = initialMembers();

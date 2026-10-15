@@ -66,7 +66,13 @@ export const ProjectsOverview: FC = () => {
             </Text>
           </div>
           {canEdit && (
-            <Tooltip title={!canCreate ? `Limit reached (${activeCount}/3 active). Archive a project to create more.` : ""}>
+            <Tooltip
+              title={
+                !canCreate
+                  ? `Limit reached (${activeCount}/3 active). Archive a project to create more.`
+                  : ""
+              }
+            >
               <Button
                 type="primary"
                 size="large"

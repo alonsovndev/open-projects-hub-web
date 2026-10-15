@@ -165,17 +165,17 @@ Type 'unknown' is not assignable to type 'Session'
 
    ```typescript
    // ✅ Correct - in routes.tsx
-   element: <PrivateLayout><DashboardPage /></PrivateLayout>
+   element: <AdminLayout><DashboardPage /></AdminLayout>
 
    // ❌ Wrong - in page file
    export const DashboardPage = () => (
-     <PrivateLayout>...</PrivateLayout>
+     <AdminLayout>...</AdminLayout>
    );
    ```
 
 2. **Check layout import**:
    ```typescript
-   import { PrivateLayout } from "@/app/layouts"; // ✅ Correct path
+   import { AdminLayout } from "@/app/layouts"; // ✅ Correct path
    ```
 
 ## State Management Issues
@@ -562,15 +562,15 @@ index.ts; // export { LoginForm } from "./LoginForm";
 ```typescript
 // ❌ Wrong - layout in page file
 export const DashboardPage = () => (
-  <PrivateLayout>
+  <AdminLayout>
     <DashboardContent />
-  </PrivateLayout>
+  </AdminLayout>
 );
 
 // ✅ Correct - layout in routes.tsx
 {
   path: "/dashboard",
-  element: <PrivateLayout><DashboardPage /></PrivateLayout>,
+  element: <AdminLayout><DashboardPage /></AdminLayout>,
 }
 ```
 

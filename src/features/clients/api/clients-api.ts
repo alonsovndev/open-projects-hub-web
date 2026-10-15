@@ -50,11 +50,6 @@ export const clientsApi = baseApi.injectEndpoints({
       }
     ),
 
-    getClientById: builder.query<Client, string>({
-      query: (id) => `/v1/clients/${id}`,
-      providesTags: (result, error, id) => [{ type: "Clients", id }],
-    }),
-
     createClient: builder.mutation<Client, CreateClientRequest>({
       query: (body) => ({
         url: "/v1/clients",
@@ -91,7 +86,6 @@ export const clientsApi = baseApi.injectEndpoints({
 
 export const {
   useGetClientsQuery,
-  useGetClientByIdQuery,
   useCreateClientMutation,
   useUpdateClientMutation,
   useDeleteClientMutation,

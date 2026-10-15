@@ -1,45 +1,51 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
 import type { AdminSession } from "@/features/auth/types";
-import { sessionStorage } from "@/features/auth/model/session-storage";
 
-interface AdminAuthState {
+export interface AdminAuthState {
   session: AdminSession | null;
-  /**
-   * True while attempting to resume a persisted session on app boot (see
-   * useSessionBootstrap). The access token is never persisted, so a stored
-   * session only carries enough (a refresh token) to attempt a silent
-   * refresh — until that resolves, callers shouldn't treat `session: null`
-   * as "definitely logged out".
-   */
   isBootstrapping: boolean;
+  generation: number;
 }
-
-const initialState: AdminAuthState = {
+export const initialAuthState: AdminAuthState = {
   session: null,
-  isBootstrapping: sessionStorage.load()?.refreshToken != null,
+  isBootstrapping: true,
+  generation: 0,
 };
 
 const adminAuthSlice = createSlice({
   name: "adminAuth",
-  initialState,
+  initialState: initialAuthState,
   reducers: {
     setAdminSession(state, action: PayloadAction<{ session: AdminSession; rememberMe?: boolean }>) {
       state.session = action.payload.session;
       state.isBootstrapping = false;
-      sessionStorage.save(action.payload.session, action.payload.rememberMe);
+      state.generation = (state.generation ?? 0) + 1;
+    },
+    sessionRefreshed(state, action: PayloadAction<{ session: AdminSession; generation: number }>) {
+      if ((state.generation ?? 0) !== action.payload.generation) return;
+      state.session = action.payload.session;
+      state.isBootstrapping = false;
+    },
+    workspaceUpdated(state, action: PayloadAction<NonNullable<AdminSession["workspace"]>>) {
+      if (state.session) state.session.workspace = action.payload;
     },
     clearAdminSessionState(state) {
       state.session = null;
       state.isBootstrapping = false;
-      sessionStorage.clear();
+      state.generation = (state.generation ?? 0) + 1;
     },
-    sessionBootstrapFinished(state) {
+    sessionBootstrapFinished(state, action: PayloadAction<number | undefined>) {
+      if (action.payload !== undefined && (state.generation ?? 0) !== action.payload) return;
       state.isBootstrapping = false;
     },
   },
 });
 
-export const { setAdminSession, clearAdminSessionState, sessionBootstrapFinished } =
-  adminAuthSlice.actions;
+export const {
+  setAdminSession,
+  sessionRefreshed,
+  workspaceUpdated,
+  clearAdminSessionState,
+  sessionBootstrapFinished,
+} = adminAuthSlice.actions;
 export const adminAuthReducer = adminAuthSlice.reducer;

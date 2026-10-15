@@ -29,13 +29,8 @@ export const authHandlers = [
       }
 
       return HttpResponse.json({
-        token: `mock-token-${Date.now()}`,
         accessToken: `mock-access-token-${Date.now()}`,
-        refreshToken: `mock-refresh-token-${Date.now()}`,
-        email: user.email,
-        displayName: user.displayName,
-        role: user.role,
-        loggedInAt: new Date().toISOString(),
+        sessionExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         user: {
           email: user.email,
           displayName: user.displayName,
@@ -103,10 +98,7 @@ export const authHandlers = [
 
   // Refresh token
   http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.refreshEndpoint}`, async () => {
-    return HttpResponse.json({
-      accessToken: `mock-access-token-${Date.now()}`,
-      refreshToken: `mock-refresh-token-${Date.now()}`,
-    });
+    return HttpResponse.json({ detail: "Not authenticated" }, { status: 401 });
   }),
 
   // Forgot password — always the same generic response (FR-009-01)

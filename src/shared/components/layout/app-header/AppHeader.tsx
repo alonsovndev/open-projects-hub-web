@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { MenuOutlined, CloseOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { ThemeToggle } from "@/shared/components/theme-toggle/ThemeToggle";
 
 import styles from "./app-header.module.scss";
 
@@ -73,29 +74,32 @@ export const AppHeader: FC<AppHeaderProps> = ({
               </a>
             </nav>
           </div>
-          <div className={styles.landingActions}>
-            <Button type="text" href="/login" className={styles.signInButton}>
-              Log In
-            </Button>
-            <Button type="primary" href="/role-selection" className={styles.ctaButton}>
-              Get Started <ArrowRightOutlined aria-hidden="true" />
-            </Button>
+          <div className={styles.headerControls}>
+            <div className={styles.landingActions}>
+              <Button type="text" href="/login" className={styles.signInButton}>
+                Log In
+              </Button>
+              <Button type="primary" href="/role-selection" className={styles.ctaButton}>
+                Get Started <ArrowRightOutlined aria-hidden="true" />
+              </Button>
+            </div>
+            <button
+              ref={mobileToggleRef}
+              type="button"
+              className={styles.mobileToggle}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="landing-mobile-menu"
+            >
+              {mobileMenuOpen ? (
+                <CloseOutlined aria-hidden="true" />
+              ) : (
+                <MenuOutlined aria-hidden="true" />
+              )}
+            </button>
+            <ThemeToggle />
           </div>
-          <button
-            ref={mobileToggleRef}
-            type="button"
-            className={styles.mobileToggle}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="landing-mobile-menu"
-          >
-            {mobileMenuOpen ? (
-              <CloseOutlined aria-hidden="true" />
-            ) : (
-              <MenuOutlined aria-hidden="true" />
-            )}
-          </button>
         </div>
         {mobileMenuOpen && (
           <div id="landing-mobile-menu" className={styles.mobileMenu}>
@@ -151,6 +155,7 @@ export const AppHeader: FC<AppHeaderProps> = ({
           {actions}
         </div>
       ) : null}
+      <ThemeToggle />
     </header>
   );
 };

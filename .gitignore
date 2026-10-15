@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.wrangler/
 *.local
 
 # Editor directories and files
@@ -41,3 +42,5 @@ docs/requested-features/*.md
 # Specs: ignore all files in /specs except .gitkeep
 /specs/*
 !/specs/.gitkeep
+# Local AI-agent tooling settings (machine-specific absolute paths)
+settings.yml

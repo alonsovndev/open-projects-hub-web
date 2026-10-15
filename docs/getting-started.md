@@ -121,13 +121,13 @@ touch src/features/my-feature/index.ts
 ```typescript
 // src/features/my-feature/routes.tsx
 import type { AppRoute } from "@/app/routing/types";
-import { PrivateLayout } from "@/app/layouts";
+import { AdminLayout } from "@/app/layouts";
 import { MyFeaturePage } from "@/pages/my-feature";
 
 export const myFeatureRoutes: AppRoute[] = [
   {
     path: "/my-feature",
-    element: <PrivateLayout><MyFeaturePage /></PrivateLayout>,
+    element: <AdminLayout><MyFeaturePage /></AdminLayout>,
     guards: ["auth"],
   },
 ];
@@ -186,7 +186,7 @@ guards: ["auth", { role: "admin" }]; // Admin-only
 <PublicLayout><HomePage /></PublicLayout>
 
 // Authenticated pages
-<PrivateLayout><DashboardPage /></PrivateLayout>
+<AdminLayout><DashboardPage /></AdminLayout>
 ```
 
 ### Imports (Use Feature Public APIs)

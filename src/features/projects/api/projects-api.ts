@@ -68,7 +68,9 @@ interface CreateProjectRequest {
 }
 
 // Transform backend project to frontend format — tolerant to archived boolean
-const transformProject = (backendProject: ProjectResponse & { archived?: boolean }): ProjectSummary => {
+const transformProject = (
+  backendProject: ProjectResponse & { archived?: boolean }
+): ProjectSummary => {
   const statusValue = backendProject.archived ? "archived" : backendProject.status;
   return {
     id: backendProject.id,
@@ -83,8 +85,8 @@ const transformProject = (backendProject: ProjectResponse & { archived?: boolean
     client: backendProject.clientName, // For backwards compatibility
     storiesCount: backendProject.storiesCount,
     completedStories: backendProject.completedStories,
-    startDate: backendProject.startDate ?? new Date().toISOString(),
-    endDate: backendProject.endDate ?? new Date().toISOString(),
+    startDate: backendProject.startDate ?? undefined,
+    endDate: backendProject.endDate ?? undefined,
     createdAt: backendProject.createdAt,
     lastUpdated: backendProject.updatedAt,
     description: backendProject.description ?? "",
@@ -166,7 +168,10 @@ export const projectsApi = baseApi.injectEndpoints({
 
     // Update project — status is not updatable here; use archiveProject/reactivateProject instead,
     // which are the only paths that enforce the active-project limit on status transitions.
-    updateProject: builder.mutation<ProjectSummary, { id: string; data: Partial<CreateProjectRequest> }>({
+    updateProject: builder.mutation<
+      ProjectSummary,
+      { id: string; data: Partial<CreateProjectRequest> }
+    >({
       query: ({ id, data }) => ({
         url: `/v1/projects/${id}`,
         method: "PATCH",

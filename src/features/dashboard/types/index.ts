@@ -12,11 +12,3 @@ export type {
   DashboardStats,
 } from "@/shared/types/domain";
 export { PROJECT_STATUS_COLORS, PROJECT_PRIORITY_COLORS } from "@/shared/types/domain";
-
-// Dashboard-specific types
-export interface AdminWelcomePanel {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-}

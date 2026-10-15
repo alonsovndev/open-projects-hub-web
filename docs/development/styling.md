@@ -106,7 +106,7 @@ import styles from "./dashboard.module.scss";
 ```text
 // Component styles
 LoginForm.tsx            → login-form.module.scss
-AdminWelcome.tsx         → admin-welcome.module.scss
+StoryList.tsx            → story-list.module.scss
 
 // Page styles
 pages/home/index.tsx     → pages/home/home.module.scss

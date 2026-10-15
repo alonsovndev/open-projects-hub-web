@@ -72,9 +72,8 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
 
       await onSubmit(formattedValues);
       form.resetFields();
-    } catch (error) {
-      // Form validation failed
-      console.error("Form validation error:", error);
+    } catch {
+      return;
     }
   };
 
@@ -103,10 +102,14 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
             account is needed.
           </Paragraph>
           <Paragraph>
-            Access code: <Text code copyable={{ text: accessCode }}>{accessCode}</Text>
+            Access code:{" "}
+            <Text code copyable={{ text: accessCode }}>
+              {accessCode}
+            </Text>
           </Paragraph>
           <Paragraph>
-            Link: <Text copyable={{ text: buildClientReviewUrl(accessCode) }}>Copy client link</Text>
+            Link:{" "}
+            <Text copyable={{ text: buildClientReviewUrl(accessCode) }}>Copy client link</Text>
           </Paragraph>
           {onRegenerateAccessCode ? (
             <Popconfirm
@@ -129,9 +132,9 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
           name="name"
           label="Project Name"
           rules={[
-            { required: true, message: "Please enter project name" },
-            { min: 3, message: "Project name must be at least 3 characters" },
-            { max: 100, message: "Project name must not exceed 100 characters" },
+            { required: true, message: "Please enter a project name." },
+            { min: 3, message: "Project name must be at least 3 characters." },
+            { max: 100, message: "Project name must not exceed 100 characters." },
           ]}
         >
           <Input placeholder="Enter project name" size="large" />
@@ -140,7 +143,7 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
         <Form.Item
           name="description"
           label="Description"
-          rules={[{ max: 500, message: "Description must not exceed 500 characters" }]}
+          rules={[{ max: 500, message: "Description must not exceed 500 characters." }]}
         >
           <TextArea placeholder="Enter project description" rows={4} showCount maxLength={500} />
         </Form.Item>
@@ -165,7 +168,7 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
                 if (end.isAfter(start) || end.isSame(start, "day")) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error("End date must be on or after start date"));
+                return Promise.reject(new Error("End date must be on or after start date."));
               },
             }),
           ]}

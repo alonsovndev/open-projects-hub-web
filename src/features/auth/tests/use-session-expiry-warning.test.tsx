@@ -22,7 +22,6 @@ const MINUTE_MS = 60 * 1000;
 
 const sessionExpiringIn = (ms: number): AdminSession => ({
   token: "access-token",
-  refreshToken: "refresh-token",
   sessionExpiresAt: new Date(Date.now() + ms).toISOString(),
   email: "admin@example.com",
   displayName: "Admin",
@@ -88,7 +87,7 @@ describe("useSessionExpiryWarning", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
-      state: { message: "Your session has expired. Please log in again." },
+      state: { message: "Your session has expired. Please sign in again." },
     });
   });
 
@@ -100,7 +99,7 @@ describe("useSessionExpiryWarning", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(mockNavigate).toHaveBeenCalledWith("/login", {
-      state: { message: "Your session has expired. Please log in again." },
+      state: { message: "Your session has expired. Please sign in again." },
     });
   });
 

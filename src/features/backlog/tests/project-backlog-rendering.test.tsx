@@ -73,5 +73,4 @@ describe("Project backlog page", () => {
 
     expect(screen.getByRole("button", { name: /^export backlog$/i })).toBeInTheDocument();
   });
-
 });

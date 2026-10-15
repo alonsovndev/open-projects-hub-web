@@ -1,51 +1,40 @@
-import { useEffect } from "react";
-
+import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
-import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
+import { useLogoutMutation, useRefreshTokenMutation } from "@/features/auth/api/admin-auth-api";
 import { sessionStorage } from "@/features/auth/model/session-storage";
+import { subscribeSessionChanges } from "@/features/auth/model/session-coordinator";
 import {
   clearAdminSessionState,
   sessionBootstrapFinished,
 } from "@/features/auth/state/admin-auth-slice";
+import { hasPendingRevocation, hasSignOutIntent } from "@/features/auth/model/sign-out-intent";
 
-/**
- * Resumes a persisted session on app boot by exchanging the stored refresh
- * token for a fresh access token — the access token itself is never
- * persisted, so a page reload otherwise always starts logged out regardless
- * of "remember me" (FR-007-06/07).
- */
 export const useSessionBootstrap = () => {
-  const isBootstrapping = useAppSelector((state) => state.auth.isBootstrapping);
+  const { isBootstrapping, generation } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [refreshToken] = useRefreshTokenMutation();
+  const [logoutRequest] = useLogoutMutation();
+  const hasStarted = useRef(false);
 
+  useEffect(() => subscribeSessionChanges(() => dispatch(clearAdminSessionState())), [dispatch]);
   useEffect(() => {
-    if (!isBootstrapping) return;
-
-    const stored = sessionStorage.load();
-    if (!stored?.refreshToken) {
-      dispatch(sessionBootstrapFinished());
+    sessionStorage.clear();
+    if (!isBootstrapping || hasStarted.current) return;
+    hasStarted.current = true;
+    if (hasSignOutIntent()) {
+      if (!hasPendingRevocation()) {
+        dispatch(sessionBootstrapFinished(generation));
+        return;
+      }
+      void logoutRequest({ retryPending: true })
+        .unwrap()
+        .catch(() => undefined)
+        .finally(() => dispatch(sessionBootstrapFinished(generation)));
       return;
     }
-
-    refreshToken({ refreshToken: stored.refreshToken })
+    void refreshToken()
       .unwrap()
-      .then((response) => applyRefreshedSession(dispatch, stored, response))
-      .catch((error: unknown) => {
-        const status = (error as { status?: number | string } | undefined)?.status;
-        if (status === 401) {
-          // The refresh token itself was rejected (expired/revoked) — it's dead, drop it.
-          dispatch(clearAdminSessionState());
-        } else {
-          // Transient failure (network blip, 5xx, timeout) — leave the persisted
-          // session alone so a later reload can retry; just stop showing the spinner.
-          dispatch(sessionBootstrapFinished());
-        }
-      });
-    // Intentionally runs once on mount only.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+      .catch(() => dispatch(sessionBootstrapFinished(generation)));
+  }, [isBootstrapping, generation, refreshToken, logoutRequest, dispatch]);
   return { isBootstrapping };
 };

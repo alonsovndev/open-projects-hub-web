@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import type { ReactNode } from "react";
@@ -67,7 +67,40 @@ describe("useLogout", () => {
 
     expect(store.getState().auth.session).toBeNull();
     expect(localStorage.getItem("admin_session")).toBeNull();
-    expect(message.success).toHaveBeenCalledWith("Logged out successfully");
+    expect(message.success).toHaveBeenCalledWith("Signed out.");
     expect(mockNavigate).toHaveBeenCalledWith("/login");
+  });
+
+  it("revokes the cookie session without exposing credentials after local sign-out", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify({ message: "ok" }), { status: 200 }));
+    const store = configureStore({
+      reducer: {
+        auth: adminAuthReducer,
+        [baseApi.reducerPath]: baseApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
+    });
+    store.dispatch(setAdminSession({ session: mockSession }));
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <BrowserRouter>
+        <Provider store={store}>{children}</Provider>
+      </BrowserRouter>
+    );
+    const { result } = renderHook(() => useLogout(), { wrapper });
+
+    act(() => {
+      result.current.logout();
+    });
+
+    await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+    const request = fetchSpy.mock.calls[0][0] as Request;
+    expect(request.credentials).toBe("include");
+    expect(request.headers.get("X-Session-Mode")).toBe("cookie");
+    expect(request.headers.get("Authorization")).toBeNull();
+    expect(await request.text()).toBe("");
+    expect(store.getState().auth.session).toBeNull();
+    fetchSpy.mockRestore();
   });
 });

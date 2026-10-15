@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { message } from "antd";
 
+import { getErrorMessage } from "@/shared/types/api";
 import type { BacklogFilters } from "@/features/backlog/types";
 import type { ProjectPriority } from "@/features/dashboard/types";
 import { useGetStoriesQuery, useDeleteStoryMutation } from "@/features/backlog/api/stories-api";
@@ -68,10 +69,9 @@ export const useBacklog = () => {
   const handleDeleteStory = async (storyId: string) => {
     try {
       await deleteStoryMutation(storyId).unwrap();
-      message.success("Story deleted successfully");
+      message.success("Story deleted.");
     } catch (error) {
-      console.error("Failed to delete story:", error);
-      message.error("Failed to delete story. Please try again.");
+      message.error(getErrorMessage(error, "We couldn't delete the story. Please try again."));
     }
   };
 
@@ -106,7 +106,7 @@ export const useBacklog = () => {
   const hasClientOnlyFilters = filters.search !== "" || filters.priority !== "all";
 
   const exportBlockedReason = !exportProjectId
-    ? "Select a project to export its backlog"
+    ? "Select a project to export its backlog."
     : hasClientOnlyFilters
       ? "Exports cover a whole project. Clear the search and priority filters first."
       : null;

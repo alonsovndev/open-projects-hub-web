@@ -7,11 +7,7 @@ import { renderWithProviders } from "@/test/utils/render-with-providers";
 
 const renderForm = (initialValues?: { code: string }) =>
   renderWithProviders(
-    <ProjectFormComponent
-      onSubmit={vi.fn()}
-      onCancel={vi.fn()}
-      initialValues={initialValues}
-    />
+    <ProjectFormComponent onSubmit={vi.fn()} onCancel={vi.fn()} initialValues={initialValues} />
   );
 
 describe("ProjectForm code suggestion", () => {

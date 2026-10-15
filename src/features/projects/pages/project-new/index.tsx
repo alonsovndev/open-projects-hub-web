@@ -14,7 +14,14 @@ export const ProjectNewPage: FC = () => {
   return (
     <div className={styles.pageContainer}>
       {limitError && (
-        <Alert type="error" showIcon message="Cannot create project" description={limitError} role="alert" style={{ marginBottom: 16 }} />
+        <Alert
+          type="error"
+          showIcon
+          message="Cannot create project"
+          description={limitError}
+          role="alert"
+          style={{ marginBottom: 16 }}
+        />
       )}
       <ProjectForm
         onSubmit={handleSubmit}

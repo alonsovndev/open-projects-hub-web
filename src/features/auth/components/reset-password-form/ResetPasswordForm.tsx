@@ -38,7 +38,7 @@ export const ResetPasswordForm: FC = () => {
             type="warning"
             showIcon
             className={styles.formItem}
-            message="Start from Forgot Password"
+            message="Request a password reset first"
             description={
               <>
                 We couldn't find which account you're resetting. Please{" "}

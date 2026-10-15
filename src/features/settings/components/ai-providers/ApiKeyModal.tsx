@@ -65,8 +65,8 @@ export const ApiKeyModal: FC<ApiKeyModalProps> = ({
           type="warning"
           showIcon
           className="api-key-modal-alert"
-          message="Your current key will stop working"
-          description={`Saving replaces the ${label} key already stored. The old key is discarded immediately.`}
+          message="Replace your saved key?"
+          description={`Saving replaces the ${label} key used by this app. It does not revoke the old key at ${label}.`}
           style={{ marginBottom: 16 }}
         />
       )}
@@ -77,12 +77,12 @@ export const ApiKeyModal: FC<ApiKeyModalProps> = ({
           name="apiKey"
           rules={[
             { required: true, message: `Enter your ${label} API key` },
-            { min: 20, message: "That key looks too short — check you copied all of it" },
+            { min: 20, message: "This key looks too short. Check that you copied the entire key." },
             {
               // Pasting from a console often drags in a newline or a stray space, which the
               // provider would reject; catching it here saves a validation attempt.
               pattern: /^\S+$/,
-              message: "The key must not contain spaces or line breaks",
+              message: "The key must not contain spaces or line breaks.",
             },
           ]}
           extra={

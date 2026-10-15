@@ -1,5 +1,7 @@
 import { isDev } from "@/config/env";
 import type { GeneratedStory } from "@/features/refinement/types";
+import { z } from "zod";
+import { generatedStorySchema } from "./story-schema";
 
 const KEY_PREFIX = "open-projects-hub.refinement-pending";
 
@@ -12,22 +14,14 @@ export interface PendingStories {
 // Keyed by account so a second sign-in in the same tab never sees another user's stories.
 const keyFor = (owner: string) => `${KEY_PREFIX}.${owner}`;
 
-const isGeneratedStory = (value: unknown): value is GeneratedStory => {
-  if (!value || typeof value !== "object") return false;
-  const story = value as Partial<GeneratedStory>;
+const pendingStoriesSchema = z.object({
+  projectId: z.string().min(1),
+  stories: z.array(generatedStorySchema).min(1),
+});
 
-  return (
-    typeof story.id === "string" &&
-    typeof story.title === "string" &&
-    typeof story.description === "string" &&
-    Array.isArray(story.acceptanceCriteria) &&
-    story.acceptanceCriteria.every((criterion) => typeof criterion === "string")
-  );
-};
-
-const reportFailure = (action: string, error: unknown) => {
+const reportFailure = (action: "load" | "save" | "clear") => {
   if (isDev) {
-    console.error(`Failed to ${action} pending refinement stories:`, error);
+    console.error(`Failed to ${action} pending refinement stories.`);
   }
 };
 
@@ -42,33 +36,30 @@ export const pendingStoriesStorage = {
       const raw = window.sessionStorage.getItem(keyFor(owner));
       if (!raw) return null;
 
-      const parsed: unknown = JSON.parse(raw);
-      if (!parsed || typeof parsed !== "object") return null;
-
-      const { projectId, stories } = parsed as Partial<PendingStories>;
-      if (typeof projectId !== "string" || !Array.isArray(stories)) return null;
-      if (stories.length === 0 || !stories.every(isGeneratedStory)) return null;
-
-      return { projectId, stories };
-    } catch (error) {
-      reportFailure("load", error);
+      const parsed = pendingStoriesSchema.safeParse(JSON.parse(raw));
+      return parsed.success ? parsed.data : null;
+    } catch {
+      reportFailure("load");
       return null;
     }
   },
 
   save: (owner: string, pending: PendingStories): void => {
     try {
-      window.sessionStorage.setItem(keyFor(owner), JSON.stringify(pending));
-    } catch (error) {
-      reportFailure("save", error);
+      window.sessionStorage.setItem(
+        keyFor(owner),
+        JSON.stringify(pendingStoriesSchema.parse(pending))
+      );
+    } catch {
+      reportFailure("save");
     }
   },
 
   clear: (owner: string): void => {
     try {
       window.sessionStorage.removeItem(keyFor(owner));
-    } catch (error) {
-      reportFailure("clear", error);
+    } catch {
+      reportFailure("clear");
     }
   },
 };

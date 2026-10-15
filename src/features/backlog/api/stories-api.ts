@@ -55,6 +55,8 @@ export const storiesApi = baseApi.injectEndpoints({
           params: {
             project_id: filters.projectId,
             priority: filters.priority !== "all" ? filters.priority : undefined,
+            // The API defaults to 20; ask for its maximum since this list is filtered client-side.
+            limit: 100,
           },
         }),
         transformResponse: (response: PaginatedStoriesResponse) => ({

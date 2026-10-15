@@ -1,6 +1,7 @@
 import { message, Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { useDeleteProjectMutation } from "@/features/projects/api/projects-api";
 
 interface UseDeleteProjectOptions {
@@ -13,19 +14,22 @@ export const useDeleteProject = (options?: UseDeleteProjectOptions) => {
 
   const deleteProject = (projectId: string, projectName: string) => {
     Modal.confirm({
-      title: "Delete Project",
+      title: "Delete project",
       icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete "${projectName}"? This action cannot be undone.`,
+      content: `Delete "${projectName}"? This action cannot be undone.`,
       okText: "Delete",
       okType: "danger",
       cancelText: "Cancel",
       onOk: async () => {
         try {
           await deleteProjectMutation(projectId).unwrap();
-          message.success(`Project "${projectName}" deleted successfully`);
+          message.success(`Project "${projectName}" deleted.`);
           options?.onSuccess?.();
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : "Failed to delete project";
+          const errorMessage = getErrorMessage(
+            error,
+            "We couldn't delete the project. Please try again."
+          );
           message.error(errorMessage);
           options?.onError?.(error instanceof Error ? error : new Error(errorMessage));
         }

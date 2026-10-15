@@ -7,6 +7,12 @@
   padding: $spacing-lg $spacing-xl;
   background-color: $surface-white;
   box-shadow: 0 1px 0 var(--color-border-subtle);
+  gap: $spacing-sm;
+
+  > button {
+    margin-left: auto;
+    order: 2;
+  }
 }
 
 .brandSection {
@@ -40,6 +46,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-shrink: 0;
 }
 
 .headerLanding {
@@ -132,12 +145,12 @@
   padding: 0 20px;
   background: $primary-base;
   border-color: $primary-base;
-  color: white;
+  color: $text-on-primary;
 
   &:hover {
     background: $primary-dark;
     border-color: $primary-dark;
-    color: white;
+    color: $text-on-primary;
   }
 }
 
@@ -181,14 +194,30 @@
 @media (max-width: 768px) {
   .header {
     padding: $spacing-md 20px;
-    align-items: flex-start;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 14px;
+
+    > .brandSection {
+      flex: 1;
+      min-width: 0;
+    }
   }
 
   .actions {
     width: 100%;
     justify-content: flex-start;
+    order: 3;
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .landingContainer {
+    gap: $spacing-sm;
+    padding-inline: $spacing-md;
+  }
+
+  .headerLanding .brandName {
+    font-size: 0.875rem;
   }
 }
 

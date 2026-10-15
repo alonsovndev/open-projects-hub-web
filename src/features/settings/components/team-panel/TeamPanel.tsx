@@ -115,7 +115,7 @@ export const TeamPanel: FC = () => {
       </div>
 
       {isError ? (
-        <Alert type="error" showIcon message="Unable to load your team. Please try again." />
+        <Alert type="error" showIcon message="We couldn't load your team. Please try again." />
       ) : (
         <Table<TeamMember>
           rowKey="id"
@@ -148,8 +148,8 @@ export const TeamPanel: FC = () => {
             label="Full name"
             name="displayName"
             rules={[
-              { required: true, message: "Please enter their name" },
-              { min: 2, message: "Name must be at least 2 characters" },
+              { required: true, message: "Please enter their name." },
+              { min: 2, message: "Name must be at least 2 characters." },
             ]}
           >
             <Input size="large" placeholder="Alex Doe" />
@@ -158,8 +158,8 @@ export const TeamPanel: FC = () => {
             label="Email"
             name="email"
             rules={[
-              { required: true, message: "Please enter their email" },
-              { type: "email", message: "Please enter a valid email address" },
+              { required: true, message: "Please enter their email." },
+              { type: "email", message: "Please enter a valid email address." },
             ]}
           >
             <Input size="large" placeholder="alex@example.com" autoComplete="off" />

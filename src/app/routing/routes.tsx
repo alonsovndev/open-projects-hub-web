@@ -16,6 +16,7 @@ import { settingsRoutes } from "@/features/settings/routes";
 import { legalRoutes } from "@/features/legal/routes";
 
 const UnauthorizedPage = lazyWithRetry(() => import("@/shared/pages/unauthorized"));
+const NotFoundPage = lazyWithRetry(() => import("@/shared/pages/not-found"));
 
 /**
  * Central route aggregator
@@ -43,6 +44,15 @@ export const appRoutes: AppRoute[] = [
     element: (
       <PublicLayout>
         <UnauthorizedPage />
+      </PublicLayout>
+    ),
+    guards: ["public"],
+  },
+  {
+    path: "*",
+    element: (
+      <PublicLayout>
+        <NotFoundPage />
       </PublicLayout>
     ),
     guards: ["public"],

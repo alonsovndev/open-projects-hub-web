@@ -31,6 +31,7 @@ const dashboard = {
   projects: [project],
   stats: null,
   loading: false,
+  hasError: false,
   handleViewProject: vi.fn(),
   handleCreateProject: vi.fn(),
   handleViewAllProjects: vi.fn(),
@@ -60,4 +61,14 @@ describe("Dashboard role rendering", () => {
     expect(screen.getByRole("button", { name: /new project/i })).toBeInTheDocument();
   });
 
+  it("tells the user when dashboard data failed to load instead of showing an empty list", () => {
+    dashboard.hasError = true;
+    try {
+      renderPage("admin");
+
+      expect(screen.getByText(/couldn't load your dashboard/i)).toBeInTheDocument();
+    } finally {
+      dashboard.hasError = false;
+    }
+  });
 });

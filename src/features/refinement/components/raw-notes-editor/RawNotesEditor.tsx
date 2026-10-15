@@ -54,7 +54,7 @@ export const RawNotesEditor: FC<RawNotesEditorProps> = ({
           type="error"
           showIcon
           className={styles.errorAlert}
-          message="Refinement failed"
+          message="Couldn't generate stories"
           description={error}
           closable={Boolean(onDismissError)}
           onClose={onDismissError}

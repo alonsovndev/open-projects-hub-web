@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { message } from "antd";
 import { http, HttpResponse } from "msw";
 
 import { TeamPanel } from "@/features/settings/components/team-panel";
@@ -36,6 +37,13 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
   beforeEach(() => {
     resetTeamFixtures();
     vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(async () => {
+    // Static messages own a React root outside Testing Library's cleanup.
+    await act(async () => {
+      message.destroy();
+    });
   });
 
   it("lists the people in the workspace", async () => {
@@ -78,7 +86,9 @@ describe("TeamPanel", { timeout: 20_000 }, () => {
       role: index === 0 ? "admin" : "member",
       isActive: true,
     }));
-    server.use(http.get(`${adminAuthConfig.apiBaseUrl}/v1/users`, () => HttpResponse.json(fullTeam)));
+    server.use(
+      http.get(`${adminAuthConfig.apiBaseUrl}/v1/users`, () => HttpResponse.json(fullTeam))
+    );
     renderPanel();
     await screen.findByText("user5@test.com");
 

@@ -292,15 +292,15 @@ Split large components:
 
 ```typescript
 // ✅ Good - Split by concern
-<AdminWelcome />
-  ├─ <WelcomeHeader />
-  ├─ <QuickActions />
-  └─ <WorkspacePanels />
+<ProjectBacklogPage />
+  ├─ <PageHeader />
+  ├─ <ProjectSelector />
+  └─ <StoryList />
 
 // ❌ Bad - 500-line component
-<AdminWelcome>
+<ProjectBacklogPage>
   {/* Everything in one file */}
-</AdminWelcome>
+</ProjectBacklogPage>
 ```
 
 ## Configuration Management

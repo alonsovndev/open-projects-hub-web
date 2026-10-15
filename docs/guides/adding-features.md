@@ -26,7 +26,7 @@ This guide walks through the complete process of adding a new feature from scrat
 
 3. **Is it public or authenticated?**
    - Public → Use `PublicLayout` + `["public"]` guard
-   - Authenticated → Use `PrivateLayout` + `["auth"]` guard
+   - Authenticated → Use `AdminLayout` + `["auth"]` guard
    - Admin-only → Add `{ role: "admin" }` guard
 
 4. **What API endpoints does it need?**
@@ -203,16 +203,16 @@ export const useProjectFilters = () => {
 ```typescript
 // src/features/projects/routes.tsx
 import type { AppRoute } from "@/app/routing/types";
-import { PrivateLayout } from "@/app/layouts";
+import { AdminLayout } from "@/app/layouts";
 import { ProjectsPage } from "@/pages/projects";
 
 export const projectsRoutes: AppRoute[] = [
   {
     path: "/projects",
     element: (
-      <PrivateLayout>
+      <AdminLayout>
         <ProjectsPage />
-      </PrivateLayout>
+      </AdminLayout>
     ),
     guards: ["auth"],
   },
@@ -374,12 +374,12 @@ npm run dev
 export const projectsRoutes: AppRoute[] = [
   {
     path: "/projects",
-    element: <PrivateLayout><ProjectsListPage /></PrivateLayout>,
+    element: <AdminLayout><ProjectsListPage /></AdminLayout>,
     guards: ["auth"],
   },
   {
     path: "/projects/:id",
-    element: <PrivateLayout><ProjectDetailPage /></PrivateLayout>,
+    element: <AdminLayout><ProjectDetailPage /></AdminLayout>,
     guards: ["auth"],
   },
 ];

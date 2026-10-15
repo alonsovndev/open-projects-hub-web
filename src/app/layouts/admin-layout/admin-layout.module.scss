@@ -139,6 +139,7 @@
 
 .avatar {
   background: $primary-base;
+  color: $text-on-primary;
   font-family: $font-headline;
   font-weight: 700;
   flex-shrink: 0;
@@ -197,13 +198,17 @@
   }
 }
 
-.mobileHeader {
+.workspaceHeader {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-sm $spacing-md;
   background: $surface-white;
   border-bottom: 1px solid $border-light;
+
+  > button:last-child {
+    margin-left: auto;
+  }
 }
 
 .mobileMenuButton {

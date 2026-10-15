@@ -61,7 +61,6 @@ describe("Backlog role rendering", () => {
     expect(screen.getByRole("button", { name: /export markdown/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /delete markdown export/i })).toBeInTheDocument();
   });
-
 });
 
 describe("Backlog export scoping", () => {
@@ -78,5 +77,4 @@ describe("Backlog export scoping", () => {
 
     expect(screen.getByRole("button", { name: /export markdown/i })).toBeEnabled();
   });
-
 });

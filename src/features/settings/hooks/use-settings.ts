@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { message } from "antd";
 
+import { getErrorMessage } from "@/shared/types/api";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
@@ -28,10 +29,9 @@ export const useSettings = () => {
     async (values: { displayName: string }) => {
       try {
         await updateProfile({ displayName: values.displayName }).unwrap();
-        message.success("Profile updated successfully");
+        message.success("Profile updated.");
       } catch (err) {
-        console.error("Failed to update profile:", err);
-        message.error("Failed to update profile. Please try again.");
+        message.error(getErrorMessage(err, "We couldn't update your profile. Please try again."));
         throw err;
       }
     },
@@ -45,11 +45,12 @@ export const useSettings = () => {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
         }).unwrap();
-        message.success("Password changed successfully");
+        message.success("Password changed.");
       } catch (err) {
-        console.error("Failed to change password:", err);
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to change password. Please try again.";
+        const errorMessage = getErrorMessage(
+          err,
+          "We couldn't change your password. Please try again."
+        );
         message.error(errorMessage);
         throw err;
       }

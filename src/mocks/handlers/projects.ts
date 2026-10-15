@@ -154,11 +154,17 @@ const applyProjectFilters = (url: URL) => {
   return mockProjects.filter((project) => {
     if (status && project.status !== status) return false;
     if (clientId && project.clientId !== clientId) return false;
-    if (search && !project.name.toLowerCase().includes(search) && !project.code.toLowerCase().includes(search)) {
+    if (
+      search &&
+      !project.name.toLowerCase().includes(search) &&
+      !project.code.toLowerCase().includes(search)
+    ) {
       return false;
     }
-    if (createdFrom && new Date(project.createdAt).getTime() < new Date(createdFrom).getTime()) return false;
-    if (createdTo && new Date(project.createdAt).getTime() > new Date(createdTo).getTime()) return false;
+    if (createdFrom && new Date(project.createdAt).getTime() < new Date(createdFrom).getTime())
+      return false;
+    if (createdTo && new Date(project.createdAt).getTime() > new Date(createdTo).getTime())
+      return false;
     return true;
   });
 };
@@ -191,7 +197,9 @@ export const projectsHandlers = [
     const isLimitTest = String(body.code ?? "").includes("LIMIT");
     if (isLimitTest && activeCount >= 3) {
       return HttpResponse.json(
-        { detail: "Active project limit reached (3). Archive a project before creating a new one." },
+        {
+          detail: "Active project limit reached (3). Archive a project before creating a new one.",
+        },
         { status: 409 }
       );
     }
@@ -240,16 +248,27 @@ export const projectsHandlers = [
     if (!project) {
       return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
     }
-    return HttpResponse.json({ ...project, status: "archived", updatedAt: new Date().toISOString() });
+    return HttpResponse.json({
+      ...project,
+      status: "archived",
+      updatedAt: new Date().toISOString(),
+    });
   }),
 
-  http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/access-code/regenerate`, ({ params }) => {
-    const project = mockProjects.find((p) => p.id === params.id);
-    if (!project) {
-      return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+  http.post(
+    `${adminAuthConfig.apiBaseUrl}/v1/projects/:id/access-code/regenerate`,
+    ({ params }) => {
+      const project = mockProjects.find((p) => p.id === params.id);
+      if (!project) {
+        return HttpResponse.json({ detail: "Project not found" }, { status: 404 });
+      }
+      return HttpResponse.json({
+        ...project,
+        accessCode: "PRJ-DEMX23PQ",
+        updatedAt: new Date().toISOString(),
+      });
     }
-    return HttpResponse.json({ ...project, accessCode: "PRJ-DEMX23PQ", updatedAt: new Date().toISOString() });
-  }),
+  ),
 
   http.post(`${adminAuthConfig.apiBaseUrl}/v1/projects/:id/reactivate`, ({ params }) => {
     const project = mockProjects.find((p) => p.id === params.id);

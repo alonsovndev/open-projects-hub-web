@@ -46,7 +46,6 @@ export interface WorkspaceSummary {
 
 export interface AdminSession {
   token: string;
-  refreshToken?: string;
   /** ISO timestamp when the current refresh session lapses (server-computed; see FR-007-06). */
   sessionExpiresAt?: string;
   email: string;

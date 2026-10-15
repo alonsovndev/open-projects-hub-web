@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { message, Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
+import { getErrorMessage } from "@/shared/types/api";
+import { ERROR_MESSAGES } from "@/shared/utils/error-messages";
 import {
   useGetProjectsQuery,
   useGetProjectByIdQuery,
@@ -17,8 +19,7 @@ import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link
 
 /** Maximum number of concurrently active projects allowed (MVP constraint). */
 export const MAX_ACTIVE_PROJECTS = 3;
-export const ACTIVE_LIMIT_MESSAGE =
-  "You have reached the maximum of 3 active projects. Archive a project before creating a new one.";
+export const ACTIVE_LIMIT_MESSAGE = ERROR_MESSAGES.projectLimit;
 
 export const useProjectsOverview = () => {
   const navigate = useNavigate();
@@ -110,9 +111,13 @@ export const useProjectsOverview = () => {
           compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
           break;
         }
-        case "endDate":
-          compareValue = new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+        case "endDate": {
+          // Undated projects compare as the latest possible end date (last when ascending).
+          const endTime = (endDate?: string) =>
+            endDate ? new Date(endDate).getTime() : Number.MAX_SAFE_INTEGER;
+          compareValue = endTime(a.endDate) - endTime(b.endDate);
           break;
+        }
         case "lastUpdated":
           compareValue = new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();
           break;
@@ -192,7 +197,7 @@ export const useProjectsOverview = () => {
       await regenerateAccessCode(editingProjectId).unwrap();
       message.success("New access code generated. The previous code no longer works.");
     } catch {
-      message.error("Failed to generate a new access code");
+      message.error("We couldn't generate a new access code. Please try again.");
     }
   };
 
@@ -234,7 +239,7 @@ export const useProjectsOverview = () => {
 
   const handleArchiveProject = (projectId: string, projectName: string) => {
     Modal.confirm({
-      title: "Archive Project",
+      title: "Archive project",
       icon: <ExclamationCircleOutlined />,
       content: `Archive "${projectName}"? It will be moved out of the active list. You can still view it by filtering for Archived.`,
       okText: "Archive",
@@ -242,9 +247,9 @@ export const useProjectsOverview = () => {
       onOk: async () => {
         try {
           await archiveProject(projectId).unwrap();
-          message.success(`Project "${projectName}" archived`);
+          message.success(`Project "${projectName}" archived.`);
         } catch (error) {
-          const msg = error instanceof Error ? error.message : "Failed to archive project";
+          const msg = getErrorMessage(error, "We couldn't archive the project. Please try again.");
           message.error(msg);
         }
       },
@@ -253,7 +258,7 @@ export const useProjectsOverview = () => {
 
   const handleReactivateProject = (projectId: string, projectName: string) => {
     Modal.confirm({
-      title: "Reactivate Project",
+      title: "Reactivate project",
       icon: <ExclamationCircleOutlined />,
       content: `Reactivate "${projectName}"? It will count toward your ${MAX_ACTIVE_PROJECTS} active projects.`,
       okText: "Reactivate",
@@ -261,13 +266,13 @@ export const useProjectsOverview = () => {
       onOk: async () => {
         try {
           await reactivateProject(projectId).unwrap();
-          message.success(`Project "${projectName}" reactivated`);
+          message.success(`Project "${projectName}" reactivated.`);
         } catch (error) {
           const apiError = error as { status?: number };
           message.error(
             apiError?.status === 409
               ? "You have reached the maximum of 3 active projects. Archive another project before reactivating this one."
-              : "Failed to reactivate project"
+              : getErrorMessage(error, "We couldn't reactivate the project. Please try again.")
           );
         }
       },

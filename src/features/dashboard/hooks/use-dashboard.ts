@@ -8,10 +8,7 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import { buildClientReviewUrl } from "@/features/viewer/model/client-review-link";
 
 /**
- * Dashboard hook with RTK Query data fetching
- *
- * Note: Currently using mock data fallback until backend endpoints are ready.
- * When backend is available, remove the mock data imports and fallbacks.
+ * Dashboard data (recent projects and workspace stats) and navigation handlers.
  */
 export const useDashboard = () => {
   const navigate = useNavigate();
@@ -34,11 +31,7 @@ export const useDashboard = () => {
   const projects = projectsData?.projects ?? [];
   const stats = statsData ?? null;
 
-  // TODO: Handle errors appropriately
-  // For now, errors will show empty states in the UI
-  if (projectsError || statsError) {
-    // Could dispatch to error tracking service (e.g., Sentry)
-  }
+  const hasError = Boolean(projectsError || statsError);
 
   const handleViewProject = (accessCode: string) => {
     window.open(buildClientReviewUrl(accessCode), "_blank", "noopener,noreferrer");
@@ -57,6 +50,7 @@ export const useDashboard = () => {
     projects,
     stats,
     loading,
+    hasError,
     handleViewProject,
     handleCreateProject,
     handleViewAllProjects,

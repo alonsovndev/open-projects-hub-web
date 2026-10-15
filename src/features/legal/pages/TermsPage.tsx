@@ -66,8 +66,8 @@ export const TermsPage: FC = () => {
         credentials and for all activities that occur under your account.
       </Paragraph>
       <Paragraph className={styles.pageContent}>
-        <strong>Clients</strong> access the Service through project access codes without creating
-        an account. Access is read-only and limited to viewing approved stories for the specified
+        <strong>Clients</strong> access the Service through project access codes without creating an
+        account. Access is read-only and limited to viewing approved stories for the specified
         project. Access codes are provided by freelancers and may be revoked at any time.
       </Paragraph>
 
@@ -164,12 +164,11 @@ export const TermsPage: FC = () => {
         10. Termination
       </Title>
       <Paragraph className={styles.pageContent}>
-        You may terminate your account at any time by contacting us or using the account deletion
-        feature in settings. We reserve the right to suspend or terminate your access to the Service
-        at our discretion, with or without notice, for conduct that we believe violates these terms
-        or is harmful to other users, the Service, or third parties. Upon termination, your right to
-        use the Service ceases immediately. We will retain your data for a reasonable period to
-        allow export, after which it may be deleted.
+        You may terminate your account at any time by contacting us. We reserve the right to suspend
+        or terminate your access to the Service at our discretion, with or without notice, for
+        conduct that we believe violates these terms or is harmful to other users, the Service, or
+        third parties. Upon termination, your right to use the Service ceases immediately. We will
+        retain your data for a reasonable period to allow export, after which it may be deleted.
       </Paragraph>
 
       {/* 11. Changes to Terms */}

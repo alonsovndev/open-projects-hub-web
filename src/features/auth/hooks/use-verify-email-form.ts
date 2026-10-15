@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { getErrorMessage } from "@/shared/types/api";
 import { Form, message } from "antd";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -27,7 +28,7 @@ type VerifyEmailFormValues = Pick<VerifyEmailValues, "code" | "password"> & {
   confirmPassword?: string;
 };
 
-type ApiErrorShape = { data?: { message?: string } } | undefined;
+type ApiErrorShape = { data?: { code?: string } } | undefined;
 
 export const useVerifyEmailForm = () => {
   const [form] = Form.useForm<VerifyEmailFormValues>();
@@ -74,10 +75,10 @@ export const useVerifyEmailForm = () => {
       };
       navigate("/login", { state });
     } catch (error) {
-      const message = (error as ApiErrorShape)?.data?.message;
+      const requiresPassword = (error as ApiErrorShape)?.data?.code === "PASSWORD_REQUIRED";
       // An invited account reached this page without the link's setPassword flag.
-      if (message?.startsWith("Choose a password")) setPasswordRequired(true);
-      setVerifyError(message ?? "Unable to verify your email. Please try again.");
+      if (requiresPassword) setPasswordRequired(true);
+      setVerifyError(getErrorMessage(error, "We couldn't verify your email. Please try again."));
     }
   };
 
@@ -90,11 +91,9 @@ export const useVerifyEmailForm = () => {
       const ttlMinutes = isInvite ? INVITE_CODE_TTL_MINUTES : CODE_TTL_MINUTES;
       setCodeExpiresAt(new Date(Date.now() + ttlMinutes * 60_000).toISOString());
       form.setFieldValue("code", "");
-      message.success("A new code has been sent to your email.");
+      message.success("If this email is eligible, a new code has been sent. Check your email.");
     } catch (error) {
-      setResendError(
-        (error as ApiErrorShape)?.data?.message ?? "Unable to resend the code right now."
-      );
+      setResendError(getErrorMessage(error, "We couldn't send a new code. Please try again."));
     }
   };
 

@@ -52,5 +52,4 @@ describe("Settings Workspace tab access", () => {
     expect(await screen.findByText("AI Providers")).toBeInTheDocument();
     expect(screen.queryByText("Workspace")).not.toBeInTheDocument();
   });
-
 });

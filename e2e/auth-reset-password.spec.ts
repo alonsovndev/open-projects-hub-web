@@ -5,11 +5,13 @@ import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 const GENERIC_MESSAGE = "If an account exists for this email, a reset code has been sent.";
 
 test.describe("Reset Password Flow", () => {
-  test("should prompt to start from Forgot Password when no email context is present", async ({ page }) => {
+  test("should prompt to start from Forgot Password when no email context is present", async ({
+    page,
+  }) => {
     const resetPasswordPage = new ResetPasswordPage(page);
     await resetPasswordPage.goto();
 
-    await expect(page.getByText(/start from forgot password/i)).toBeVisible();
+    await expect(page.getByText(/request a password reset first/i)).toBeVisible();
     await expect(resetPasswordPage.submitButton).toBeDisabled();
   });
 
@@ -54,7 +56,7 @@ test.describe("Reset Password Flow", () => {
       await resetPasswordPage.resetPassword("ABC234", "NewPass123!@#");
 
       await expect(page).toHaveURL(/\/login/);
-      await expect(page.getByText(/password reset successfully/i)).toBeVisible();
+      await expect(page.getByText(/password reset\. please sign in/i)).toBeVisible();
     });
 
     test("should show a server error for an invalid code", async ({ page }) => {
@@ -64,7 +66,19 @@ test.describe("Reset Password Flow", () => {
 
       await resetPasswordPage.resetPassword("WRONG1", "NewPass123!@#");
 
-      await expect(page.getByText(/invalid or expired reset code/i)).toBeVisible();
+      await expect(page.getByText(/this reset code is invalid or has expired/i)).toBeVisible();
+    });
+
+    test("should ask for a new reset code after too many attempts", async ({ page }) => {
+      await page.route("**/v1/auth/reset-password", (route) =>
+        route.fulfill({
+          status: 429,
+          json: { detail: "Too many attempts. Please request a new code." },
+        })
+      );
+      await resetPasswordPage.resetPassword("WRONG1", "NewPass123!@#");
+      await expect(page.getByText("Too many attempts. Please request a new code.")).toBeVisible();
+      await expect(page).toHaveURL(/\/reset-password/);
     });
 
     test("should show validation for weak new password", async () => {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Mock Service Worker (MSW) intercepts API requests during development and testing.
+Mock Service Worker (MSW) intercepts API requests in unit and integration tests (Vitest). The app itself always talks to the real API.
 
 ## Mock Users
 
@@ -13,18 +13,9 @@ Mock Service Worker (MSW) intercepts API requests during development and testing
 | admin@test.com | Admin123! | admin |
 | user@test.com  | User123!  | user  |
 
-## Development
-
-MSW automatically starts in development mode (`npm run dev`).
-
-Check browser console for `[MSW] Mocking enabled` message.
-
 ## Testing
 
-MSW runs automatically in:
-
-- Unit tests (Vitest)
-- E2E tests (Playwright)
+MSW runs in unit and integration tests (Vitest) through `src/mocks/server.ts`. Playwright E2E tests use a real, seeded API.
 
 ## Adding Handlers
 

@@ -18,7 +18,7 @@ export const SessionExpiryWarning: FC = () => {
       closable={false}
       maskClosable={false}
     >
-      <p>You'll be signed out soon due to inactivity. Would you like to stay signed in?</p>
+      <p>Your session expires soon. Select “Stay signed in” to continue.</p>
     </Modal>
   );
 };

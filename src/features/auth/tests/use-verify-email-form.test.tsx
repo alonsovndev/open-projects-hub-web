@@ -73,7 +73,9 @@ describe("useVerifyEmailForm", () => {
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(result.current.verifyError).toBe("Invalid or expired verification code");
+    expect(result.current.verifyError).toBe(
+      "This verification code is invalid or has expired. Request a new code."
+    );
   });
 
   it("shows the lockout message after too many wrong attempts", async () => {
@@ -92,6 +94,48 @@ describe("useVerifyEmailForm", () => {
     });
 
     expect(result.current.verifyError).toBe("Too many attempts. Please request a new code.");
+  });
+
+  it("prompts an invited member to choose a password when the link has no setup flag", async () => {
+    mockSearch = "email=mate%40example.com&code=ABC234";
+    mockLocationState = null;
+    let sentBody: unknown;
+    server.use(
+      http.post(verifyUrl, async ({ request }) => {
+        sentBody = await request.json();
+        return HttpResponse.json(
+          { detail: "Choose a password to finish setting up your account." },
+          { status: 400 }
+        );
+      })
+    );
+    const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
+    expect(result.current.isInvite).toBe(false);
+
+    await act(async () => {
+      await result.current.handleSubmit({ code: "ABC234" });
+    });
+    expect(result.current.isInvite).toBe(true);
+    expect(result.current.verifyError).toBe("Choose a password to finish setting up your account.");
+    expect(mockNavigate).not.toHaveBeenCalled();
+
+    server.use(
+      http.post(verifyUrl, async ({ request }) => {
+        sentBody = await request.json();
+        return HttpResponse.json({ verified: true });
+      })
+    );
+    await act(async () => {
+      await result.current.handleSubmit({ code: "ABC234", password: "MyOwn#Pass1" });
+    });
+    expect(sentBody).toEqual({
+      email: "mate@example.com",
+      code: "ABC234",
+      password: "MyOwn#Pass1",
+    });
+    expect(mockNavigate).toHaveBeenCalledWith("/login", {
+      state: { message: "Email verified and password set. Please sign in." },
+    });
   });
 
   it("moves the expiry forward after a resend", async () => {

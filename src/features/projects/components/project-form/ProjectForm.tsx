@@ -118,9 +118,9 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
             name="name"
             label="Project Name"
             rules={[
-              { required: true, message: "Please enter project name" },
-              { min: 3, message: "Project name must be at least 3 characters" },
-              { max: 100, message: "Project name must not exceed 100 characters" },
+              { required: true, message: "Please enter a project name." },
+              { min: 3, message: "Project name must be at least 3 characters." },
+              { max: 100, message: "Project name must not exceed 100 characters." },
             ]}
           >
             <Input placeholder="Enter project name" size="large" />
@@ -131,13 +131,13 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
             label="Project Code"
             extra={initialValues ? undefined : "Suggested from the name — you can edit it"}
             rules={[
-              { required: true, message: "Please enter project code" },
+              { required: true, message: "Please enter a project code." },
               {
                 pattern: /^[A-Z0-9-]+$/,
-                message: "Code must be uppercase letters, numbers, or hyphens",
+                message: "Code must be uppercase letters, numbers, or hyphens.",
               },
-              { min: 2, message: "Code must be at least 2 characters" },
-              { max: 20, message: "Code must not exceed 20 characters" },
+              { min: 2, message: "Code must be at least 2 characters." },
+              { max: 20, message: "Code must not exceed 20 characters." },
             ]}
           >
             <Input
@@ -152,7 +152,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           <Form.Item
             name="clientId"
             label="Client"
-            rules={[{ required: true, message: "Please select a client" }]}
+            rules={[{ required: true, message: "Please select a client." }]}
             help={clientsError ? "Failed to load clients. Please refresh the page." : undefined}
             validateStatus={selectStatus}
           >
@@ -170,7 +170,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
                 isLoadingClients ? (
                   <Spin size="small" />
                 ) : clientsError ? (
-                  "Error loading clients"
+                  "Couldn't load your clients"
                 ) : (
                   "No clients found"
                 )
@@ -181,7 +181,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           <Form.Item
             name="phase"
             label="Phase"
-            rules={[{ required: true, message: "Please select project phase" }]}
+            rules={[{ required: true, message: "Please select a project phase." }]}
           >
             <Select options={phaseOptions} placeholder="Select phase" size="large" />
           </Form.Item>
@@ -189,7 +189,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           <Form.Item
             name="priority"
             label="Priority"
-            rules={[{ required: true, message: "Please select project priority" }]}
+            rules={[{ required: true, message: "Please select a project priority." }]}
           >
             <Select options={priorityOptions} placeholder="Select priority" size="large" />
           </Form.Item>
@@ -197,7 +197,7 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           <Form.Item
             name="startDate"
             label="Start Date"
-            rules={[{ required: true, message: "Please select start date" }]}
+            rules={[{ required: true, message: "Please select a start date." }]}
           >
             <DatePicker
               placeholder="Select start date"
@@ -211,14 +211,14 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
             name="endDate"
             label="End Date"
             rules={[
-              { required: true, message: "Please select end date" },
+              { required: true, message: "Please select an end date." },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   const startDate = getFieldValue("startDate");
                   if (!value || !startDate || dayjs(value).isAfter(dayjs(startDate))) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error("End date must be after start date"));
+                  return Promise.reject(new Error("End date must be after start date."));
                 },
               }),
             ]}
@@ -242,9 +242,9 @@ export const ProjectFormComponent: FC<ProjectFormProps> = ({
           name="description"
           label="Description"
           rules={[
-            { required: true, message: "Please enter project description" },
-            { min: 10, message: "Description must be at least 10 characters" },
-            { max: 500, message: "Description must not exceed 500 characters" },
+            { required: true, message: "Please enter a project description." },
+            { min: 10, message: "Description must be at least 10 characters." },
+            { max: 500, message: "Description must not exceed 500 characters." },
           ]}
         >
           <TextArea

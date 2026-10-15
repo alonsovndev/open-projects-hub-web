@@ -59,5 +59,4 @@ describe("Settings AI Providers tab access", () => {
 
     expect(await screen.findByText("Team")).toBeInTheDocument();
   });
-
 });

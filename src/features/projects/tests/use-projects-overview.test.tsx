@@ -60,7 +60,9 @@ describe("useProjectsOverview", () => {
 
       await waitFor(() => {
         expect(result.current.projects.length).toBeGreaterThan(0);
-        expect(result.current.projects.every((p) => p.name.toLowerCase().includes("clinic"))).toBe(true);
+        expect(result.current.projects.every((p) => p.name.toLowerCase().includes("clinic"))).toBe(
+          true
+        );
       });
       expect(result.current.projects.length).toBeLessThan(baselineTotal);
     });

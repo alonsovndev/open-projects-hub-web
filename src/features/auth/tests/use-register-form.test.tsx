@@ -52,11 +52,11 @@ describe("useRegisterForm", () => {
       state: { email: "new.user@example.com", codeExpiresAt: expect.any(String) },
     });
     expect(message.success).toHaveBeenCalledWith(
-      "Account created! Check your email for a verification code."
+      "Account created. Check your email for a verification code."
     );
   });
 
-  it("stays on the form and shows the server's reason when registration is refused", async () => {
+  it("stays on the form and shows safe password guidance when registration is refused", async () => {
     server.use(
       http.post(`${adminAuthConfig.apiBaseUrl}${adminAuthConfig.registerEndpoint}`, () =>
         HttpResponse.json({ detail: "Password is too common" }, { status: 400 })
@@ -69,6 +69,6 @@ describe("useRegisterForm", () => {
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(message.error).toHaveBeenCalledWith("Password is too common");
+    expect(message.error).toHaveBeenCalledWith("Choose a less common password.");
   });
 });
