@@ -10,7 +10,7 @@ Complete engineering reference for the Open Projects Hub React SPA.
 
 ### 🏗️ Architecture
 
-- **[Architecture Overview](./architecture/overview.md)** - System design, current state scorecard, and constraints
+- **[Architecture Overview](./architecture/overview.md)** - System design, current state, and constraints
 - **[Folder Structure](./architecture/folder-structure.md)** - Layer-by-layer guide to project organization
 - **[Routing](./architecture/routing.md)** - Feature-owned routing, guards, and navigation patterns
 - **[State Management](./architecture/state-management.md)** - Redux Toolkit + RTK Query patterns
@@ -21,11 +21,6 @@ Complete engineering reference for the Open Projects Hub React SPA.
 - **[Concepts](./development/concepts.md)** - Core principles, patterns, and best practices
 - **[Styling](./development/styling.md)** - SCSS Modules + Ant Design strategy
 - **[Testing](./development/testing.md)** - Testing strategy, patterns, and quality guide
-
-### 🎯 Features
-
-- **[Feature Architecture](./features/features.md)** - Page-by-page and feature-by-feature breakdown
-- **[Authentication Flow](./features/auth-flow.md)** - Sign-in, session, and authorization deep-dive
 
 ### 📖 Guides
 
@@ -38,12 +33,9 @@ Complete engineering reference for the Open Projects Hub React SPA.
 - **[Best Practices](./quality/best-practices.md)** - Audit, recommendations, and improvement roadmap
 - **[Tech Stack](./quality/tech-stack.md)** - Technology choices and patterns
 
-### 🧩 Implementation (Work Logs)
+### 🔌 API
 
-- **[Implementation Status](./implementation/STATUS.md)** - What has been completed so far
-- **[Next Steps Roadmap](./implementation/NEXT-STEPS.md)** - Prioritized follow-up work
-- **[Phase 1 Quick Wins Summary](./implementation/phase-1-quick-wins-summary.md)** - Details of Phase 1 changes
-- **[API Integration Guide](./api/integration-guide.md)** - Backend contract + frontend RTK Query integration notes
+- **[API Integration Guide](./api/integration-guide.md)** - Backend contract, authentication and deployment notes
 
 ## Documentation Philosophy
 
@@ -76,11 +68,9 @@ Also see `AGENTS.md` in repository root for agent-specific working standards.
 
 ## Current Project State
 
-**Build Status**: ✅ Build passing locally (type-check + build)  
-**Test Coverage**: ✅ Foundation in place, expanding coverage  
-**Architecture Score**: 7.5/10 (strong foundation, production gaps)
+The app is live at https://oph.alonsovndev.com. `npm run verify` (lint, tests, type-check, build) runs in CI on every pull request; Playwright E2E specs need a running API and are run manually.
 
-See **[Architecture Overview](./architecture/overview.md)** for detailed scorecard and **[Best Practices](./quality/best-practices.md)** for improvement roadmap.
+See **[Architecture Overview](./architecture/overview.md)** for the current state and **[Best Practices](./quality/best-practices.md)** for the improvement roadmap.
 
 ## External Resources
 

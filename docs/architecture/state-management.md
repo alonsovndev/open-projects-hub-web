@@ -377,7 +377,7 @@ if (storedSession) {
 ## Related Documentation
 
 - **[Folder Structure](./folder-structure.md)** - Where to place state files
-- **[Auth Flow](../features/auth-flow.md)** - Session management example
+- **[API Integration Guide](../api/integration-guide.md#authentication)** - Session management
 - **[Testing](../development/testing.md)** - Testing state
 - **[Redux Toolkit](https://redux-toolkit.js.org/)** - Official docs
 - **[RTK Query](https://redux-toolkit.js.org/rtk-query/overview)** - Official docs

@@ -27,15 +27,15 @@ The current suite is still intentionally small, but the architecture is now test
 ### What is covered today
 
 - `src/features/viewer/model/access-code.test.ts` covers the pure access-code normalization and validation helpers; `viewer-api.test.ts` and `client-viewer-portal.test.tsx` cover the public Client Review endpoint and page.
-- `e2e/home.spec.ts` provides a Playwright smoke test for the public landing page.
+- 48 Vitest files (381 tests, passing on 2026-10-19) cover auth hooks and session handling, routing access policy, API mapping, backlog, projects, settings and the Client Review page.
+- 12 Playwright specs in `e2e/` cover the auth flows (login, register, verify email, forgot and reset password, session), session security, theme, alerts, the refinement UI, the landing page and an unauthenticated backlog check. They need a running, seeded API and are run manually; CI runs `npm run verify` only (`.github/workflows/ci.yml`).
 - `src/test/setup.ts` standardizes DOM matchers and cleanup for every Vitest run.
 
-### What is ready to be covered next
+### Known gaps
 
-- `src/features/auth/model/password-policy.ts` and `password-strength.ts` are pure logic modules that are ideal unit-test targets.
-- `src/features/auth/hooks/use-admin-login-form.ts` centralizes login orchestration, which makes the form flow testable through integration tests.
-- `src/app/routing/GuardResolver.tsx` centralizes auth and role redirects, which makes guard behavior testable without rendering the whole app.
-- `src/features/dashboard/hooks/use-dashboard.ts` isolates dashboard data loading from presentation.
+- No Playwright specs for authenticated project, backlog and refinement journeys (`e2e/project-backlog.spec.ts` covers only the unauthenticated redirect).
+- E2E specs are not run in CI; they need a seeded API (`e2e/fixtures/test-users.ts`).
+- No coverage threshold is enforced; `npm run test:coverage` produces a report on demand.
 
 ## Testability Analysis
 
@@ -56,6 +56,8 @@ The project does **not** currently rely on `data-testid` attributes. That is a h
 - For senior contributors: if a selector feels fragile, prefer improving semantics before adding test-only attributes.
 
 ## Standardized Testing Patterns by Page
+
+> The "Current state" columns below were written at the start of the project and are not kept up to date; the suites listed under "What is covered today" are authoritative.
 
 The tables below describe both the current state and the intended pattern for the main user-facing pages.
 

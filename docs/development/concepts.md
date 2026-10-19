@@ -670,7 +670,7 @@ Before submitting PR, verify:
 ## Related Documentation
 
 - **[Conventions](./conventions.md)** - Naming and import rules
-- **[State Management](./state-management.md)** - Redux + RTK Query
+- **[State Management](../architecture/state-management.md)** - Redux + RTK Query
 - **[Testing](./testing.md)** - Testing patterns
-- **[Tech Stack](./tech-stack.md)** - Technology choices
-- **[Architecture Overview](./architecture/overview.md)** - System design
+- **[Tech Stack](../quality/tech-stack.md)** - Technology choices
+- **[Architecture Overview](../architecture/overview.md)** - System design
