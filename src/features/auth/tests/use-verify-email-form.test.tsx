@@ -139,15 +139,23 @@ describe("useVerifyEmailForm", () => {
   });
 
   it("moves the expiry forward after a resend", async () => {
-    const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
-    const originalLabel = result.current.codeExpiresAtLabel;
+    // The label shows only the time of day, so a real clock five minutes before the fixture's
+    // expiry (20:35 UTC) would make both labels equal.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-28T10:00:00.000Z"));
+    try {
+      const { result } = renderHook(() => useVerifyEmailForm(), { wrapper });
+      const originalLabel = result.current.codeExpiresAtLabel;
 
-    await act(async () => {
-      await result.current.handleResendCode();
-    });
+      await act(async () => {
+        await result.current.handleResendCode();
+      });
 
-    expect(result.current.resendError).toBe("");
-    expect(result.current.codeExpiresAtLabel).not.toBe(originalLabel);
+      expect(result.current.resendError).toBe("");
+      expect(result.current.codeExpiresAtLabel).not.toBe(originalLabel);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("explains the resend limit when it is reached", async () => {
