@@ -1,10 +1,12 @@
 # Changelog
 
-All notable changes to the web app are recorded here. Versions will be the `vX.Y.Z` tags on `main`; the format follows [Keep a Changelog](https://keepachangelog.com/).
+All notable changes to the web app are recorded here. Versions are the `vX.Y.Z` tags on `main`; the format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
-No release tag exists yet (TBD: `v0.1.0` on `main`). The app is already deployed by Cloudflare Builds from `main` at https://oph.alonsovndev.com.
+## [0.1.0] - 2026-10-19
+
+First release. The app is deployed by Cloudflare Builds from `main` at https://oph.alonsovndev.com.
 
 ### Added
 
@@ -19,4 +21,5 @@ No release tag exists yet (TBD: `v0.1.0` on `main`). The app is already deployed
 
 - A time-of-day collision made the resend-expiry test in the verify-email form fail depending on the clock; the test now pins the date.
 
-[Unreleased]: https://github.com/alonsovndev/open-projects-hub-web/commits/main
+[Unreleased]: https://github.com/alonsovndev/open-projects-hub-web/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/alonsovndev/open-projects-hub-web/releases/tag/v0.1.0
