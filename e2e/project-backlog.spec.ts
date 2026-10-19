@@ -8,7 +8,7 @@ test.describe("Project Backlog Flow (Unauthenticated)", () => {
   });
 });
 
-// TODO: Add authenticated tests once auth setup is fixed
+// Authenticated backlog tests are not written yet.
 // These tests require:
 // 1. MSW to be enabled in E2E environment OR
 // 2. Proper auth setup with valid test credentials OR

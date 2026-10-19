@@ -10,9 +10,10 @@ source of truth for request and response shapes.
   without a path. For a loopback API, Vite proxies `/v1` to that origin and the browser uses
   its own origin. This avoids cross-origin cookie handling and hostname
   mismatches when an existing `.env` uses `127.0.0.1`. The CSP permits the same origin.
-- Production defaults to the page's origin. Deploy the web and `/v1/*` API through the same
-  HTTPS origin; `.env.production` leaves the URL empty. A deployment override must also be
-  reflected in API CORS and trusted session origins.
+- Production builds use `VITE_API_BASE_URL=https://api-oph.alonsovndev.com` from the tracked
+  `.env.production`: the API is a separate origin, so the browser calls it cross-origin (see
+  "Deployment requirements" below). Any other API origin must also be reflected in API CORS
+  and trusted session origins.
 - Every endpoint is defined with RTK Query on top of `src/app/api/base-api.ts`; each feature
   injects its own endpoints from `src/features/<feature>/api/`.
 - Backend responses are mapped to the frontend domain types in `transformResponse`, so

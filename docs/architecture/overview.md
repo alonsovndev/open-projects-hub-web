@@ -17,21 +17,9 @@ At a high level, the codebase separates responsibilities into four layers:
 3. **`src/pages/`** for thin route entry points that compose features.
 4. **`src/shared/`** for reusable layout and UI elements shared across features.
 
-## Current State Scorecard
+## Current State
 
-### Overall App Score
-
-- **7.5/10**
-
-The project has a strong architectural foundation, clear feature boundaries, modern stack choices, and a real testing foundation. The score is not higher yet because production build verification is still broken by a missing stylesheet import and the automated suite has only begun covering the highest-value paths.
-
-### Category Scores
-
-| Category        | Score    | Why                                                                                                                                                                                                                                                                                     |
-| --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Readability     | **8/10** | The folder structure is easy to scan, routes are declared in feature modules, and pages stay thin. The main drag on readability is duplicated or inconsistent page naming such as `src/pages/Home/` versus `src/pages/home/`.                                                           |
-| Scalability     | **8/10** | Feature folders, shared layout components, typed store setup, route aggregation, and reusable test utilities make it straightforward to add new flows without centralizing all logic in one place. Scalability is still limited by placeholder product areas and incomplete test depth. |
-| Maintainability | **7/10** | TypeScript, Redux Toolkit, RTK Query, clear ownership boundaries, and a working Vitest + Playwright setup support maintenance better than before. The score is held back because the build currently fails and critical auth/dashboard journeys are not yet fully covered.              |
+The app is deployed at `https://oph.alonsovndev.com`. `npm run verify` (lint, unit tests, type-check, build) runs in CI on every pull request. Playwright end-to-end specs cover the auth flows, session security, theme and alerts, and need a running API; they are not part of CI.
 
 ## System Layout
 
