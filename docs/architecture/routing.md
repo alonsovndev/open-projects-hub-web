@@ -413,7 +413,7 @@ test("redirects unauthenticated user from dashboard to login", async ({ page }) 
 - **[Folder Structure](./folder-structure.md)** - Where to place route files
 - **[Architecture Overview](./overview.md)** - System design
 - **[Adding Features](../guides/adding-features.md)** - Complete workflow
-- **[Auth Flow](../features/auth-flow.md)** - Authentication details
+- **[API Integration Guide](../api/integration-guide.md#authentication)** - Authentication details
 
 ## Summary
 

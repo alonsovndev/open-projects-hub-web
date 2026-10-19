@@ -4,7 +4,8 @@ Quick start guide for developers and AI agents new to the Open Projects Hub Web 
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 22 (the version CI uses; see `.nvmrc`) and npm
+- A running [Open Projects Hub API](https://github.com/alonsovndev/open-projects-hub-api) (default `http://localhost:8000`)
 - Git
 - Code editor (VS Code recommended)
 - Basic knowledge of React, TypeScript, and Redux
@@ -13,8 +14,11 @@ Quick start guide for developers and AI agents new to the Open Projects Hub Web 
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/alonsovndev/open-projects-hub-web.git
 cd open-projects-hub-web
+
+# Point the app at the API (VITE_API_BASE_URL)
+cp .env.example .env
 
 # Install dependencies
 npm install
@@ -40,7 +44,7 @@ npm run type-check   # TypeScript validation
 ```bash
 npm run format         # Format all files with Prettier
 npm run format:check   # Check formatting without fixing
-npm run lint           # Run ESLint (when configured)
+npm run lint           # Run ESLint (zero warnings allowed)
 ```
 
 ### Testing
@@ -56,10 +60,8 @@ npm run test:e2e:ui    # Run E2E tests in UI mode
 ### Verification
 
 ```bash
-npm run verify   # Run all checks (test + type-check + build)
+npm run verify   # Run all checks (lint + test + type-check + build)
 ```
-
-**Note**: Some commands may not be fully configured yet. See `AGENTS.md` for current script status.
 
 ## Git Workflow
 
@@ -94,7 +96,7 @@ git commit -m "docs: update architecture guide"
 src/
   app/          # Core infrastructure (routing, store, layouts)
   features/     # Business features (⭐ main workspace)
-  pages/        # Route entry points (thin composition)
+  config/       # Environment configuration
   shared/       # Cross-feature reusable code
   resources/    # Static config and data
   styles/       # Global styles
@@ -288,13 +290,13 @@ Move to `src/shared/` only when:
 
 1. **Read** [Architecture Overview](./architecture/overview.md) to understand system design
 2. **Review** [Conventions](./development/conventions.md) before coding
-3. **Study** [Feature Architecture](./features/features.md) to see existing patterns
+3. **Study** the existing feature folders in `src/features/` to see the patterns
 4. **Follow** [Adding Features](./guides/adding-features.md) for your first contribution
 
 ## Additional Resources
 
 - **[AGENTS.md](../AGENTS.md)** - Agent-specific working standards
-- **[Architecture Overview](./architecture/overview.md)** - System design and scorecard
+- **[Architecture Overview](./architecture/overview.md)** - System design and current state
 - **[Conventions](./development/conventions.md)** - Naming and organization rules
 - **[Testing Guide](./development/testing.md)** - Testing strategy and patterns
 
@@ -302,4 +304,4 @@ Move to `src/shared/` only when:
 
 - Check **[Troubleshooting](./guides/troubleshooting.md)** for common issues
 - Review **[Best Practices](./quality/best-practices.md)** for guidance
-- Refer to feature-specific docs in **[Features](./features/)**
+- Look at the matching folder in `src/features/` for feature-specific code and tests
