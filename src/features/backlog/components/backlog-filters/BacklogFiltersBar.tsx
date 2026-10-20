@@ -54,6 +54,7 @@ export const BacklogFiltersBarComponent: FC<BacklogFiltersBarProps> = ({
           value={filters.search}
           onChange={(e) => onSearchChange(e.target.value)}
           className={styles.searchInput}
+          styles={{ button: { root: { height: "auto", alignSelf: "stretch" } } }}
           allowClear
         />
 
