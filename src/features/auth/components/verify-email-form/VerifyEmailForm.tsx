@@ -23,12 +23,22 @@ export const VerifyEmailForm: FC = () => {
         </h1>
 
         {verifyEmailForm.email ? (
-          <p className={styles.description}>
-            Enter the 6-character code sent to <strong>{verifyEmailForm.email}</strong>.
-            {verifyEmailForm.codeExpiresAtLabel && (
-              <> It expires at {verifyEmailForm.codeExpiresAtLabel}.</>
-            )}
-          </p>
+          <>
+            <p className={styles.description}>
+              Enter the 6-character code sent to <strong>{verifyEmailForm.email}</strong>.
+              {verifyEmailForm.codeExpiresAtLabel && (
+                <> It expires at {verifyEmailForm.codeExpiresAtLabel}.</>
+              )}
+            </p>
+            <Alert
+              role="note"
+              type="info"
+              showIcon
+              className={styles.formItem}
+              message="Can't find the email?"
+              description="It can take a minute to arrive. Check your spam or junk folder as well."
+            />
+          </>
         ) : (
           <Alert
             type="warning"
