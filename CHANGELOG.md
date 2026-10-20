@@ -4,6 +4,18 @@ All notable changes to the web app are recorded here. Versions are the `vX.Y.Z` 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-19
+
+### Added
+
+- Optional Sentry browser error tracking, enabled only when `VITE_SENTRY_DSN` is set. Personal data, cookies, headers, request bodies and URL query strings are not collected, and trace headers are not sent to the API.
+- Render errors, uncaught React errors and unexpected API failures (server errors, network and parsing failures, invalid session responses) are reported. API events carry only the endpoint template and status.
+- Known browser and deploy noise is filtered out: `ResizeObserver` loops, aborted requests, lazy-chunk load failures after a deploy and browser-extension scripts.
+
+### Changed
+
+- Documentation links point to the new domain.
+
 ## [0.1.0] - 2026-10-19
 
 First release. The app is deployed by Cloudflare Builds from `main` at https://oph.alonsovndev.com.
@@ -21,5 +33,6 @@ First release. The app is deployed by Cloudflare Builds from `main` at https://o
 
 - A time-of-day collision made the resend-expiry test in the verify-email form fail depending on the clock; the test now pins the date.
 
-[Unreleased]: https://github.com/alonsovndev/open-projects-hub-web/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/alonsovndev/open-projects-hub-web/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/alonsovndev/open-projects-hub-web/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/alonsovndev/open-projects-hub-web/releases/tag/v0.1.0
