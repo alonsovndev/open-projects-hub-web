@@ -45,9 +45,10 @@ With the API in Docker (port 8080), set `VITE_API_BASE_URL=http://localhost:8080
 
 ## Configuration
 
-| Variable            | Used for                                               | Notes                                                                                                                                                                        |
-| ------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_BASE_URL` | API origin the browser calls and the CSP `connect-src` | Origin only (no path). Read at build time: `.env` for local work (`http://localhost:8000`), the tracked `.env.production` for production (`https://api-oph.alonsovndev.com`) |
+| Variable            | Used for                                                         | Notes                                                                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_BASE_URL` | API origin the browser calls and the CSP `connect-src`           | Origin only (no path). Read at build time: `.env` for local work (`http://localhost:8000`), the tracked `.env.production` for production (`https://api-oph.alonsovndev.com`) |
+| `VITE_SENTRY_DSN`   | Optional Sentry browser error tracking and the CSP `connect-src` | Read at build time. Leave unset to disable; in production set it in the Cloudflare Builds environment, not in a tracked file                                                 |
 
 ## Deploy
 

@@ -1,10 +1,13 @@
 import type { FC } from "react";
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
+import { wrapReactRouterRouting } from "@sentry/react";
 
 import { GuardResolver } from "@/app/routing/GuardResolver";
 import { RouteLoading } from "@/app/routing/RouteLoading";
 import { appRoutes } from "@/app/routing/routes";
+
+const SentryRoutes = wrapReactRouterRouting(Routes);
 
 /**
  * AppRouter - Central routing component
@@ -16,7 +19,7 @@ import { appRoutes } from "@/app/routing/routes";
 export const AppRouter: FC = () => {
   return (
     <Suspense fallback={<RouteLoading />}>
-      <Routes>
+      <SentryRoutes>
         {appRoutes.map((route) => (
           <Route
             key={route.path}
@@ -24,7 +27,7 @@ export const AppRouter: FC = () => {
             element={<GuardResolver guards={route.guards}>{route.element}</GuardResolver>}
           />
         ))}
-      </Routes>
+      </SentryRoutes>
     </Suspense>
   );
 };
