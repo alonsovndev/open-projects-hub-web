@@ -40,6 +40,7 @@
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@reduxjs/toolkit": "^2.11.2",
+    "@sentry/react": "^11.8.0",
     "antd": "^6.3.2",
     "dayjs": "^1.11.20",
     "react": "^19.2.4",

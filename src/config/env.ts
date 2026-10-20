@@ -9,6 +9,7 @@ z.config({ jitless: true });
  */
 const envSchema = z.object({
   VITE_API_BASE_URL: z.string().url("VITE_API_BASE_URL must be a valid URL"),
+  VITE_SENTRY_DSN: z.string().url("VITE_SENTRY_DSN must be a valid URL").optional(),
 });
 
 /**
@@ -32,6 +33,7 @@ function validateEnv() {
   try {
     return envSchema.parse({
       VITE_API_BASE_URL: resolveApiOrigin(),
+      VITE_SENTRY_DSN: import.meta.env.VITE_SENTRY_DSN?.trim() || undefined,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

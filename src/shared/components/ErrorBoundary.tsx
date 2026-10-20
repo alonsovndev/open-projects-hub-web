@@ -1,4 +1,5 @@
-import { Component, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
+import * as Sentry from "@sentry/react";
 import { Button, Result } from "antd";
 
 import { isDev } from "@/config/env";
@@ -33,7 +34,10 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  componentDidCatch(): void {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    Sentry.captureException(error, {
+      contexts: { react: { componentStack: errorInfo.componentStack } },
+    });
     if (isDev) {
       console.error("An unexpected rendering error occurred.");
     }
