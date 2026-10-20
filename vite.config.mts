@@ -9,9 +9,13 @@ export default defineConfig(({ mode, command, isPreview }) => {
   const apiUrl = new URL(configuredOrigin || "http://localhost:8000");
   const useLocalProxy =
     command === "serve" && !isPreview && ["localhost", "127.0.0.1"].includes(apiUrl.hostname);
+  const sentryDsn = (process.env.VITE_SENTRY_DSN ?? loadEnv(mode, process.cwd()).VITE_SENTRY_DSN)?.trim();
   const origins = new Set<string>();
   if (configuredOrigin && !useLocalProxy) {
     origins.add(apiUrl.origin);
+  }
+  if (sentryDsn) {
+    origins.add(new URL(sentryDsn).origin);
   }
   return {
     plugins: [
@@ -49,6 +53,7 @@ export default defineConfig(({ mode, command, isPreview }) => {
             // Vendor chunks (used on every route — always eager)
             "vendor-react": ["react", "react-dom", "react-router-dom"],
             "vendor-redux": ["@reduxjs/toolkit", "react-redux"],
+            "vendor-sentry": ["@sentry/react"],
             // antd/icons deliberately NOT forced into one vendor chunk: routes
             // are lazy-loaded (src/app/routing/lazy-loader.ts), so leaving antd
             // unassigned lets Rollup split it along those same route boundaries.
