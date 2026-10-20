@@ -12,6 +12,7 @@ test.describe("Reset Password Flow", () => {
     await resetPasswordPage.goto();
 
     await expect(page.getByText(/request a password reset first/i)).toBeVisible();
+    await expect(page.getByText(/check your spam or junk folder/i)).toBeHidden();
     await expect(resetPasswordPage.submitButton).toBeDisabled();
   });
 
@@ -22,6 +23,7 @@ test.describe("Reset Password Flow", () => {
     await page.goto("/reset-password?email=admin%40example.com&code=ABC234");
 
     await expect(page.getByText("admin@example.com")).toBeVisible();
+    await expect(page.getByText(/check your spam or junk folder/i)).toBeVisible();
     await expect(resetPasswordPage.codeInput).toHaveValue("ABC234");
     await expect(page).not.toHaveURL(/code=/);
     await expect(resetPasswordPage.submitButton).toBeEnabled();
