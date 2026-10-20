@@ -67,7 +67,7 @@ test.describe("Home Page", () => {
     );
     await expect(header.getByRole("link", { name: "Docs", exact: true })).toHaveAttribute(
       "href",
-      "https://alonsovndev.github.io/open-projects-hub-docs/"
+      "https://oph-docs.alonsovndev.com/"
     );
     const footer = page.locator("footer");
     await expect(footer.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
@@ -234,7 +234,7 @@ test.describe("Home Page", () => {
   }
 
   test("mobile menu closes after selection, Escape, and switching to desktop", async ({ page }) => {
-    const documentationUrl = "https://alonsovndev.github.io/open-projects-hub-docs/";
+    const documentationUrl = "https://oph-docs.alonsovndev.com/";
     await page.context().route(documentationUrl, (route) =>
       route.fulfill({ contentType: "text/html", body: "<html><body>Documentation</body></html>" })
     );

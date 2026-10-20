@@ -24,11 +24,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
             Open Projects Hub
           </Link>
           <nav className={styles.landingNav} aria-label="Footer navigation">
-            <a
-              href="https://alonsovndev.github.io/open-projects-hub-docs/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://oph-docs.alonsovndev.com/" target="_blank" rel="noopener noreferrer">
               Documentation
             </a>
             <a
@@ -72,7 +68,7 @@ export const Footer: FC<FooterProps> = ({ variant = "default" }) => {
           <div className={styles.footerColumn}>
             <h2 className={styles.columnTitle}>Directories</h2>
             <a
-              href="https://alonsovndev.github.io/open-projects-hub-docs/"
+              href="https://oph-docs.alonsovndev.com/"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.footerLink}

@@ -119,7 +119,7 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 
 **Navigation:**
 
-- Docs → https://alonsovndev.github.io/open-projects-hub-docs/
+- Docs → https://oph-docs.alonsovndev.com/
 - GitHub → https://github.com/orgs/alonsovndev/repositories?q=open-projects
 
 **CTAs:**
