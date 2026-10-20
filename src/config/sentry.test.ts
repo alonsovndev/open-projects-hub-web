@@ -37,4 +37,22 @@ describe("initSentry", () => {
       })
     );
   });
+
+  it("filters known browser and deploy-skew noise", () => {
+    envMock.VITE_SENTRY_DSN = "https://key@o1.ingest.us.sentry.io/2";
+
+    initSentry();
+
+    const { ignoreErrors, denyUrls } = vi.mocked(Sentry.init).mock.calls[0][0] ?? {};
+    const isIgnored = (message: string) =>
+      (ignoreErrors ?? []).some((pattern) => new RegExp(pattern).test(message));
+    expect(isIgnored("ResizeObserver loop completed with undelivered notifications.")).toBe(true);
+    expect(isIgnored("Failed to fetch dynamically imported module: /assets/page-1a2b.js")).toBe(
+      true
+    );
+    expect(isIgnored("Cannot read properties of undefined")).toBe(false);
+    expect(
+      (denyUrls ?? []).some((pattern) => new RegExp(pattern).test("chrome-extension://abc/x.js"))
+    ).toBe(true);
+  });
 });

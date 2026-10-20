@@ -31,6 +31,15 @@ export function initSentry(): void {
         matchRoutes,
       }),
     ],
+    ignoreErrors: [
+      /ResizeObserver loop/,
+      /AbortError/,
+      // Lazy-route chunk 404s after a deploy; one pattern per browser engine.
+      /Failed to fetch dynamically imported module/,
+      /error loading dynamically imported module/,
+      /Importing a module script failed/,
+    ],
+    denyUrls: [/^chrome-extension:\/\//i, /^moz-extension:\/\//i, /^safari-(web-)?extension:\/\//i],
     tracesSampleRate: 0.1,
     // No trace headers on outgoing requests: the API CORS allow_headers does not include sentry-trace/baggage,
     // so propagating them cross-origin would make the browser block every API call.
