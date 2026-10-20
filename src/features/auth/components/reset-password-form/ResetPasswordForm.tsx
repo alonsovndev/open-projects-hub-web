@@ -29,10 +29,20 @@ export const ResetPasswordForm: FC = () => {
         </h1>
 
         {resetPasswordForm.email ? (
-          <p className={styles.description}>
-            Enter the 6-digit code sent to <strong>{resetPasswordForm.email}</strong> and choose a
-            new password.
-          </p>
+          <>
+            <p className={styles.description}>
+              Enter the 6-digit code sent to <strong>{resetPasswordForm.email}</strong> and choose a
+              new password.
+            </p>
+            <Alert
+              role="note"
+              type="info"
+              showIcon
+              className={styles.formItem}
+              message="Can't find the email?"
+              description="It can take a minute to arrive. Check your spam or junk folder as well."
+            />
+          </>
         ) : (
           <Alert
             type="warning"

@@ -8,6 +8,7 @@ test.describe("Verify Email Flow", () => {
     await verifyEmailPage.goto();
 
     await expect(page.getByText(/start by registering or signing in/i)).toBeVisible();
+    await expect(page.getByText(/check your spam or junk folder/i)).toBeHidden();
     await expect(verifyEmailPage.submitButton).toBeDisabled();
   });
 
@@ -35,6 +36,10 @@ test.describe("Verify Email Flow", () => {
       await page.waitForURL(/\/verify-email/);
 
       verifyEmailPage = new VerifyEmailPage(page);
+    });
+
+    test("should remind the user to check their spam folder", async ({ page }) => {
+      await expect(page.getByText(/check your spam or junk folder/i)).toBeVisible();
     });
 
     test("should verify the code and send the user to sign in", async ({ page }) => {
