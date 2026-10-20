@@ -7,6 +7,7 @@ import type {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 import { normalizeApiError } from "@/shared/utils/error-messages";
+import { invalidSessionResponseMessage, reportApiError } from "@/app/api/report-api-error";
 import { adminAuthConfig } from "@/resources/config/auth";
 import { applyRefreshedSession } from "@/features/auth/model/apply-refreshed-session";
 import {
@@ -99,7 +100,7 @@ const refreshSession = (api: BaseQueryApi, extraOptions: object): Promise<QueryR
         return {
           error: {
             status: "CUSTOM_ERROR",
-            error: "Invalid session response.",
+            error: invalidSessionResponseMessage,
             data: { message: "We couldn't resume your session. Please sign in again." },
           },
         };
@@ -165,7 +166,7 @@ export const baseQuery: BaseQueryFn<
           return {
             error: {
               status: "CUSTOM_ERROR" as const,
-              error: "Invalid session response.",
+              error: invalidSessionResponseMessage,
               data: { message: "We couldn't sign you in. Please try again." },
             },
           };
@@ -204,7 +205,9 @@ export const baseQuery: BaseQueryFn<
       }
     }
   }
-  return result.error ? { error: normalizeApiError(result.error, url) } : result;
+  if (!result.error) return result;
+  reportApiError(result.error, url);
+  return { error: normalizeApiError(result.error, url) };
 };
 
 export const baseApi = createApi({
