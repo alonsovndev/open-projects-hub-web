@@ -40,9 +40,9 @@ export const HomeCtaSection: FC = () => {
             type="primary"
             size="large"
             className={styles.ctaPrimaryButton}
-            onClick={() => navigate("/role-selection")}
+            onClick={() => navigate("/register")}
           >
-            Get Started <ArrowRightOutlined aria-hidden="true" />
+            Create Account <ArrowRightOutlined aria-hidden="true" />
           </Button>
           <Button
             size="large"

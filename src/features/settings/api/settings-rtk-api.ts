@@ -6,6 +6,10 @@ interface UpdateProfileRequest {
   displayName: string;
 }
 
+interface UpdateOnboardingRequest {
+  completed: boolean;
+}
+
 interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
@@ -29,6 +33,16 @@ export const settingsApi = baseApi.injectEndpoints({
       invalidatesTags: ["UserProfile"],
     }),
 
+    // Dismiss (completed: true) or replay (completed: false) the first-use welcome
+    updateOnboarding: builder.mutation<UserProfile, UpdateOnboardingRequest>({
+      query: (data) => ({
+        url: "/v1/users/me/onboarding",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
+
     // Change password
     changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
       query: (data) => ({
@@ -40,5 +54,9 @@ export const settingsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useChangePasswordMutation } =
-  settingsApi;
+export const {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+  useUpdateOnboardingMutation,
+  useChangePasswordMutation,
+} = settingsApi;

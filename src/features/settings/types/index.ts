@@ -3,6 +3,8 @@ export interface UserProfile {
   email: string;
   displayName: string;
   role: string;
+  /** False until the person dismisses the first-use welcome (F-005). */
+  onboardingCompleted: boolean;
 }
 
 export interface PasswordChangeData {

@@ -79,8 +79,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
               <Button type="text" href="/login" className={styles.signInButton}>
                 Log In
               </Button>
-              <Button type="primary" href="/role-selection" className={styles.ctaButton}>
-                Get Started <ArrowRightOutlined aria-hidden="true" />
+              <Button type="primary" href="/register" className={styles.ctaButton}>
+                Create Account <ArrowRightOutlined aria-hidden="true" />
               </Button>
             </div>
             <button
@@ -127,13 +127,8 @@ export const AppHeader: FC<AppHeaderProps> = ({
               <Button type="text" href="/login" block className={styles.mobileSignInButton}>
                 Log In
               </Button>
-              <Button
-                type="primary"
-                href="/role-selection"
-                block
-                className={styles.mobileCtaButton}
-              >
-                Get Started <ArrowRightOutlined aria-hidden="true" />
+              <Button type="primary" href="/register" block className={styles.mobileCtaButton}>
+                Create Account <ArrowRightOutlined aria-hidden="true" />
               </Button>
             </div>
           </div>
