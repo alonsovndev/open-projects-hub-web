@@ -215,9 +215,9 @@ test("mobile landing keeps the brand and opens the example preview", async ({ pa
     page.getByRole("link", { name: "Documentation", exact: true }).first()
   ).toBeVisible();
   const mobileMenu = page.locator("#landing-mobile-menu");
-  await expect(mobileMenu.getByRole("link", { name: "Get Started" })).toHaveAttribute(
+  await expect(mobileMenu.getByRole("link", { name: "Create Account" })).toHaveAttribute(
     "href",
-    "/role-selection"
+    "/register"
   );
   await expect(mobileMenu.getByRole("link", { name: "Log In", exact: true })).toHaveAttribute(
     "href",
@@ -236,17 +236,17 @@ test("mobile landing keeps the brand and opens the example preview", async ({ pa
   await preview.getByRole("button", { name: "Close", exact: true }).last().click();
   await expect(preview).not.toBeVisible();
   await expect(exampleButton).toBeFocused();
-  const getStarted = page.getByRole("button", { name: "Get Started", exact: true }).last();
-  await expect(getStarted).toHaveCSS("background-color", "rgb(255, 255, 255)");
-  await expect(getStarted).toHaveCSS("color", "rgb(7, 91, 199)");
-  await getStarted.hover();
-  await expect(getStarted).toHaveCSS("background-color", "rgb(248, 250, 252)");
-  await expect(getStarted).toHaveCSS("color", "rgb(6, 74, 158)");
+  const createAccount = page.getByRole("button", { name: "Create Account", exact: true }).last();
+  await expect(createAccount).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(createAccount).toHaveCSS("color", "rgb(7, 91, 199)");
+  await createAccount.hover();
+  await expect(createAccount).toHaveCSS("background-color", "rgb(248, 250, 252)");
+  await expect(createAccount).toHaveCSS("color", "rgb(6, 74, 158)");
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: test.info().outputPath("home-mobile.png"), fullPage: true });
   await menu.click();
-  await mobileMenu.getByRole("link", { name: "Get Started" }).click();
-  await expect(page).toHaveURL(/\/role-selection$/);
+  await mobileMenu.getByRole("link", { name: "Create Account" }).click();
+  await expect(page).toHaveURL(/\/register$/);
 });
 
 test("mobile drawer returns keyboard focus and switches to desktop navigation", async ({
@@ -311,8 +311,8 @@ test("reduced motion preserves keyboard access to the example preview", async ({
   await page.keyboard.press("Escape");
   await expect(preview).not.toBeVisible();
   await expect(exampleButton).toBeFocused();
-  const getStarted = page.getByRole("button", { name: "Get Started", exact: true }).last();
-  const transitionDurations = await getStarted.evaluate((button) =>
+  const createAccount = page.getByRole("button", { name: "Create Account", exact: true }).last();
+  const transitionDurations = await createAccount.evaluate((button) =>
     getComputedStyle(button)
       .transitionDuration.split(",")
       .map((duration) => Number.parseFloat(duration))

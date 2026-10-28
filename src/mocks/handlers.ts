@@ -5,6 +5,7 @@ import { aiProvidersHandlers } from "./handlers/ai-providers";
 import { teamHandlers } from "./handlers/team";
 import { workspaceHandlers } from "./handlers/workspace";
 import { viewerHandlers } from "./handlers/viewer";
+import { userHandlers } from "./handlers/user";
 
 export const handlers = [
   ...authHandlers,
@@ -14,4 +15,5 @@ export const handlers = [
   ...teamHandlers,
   ...workspaceHandlers,
   ...viewerHandlers,
+  ...userHandlers,
 ];

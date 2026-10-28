@@ -57,9 +57,9 @@ test.describe("Home Page", () => {
       "href",
       "/login"
     );
-    await expect(header.getByRole("link", { name: "Get Started", exact: true })).toHaveAttribute(
+    await expect(header.getByRole("link", { name: "Create Account", exact: true })).toHaveAttribute(
       "href",
-      "/role-selection"
+      "/register"
     );
     await expect(header.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
@@ -90,14 +90,12 @@ test.describe("Home Page", () => {
     await expect(header.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
     await page.getByRole("link", { name: "Learn more about the workflow" }).click();
     await expect(page).toHaveURL(/#workflow$/);
-    await page.getByRole("button", { name: "Get Started", exact: true }).first().click();
-    await expect(page).toHaveURL(/\/role-selection$/);
-    await expect(
-      page.getByRole("heading", { name: "Welcome to Open Projects Hub", exact: true })
-    ).toBeVisible();
+    await page.getByRole("button", { name: "Create Account", exact: true }).first().click();
+    await expect(page).toHaveURL(/\/register$/);
+    await expect(page.getByRole("heading", { name: "Create Your Workspace" })).toBeVisible();
     await page.goto("/");
-    await page.getByRole("button", { name: "Get Started", exact: true }).last().click();
-    await expect(page).toHaveURL(/\/role-selection$/);
+    await page.getByRole("button", { name: "Create Account", exact: true }).last().click();
+    await expect(page).toHaveURL(/\/register$/);
   });
 
   test("role selection offers workspace signup, login, and client access", async ({ page }) => {
@@ -235,9 +233,11 @@ test.describe("Home Page", () => {
 
   test("mobile menu closes after selection, Escape, and switching to desktop", async ({ page }) => {
     const documentationUrl = "https://oph-docs.alonsovndev.com/";
-    await page.context().route(documentationUrl, (route) =>
-      route.fulfill({ contentType: "text/html", body: "<html><body>Documentation</body></html>" })
-    );
+    await page
+      .context()
+      .route(documentationUrl, (route) =>
+        route.fulfill({ contentType: "text/html", body: "<html><body>Documentation</body></html>" })
+      );
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto("/");
     const toggle = page.getByRole("button", { name: "Toggle menu" });
@@ -247,7 +247,9 @@ test.describe("Home Page", () => {
     await expect(toggle).toBeFocused();
     await toggle.click();
     const mobileNavigation = page.getByRole("navigation", { name: "Mobile navigation" });
-    await expect(mobileNavigation.getByRole("link", { name: "Product", exact: true })).toHaveCount(0);
+    await expect(mobileNavigation.getByRole("link", { name: "Product", exact: true })).toHaveCount(
+      0
+    );
     const documentationPopup = page.waitForEvent("popup");
     await mobileNavigation.getByRole("link", { name: "Documentation", exact: true }).click();
     const popup = await documentationPopup;
