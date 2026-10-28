@@ -10,7 +10,7 @@ Part of [alonsovndev](https://github.com/alonsovndev), the open-source engineeri
 
 ## Features
 
-- **Account and workspace:** self-service sign-up with an emailed verification code, login, password reset, and session handling (access token in memory, refresh token in an HttpOnly cookie).
+- **Account and workspace:** self-service sign-up with an emailed verification code, login, password reset, and session handling (access token in memory, refresh token in an HttpOnly cookie). New workspace admins see a first-use welcome that can be replayed from Settings.
 - **Clients and projects:** manage clients and projects, archive and reactivate projects, search and filter, team management for administrators.
 - **AI-assisted refinement:** turn raw requirement notes into user stories with acceptance criteria, review them, and approve only what should be stored.
 - **Backlog:** view the approved backlog and export it as Markdown.
@@ -67,7 +67,7 @@ The app is a static build served by Cloudflare Workers (`wrangler.jsonc` serves 
 - Browser sessions require the API's cookie-session contract; access tokens stay in memory and refresh tokens use an HttpOnly cookie. See [API integration](docs/api/integration-guide.md#authentication) for migration and deployment requirements.
 - The `/backlog` page loads up to 100 stories (the API maximum per request) and filters them in the browser; there is no pagination yet.
 - Stories cannot be reordered manually (FR-004-03 is deferred; see the requirements in the [documentation](https://oph-docs.alonsovndev.com)).
-- E2E coverage is limited to the auth flows and a public backlog smoke test.
+- Playwright specs cover the auth flows, the landing page, theme, alerts, session security, responsive layout and a public backlog smoke test. There is no e2e coverage of creating a project, refinement, export, client review or the first-use welcome, and none of the specs run in CI.
 
 ## Contributing and license
 
