@@ -1,6 +1,6 @@
 {
   "name": "open-projects-hub-web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Web app for Open Projects Hub, an open-source project and backlog manager for freelancers.",
   "private": true,
   "scripts": {
