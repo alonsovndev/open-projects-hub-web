@@ -14,6 +14,7 @@ import { PasswordForm } from "@/features/settings/components/password-form";
 import { AiProvidersPanel } from "@/features/settings/components/ai-providers";
 import { WorkspacePanel } from "@/features/settings/components/workspace-panel";
 import { TeamPanel } from "@/features/settings/components/team-panel";
+import { OnboardingReset } from "@/features/onboarding/components/onboarding-reset";
 import { useRole } from "@/features/auth/hooks/use-role";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
@@ -60,7 +61,12 @@ export const SettingsPage: FC = () => {
           Profile
         </span>
       ),
-      children: <ProfileForm profile={profile} saving={saving} onSubmit={handleUpdateProfile} />,
+      children: (
+        <>
+          <ProfileForm profile={profile} saving={saving} onSubmit={handleUpdateProfile} />
+          {canManageTeam && <OnboardingReset />}
+        </>
+      ),
     },
     {
       key: "security",

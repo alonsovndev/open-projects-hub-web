@@ -36,9 +36,9 @@ export const HomeHero: FC = () => {
               type="primary"
               size="large"
               className={styles.heroPrimaryButton}
-              onClick={() => navigate("/role-selection")}
+              onClick={() => navigate("/register")}
             >
-              Get Started <ArrowRightOutlined aria-hidden="true" />
+              Create Account <ArrowRightOutlined aria-hidden="true" />
             </Button>
             <Button
               size="large"

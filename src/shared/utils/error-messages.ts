@@ -13,6 +13,11 @@ export const ERROR_MESSAGES = {
   rateLimit: "Too many attempts. Please wait and try again.",
   validation: "Check the information you entered and try again.",
   credentials: "The email or password is incorrect. Please try again.",
+  accountLocked:
+    "Account temporarily locked due to multiple failed attempts. Try again in 15 minutes.",
+  // Lockouts grow from 15 minutes (15, 30, 60, 120), so a longer one cannot name a fixed time.
+  accountLockedLonger:
+    "Account temporarily locked due to multiple failed attempts. Please try again later.",
   emailVerification: "Please verify your email before signing in.",
   emailRegistered: "An account already exists with this email. Sign in or reset your password.",
   verificationCode: "This verification code is invalid or has expired. Request a new code.",
@@ -112,6 +117,10 @@ export function normalizeApiError(
 
     if (path === "/v1/auth/login") {
       if (status === 401) message = ERROR_MESSAGES.credentials;
+      const lockout = /^Account temporarily locked\. Try again in (\d+) minutes?\.?$/.exec(text);
+      if (status === 429 && lockout)
+        message =
+          lockout[1] === "15" ? ERROR_MESSAGES.accountLocked : ERROR_MESSAGES.accountLockedLonger;
       if (status === 403 && body.code === "EMAIL_NOT_VERIFIED") {
         message = ERROR_MESSAGES.emailVerification;
         structured.code = "EMAIL_NOT_VERIFIED";

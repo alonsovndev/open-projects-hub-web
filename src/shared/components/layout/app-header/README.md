@@ -93,9 +93,9 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 **Desktop Layout:**
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│ [Logo] Open Projects Hub  Docs  GitHub  Log In [Get Started] │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ [Logo] Open Projects Hub  Docs  GitHub  Log In [Create Account] │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 **Mobile Layout:**
@@ -107,7 +107,7 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 │ Docs                           │
 │ GitHub                         │
 │ [Log In]                       │
-│ [Get Started]                  │
+│ [Create Account]               │
 └────────────────────────────────┘
 ```
 
@@ -125,7 +125,7 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 **CTAs:**
 
 - Log In → `/login`
-- Get Started → `/role-selection`
+- Create Account → `/register`
 
 ## Design Tokens
 

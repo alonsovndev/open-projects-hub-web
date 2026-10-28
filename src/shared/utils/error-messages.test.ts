@@ -303,6 +303,42 @@ describe("safe error messages", () => {
     });
   });
 
+  it("tells a locked-out user the standard 15-minute lockout, as FR-007-04 words it", () => {
+    expect(
+      normalizeApiError(
+        { status: 429, data: { detail: "Account temporarily locked. Try again in 15 minutes." } },
+        "/v1/auth/login"
+      )
+    ).toEqual({
+      status: 429,
+      data: {
+        message:
+          "Account temporarily locked due to multiple failed attempts. Try again in 15 minutes.",
+      },
+    });
+  });
+
+  it("does not promise 15 minutes for a longer lockout", () => {
+    expect(
+      normalizeApiError(
+        { status: 429, data: { detail: "Account temporarily locked. Try again in 60 minutes." } },
+        "/v1/auth/login"
+      )
+    ).toEqual({
+      status: 429,
+      data: {
+        message:
+          "Account temporarily locked due to multiple failed attempts. Please try again later.",
+      },
+    });
+  });
+
+  it("keeps the generic rate-limit message for other login 429s", () => {
+    expect(
+      normalizeApiError({ status: 429, data: { detail: "Rate limit exceeded" } }, "/v1/auth/login")
+    ).toEqual({ status: 429, data: { message: "Too many attempts. Please wait and try again." } });
+  });
+
   it("asks for a new reset code after a lockout rather than retrying the locked code", () => {
     expect(
       normalizeApiError(

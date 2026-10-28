@@ -6,6 +6,7 @@ import { DashboardStats } from "@/features/dashboard/components/dashboard-stats"
 import { ProjectList } from "@/features/dashboard/components/project-list";
 import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
 import { useRole } from "@/features/auth/hooks/use-role";
+import { WelcomeModal } from "@/features/onboarding/components/welcome-modal";
 import { usePageTitle } from "@/shared/hooks/use-page-title";
 
 import styles from "./dashboard.module.scss";
@@ -40,6 +41,7 @@ export const DashboardPage: FC = () => {
 
   return (
     <div className={styles.pageContainer}>
+      <WelcomeModal />
       <div className={styles.dashboardHeader}>
         <div className={styles.headerContent}>
           <div className={styles.welcomeSection}>
