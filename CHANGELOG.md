@@ -4,7 +4,7 @@ All notable changes to the web app are recorded here. Versions are the `vX.Y.Z` 
 
 ## [Unreleased]
 
-## [0.3.0] - TBD
+## [0.3.0] - 2026-10-27
 
 ### Added
 
