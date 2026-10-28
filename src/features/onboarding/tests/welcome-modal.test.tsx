@@ -72,7 +72,8 @@ describe("WelcomeModal", { timeout: 20_000 }, () => {
 
     await user.click(await screen.findByRole("button", { name: "Got it" }));
 
-    await waitFor(() => expect(screen.queryByText("Welcome to Open Projects Hub")).toBeNull());
+    // A closed antd modal stays in the DOM, hidden, so assert on the accessible dialog.
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull(), { timeout: 5000 });
     expect(patches).toEqual([true]);
   });
 
